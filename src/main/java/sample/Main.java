@@ -13,7 +13,7 @@ public class Main extends Application {
         ClassLoader classLoader = getClass().getClassLoader();
         Parent root = FXMLLoader.load(classLoader.getResource("sample.fxml"));
         primaryStage.setTitle("Hello World! I'm little CTracking, but I'll be big smart program!");
-        primaryStage.setScene(new Scene(root, 300, 275));
+        primaryStage.setScene(new Scene(root, 1000, 600));
         primaryStage.show();
     }
 
