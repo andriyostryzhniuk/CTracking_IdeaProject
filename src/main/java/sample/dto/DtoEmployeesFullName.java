@@ -3,12 +3,12 @@ package sample.dto;
 /**
  * Created by Andriy on 01/28/2016.
  */
-public class DtoEmploeesFullName {
+public class DtoEmployeesFullName {
     private String name;
     private String surname;
     private String middleName;
 
-    public DtoEmploeesFullName(String name, String surname, String middleName) {
+    public DtoEmployeesFullName(String name, String surname, String middleName) {
         this.name = name;
         this.surname = surname;
         this.middleName = middleName;

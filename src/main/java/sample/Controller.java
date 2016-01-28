@@ -15,7 +15,7 @@ public class Controller {
 
     public GridPane mainGridPane;
 
-    public void create(ActionEvent actionEvent) {
+    public void init(ActionEvent actionEvent) {
         ObservableList<String> usersData = FXCollections.observableArrayList();
         usersData.add("yjryryhrty");
         usersData.add("tytyujryuryu");
