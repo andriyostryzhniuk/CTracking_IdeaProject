@@ -1,16 +1,14 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
 <?import javafx.geometry.*?>
-<?import java.lang.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<GridPane prefHeight="600.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
-          fx:controller="sample.Controller" >
+<GridPane fx:id="mainGridPane" prefHeight="600.0" prefWidth="1000.0" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller">
    <children>
       <GridPane GridPane.rowIndex="1">
          <children>
-            <Button mnemonicParsing="false" prefHeight="25.0" prefWidth="162.0" text="Явка" />
+            <Button mnemonicParsing="false" onAction="#createEditTableTracking" prefHeight="25.0" prefWidth="162.0" text="Явка" />
          </children>
          <columnConstraints>
             <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
@@ -21,55 +19,6 @@
             <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
          </rowConstraints>
       </GridPane>
-      <TabPane prefHeight="200.0" prefWidth="200.0" tabClosingPolicy="UNAVAILABLE" GridPane.columnIndex="1" GridPane.rowIndex="1">
-        <tabs>
-          <Tab text="Один день">
-               <content>
-                  <GridPane style="-fx-border-color: gray;">
-                     <children>
-                        <SplitPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: Silver; -fx-border-color: gray;">
-                           <items>
-                              <Label text="Працівник" />
-                           </items>
-                        </SplitPane>
-                        <SplitPane prefHeight="28.0" prefWidth="108.0" style="-fx-background-color: Silver; -fx-border-color: gray;" GridPane.columnIndex="1">
-                           <items>
-                              <Label text="Label" />
-                           </items>
-                        </SplitPane>
-                        <SplitPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: LightCyan; -fx-border-color: Gainsboro;" GridPane.columnIndex="1" GridPane.rowIndex="1">
-                           <items>
-                              <CheckBox mnemonicParsing="false" textAlignment="CENTER" textOverrun="LEADING_ELLIPSIS" />
-                           </items>
-                           <GridPane.margin>
-                              <Insets />
-                           </GridPane.margin>
-                           <padding>
-                              <Insets left="30.0" />
-                           </padding>
-                        </SplitPane>
-                        <SplitPane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: LightCyan; -fx-border-color: Gainsboro;" GridPane.rowIndex="1">
-                           <items>
-                              <Label text="Label" />
-                           </items>
-                        </SplitPane>
-                     </children>
-                     <columnConstraints>
-                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="317.0" minWidth="10.0" prefWidth="206.0" />
-                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="546.0" minWidth="10.0" prefWidth="88.0" />
-                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="546.0" minWidth="10.0" prefWidth="356.0" />
-                     </columnConstraints>
-                     <rowConstraints>
-                        <RowConstraints maxHeight="118.0" minHeight="0.0" prefHeight="25.0" vgrow="SOMETIMES" />
-                        <RowConstraints maxHeight="337.0" minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                        <RowConstraints maxHeight="353.0" minHeight="10.0" prefHeight="342.0" vgrow="SOMETIMES" />
-                     </rowConstraints>
-                  </GridPane>
-               </content>
-            </Tab>
-          <Tab text="Тиждень" />
-        </tabs>
-      </TabPane>
    </children>
    <columnConstraints>
       <ColumnConstraints hgrow="SOMETIMES" maxWidth="290.0" minWidth="10.0" prefWidth="217.0" />
