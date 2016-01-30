@@ -5,13 +5,13 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.GridPane;
 import java.io.IOException;
 
-public class Controller {
+public class MainWindowController {
 
     public GridPane mainGridPane;
 
-    public void createEditTableTracking(ActionEvent actionEvent) throws IOException {
+    public void initEmployeesWorkTracking(ActionEvent actionEvent) throws IOException {
 
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/employeesWorkTracking.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/EmployeesWorkTracking.fxml"));
         try {
             mainGridPane.add(fxmlLoader.load(), 1, 1);
         } catch (IOException exception) {
