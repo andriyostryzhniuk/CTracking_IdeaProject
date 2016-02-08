@@ -4,7 +4,6 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -16,17 +15,14 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Region;
-import javafx.scene.layout.RowConstraints;
 import javafx.scene.text.Font;
 import sample.dto.DtoEmployeesFullName;
-
-import javax.swing.text.Style;
-import java.io.IOException;
 import java.sql.SQLException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Objects;
 
 /**
  * Created by Andriy on 01/30/2016.
@@ -104,6 +100,7 @@ public class EmployeesWorkTrackingController {
                     public void handle(ActionEvent e) {
                         if (checkBox.isSelected() == true) {
                             TextField textField = new TextField("9");
+                            textField.setId("t"+checkBox.getId());
                             textField.setPrefHeight(16.0);
                             textField.setMinHeight(16.0);
                             textField.setAlignment(Pos.CENTER);
@@ -114,8 +111,16 @@ public class EmployeesWorkTrackingController {
                             gridPaneEmployeesData.setValignment(textField, VPos.BOTTOM);
                         }
                         else {
-                            int rowIndex = gridPaneEmployeesData.getRowIndex(checkBox);
-                            int columnIndex = gridPaneEmployeesData.getColumnIndex(checkBox);
+                            String id  = "t"+checkBox.getId();
+                            ObservableList<Node> childrens = gridPaneEmployeesData.getChildren();
+                            int i = 0;
+                            for(Node N: childrens) {
+                                if(Objects.equals(N.getId(), id) == true) {
+                                    childrens.remove(i);
+                                    break;
+                                }
+                                i++;
+                            }
                         }
                     }
                 });
