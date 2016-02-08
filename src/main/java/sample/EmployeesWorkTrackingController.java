@@ -30,7 +30,7 @@ import java.util.Objects;
 public class EmployeesWorkTrackingController {
 
     @FXML
-    public GridPane gridPaneCapTable;
+    private GridPane gridPaneCapTable;
     @FXML
     private GridPane gridPaneEmployeesData;
 
@@ -39,8 +39,7 @@ public class EmployeesWorkTrackingController {
 
         int daysOfMonthNumber = initDateLabel();
 
-        ODBC_PubsBD connect = new ODBC_PubsBD();
-        ObservableList<DtoEmployeesFullName> employeesFullNameList = connect.selectEmployeesFullName();
+        ObservableList<DtoEmployeesFullName> employeesFullNameList = ODBC_PubsBD.selectEmployeesFullName();
 
         int i = 0;
         for (DtoEmployeesFullName E: employeesFullNameList){
@@ -72,7 +71,11 @@ public class EmployeesWorkTrackingController {
                     @Override
                     public void handle(ActionEvent e) {
                         if (checkBox.isSelected() == true) {
-                            initWorkingHoursTextFiled(checkBox);
+                            try {
+                                initWorkingHoursTextFiled(checkBox);
+                            } catch (SQLException e1) {
+                                e1.printStackTrace();
+                            }
                         }
                         else {
                             removeWorkingHoursTextFiled(checkBox);
@@ -132,9 +135,18 @@ public class EmployeesWorkTrackingController {
         return Integer.toString(employeesId)+":"+Integer.toString(columnIndex);
     }
 
-    public void initWorkingHoursTextFiled (Node thisCheckBox) {
-        TextField textField = new TextField("9");
-        textField.setId("t"+thisCheckBox.getId());
+    public void initWorkingHoursTextFiled (Node thisCheckBox) throws SQLException {
+        final String checkBoxId = thisCheckBox.getId();
+        TextField textField = new TextField();
+
+        try {
+            textField.setText(Integer.toString(ODBC_PubsBD.selectDefaultEmployeesWorkingHours(
+                    calculateEmployeesId(checkBoxId))));
+        } catch (NullPointerException e){
+            e.printStackTrace();
+        }
+
+        textField.setId("t"+checkBoxId);
         textField.setPrefHeight(16.0);
         textField.setMinHeight(16.0);
         textField.setAlignment(Pos.CENTER);
@@ -156,5 +168,9 @@ public class EmployeesWorkTrackingController {
             }
             i++;
         }
+    }
+
+    public int calculateEmployeesId (String nodeId) {
+        return Integer.parseInt(nodeId.substring(0, nodeId.indexOf(":")));
     }
 }

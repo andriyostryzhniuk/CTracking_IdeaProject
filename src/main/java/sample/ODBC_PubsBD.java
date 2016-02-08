@@ -12,7 +12,7 @@ import java.sql.Statement;
  * Created by Andriy on 01/28/2016.
  */
 public class ODBC_PubsBD {
-    public ObservableList<DtoEmployeesFullName> selectEmployeesFullName() throws SQLException {
+    public static ObservableList<DtoEmployeesFullName> selectEmployeesFullName() throws SQLException {
         try (Connection connection = DB_Connector.getDataSource().getConnection()) {
             Statement statement = connection.createStatement();
             ResultSet rs = statement.executeQuery("select employees.id, employees.name, employees.surname, " +
@@ -27,13 +27,17 @@ public class ODBC_PubsBD {
         }
     }
 
-    public int selectDefaultEmployeesWorkingHours(int employees_id) throws SQLException {
+    public static int selectDefaultEmployeesWorkingHours(int employees_id) throws SQLException {
         try (Connection connection = DB_Connector.getDataSource().getConnection()) {
             Statement statement = connection.createStatement();
             ResultSet rs = statement.executeQuery("select employees.workingHours " +
                     "from employees " +
                     "where employees.id = '"+employees_id+"'");
-            return rs.getInt(1);
+            Integer id = null;
+            while (rs.next()) {
+                id = new Integer(rs.getInt(1));
+            }
+            return id;
         }
     }
 }
