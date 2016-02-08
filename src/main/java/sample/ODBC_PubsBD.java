@@ -26,4 +26,14 @@ public class ODBC_PubsBD {
             return employeesFullNameList;
         }
     }
+
+    public int selectDefaultEmployeesWorkingHours(int employees_id) throws SQLException {
+        try (Connection connection = DB_Connector.getDataSource().getConnection()) {
+            Statement statement = connection.createStatement();
+            ResultSet rs = statement.executeQuery("select employees.workingHours " +
+                    "from employees " +
+                    "where employees.id = '"+employees_id+"'");
+            return rs.getInt(1);
+        }
+    }
 }

@@ -37,36 +37,10 @@ public class EmployeesWorkTrackingController {
     @FXML
     private void initialize () throws SQLException {
 
-        ObservableList<DtoEmployeesFullName> employeesFullNameList;
+        int daysOfMonthNumber = initDateLabel();
+
         ODBC_PubsBD connect = new ODBC_PubsBD();
-        employeesFullNameList = connect.selectEmployeesFullName();
-
-        //DateFormat dayFormat = new SimpleDateFormat("EEEE", new Locale("uk"));
-        DateFormat dateFormat = new SimpleDateFormat("dd.MM");
-        Date date = new Date();
-
-        Calendar cal = Calendar.getInstance();
-        //cal.set(2015, 3, 1);
-        cal.setTime(date);
-        cal.set(Calendar.DAY_OF_MONTH, 1);
-        int myMonth=cal.get(Calendar.MONTH);
-        int daysOfMonthNumber = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
-
-        int daysCounter = 1;
-        //while (myMonth==cal.get(Calendar.MONTH)) {
-        while (daysCounter<32) {
-            Label label = new Label(dateFormat.format(cal.getTime()));
-            label.setId(Integer.toString(daysCounter));
-            if(cal.get(Calendar.MONTH) != myMonth) {
-                label.setDisable(true);
-            }
-            gridPaneCapTable.add(label, daysCounter+1, 0);
-            gridPaneCapTable.setHalignment(label, HPos.CENTER);
-            gridPaneCapTable.setValignment(label, VPos.CENTER);
-
-            cal.add(Calendar.DAY_OF_MONTH, 1);
-            daysCounter++;
-        }
+        ObservableList<DtoEmployeesFullName> employeesFullNameList = connect.selectEmployeesFullName();
 
         int i = 0;
         for (DtoEmployeesFullName E: employeesFullNameList){
@@ -78,7 +52,6 @@ public class EmployeesWorkTrackingController {
                         region.setCursor(Cursor.DEFAULT);
                     }
                     gridPaneEmployeesData.add(region, j, i);
-
                 }
             }
             else{
@@ -99,28 +72,10 @@ public class EmployeesWorkTrackingController {
                     @Override
                     public void handle(ActionEvent e) {
                         if (checkBox.isSelected() == true) {
-                            TextField textField = new TextField("9");
-                            textField.setId("t"+checkBox.getId());
-                            textField.setPrefHeight(16.0);
-                            textField.setMinHeight(16.0);
-                            textField.setAlignment(Pos.CENTER);
-                            textField.setPadding(Insets.EMPTY);
-                            gridPaneEmployeesData.add(textField, gridPaneEmployeesData.getColumnIndex(checkBox),
-                                    gridPaneEmployeesData.getRowIndex(checkBox));
-                            gridPaneEmployeesData.setHalignment(textField, HPos.CENTER);
-                            gridPaneEmployeesData.setValignment(textField, VPos.BOTTOM);
+                            initWorkingHoursTextFiled(checkBox);
                         }
                         else {
-                            String id  = "t"+checkBox.getId();
-                            ObservableList<Node> childrens = gridPaneEmployeesData.getChildren();
-                            int i = 0;
-                            for(Node N: childrens) {
-                                if(Objects.equals(N.getId(), id) == true) {
-                                    childrens.remove(i);
-                                    break;
-                                }
-                                i++;
-                            }
+                            removeWorkingHoursTextFiled(checkBox);
                         }
                     }
                 });
@@ -143,7 +98,63 @@ public class EmployeesWorkTrackingController {
         }
     }
 
+    public int initDateLabel () {
+//        DateFormat dayFormat = new SimpleDateFormat("EEEE", new Locale("uk"));
+        DateFormat dateFormat = new SimpleDateFormat("dd.MM");
+        Date date = new Date();
+
+        Calendar cal = Calendar.getInstance();
+//        cal.set(2015, 3, 1);
+        cal.setTime(date);
+        cal.set(Calendar.DAY_OF_MONTH, 1);
+        int myMonth=cal.get(Calendar.MONTH);
+        int daysOfMonthNumber = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+
+        int daysCounter = 1;
+//        while (myMonth==cal.get(Calendar.MONTH)) {
+        while (daysCounter<32) {
+            Label label = new Label(dateFormat.format(cal.getTime()));
+            label.setId(Integer.toString(daysCounter));
+            if(cal.get(Calendar.MONTH) != myMonth) {
+                label.setDisable(true);
+            }
+            gridPaneCapTable.add(label, daysCounter+1, 0);
+            gridPaneCapTable.setHalignment(label, HPos.CENTER);
+            gridPaneCapTable.setValignment(label, VPos.CENTER);
+
+            cal.add(Calendar.DAY_OF_MONTH, 1);
+            daysCounter++;
+        }
+        return daysOfMonthNumber;
+    }
+
     public String makeCheckBoxId(int employeesId, int columnIndex) {
         return Integer.toString(employeesId)+":"+Integer.toString(columnIndex);
+    }
+
+    public void initWorkingHoursTextFiled (Node thisCheckBox) {
+        TextField textField = new TextField("9");
+        textField.setId("t"+thisCheckBox.getId());
+        textField.setPrefHeight(16.0);
+        textField.setMinHeight(16.0);
+        textField.setAlignment(Pos.CENTER);
+        textField.setPadding(Insets.EMPTY);
+        gridPaneEmployeesData.add(textField, gridPaneEmployeesData.getColumnIndex(thisCheckBox),
+                gridPaneEmployeesData.getRowIndex(thisCheckBox));
+        gridPaneEmployeesData.setHalignment(textField, HPos.CENTER);
+        gridPaneEmployeesData.setValignment(textField, VPos.BOTTOM);
+    }
+
+    public void removeWorkingHoursTextFiled (Node thisCheckBox) {
+        String id  = "t"+thisCheckBox.getId();
+        ObservableList<Node> childrens = gridPaneEmployeesData.getChildren();
+        int i = 0;
+        for(Node N: childrens) {
+            if(Objects.equals(N.getId(), id) == true) {
+                childrens.remove(i);
+                break;
+            }
+            i++;
+        }
     }
 }
