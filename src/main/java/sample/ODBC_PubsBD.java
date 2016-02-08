@@ -16,7 +16,9 @@ public class ODBC_PubsBD {
         try (Connection connection = DB_Connector.getDataSource().getConnection()) {
             Statement statement = connection.createStatement();
             ResultSet rs = statement.executeQuery("select employees.id, employees.name, employees.surname, " +
-                    "employees.middleName from employees");
+                    "employees.middleName " +
+                    "from employees " +
+                    "order by employees.surname asc");
             ObservableList<DtoEmployeesFullName> employeesFullNameList = FXCollections.observableArrayList();
             while (rs.next()) {
                 DtoEmployeesFullName employeesFullName = new DtoEmployeesFullName(rs.getInt(1), rs.getString(2), rs.getString(3),
