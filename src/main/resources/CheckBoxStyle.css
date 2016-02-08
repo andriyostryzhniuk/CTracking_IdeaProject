@@ -1,0 +1,44 @@
+.check-box {
+    -fx-skin: "com.sun.javafx.scene.control.skin.CheckBoxSkin";
+    -fx-label-padding: 0.0em 0.0em 0.0em 0.0em;
+}
+
+.check-box .box {
+/* -fx-background-color: -fx-shadow-highlight-color, -fx-outer-border, -fx-inner-border, -fx-body-color; */
+    -fx-background-color: transparent;
+    -fx-background-insets: 0 0 -1 0, 0, 1, 2;
+    -fx-background-radius: 2, 2, 1, 1;
+    -fx-padding: 0.5em; /* 3 -- padding from the outside edge to the mark */
+}
+
+.check-box:hover .box {
+    -fx-color: -fx-hover-base;
+}
+
+.check-box:armed .box {
+    -fx-color: -fx-pressed-base;
+}
+
+.check-box .mark {
+    -fx-background-color: transparent;
+    -fx-background-insets: -10 4 10 -9, 0;
+    -fx-padding: 0.777777em; /* 4 -- this is half the size of the mark */
+}
+
+/* TODO: scale the shape - the problem is that it is not within a square
+ * boundary.
+ */
+.check-box:indeterminate .mark {
+    -fx-background-color: green; -fx-mark-highlight-color: green;
+    -fx-mark-color: green;
+    -fx-shape: "M0,0H8V2H0Z";
+    -fx-scale-shape: false;
+}
+
+.check-box:selected .mark {
+    -fx-background-color: green; -fx-mark-highlight-color: green; -fx-mark-color: green;
+}
+
+.check-box:show-mnemonics .mnemonic-underline {
+    -fx-stroke: -fx-text-fill;
+}

@@ -15,12 +15,12 @@ public class ODBC_PubsBD {
     public ObservableList<DtoEmployeesFullName> selectEmployeesFullName() throws SQLException {
         try (Connection connection = DB_Connector.getDataSource().getConnection()) {
             Statement statement = connection.createStatement();
-            ResultSet rs = statement.executeQuery("select employees.name, employees.surname, employees.middleName " +
-                    "from employees");
+            ResultSet rs = statement.executeQuery("select employees.id, employees.name, employees.surname, " +
+                    "employees.middleName from employees");
             ObservableList<DtoEmployeesFullName> employeesFullNameList = FXCollections.observableArrayList();
             while (rs.next()) {
-                DtoEmployeesFullName employeesFullName = new DtoEmployeesFullName(rs.getString(1), rs.getString(2),
-                        rs.getString(3));
+                DtoEmployeesFullName employeesFullName = new DtoEmployeesFullName(rs.getInt(1), rs.getString(2), rs.getString(3),
+                        rs.getString(4));
                 employeesFullNameList.add(employeesFullName);
             }
             return employeesFullNameList;

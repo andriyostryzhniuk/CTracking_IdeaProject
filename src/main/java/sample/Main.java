@@ -13,7 +13,8 @@ public class Main extends Application {
         ClassLoader classLoader = getClass().getClassLoader();
         Parent root = FXMLLoader.load(classLoader.getResource("MainWindow.fxml"));
         primaryStage.setTitle("Hello World! I'm little CTracking, but I'll be big smart program!");
-        primaryStage.setScene(new Scene(root, 1000, 600));
+        primaryStage.setScene(new Scene(root));
+        primaryStage.setMaximized(true);
         primaryStage.show();
     }
 
