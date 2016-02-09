@@ -11,6 +11,7 @@ import javafx.geometry.VPos;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.control.CheckBox;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
@@ -29,6 +30,8 @@ import java.util.Objects;
  */
 public class EmployeesWorkTrackingController {
 
+    @FXML
+    public DatePicker datePicker;
     @FXML
     private GridPane gridPaneCapTable;
     @FXML
