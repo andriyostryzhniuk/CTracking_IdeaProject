@@ -1,5 +1,9 @@
 package sample;
 
+import com.sun.javafx.css.Style;
+import date.picker.CalendarView;
+import javafx.beans.InvalidationListener;
+import javafx.beans.Observable;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -11,9 +15,10 @@ import javafx.geometry.VPos;
 import javafx.scene.Cursor;
 import javafx.scene.Node;
 import javafx.scene.control.CheckBox;
-import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
+import javafx.scene.control.ScrollPane;
 import javafx.scene.control.TextField;
+import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Region;
 import javafx.scene.text.Font;
@@ -23,6 +28,7 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Locale;
 import java.util.Objects;
 
 /**
@@ -30,8 +36,13 @@ import java.util.Objects;
  */
 public class EmployeesWorkTrackingController {
 
+
+    public date.picker.DatePicker datePicker;
     @FXML
-    public DatePicker datePicker;
+    public BorderPane rootBorderPane;
+    @FXML
+    public ScrollPane mainScrollPane;
+    public BorderPane childBorderPane;
     @FXML
     private GridPane gridPaneCapTable;
     @FXML
@@ -40,7 +51,17 @@ public class EmployeesWorkTrackingController {
     @FXML
     private void initialize () throws SQLException {
 
-        int daysOfMonthNumber = initDateLabel();
+        initDatePicker();
+
+        initEmployeesTrackingTable();
+    }
+
+    public void initEmployeesTrackingTable () throws SQLException {
+        initDateLabel();
+
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(datePicker.selectedDateProperty().get());
+        int daysOfMonthNumber = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
 
         ObservableList<DtoEmployeesFullName> employeesFullNameList = ODBC_PubsBD.selectEmployeesFullName();
 
@@ -104,17 +125,16 @@ public class EmployeesWorkTrackingController {
         }
     }
 
-    public int initDateLabel () {
+    public void initDateLabel () {
 //        DateFormat dayFormat = new SimpleDateFormat("EEEE", new Locale("uk"));
         DateFormat dateFormat = new SimpleDateFormat("dd.MM");
-        Date date = new Date();
 
         Calendar cal = Calendar.getInstance();
 //        cal.set(2015, 3, 1);
-        cal.setTime(date);
+        cal.setTime(datePicker.selectedDateProperty().get());
         cal.set(Calendar.DAY_OF_MONTH, 1);
         int myMonth=cal.get(Calendar.MONTH);
-        int daysOfMonthNumber = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
+//        int daysOfMonthNumber = cal.getActualMaximum(Calendar.DAY_OF_MONTH);
 
         int daysCounter = 1;
 //        while (myMonth==cal.get(Calendar.MONTH)) {
@@ -131,7 +151,6 @@ public class EmployeesWorkTrackingController {
             cal.add(Calendar.DAY_OF_MONTH, 1);
             daysCounter++;
         }
-        return daysOfMonthNumber;
     }
 
     public String makeCheckBoxId(int employeesId, int columnIndex) {
@@ -175,5 +194,34 @@ public class EmployeesWorkTrackingController {
 
     public int calculateEmployeesId (String nodeId) {
         return Integer.parseInt(nodeId.substring(0, nodeId.indexOf(":")));
+    }
+
+    public void initDatePicker () {
+        datePicker = new date.picker.DatePicker();
+        datePicker.selectedDateProperty().addListener(new InvalidationListener() {
+            @Override
+            public void invalidated(Observable observable) {
+//                DateFormat dateFormat = new SimpleDateFormat("yyyy-MM");
+//                System.out.println(dateFormat.format(datePicker.selectedDateProperty().get()));
+//                try {
+//                    initEmployeesTrackingTable();
+//                } catch (SQLException e) {
+//                    e.printStackTrace();
+//                } catch (NullPointerException e1) {
+//                    e1.printStackTrace();
+//                }
+            }
+        });
+
+        datePicker.setLocale(new Locale("uk"));
+        datePicker.getCalendarView().todayButtonTextProperty().set("Поточний місяць");
+        datePicker.getCalendarView().setShowWeeks(false);
+
+        datePicker.setSelectedDate(new Date());
+        datePicker.deselectSelection();
+
+        rootBorderPane.setTop(datePicker);
+        rootBorderPane.setAlignment(rootBorderPane, Pos.TOP_LEFT);
+        rootBorderPane.setMargin(datePicker, new Insets(0.0, 0.0, 20.0, 0.0));
     }
 }
