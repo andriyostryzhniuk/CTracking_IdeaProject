@@ -16,10 +16,13 @@ import java.util.Locale;
 /**
  * Created by Andriy on 01/30/2016.
  */
-public class EmployeesWorkTrackingController {
+public class Controller1 {
 
     @FXML
     public BorderPane rootBorderPane;
+
+//    @FXML
+//    private Controller2 controller2;
 
     public date.picker.DatePicker datePicker;
 
@@ -39,8 +42,9 @@ public class EmployeesWorkTrackingController {
     public void initContent () {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/EmployeesWorkTrackingContent.fxml"));
         try {
-            fxmlLoader.getController();
             rootBorderPane.setCenter(fxmlLoader.load());
+            Controller2 controller2 = fxmlLoader.getController();
+            controller2.setDatePicker(datePicker);
         } catch (IOException exception) {
             throw new RuntimeException(exception);
         }

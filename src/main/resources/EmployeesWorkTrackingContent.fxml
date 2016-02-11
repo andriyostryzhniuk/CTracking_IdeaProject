@@ -8,7 +8,7 @@
 
 <ScrollPane fx:id="mainScrollPane" fitToHeight="true" fitToWidth="true" vbarPolicy="NEVER"
             xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="sample.EmployeesWorkTrackingContentController">
+            fx:controller="sample.Controller2">
     <content>
         <BorderPane fx:id="childBorderPane" minHeight="516.0">
             <center>

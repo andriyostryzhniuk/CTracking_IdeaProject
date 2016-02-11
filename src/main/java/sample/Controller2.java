@@ -1,11 +1,10 @@
 package sample;
 
-import com.sun.org.apache.bcel.internal.generic.NEW;
+import date.picker.DatePicker;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.fxml.FXMLLoader;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
@@ -26,13 +25,12 @@ import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Locale;
 import java.util.Objects;
 
 /**
  * Created by Andriy on 01/30/2016.
  */
-public class EmployeesWorkTrackingContentController {
+public class Controller2 {
 
     @FXML
     public ScrollPane mainScrollPane;
@@ -42,7 +40,17 @@ public class EmployeesWorkTrackingContentController {
     @FXML
     private GridPane gridPaneEmployeesData;
 
-    public EmployeesWorkTrackingController employeesWorkTrackingController;
+    private DatePicker datePicker;
+
+    public DatePicker getDatePicker() {
+        return datePicker;
+    }
+
+    public void setDatePicker(DatePicker datePicker) {
+        this.datePicker = datePicker;
+    }
+
+    public Controller1 employeesWorkTrackingController;
 
     @FXML
     private void initialize() {
@@ -51,13 +59,15 @@ public class EmployeesWorkTrackingContentController {
 
 //        FXMLLoader fxmlLoader = new FXMLLoader();
 //        fxmlLoader.setLocation(getClass().getResource("/EmployeesWorkTracking.fxml"));
-//        EmployeesWorkTrackingController employeesWorkTrackingController = (EmployeesWorkTrackingController) fxmlLoader.getController();
+//        Controller1 employeesWorkTrackingController = (Controller1) fxmlLoader.getController();
 
         //calendar.setTime(employeesWorkTrackingController.getDatePickerValue());
 
 //        System.out.println(employeesWorkTrackingController.getDatePickerValue());
 
-//        Parent parent = mainScrollPane.getParent();
+//        Parent parent = mainScrollPane.get();
+
+//        System.out.println(parent.getClass().getName());
 //
 //        ObservableList<Node> observableList = parent.getChildrenUnmodifiable();
 //
