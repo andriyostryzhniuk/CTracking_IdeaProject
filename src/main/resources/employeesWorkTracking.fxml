@@ -7,4 +7,8 @@
 <?import javafx.scene.layout.*?>
 
 <BorderPane fx:id="rootBorderPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="sample.EmployeesWorkTrackingController"/>
+            fx:controller="sample.Controller1">
+    <center>
+        <fx:include fx:id="EmployeesWorkTrackingContent" source="EmployeesWorkTrackingContent.fxml" />
+    </center>
+    </BorderPane>

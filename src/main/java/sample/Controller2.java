@@ -21,6 +21,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Region;
 import javafx.scene.text.Font;
 import sample.dto.DtoEmployeesFullName;
+
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
@@ -74,9 +75,11 @@ public class Controller2 {
 //        for (Node N: observableList) {
 //            System.out.println(N);
 //        }
-}
+//        Date date = getDatePicker().getSelectedDate();
+//        System.out.println(date);
+    }
 
-//here is exception
+    //here is exception
     @FXML
     public void initEmployeesTrackingTable() {
 
@@ -95,7 +98,7 @@ public class Controller2 {
         calendar.set(Calendar.DAY_OF_MONTH, daysOfMonthNumber);
         String lastDayOfMonth = dateFormat.format(calendar.getTime());
 
-        System.out.println(firstDayOfMonth +" : "+ lastDayOfMonth);
+        System.out.println(firstDayOfMonth + " : " + lastDayOfMonth);
 
         ObservableList<DtoEmployeesFullName> employeesFullNameList =
                 ODBC_PubsBD.selectEmployeesFullName(firstDayOfMonth, lastDayOfMonth);
@@ -154,7 +157,7 @@ public class Controller2 {
         }
     }
 
-//here is exception
+    //here is exception
     public void initDateLabel() {
 //        DateFormat dayFormat = new SimpleDateFormat("EEEE", new Locale("uk"));
         DateFormat dateFormat = new SimpleDateFormat("dd.MM");
