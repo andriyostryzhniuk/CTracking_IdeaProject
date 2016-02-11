@@ -217,7 +217,7 @@ public class DatePicker extends HBox {
         try {
             // Double parse the date here, since e.g. 01.01.1 is parsed as year 1, and then formatted as 01.01.01 and then parsed as year 2001.
             // This might lead to an undesired date.
-            DateFormat dateFormat = new SimpleDateFormat("MM.yyyy");
+            DateFormat dateFormat = new SimpleDateFormat("MM.yy");
             Date parsedDate = dateFormat.parse(textField.getText());
             parsedDate = dateFormat.parse(dateFormat.format(parsedDate));
             if (selectedDate.get() == null || selectedDate.get() != null && parsedDate.getTime() != selectedDate.get().getTime()) {
@@ -248,9 +248,10 @@ public class DatePicker extends HBox {
             if (!textField.getText().equals(date)) {
                 textField.setText(calendarView.convertMonthName(selectedDateProperty().get())+date);
             }
-        } else {
-            textField.setText("");
         }
+//        else {
+//            textField.setText("");
+//        }
         textSetProgrammatically = false;
     }
 
@@ -402,6 +403,6 @@ public class DatePicker extends HBox {
     }
 
     public void deselectSelection() {
-        textField.setStyle("-fx-highlight-fill: null; -fx-highlight-text-fill: null;");
+        textField.setStyle("-fx-highlight-text-fill: null;");
     }
 }

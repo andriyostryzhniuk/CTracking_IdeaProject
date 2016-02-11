@@ -1,6 +1,9 @@
 package sample;
 
 import com.mchange.v2.c3p0.ComboPooledDataSource;
+import org.springframework.jdbc.core.JdbcTemplate;
+import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+
 import javax.sql.DataSource;
 import java.beans.PropertyVetoException;
 
@@ -37,4 +40,13 @@ public class DB_Connector {
             throw new RuntimeException(e);
         }
     }
+
+    public static JdbcTemplate getJdbcTemplate() {
+        return new JdbcTemplate(getDataSource());
+    }
+
+    public static NamedParameterJdbcTemplate getNamedParameterJdbcTemplate() {
+        return new NamedParameterJdbcTemplate(getDataSource());
+    }
+
 }

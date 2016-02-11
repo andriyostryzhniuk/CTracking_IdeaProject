@@ -250,7 +250,7 @@ public class CalendarView extends VBox {
         return todayButtonText;
     }
 
-    private StringProperty todayButtonText = new SimpleStringProperty("Today");
+    private StringProperty todayButtonText = new SimpleStringProperty("Поточний місяць");
 
     public String getTodayButtonText() {
         return todayButtonText.get();

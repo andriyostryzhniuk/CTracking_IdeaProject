@@ -9,6 +9,10 @@ public class DtoEmployeesFullName {
     private String surname;
     private String middleName;
 
+    public DtoEmployeesFullName() {
+
+    }
+
     public DtoEmployeesFullName(int id, String name, String surname, String middleName) {
         this.id = id;
         this.name = name;

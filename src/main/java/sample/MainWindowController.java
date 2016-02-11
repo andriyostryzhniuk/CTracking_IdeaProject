@@ -4,6 +4,7 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.layout.GridPane;
 import java.io.IOException;
+import java.io.UncheckedIOException;
 
 public class MainWindowController {
 
@@ -14,7 +15,7 @@ public class MainWindowController {
         try {
             mainGridPane.add(fxmlLoader.load(), 1, 1);
         } catch (IOException exception) {
-            throw new RuntimeException(exception);
+            throw new UncheckedIOException(exception);
         }
     }
 }
