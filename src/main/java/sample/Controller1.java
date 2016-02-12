@@ -7,9 +7,12 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.layout.BorderPane;
+import sample.dto.DtoEmployeesFullName;
+
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
@@ -28,18 +31,28 @@ public class Controller1 {
 
     private int previousMonth;
     private int previousYear;
+    private Controller3 controller3;
 
     @FXML
-    private void initialize()  {
+    private void initialize() {
 
         initDatePicker();
 
         System.out.println(getDatePickerValue());
 
-        initContent();
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/forController3.fxml"));
+        try {
+            rootBorderPane.setCenter(fxmlLoader.load());
+            controller3 = fxmlLoader.getController();
+        } catch (IOException exception) {
+            throw new RuntimeException(exception);
+        }
     }
 
-    public void initContent () {
+//        initContent();
+//    }
+
+    public void initContent() {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/EmployeesWorkTrackingContent.fxml"));
         try {
             rootBorderPane.setCenter(fxmlLoader.load());
@@ -50,7 +63,7 @@ public class Controller1 {
         }
     }
 
-    public void initDatePicker()  {
+    public void initDatePicker() {
         datePicker = new date.picker.DatePicker();
 
         datePicker.setLocale(new Locale("uk"));
@@ -75,9 +88,22 @@ public class Controller1 {
                 if (isException == false && previousMonth != datePicker.selectedDateProperty().get().getMonth() ||
                         isException == false && previousYear != datePicker.selectedDateProperty().get().getYear()) {
 
-                    rootBorderPane.setCenter(null);
+                    Calendar calendar = Calendar.getInstance();
+                    calendar.setTime(datePicker.selectedDateProperty().get());
 
-                    initContent();
+                    DateFormat dateFormat2 = new SimpleDateFormat("yyyy-MM-dd");
+
+                    int daysOfMonthNumber = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+
+                    calendar.set(Calendar.DAY_OF_MONTH, 1);
+                    String firstDayOfMonth = dateFormat2.format(calendar.getTime());
+                    calendar.set(Calendar.DAY_OF_MONTH, daysOfMonthNumber);
+                    String lastDayOfMonth = dateFormat2.format(calendar.getTime());
+
+                    controller3.getEmployeesFullNameList().clear();
+                    controller3.getEmployeesFullNameList().addAll(ODBC_PubsBD.selectEmployeesFullName(firstDayOfMonth, lastDayOfMonth));
+//                    rootBorderPane.setCenter(null);
+//                    initContent();
 
                     previousMonth = datePicker.selectedDateProperty().get().getMonth();
                     previousYear = datePicker.selectedDateProperty().get().getYear();
@@ -90,7 +116,7 @@ public class Controller1 {
         rootBorderPane.setMargin(datePicker, new Insets(0.0, 0.0, 20.0, 0.0));
     }
 
-    public Date getDatePickerValue(){
+    public Date getDatePickerValue() {
         return datePicker.selectedDateProperty().get();
     }
 }

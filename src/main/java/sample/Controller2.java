@@ -1,6 +1,7 @@
 package sample;
 
 import date.picker.DatePicker;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
@@ -100,8 +101,8 @@ public class Controller2 {
 
         System.out.println(firstDayOfMonth + " : " + lastDayOfMonth);
 
-        ObservableList<DtoEmployeesFullName> employeesFullNameList =
-                ODBC_PubsBD.selectEmployeesFullName(firstDayOfMonth, lastDayOfMonth);
+        ObservableList<DtoEmployeesFullName> employeesFullNameList = FXCollections.observableArrayList();
+        employeesFullNameList.addAll(ODBC_PubsBD.selectEmployeesFullName(firstDayOfMonth, lastDayOfMonth));
 
         int i = 0;
         for (DtoEmployeesFullName E : employeesFullNameList) {

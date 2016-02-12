@@ -16,7 +16,7 @@ import static sample.DB_Connector.getJdbcTemplate;
 
 
 public class ODBC_PubsBD {
-    public static ObservableList<DtoEmployeesFullName> selectEmployeesFullName(String firstDayOfMonth, String lastDayOfMonth) {
+    public static List<DtoEmployeesFullName> selectEmployeesFullName(String firstDayOfMonth, String lastDayOfMonth) {
 //        SqlRowSet rs = getJdbcTemplate().queryForRowSet("select employees.id, employees.name, employees.surname, " +
 //                "employees.middleName " +
 //                "from employees " +
@@ -36,14 +36,13 @@ public class ODBC_PubsBD {
                 "employees.lastDay > '" + firstDayOfMonth + "' " +
                 "order by employees.surname asc", BeanPropertyRowMapper.newInstance(DtoEmployeesFullName.class));
 
-        ObservableList<DtoEmployeesFullName> employeesFullNameList = FXCollections.observableArrayList();
-        employeesFullNameList.addAll(dtoEmployeesFullNames);
+        System.out.println("dtoEmployeesFullNames.size() " + dtoEmployeesFullNames.size());
 //        while (rs.next()) {
 //            DtoEmployeesFullName employeesFullName = new DtoEmployeesFullName(rs.getInt(1), rs.getString(2), rs.getString(3),
 //                    rs.getString(4));
 //            employeesFullNameList.add(employeesFullName);
 //        }
-        return employeesFullNameList;
+        return dtoEmployeesFullNames;
     }
 
     public static int selectDefaultEmployeesWorkingHours(int employees_id) {
