@@ -1,15 +1,8 @@
 package sample;
 
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableList;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
-import sample.dto.DtoEmployeesFullName;
-
-import java.sql.Connection;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.sql.Statement;
+import dto.DtoEmployeesFullName;
 import java.util.List;
 
 import static sample.DB_Connector.getJdbcTemplate;
@@ -17,31 +10,26 @@ import static sample.DB_Connector.getJdbcTemplate;
 
 public class ODBC_PubsBD {
     public static List<DtoEmployeesFullName> selectEmployeesFullName(String firstDayOfMonth, String lastDayOfMonth) {
-//        SqlRowSet rs = getJdbcTemplate().queryForRowSet("select employees.id, employees.name, employees.surname, " +
-//                "employees.middleName " +
-//                "from employees " +
-//                "order by employees.surname asc");
-////////
-//        List<DtoEmployeesFullName> dtoEmployeesFullNames = getJdbcTemplate().query("select employees.id, employees.name, employees.surname, " +
-//                "employees.middleName " +
+        List<DtoEmployeesFullName> dtoEmployeesFullNames = getJdbcTemplate().query("select employees.id, " +
+                "concat(employees.surname, ' ', left (employees.name, 1), '. ', left (employees.middleName, 1), '.') as fullName " +
+                "from employees left join " +
+                "(select distinct employees_id " +
+                "from object_employees " +
+                "where startDate between convert('" + firstDayOfMonth + "', DATE) and convert('" + lastDayOfMonth + "', DATE) or " +
+                "finishDate between convert('" + firstDayOfMonth + "', DATE) and convert('" + lastDayOfMonth + "', DATE) or " +
+                "startDate < convert('" + firstDayOfMonth + "', DATE) and finishDate > convert('" + lastDayOfMonth + "', DATE) or " +
+                "startDate < convert('" + firstDayOfMonth + "', DATE) and finishDate is null) who_is_on_object " +
+                "on employees.id = who_is_on_object.employees_id " +
+                "where who_is_on_object.employees_id is not null and " +
+                "(employees.lastDay is null or " +
+                "employees.lastDay > convert('" + firstDayOfMonth + "', DATE)) " +
+                "order by employees.id asc", BeanPropertyRowMapper.newInstance(DtoEmployeesFullName.class));
+
+//        List<DtoEmployeesFullName> dtoEmployeesFullNames = getJdbcTemplate().query("select employees.id, employees.surname as fullName " +
 //                "from employees " +
 //                "where employees.lastDay is null or " +
 //                "employees.lastDay > '" + firstDayOfMonth + "' " +
 //                "order by employees.surname asc", BeanPropertyRowMapper.newInstance(DtoEmployeesFullName.class));
-///////
-        List<DtoEmployeesFullName> dtoEmployeesFullNames = getJdbcTemplate().query("select employees.id, employees.name, employees.surname, " +
-                "employees.middleName " +
-                "from employees " +
-                "where employees.lastDay is null or " +
-                "employees.lastDay > '" + firstDayOfMonth + "' " +
-                "order by employees.surname asc", BeanPropertyRowMapper.newInstance(DtoEmployeesFullName.class));
-
-        System.out.println("dtoEmployeesFullNames.size() " + dtoEmployeesFullNames.size());
-//        while (rs.next()) {
-//            DtoEmployeesFullName employeesFullName = new DtoEmployeesFullName(rs.getInt(1), rs.getString(2), rs.getString(3),
-//                    rs.getString(4));
-//            employeesFullNameList.add(employeesFullName);
-//        }
         return dtoEmployeesFullNames;
     }
 

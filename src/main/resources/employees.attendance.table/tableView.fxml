@@ -6,13 +6,12 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-
-<BorderPane fx:id="rootBorderPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="sample.Controller3">
+<BorderPane fx:id="rootBorderPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="employees.attendance.table.TableViewController">
    <center>
       <TableView fx:id="tableView" prefHeight="200.0" prefWidth="200.0" BorderPane.alignment="CENTER">
         <columns>
-          <TableColumn fx:id="colName" prefWidth="75.0" text="Name" />
-          <TableColumn fx:id="colSomeDate" prefWidth="75.0" text="someData" />
+          <TableColumn fx:id="colName" prefWidth="150.0" resizable="false" text="Name" />
+          <TableColumn fx:id="colSomeDate" prefWidth="75.0" resizable="false" text="someData" />
         </columns>
       </TableView>
    </center>

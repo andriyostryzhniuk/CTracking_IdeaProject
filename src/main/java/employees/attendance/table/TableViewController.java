@@ -1,16 +1,15 @@
-package sample;
+package employees.attendance.table;
 
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.collections.transformation.SortedList;
 import javafx.fxml.FXML;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.cell.PropertyValueFactory;
-import sample.dto.DtoEmployeesFullName;
+import dto.DtoEmployeesFullName;
 
-public class Controller3<T extends DtoEmployeesFullName> {
+public class TableViewController<T extends DtoEmployeesFullName> {
 
     @FXML
     public TableColumn<T, String> colName;
@@ -28,10 +27,8 @@ public class Controller3<T extends DtoEmployeesFullName> {
     @FXML
     public void initialize() {
 
-//        columnId.setCellValueFactory(new PropertyValueFactory("students_id"));
-
-        colName.setCellValueFactory(new PropertyValueFactory<>("name"));
-        colSomeDate.setCellValueFactory(new PropertyValueFactory<>("surname"));
+        colName.setCellValueFactory(new PropertyValueFactory<>("fullName"));
+        colSomeDate.setCellValueFactory(new PropertyValueFactory<>("id"));
 
         tableView.setItems(employeesFullNameList);
 

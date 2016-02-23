@@ -17,6 +17,7 @@ public class Main extends Application {
         scene.getStylesheets().add("DatePickerStyle.css");
         primaryStage.setScene(scene);
         primaryStage.setMaximized(true);
+        DB_Connector.getDataSource();
         primaryStage.show();
     }
 

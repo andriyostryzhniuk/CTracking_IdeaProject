@@ -11,7 +11,7 @@ public class MainWindowController {
     public GridPane mainGridPane;
 
     public void initEmployeesWorkTracking(ActionEvent actionEvent) throws IOException {
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/EmployeesWorkTracking.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/employees.attendance.table/WindowAttendance.fxml"));
         try {
             mainGridPane.add(fxmlLoader.load(), 1, 1);
         } catch (IOException exception) {
