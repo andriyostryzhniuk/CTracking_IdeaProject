@@ -23,13 +23,14 @@ public class ODBC_PubsBD {
                 "where who_is_on_object.employees_id is not null and " +
                 "(employees.lastDay is null or " +
                 "employees.lastDay > convert('" + firstDayOfMonth + "', DATE)) " +
-                "order by employees.id asc", BeanPropertyRowMapper.newInstance(DtoEmployeesFullName.class));
+                "order by employees.surname asc", BeanPropertyRowMapper.newInstance(DtoEmployeesFullName.class));
 
-//        List<DtoEmployeesFullName> dtoEmployeesFullNames = getJdbcTemplate().query("select employees.id, employees.surname as fullName " +
-//                "from employees " +
-//                "where employees.lastDay is null or " +
-//                "employees.lastDay > '" + firstDayOfMonth + "' " +
-//                "order by employees.surname asc", BeanPropertyRowMapper.newInstance(DtoEmployeesFullName.class));
+//        List<DtoEmployeesFullName> dtoEmployeesFullNames = getJdbcTemplate().query("select employees.id, " +
+//                "concat(employees.surname, ' ', left (employees.name, 1), '. ', left (employees.middleName, 1), '.') as fullName " +
+//                "from employees, object_employees " +
+//                "where employees.id = object_employees.employees_id " +
+//                "order by employees.id asc", BeanPropertyRowMapper.newInstance(DtoEmployeesFullName.class));
+
         return dtoEmployeesFullNames;
     }
 
