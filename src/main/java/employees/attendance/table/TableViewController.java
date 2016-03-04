@@ -7,23 +7,56 @@ import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
-import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import dto.DtoEmployeesFullName;
+import javafx.scene.layout.StackPane;
 import javafx.util.Callback;
 import sample.ODBC_PubsBD;
 
 public class TableViewController<T extends DtoEmployeesFullName> {
 
     @FXML
-    public TableColumn<T, String> colName;
+    public StackPane rootBorderPane;
+    @FXML
+    private CustomTableView<T> tableView = new CustomTableView<>();
 
     @FXML
-    private TableView<T> tableView;
+    public CustomTableColumn<T, String> colName = new CustomTableColumn<>("Працівник");
+    public CustomTableColumn<T, CheckBox> colDate1 = new CustomTableColumn<>(null);
+    public CustomTableColumn<T, CheckBox> colDate2 = new CustomTableColumn<>(null);
+    public CustomTableColumn<T, CheckBox> colDate3 = new CustomTableColumn<>(null);
+    public CustomTableColumn<T, CheckBox> colDate4 = new CustomTableColumn<>(null);
+    public CustomTableColumn<T, CheckBox> colDate5 = new CustomTableColumn<>(null);
+    public CustomTableColumn<T, CheckBox> colDate6 = new CustomTableColumn<>(null);
+    public CustomTableColumn<T, CheckBox> colDate7 = new CustomTableColumn<>(null);
+    public CustomTableColumn<T, CheckBox> colDate8 = new CustomTableColumn<>(null);
+    public CustomTableColumn<T, CheckBox> colDate9 = new CustomTableColumn<>(null);
+    public CustomTableColumn<T, CheckBox> colDate10 = new CustomTableColumn<>(null);
+    public CustomTableColumn<T, CheckBox> colDate11 = new CustomTableColumn<>(null);
+    public CustomTableColumn<T, CheckBox> colDate12 = new CustomTableColumn<>(null);
+    public CustomTableColumn<T, CheckBox> colDate13 = new CustomTableColumn<>(null);
+    public CustomTableColumn<T, CheckBox> colDate14 = new CustomTableColumn<>(null);
+    public CustomTableColumn<T, CheckBox> colDate15 = new CustomTableColumn<>(null);
+    public CustomTableColumn<T, CheckBox> colDate16 = new CustomTableColumn<>(null);
+    public CustomTableColumn<T, CheckBox> colDate17 = new CustomTableColumn<>(null);
+    public CustomTableColumn<T, CheckBox> colDate18 = new CustomTableColumn<>(null);
+    public CustomTableColumn<T, CheckBox> colDate19 = new CustomTableColumn<>(null);
+    public CustomTableColumn<T, CheckBox> colDate20 = new CustomTableColumn<>(null);
+    public CustomTableColumn<T, CheckBox> colDate21 = new CustomTableColumn<>(null);
+    public CustomTableColumn<T, CheckBox> colDate22 = new CustomTableColumn<>(null);
+    public CustomTableColumn<T, CheckBox> colDate23 = new CustomTableColumn<>(null);
+    public CustomTableColumn<T, CheckBox> colDate24 = new CustomTableColumn<>(null);
+    public CustomTableColumn<T, CheckBox> colDate25 = new CustomTableColumn<>(null);
+    public CustomTableColumn<T, CheckBox> colDate26 = new CustomTableColumn<>(null);
+    public CustomTableColumn<T, CheckBox> colDate27 = new CustomTableColumn<>(null);
+    public CustomTableColumn<T, CheckBox> colDate28 = new CustomTableColumn<>(null);
+    public CustomTableColumn<T, CheckBox> colDate29 = new CustomTableColumn<>(null);
+    public CustomTableColumn<T, CheckBox> colDate30 = new CustomTableColumn<>(null);
+    public CustomTableColumn<T, CheckBox> colDate31 = new CustomTableColumn<>(null);
 
     public TableView<T> getTableView() {
-        return tableView;
+        return tableView.getTableView();
     }
 
     private final ObservableList<T> employeesFullNameList = FXCollections.observableArrayList();
@@ -32,25 +65,65 @@ public class TableViewController<T extends DtoEmployeesFullName> {
         return employeesFullNameList;
     }
 
+    private final ObservableList<CustomTableColumn<T, CheckBox>> colsDateList = FXCollections.observableArrayList();
+
+    private void fillColsDateList(){
+        colsDateList.addAll(
+                colDate1, colDate2, colDate3, colDate4, colDate5, colDate6,
+                colDate7, colDate8, colDate9, colDate10, colDate11, colDate12,
+                colDate13, colDate14, colDate15, colDate16, colDate17, colDate18,
+                colDate19, colDate20, colDate21, colDate22, colDate23, colDate24,
+                colDate25, colDate26, colDate27, colDate28, colDate29, colDate30, colDate31);
+    }
+
     @FXML
     public void initialize() {
 
-        tableView.setStyle("-fx-accent: derive(-fx-control-inner-background, -30%); -fx-control-inner-background, -80%;");
+        fillColsDateList();
 
+        tableView.setStyle("-fx-accent: derive(-fx-control-inner-background, -30%); -fx-control-inner-background, -80%;");
+        tableView.getTableView().setFixedCellSize(40.0);
+
+        colName.setPercentWidth(150.0);
+        colName.setMinWidth(150.0);
         colName.setCellValueFactory(new PropertyValueFactory<>("fullName"));
 
-        tableView.setItems(employeesFullNameList);
+        setColsDateProperties();
+
+        fillTableView();
+
+        tableView.getTableView().setItems(employeesFullNameList);
+        rootBorderPane.getChildren().add(tableView);
 
         initCheckBox ();
     }
 
+    public void fillTableView(){
+        tableView.getTableView().getColumns().addAll(
+                colName,
+                colDate1, colDate2, colDate3, colDate4, colDate5, colDate6,
+                colDate7, colDate8, colDate9, colDate10, colDate11, colDate12,
+                colDate13, colDate14, colDate15, colDate16, colDate17, colDate18,
+                colDate19, colDate20, colDate21, colDate22, colDate23, colDate24,
+                colDate25, colDate26, colDate27, colDate28, colDate29, colDate30, colDate31);
+    }
+
+    public void setColsDateProperties(){
+        for (CustomTableColumn<T, CheckBox> C : colsDateList) {
+            C.setPercentWidth(40.0);
+            C.setMinWidth(40.0);
+            C.setResizable(false);
+            C.setSortable(false);
+        }
+    }
+
     public void initCheckBox (){
-        ObservableList<TableColumn<T, ?>> tableColumns = tableView.getColumns();
+        ObservableList<TableColumn<T, ?>> tableColumns = tableView.getTableView().getColumns();
 
         int i = 0;
         for (TableColumn C : tableColumns) {
             if (i > 0) {
-                C.setCellFactory(checkBoxCellFactory2());
+                C.setCellFactory(checkBoxCellFactory());
             }
             i++;
         }
@@ -77,39 +150,6 @@ public class TableViewController<T extends DtoEmployeesFullName> {
                                     checkBox.setOnAction((ActionEvent event) -> {
                                         System.out.println(param.getId());
                                         Callback<TableColumn<T, String>, TableCell<T, String>> cellFactory1 = param.getCellFactory();
-                                    });
-                                    setGraphic(checkBox);
-                                    setText(null);
-                                }
-                            }
-                        };
-                        return cell;
-                    }
-                };
-        return cellFactory;
-    }
-
-    public Callback<TableColumn<T, CheckBox>, TableCell<T, CheckBox>> checkBoxCellFactory2() {
-
-        Callback<TableColumn<T, CheckBox>, TableCell<T, CheckBox>> cellFactory =
-                new Callback<TableColumn<T, CheckBox>, TableCell<T, CheckBox>>() {
-                    @Override
-                    public TableCell call(final TableColumn<T, CheckBox> param) {
-                        final TableCell<T, String> cell = new TableCell<T, String>() {
-                            @Override
-                            public void updateItem(String item, boolean empty) {
-                                CheckBox checkBox = new CheckBox();
-                                checkBox.getStylesheets().add(getClass().getResource("/CheckBoxStyle.css").toExternalForm());
-                                checkBox.setCursor(Cursor.HAND);
-
-                                super.updateItem(item, empty);
-                                if (empty) {
-                                    setGraphic(null);
-                                    setText(null);
-                                } else {
-                                    checkBox.setOnAction((ActionEvent event) -> {
-                                        System.out.println(param.getId());
-                                        Callback<TableColumn<T, CheckBox>, TableCell<T, CheckBox>> cellFactory1 = param.getCellFactory();
                                     });
                                     setGraphic(checkBox);
                                     setText(null);

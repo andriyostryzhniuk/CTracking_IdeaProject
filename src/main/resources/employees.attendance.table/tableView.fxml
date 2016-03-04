@@ -6,43 +6,6 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<BorderPane fx:id="rootBorderPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="employees.attendance.table.TableViewController">
-    <center>
-        <TableView fx:id="tableView" fixedCellSize="40" BorderPane.alignment="CENTER">
-            <columns>
-                <TableColumn fx:id="colName" minWidth="150.0" resizable="false" sortable="false" text="Працівник" />
-                <TableColumn minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" />
-                <TableColumn minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" />
-                <TableColumn minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" />
-                <TableColumn minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" />
-                <TableColumn minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" />
-                <TableColumn minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" />
-                <TableColumn minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" />
-                <TableColumn minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" />
-                <TableColumn minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" />
-                <TableColumn minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" />
-                <TableColumn minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" />
-                <TableColumn minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" />
-                <TableColumn minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" />
-                <TableColumn minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" />
-                <TableColumn minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" />
-                <TableColumn minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" />
-                <TableColumn minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" />
-                <TableColumn minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" />
-                <TableColumn minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" />
-                <TableColumn minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" />
-                <TableColumn minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" />
-                <TableColumn minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" />
-                <TableColumn minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" />
-                <TableColumn minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" />
-                <TableColumn minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" />
-                <TableColumn minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" />
-                <TableColumn minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" />
-                <TableColumn minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" />
-                <TableColumn minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" />
-                <TableColumn minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" />
-                <TableColumn minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" />
-        </columns>
-        </TableView>
-    </center>
-</BorderPane>
+<StackPane fx:id="rootBorderPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="employees.attendance.table.TableViewController" >
+
+</StackPane>
