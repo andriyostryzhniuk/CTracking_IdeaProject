@@ -7,6 +7,7 @@ import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.Cursor;
+import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import dto.DtoEmployeesFullName;
@@ -31,8 +32,6 @@ public class TableViewController<T extends DtoEmployeesFullName> {
         return employeesFullNameList;
     }
 
-    public Integer j = 0;
-
     @FXML
     public void initialize() {
 
@@ -42,17 +41,20 @@ public class TableViewController<T extends DtoEmployeesFullName> {
 
         tableView.setItems(employeesFullNameList);
 
+        initCheckBox ();
+    }
+
+    public void initCheckBox (){
         ObservableList<TableColumn<T, ?>> tableColumns = tableView.getColumns();
 
         int i = 0;
         for (TableColumn C : tableColumns) {
             if (i > 0) {
-                C.setCellFactory(checkBoxCellFactory());
+                C.setCellFactory(checkBoxCellFactory2());
             }
             i++;
         }
     }
-
 
     public Callback<TableColumn<T, String>, TableCell<T, String>> checkBoxCellFactory() {
 
@@ -66,24 +68,48 @@ public class TableViewController<T extends DtoEmployeesFullName> {
                                 CheckBox checkBox = new CheckBox();
                                 checkBox.getStylesheets().add(getClass().getResource("/CheckBoxStyle.css").toExternalForm());
                                 checkBox.setCursor(Cursor.HAND);
-                                checkBox.setId(j.toString());
-                                j++;
 
                                 super.updateItem(item, empty);
                                 if (empty) {
                                     setGraphic(null);
                                     setText(null);
                                 } else {
-                                    checkBox.setOnAction((ActionEvent event) ->
-                                    {
-                                        //int focusedCell = tableView.getFocusModel().getFocusedCell().getRow();
-                                        //TablePosition position = tableView.getSelectionModel().getSelectedCells().get(0);
-                                        //int row = position.getRow();
-//                                        System.out.println(tableView.getItems().get(0).getId());
-//                                        Callback<TableColumn<T, String>, TableCell<T, String>> cellTextField = textFieldCellFactory();
-//                                        TableColumn tableColumn = tableView.getColumns().get(2);
-//                                        tableColumn.setCellFactory(cellTextField);
-                                        System.out.println(checkBox.getId());
+                                    checkBox.setOnAction((ActionEvent event) -> {
+                                        System.out.println(param.getId());
+                                        Callback<TableColumn<T, String>, TableCell<T, String>> cellFactory1 = param.getCellFactory();
+                                    });
+                                    setGraphic(checkBox);
+                                    setText(null);
+                                }
+                            }
+                        };
+                        return cell;
+                    }
+                };
+        return cellFactory;
+    }
+
+    public Callback<TableColumn<T, CheckBox>, TableCell<T, CheckBox>> checkBoxCellFactory2() {
+
+        Callback<TableColumn<T, CheckBox>, TableCell<T, CheckBox>> cellFactory =
+                new Callback<TableColumn<T, CheckBox>, TableCell<T, CheckBox>>() {
+                    @Override
+                    public TableCell call(final TableColumn<T, CheckBox> param) {
+                        final TableCell<T, String> cell = new TableCell<T, String>() {
+                            @Override
+                            public void updateItem(String item, boolean empty) {
+                                CheckBox checkBox = new CheckBox();
+                                checkBox.getStylesheets().add(getClass().getResource("/CheckBoxStyle.css").toExternalForm());
+                                checkBox.setCursor(Cursor.HAND);
+
+                                super.updateItem(item, empty);
+                                if (empty) {
+                                    setGraphic(null);
+                                    setText(null);
+                                } else {
+                                    checkBox.setOnAction((ActionEvent event) -> {
+                                        System.out.println(param.getId());
+                                        Callback<TableColumn<T, CheckBox>, TableCell<T, CheckBox>> cellFactory1 = param.getCellFactory();
                                     });
                                     setGraphic(checkBox);
                                     setText(null);

@@ -10,38 +10,39 @@
     <center>
         <TableView fx:id="tableView" fixedCellSize="40" BorderPane.alignment="CENTER" >
             <columns>
-                <TableColumn fx:id="colName" minWidth="150.0" resizable="false" text="Працівник" />
-                <TableColumn minWidth="40.0" prefWidth="40.0" resizable="false" />
-                <TableColumn minWidth="40.0" prefWidth="40.0" resizable="false" />
-                <TableColumn minWidth="40.0" prefWidth="40.0" resizable="false" />
-                <TableColumn minWidth="40.0" prefWidth="40.0" resizable="false" />
-                <TableColumn minWidth="40.0" prefWidth="40.0" resizable="false" />
-                <TableColumn minWidth="40.0" prefWidth="40.0" resizable="false" />
-                <TableColumn minWidth="40.0" prefWidth="40.0" resizable="false" />
-                <TableColumn minWidth="40.0" prefWidth="40.0" resizable="false" />
-                <TableColumn minWidth="40.0" prefWidth="40.0" resizable="false" />
-                <TableColumn minWidth="40.0" prefWidth="40.0" resizable="false" />
-                <TableColumn minWidth="40.0" prefWidth="40.0" resizable="false" />
-                <TableColumn minWidth="40.0" prefWidth="40.0" resizable="false" />
-                <TableColumn minWidth="40.0" prefWidth="40.0" resizable="false" />
-                <TableColumn minWidth="40.0" prefWidth="40.0" resizable="false" />
-                <TableColumn minWidth="40.0" prefWidth="40.0" resizable="false" />
-                <TableColumn minWidth="40.0" prefWidth="40.0" resizable="false" />
-                <TableColumn minWidth="40.0" prefWidth="40.0" resizable="false" />
-                <TableColumn minWidth="40.0" prefWidth="40.0" resizable="false" />
-                <TableColumn minWidth="40.0" prefWidth="40.0" resizable="false" />
-                <TableColumn minWidth="40.0" prefWidth="40.0" resizable="false" />
-                <TableColumn minWidth="40.0" prefWidth="40.0" resizable="false" />
-                <TableColumn minWidth="40.0" prefWidth="40.0" resizable="false" />
-                <TableColumn minWidth="40.0" prefWidth="40.0" resizable="false" />
-                <TableColumn minWidth="40.0" prefWidth="40.0" resizable="false" />
-                <TableColumn minWidth="40.0" prefWidth="40.0" resizable="false" />
-                <TableColumn minWidth="40.0" prefWidth="40.0" resizable="false" />
-                <TableColumn minWidth="40.0" prefWidth="40.0" resizable="false" />
-                <TableColumn minWidth="40.0" prefWidth="40.0" resizable="false" />
-                <TableColumn minWidth="40.0" prefWidth="40.0" resizable="false" />
-                <TableColumn minWidth="40.0" prefWidth="40.0" resizable="false" />
-            </columns>
+                <TableColumn fx:id="colName" minWidth="150.0" resizable="false" text="Працівник" sortable="false" />
+                <TableColumn minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" />
+                <TableColumn minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" />
+                <TableColumn minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" />
+                <TableColumn minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" />
+                <TableColumn minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" />
+                <TableColumn minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" />
+                <TableColumn minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" />
+                <TableColumn minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" />
+                <TableColumn minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" />
+                <TableColumn minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" />
+                <TableColumn minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" />
+                <TableColumn minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" />
+                <TableColumn minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" />
+                <TableColumn minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" />
+                <TableColumn minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" />
+                <TableColumn minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" />
+                <TableColumn minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" />
+                <TableColumn minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" />
+                <TableColumn minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" />
+                <TableColumn minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" />
+                <TableColumn minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" />
+                <TableColumn minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" />
+                <TableColumn minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" />
+                <TableColumn minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" />
+                <TableColumn minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" />
+                <TableColumn minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" />
+                <TableColumn minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" />
+                <TableColumn minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" />
+                <TableColumn minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" />
+                <TableColumn minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" />
+                <TableColumn minWidth="40.0" prefWidth="40.0" resizable="false" sortable="false" />
+        </columns>
         </TableView>
     </center>
 </BorderPane>
