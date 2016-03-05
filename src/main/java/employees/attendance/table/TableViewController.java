@@ -81,8 +81,9 @@ public class TableViewController<T extends DtoEmployeesFullName> {
 
         fillColsDateList();
 
-        tableView.setStyle("-fx-accent: derive(-fx-control-inner-background, -30%); -fx-control-inner-background, -80%;");
+        tableView.setStyle("-fx-accent: derive(-fx-control-inner-background, -20%); -fx-control-inner-background, -80%;");
         tableView.getTableView().setFixedCellSize(40.0);
+        tableView.getTableView().getStylesheets().add(getClass().getResource("/employees.attendance.table/ColumnDisableStyle.css").toExternalForm());
 
         colName.setPercentWidth(150.0);
         colName.setMinWidth(150.0);
@@ -95,7 +96,7 @@ public class TableViewController<T extends DtoEmployeesFullName> {
         tableView.getTableView().setItems(employeesFullNameList);
         rootBorderPane.getChildren().add(tableView);
 
-        initCheckBox ();
+        initCheckBox();
     }
 
     public void fillTableView(){
@@ -141,6 +142,9 @@ public class TableViewController<T extends DtoEmployeesFullName> {
                                 CheckBox checkBox = new CheckBox();
                                 checkBox.getStylesheets().add(getClass().getResource("/CheckBoxStyle.css").toExternalForm());
                                 checkBox.setCursor(Cursor.HAND);
+                                if (param.getStyleClass().indexOf("disable") != -1) {
+                                    checkBox.setDisable(true);
+                                }
 
                                 super.updateItem(item, empty);
                                 if (empty) {

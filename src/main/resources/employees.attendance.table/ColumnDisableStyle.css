@@ -1,0 +1,7 @@
+.table-view .column-header.disable .label{
+    -fx-opacity : 0.2 ;
+}
+
+.table-view .table-cell.disable {
+    -fx-opacity : 0.3 ;
+}
