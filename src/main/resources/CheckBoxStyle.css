@@ -8,7 +8,7 @@
     -fx-background-color: transparent;
     -fx-background-insets: 0 0 -1 0, 0, 1, 2;
     -fx-background-radius: 2, 2, 1, 1;
-    -fx-padding: 0.5em; /* 3 -- padding from the outside edge to the mark */
+    -fx-padding: 0.8em; /* 3 -- padding from the outside edge to the mark */
 }
 
 .check-box:hover .box {
