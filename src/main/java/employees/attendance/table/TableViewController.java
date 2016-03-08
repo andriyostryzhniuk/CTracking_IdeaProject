@@ -15,7 +15,12 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import dto.DtoEmployeesFullName;
 import javafx.scene.layout.*;
 import javafx.util.Callback;
-import sample.ODBC_PubsBD;
+
+import java.util.concurrent.Executor;
+import java.util.concurrent.ExecutorService;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadPoolExecutor;
+import java.util.stream.IntStream;
 
 public class TableViewController<T extends DtoEmployeesFullName> {
 
@@ -26,37 +31,6 @@ public class TableViewController<T extends DtoEmployeesFullName> {
 
     @FXML
     public CustomTableColumn<T, String> colName = new CustomTableColumn<>("Працівник");
-    public CustomTableColumn<T, CheckBox> colDate1 = new CustomTableColumn<>(null);
-    public CustomTableColumn<T, CheckBox> colDate2 = new CustomTableColumn<>(null);
-    public CustomTableColumn<T, CheckBox> colDate3 = new CustomTableColumn<>(null);
-    public CustomTableColumn<T, CheckBox> colDate4 = new CustomTableColumn<>(null);
-    public CustomTableColumn<T, CheckBox> colDate5 = new CustomTableColumn<>(null);
-    public CustomTableColumn<T, CheckBox> colDate6 = new CustomTableColumn<>(null);
-    public CustomTableColumn<T, CheckBox> colDate7 = new CustomTableColumn<>(null);
-    public CustomTableColumn<T, CheckBox> colDate8 = new CustomTableColumn<>(null);
-    public CustomTableColumn<T, CheckBox> colDate9 = new CustomTableColumn<>(null);
-    public CustomTableColumn<T, CheckBox> colDate10 = new CustomTableColumn<>(null);
-    public CustomTableColumn<T, CheckBox> colDate11 = new CustomTableColumn<>(null);
-    public CustomTableColumn<T, CheckBox> colDate12 = new CustomTableColumn<>(null);
-    public CustomTableColumn<T, CheckBox> colDate13 = new CustomTableColumn<>(null);
-    public CustomTableColumn<T, CheckBox> colDate14 = new CustomTableColumn<>(null);
-    public CustomTableColumn<T, CheckBox> colDate15 = new CustomTableColumn<>(null);
-    public CustomTableColumn<T, CheckBox> colDate16 = new CustomTableColumn<>(null);
-    public CustomTableColumn<T, CheckBox> colDate17 = new CustomTableColumn<>(null);
-    public CustomTableColumn<T, CheckBox> colDate18 = new CustomTableColumn<>(null);
-    public CustomTableColumn<T, CheckBox> colDate19 = new CustomTableColumn<>(null);
-    public CustomTableColumn<T, CheckBox> colDate20 = new CustomTableColumn<>(null);
-    public CustomTableColumn<T, CheckBox> colDate21 = new CustomTableColumn<>(null);
-    public CustomTableColumn<T, CheckBox> colDate22 = new CustomTableColumn<>(null);
-    public CustomTableColumn<T, CheckBox> colDate23 = new CustomTableColumn<>(null);
-    public CustomTableColumn<T, CheckBox> colDate24 = new CustomTableColumn<>(null);
-    public CustomTableColumn<T, CheckBox> colDate25 = new CustomTableColumn<>(null);
-    public CustomTableColumn<T, CheckBox> colDate26 = new CustomTableColumn<>(null);
-    public CustomTableColumn<T, CheckBox> colDate27 = new CustomTableColumn<>(null);
-    public CustomTableColumn<T, CheckBox> colDate28 = new CustomTableColumn<>(null);
-    public CustomTableColumn<T, CheckBox> colDate29 = new CustomTableColumn<>(null);
-    public CustomTableColumn<T, CheckBox> colDate30 = new CustomTableColumn<>(null);
-    public CustomTableColumn<T, CheckBox> colDate31 = new CustomTableColumn<>(null);
 
     public TableView<T> getTableView() {
         return tableView.getTableView();
@@ -71,12 +45,10 @@ public class TableViewController<T extends DtoEmployeesFullName> {
     private final ObservableList<CustomTableColumn<T, CheckBox>> colsDateList = FXCollections.observableArrayList();
 
     private void fillColsDateList(){
-        colsDateList.addAll(
-                colDate1, colDate2, colDate3, colDate4, colDate5, colDate6,
-                colDate7, colDate8, colDate9, colDate10, colDate11, colDate12,
-                colDate13, colDate14, colDate15, colDate16, colDate17, colDate18,
-                colDate19, colDate20, colDate21, colDate22, colDate23, colDate24,
-                colDate25, colDate26, colDate27, colDate28, colDate29, colDate30, colDate31);
+        IntStream.range(0, 31).forEach(i -> colsDateList.add(new CustomTableColumn<>(null)));
+        ExecutorService threadPool = Executors.newFixedThreadPool(3);
+        IntStream.range(0, 50).forEach(i -> threadPool.submit(() -> System.out.println(i)));
+        threadPool.shutdown();
     }
 
     @FXML
@@ -103,13 +75,8 @@ public class TableViewController<T extends DtoEmployeesFullName> {
     }
 
     public void fillTableView(){
-        tableView.getTableView().getColumns().addAll(
-                colName,
-                colDate1, colDate2, colDate3, colDate4, colDate5, colDate6,
-                colDate7, colDate8, colDate9, colDate10, colDate11, colDate12,
-                colDate13, colDate14, colDate15, colDate16, colDate17, colDate18,
-                colDate19, colDate20, colDate21, colDate22, colDate23, colDate24,
-                colDate25, colDate26, colDate27, colDate28, colDate29, colDate30, colDate31);
+        tableView.getTableView().getColumns().add(colName);
+        tableView.getTableView().getColumns().addAll(colsDateList);
     }
 
     public void setColsDateProperties(){
@@ -145,10 +112,6 @@ public class TableViewController<T extends DtoEmployeesFullName> {
                                 GridPane gridPane = new GridPane();
                                 TextField textField = new TextField();
 
-                                Region region = new Region();
-                                region.setStyle("-fx-background-color: red");
-//                                gridPane.add(region, 0, 0);
-
                                 ColumnConstraints columnConstraints = new ColumnConstraints();
                                 columnConstraints.setMinWidth(38.0);
                                 gridPane.getColumnConstraints().add(columnConstraints);
@@ -173,6 +136,9 @@ public class TableViewController<T extends DtoEmployeesFullName> {
                                     checkBox.setOnAction((ActionEvent event) -> {
                                         System.out.println(param.getId());
                                         Callback<TableColumn<T, String>, TableCell<T, String>> cellFactory1 = param.getCellFactory();
+                                        TableCell cell = (TableCell)checkBox.getParent().getParent();
+
+                                        System.out.println(cell.getTableRow().getIndex());
 
                                         if (checkBox.isSelected() == true) {
                                             textField.setPrefHeight(16.0);
