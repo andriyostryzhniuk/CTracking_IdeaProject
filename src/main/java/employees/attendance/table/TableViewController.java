@@ -15,11 +15,6 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import dto.DtoEmployeesFullName;
 import javafx.scene.layout.*;
 import javafx.util.Callback;
-
-import java.util.concurrent.Executor;
-import java.util.concurrent.ExecutorService;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ThreadPoolExecutor;
 import java.util.stream.IntStream;
 
 public class TableViewController<T extends DtoEmployeesFullName> {
@@ -46,9 +41,6 @@ public class TableViewController<T extends DtoEmployeesFullName> {
 
     private void fillColsDateList(){
         IntStream.range(0, 31).forEach(i -> colsDateList.add(new CustomTableColumn<>(null)));
-        ExecutorService threadPool = Executors.newFixedThreadPool(3);
-        IntStream.range(0, 50).forEach(i -> threadPool.submit(() -> System.out.println(i)));
-        threadPool.shutdown();
     }
 
     @FXML
@@ -135,12 +127,12 @@ public class TableViewController<T extends DtoEmployeesFullName> {
                                 } else {
                                     checkBox.setOnAction((ActionEvent event) -> {
                                         System.out.println(param.getId());
-                                        Callback<TableColumn<T, String>, TableCell<T, String>> cellFactory1 = param.getCellFactory();
-                                        TableCell cell = (TableCell)checkBox.getParent().getParent();
-
-                                        System.out.println(cell.getTableRow().getIndex());
 
                                         if (checkBox.isSelected() == true) {
+                                            TableCell cell = (TableCell)checkBox.getParent().getParent();
+                                            T CellRow = tableView.getTableView().getItems().get(cell.getTableRow().getIndex());
+                                            textField.setText(Integer.toString(CellRow.getWorkingHours()));
+
                                             textField.setPrefHeight(16.0);
                                             textField.setMinHeight(16.0);
                                             textField.setAlignment(Pos.CENTER);

@@ -11,7 +11,8 @@ import static sample.DB_Connector.getJdbcTemplate;
 public class ODBC_PubsBD {
     public static List<DtoEmployeesFullName> selectEmployeesFullName(String firstDayOfMonth, String lastDayOfMonth) {
         List<DtoEmployeesFullName> dtoEmployeesFullNames = getJdbcTemplate().query("select employees.id, " +
-                "concat(employees.surname, ' ', left (employees.name, 1), '. ', left (employees.middleName, 1), '.') as fullName " +
+                "concat(employees.surname, ' ', left (employees.name, 1), '. ', left (employees.middleName, 1), '.') as fullName, " +
+                "employees.workingHours " +
                 "from employees left join " +
                 "(select distinct employees_id " +
                 "from object_employees " +
@@ -24,24 +25,7 @@ public class ODBC_PubsBD {
                 "(employees.lastDay is null or " +
                 "employees.lastDay > convert('" + firstDayOfMonth + "', DATE)) " +
                 "order by employees.surname asc", BeanPropertyRowMapper.newInstance(DtoEmployeesFullName.class));
-
-//        List<DtoEmployeesFullName> dtoEmployeesFullNames = getJdbcTemplate().query("select employees.id, " +
-//                "concat(employees.surname, ' ', left (employees.name, 1), '. ', left (employees.middleName, 1), '.') as fullName " +
-//                "from employees, object_employees " +
-//                "where employees.id = object_employees.employees_id " +
-//                "order by employees.id asc", BeanPropertyRowMapper.newInstance(DtoEmployeesFullName.class));
-
         return dtoEmployeesFullNames;
     }
 
-    public static int selectDefaultEmployeesWorkingHours(int employees_id) {
-        SqlRowSet rs = getJdbcTemplate().queryForRowSet("select employees.workingHours " +
-                "from employees " +
-                "where employees.id = '" + employees_id + "'");
-        Integer id = null;
-        while (rs.next()) {
-            id = new Integer(rs.getInt(1));
-        }
-        return id;
-    }
 }

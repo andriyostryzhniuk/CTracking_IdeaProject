@@ -6,14 +6,16 @@ package dto;
 public class DtoEmployeesFullName {
     private int id;
     private String fullName;
+    private int workingHours;
 
     public DtoEmployeesFullName() {
 
     }
 
-    public DtoEmployeesFullName(int id, String fullName) {
+    public DtoEmployeesFullName(int id, String fullName, int workingHours) {
         this.id = id;
         this.fullName = fullName;
+        this.workingHours = workingHours;
     }
 
     public int getId() {
@@ -30,6 +32,14 @@ public class DtoEmployeesFullName {
 
     public void setFullName(String fullName) {
         this.fullName = fullName;
+    }
+
+    public int getWorkingHours() {
+        return workingHours;
+    }
+
+    public void setWorkingHours(int workingHours) {
+        this.workingHours = workingHours;
     }
 
     //    public String getSurnameAndInitials () {
