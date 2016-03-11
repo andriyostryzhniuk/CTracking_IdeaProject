@@ -11,11 +11,11 @@ import javafx.scene.layout.StackPane;
 /**
  * Created by Andriy on 03/04/2016.
  */
-public class CustomTableView<s> extends StackPane {
+public class TableViewHolder<s> extends StackPane {
     private TableView<s> table;
 
-    public CustomTableView(){
-        this.table = new TableView<s>();
+    public TableViewHolder(){
+        this.table = new TableView<>();
         final GridPane grid = new GridPane();
 
         this.table.getColumns().addListener(new ListChangeListener<TableColumn>(){
@@ -23,11 +23,11 @@ public class CustomTableView<s> extends StackPane {
             public void onChanged(javafx.collections.ListChangeListener.Change<? extends TableColumn> arg0) {
 
                 grid.getColumnConstraints().clear();
-                ColumnConstraints[] arr1 = new ColumnConstraints[CustomTableView.this.table.getColumns().size()];
-                StackPane[] arr2 = new StackPane[CustomTableView.this.table.getColumns().size()];
+                ColumnConstraints[] arr1 = new ColumnConstraints[TableViewHolder.this.table.getColumns().size()];
+                StackPane[] arr2 = new StackPane[TableViewHolder.this.table.getColumns().size()];
 
                 int i=0;
-                for(TableColumn column : CustomTableView.this.table.getColumns()){
+                for(TableColumn column : TableViewHolder.this.table.getColumns()){
                     CustomTableColumn col = (CustomTableColumn)column;
                     ColumnConstraints consta = new ColumnConstraints();
                     consta.setPercentWidth(col.getPercentWidth());
