@@ -15,6 +15,8 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import dto.DtoEmployeesFullName;
 import javafx.scene.layout.*;
+import sample.ODBC_PubsBD;
+
 import java.util.stream.IntStream;
 
 public class TableViewController<T extends DtoEmployeesFullName> {
@@ -71,7 +73,11 @@ public class TableViewController<T extends DtoEmployeesFullName> {
 
     private final ObservableList<CustomTableColumn<T, GridPane>> colsDateList = FXCollections.observableArrayList();
 
-    ObservableMap<Integer, ObservableMap<String, Integer>> itemsObservableMap = FXCollections.observableHashMap();
+    ObservableMap<Integer, ObservableMap<String, Integer>> initialAttendanceDataMap = FXCollections.observableHashMap();
+
+    public ObservableMap<Integer, ObservableMap<String, Integer>> getInitialAttendanceDataMap() {
+        return initialAttendanceDataMap;
+    }
 
     @FXML
     public void initialize() {
@@ -167,8 +173,6 @@ public class TableViewController<T extends DtoEmployeesFullName> {
                 rowConstraints.setMinHeight(38.0);
                 gridPane.getRowConstraints().add(rowConstraints);
 
-                TextField textField = new TextField();
-
                 CheckBox checkBox = new CheckBox();
                 checkBox.getStylesheets().add(getClass().getResource("/CheckBoxStyle.css").toExternalForm());
                 checkBox.setCursor(Cursor.HAND);
@@ -180,27 +184,14 @@ public class TableViewController<T extends DtoEmployeesFullName> {
                 checkBox.setOnAction((ActionEvent event) -> {
 
                     if (checkBox.isSelected() == true) {
+                        TextField textField = new TextField();
                         TableCell cell = (TableCell) checkBox.getParent().getParent();
                         T employeesFullName = tableView.getTableView().getItems().get(cell.getTableRow().getIndex());
 
                         textField.setText(Integer.toString(employeesFullName.getWorkingHours()));
-                        textField.setPrefHeight(16.0);
-                        textField.setMinHeight(16.0);
-                        textField.setAlignment(Pos.CENTER);
-                        textField.setPadding(Insets.EMPTY);
-                        gridPane.add(textField, 0, 0);
-                        gridPane.setHalignment(textField, HPos.CENTER);
-                        gridPane.setValignment(textField, VPos.BOTTOM);
+                        addTextFiledToGridPane(gridPane, textField);
                     } else {
-                        ObservableList<Node> childrens = gridPane.getChildren();
-                        int counter = 0;
-                        for (Node node : childrens) {
-                            if (textField.equals(node)) {
-                                childrens.remove(counter);
-                                break;
-                            }
-                            counter++;
-                        }
+                        gridPane.getChildren().remove(1);
                     }
                 });
                 j++;
@@ -208,105 +199,42 @@ public class TableViewController<T extends DtoEmployeesFullName> {
         });
     }
 
-    public void getTableViewIteams (){
+    public void checkEmployeesAttendance(){
         IntStream.range(0, employeesFullNameList.size()).forEach(i -> {
             int j = 1;
             for (GridPane gridPane : tableView.getTableView().getItems().get(i).getGridPaneList()) {
-                if(i == 0 && j == 1) {
+                int employeesId =  employeesFullNameList.get(i).getId();
+                String date = tableView.getTableView().getColumns().get(j).getId();
+                if(initialAttendanceDataMap.get(employeesId).get(date) != -1) {
                     CheckBox checkBox = (CheckBox) gridPane.getChildren().get(0);
                     checkBox.setSelected(true);
+
+                    TextField textField = new TextField();
+                    textField.setText(Integer.toString(initialAttendanceDataMap.get(employeesId).get(date)));
+                    addTextFiledToGridPane(gridPane, textField);
                 }
                 j++;
             }
         });
     }
 
-//    public void fillItemsObservableMap(String firstDayOfMonth){
-//        employeesFullNameList.forEach(item -> {
-//            ObservableMap<String, Integer> valuesObservableMap = FXCollections.observableHashMap();
-////            valuesObservableMap.putAll(ODBC_PubsBD.selectWorkingHours(firstDayOfMonth, item.getId()));
-////            System.out.println(valuesObservableMap.size());
-//            itemsObservableMap.put(item.getId(), new ObservableMap<String, Integer>() {
-//                @Override
-//                public void addListener(MapChangeListener<? super String, ? super Integer> listener) {
-//
-//                }
-//
-//                @Override
-//                public void removeListener(MapChangeListener<? super String, ? super Integer> listener) {
-//
-//                }
-//
-//                @Override
-//                public int size() {
-//                    return 0;
-//                }
-//
-//                @Override
-//                public boolean isEmpty() {
-//                    return false;
-//                }
-//
-//                @Override
-//                public boolean containsKey(Object key) {
-//                    return false;
-//                }
-//
-//                @Override
-//                public boolean containsValue(Object value) {
-//                    return false;
-//                }
-//
-//                @Override
-//                public Integer get(Object key) {
-//                    return null;
-//                }
-//
-//                @Override
-//                public Integer put(String key, Integer value) {
-//                    return null;
-//                }
-//
-//                @Override
-//                public Integer remove(Object key) {
-//                    return null;
-//                }
-//
-//                @Override
-//                public void putAll(Map<? extends String, ? extends Integer> m) {
-//
-//                }
-//
-//                @Override
-//                public void clear() {
-//
-//                }
-//
-//                @Override
-//                public Set<String> keySet() {
-//                    return null;
-//                }
-//
-//                @Override
-//                public Collection<Integer> values() {
-//                    return null;
-//                }
-//
-//                @Override
-//                public Set<Entry<String, Integer>> entrySet() {
-//                    return null;
-//                }
-//
-//                @Override
-//                public void addListener(InvalidationListener listener) {
-//
-//                }
-//
-//                @Override
-//                public void removeListener(InvalidationListener listener) {
-//
-//                }
-//            });
-//        });
-//    }
+    public void addTextFiledToGridPane(GridPane gridPane, TextField textField) {
+        textField.setPrefHeight(16.0);
+        textField.setMinHeight(16.0);
+        textField.setAlignment(Pos.CENTER);
+        textField.setPadding(Insets.EMPTY);
+        gridPane.add(textField, 0, 0);
+        gridPane.setHalignment(textField, HPos.CENTER);
+        gridPane.setValignment(textField, VPos.BOTTOM);
+    }
+
+    public void initAttendanceDataMap(String firstDayOfMonth){
+        employeesFullNameList.forEach(item -> {
+            ObservableMap<String, Integer> valuesObservableMap = FXCollections.observableHashMap();
+            ODBC_PubsBD.selectWorkingHours(firstDayOfMonth, item.getId()).forEach(record -> {
+                valuesObservableMap.put(record.getDate(), record.getWorkingHours());
+            });
+            initialAttendanceDataMap.put(item.getId(), valuesObservableMap);
+        });
+    }
 }

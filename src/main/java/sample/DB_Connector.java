@@ -3,13 +3,11 @@ package sample;
 import com.mchange.v2.c3p0.ComboPooledDataSource;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.namedparam.NamedParameterJdbcTemplate;
+import org.springframework.jdbc.core.simple.SimpleJdbcCall;
 
 import javax.sql.DataSource;
 import java.beans.PropertyVetoException;
 
-/**
- * Created by Andriy on 01/28/2016.
- */
 public class DB_Connector {
     private DB_Connector(){
     }
@@ -47,6 +45,10 @@ public class DB_Connector {
 
     public static NamedParameterJdbcTemplate getNamedParameterJdbcTemplate() {
         return new NamedParameterJdbcTemplate(getDataSource());
+    }
+
+    public static SimpleJdbcCall getSimpleJdbcCall(){
+        return new SimpleJdbcCall(getDataSource());
     }
 
 }
