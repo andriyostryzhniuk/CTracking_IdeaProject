@@ -1,10 +1,10 @@
 package sample;
 
+import employees.attendance.table.WindowAttendanceController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.HPos;
 import javafx.geometry.Insets;
-import javafx.geometry.VPos;
+import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.layout.GridPane;
 
@@ -15,26 +15,51 @@ public class MainWindowController {
 
     public GridPane mainGridPane;
 
+    private WindowAttendanceController windowAttendanceController;
+
     public void initEmployeesWorkTracking(ActionEvent actionEvent) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/employees.attendance.table/WindowAttendance.fxml"));
         try {
             mainGridPane.add(fxmlLoader.load(), 1, 1);
+            windowAttendanceController = fxmlLoader.getController();
         } catch (IOException exception) {
             throw new UncheckedIOException(exception);
         }
-        initButtonClose();
+        mainGridPane.add(initAttendanceButtons(), 1, 2);
     }
 
-    public void initButtonClose (){
+    public Button initButtonClose (){
         Button buttonClose = new Button("Закрити");
         buttonClose.setPrefHeight(25.0);
         buttonClose.setPrefWidth(85.0);
         buttonClose.setOnAction((ActionEvent event) -> {
             mainGridPane.getChildren().remove(1, 3);
         });
-        mainGridPane.add(buttonClose, 1, 2);
-        mainGridPane.setHalignment(buttonClose, HPos.RIGHT);
-        mainGridPane.setValignment(buttonClose, VPos.TOP);
-        mainGridPane.setMargin(buttonClose, new Insets(20, 0, 0, 0));
+        return buttonClose;
+    }
+
+    public Button initButtonAttendanceSave () {
+        Button buttonSave = new Button("Зберегти");
+        buttonSave.setPrefHeight(25.0);
+        buttonSave.setPrefWidth(85.0);
+        buttonSave.setOnAction((ActionEvent event) -> {
+            windowAttendanceController.getTableViewController().saveToDB();
+        });
+        return buttonSave;
+    }
+
+    public GridPane initAttendanceButtons () {
+        GridPane buttonContainer = new GridPane();
+        buttonContainer.setAlignment(Pos.TOP_RIGHT);
+
+        Button buttonSave = initButtonAttendanceSave();
+        buttonContainer.add(buttonSave, 0, 0);
+        buttonContainer.setMargin(buttonSave, new Insets(20, 5, 0, 0));
+
+        Button buttonClose = initButtonClose();
+        buttonContainer.add(buttonClose, 1, 0);
+        buttonContainer.setMargin(buttonClose, new Insets(20, 0, 0, 0));
+
+        return buttonContainer;
     }
 }

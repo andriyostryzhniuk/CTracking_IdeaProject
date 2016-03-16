@@ -50,5 +50,4 @@ public class DB_Connector {
     public static SimpleJdbcCall getSimpleJdbcCall(){
         return new SimpleJdbcCall(getDataSource());
     }
-
 }

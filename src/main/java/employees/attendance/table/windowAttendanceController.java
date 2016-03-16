@@ -18,16 +18,10 @@ import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
 
-/**
- * Created by Andriy on 01/30/2016.
- */
 public class WindowAttendanceController<T extends DtoEmployeesFullName> {
 
     @FXML
     public BorderPane rootBorderPane;
-
-//    @FXML
-//    private Controller2 controller2;
 
     public date.picker.DatePicker datePicker;
 
@@ -102,9 +96,13 @@ public class WindowAttendanceController<T extends DtoEmployeesFullName> {
         String lastDayOfMonth = dateFormat.format(calendar.getTime());
 
         tableViewController.getEmployeesFullNameList().clear();
+        tableViewController.getInitialAttendanceDataMap().clear();
         tableViewController.getEmployeesFullNameList().addAll(ODBC_PubsBD.selectEmployeesFullName(firstDayOfMonth, lastDayOfMonth));
 
         updateDateInTableHeader (calendar);
+        tableViewController.initCheckBox();
+        tableViewController.initAttendanceDataMap(firstDayOfMonth);
+        tableViewController.checkEmployeesAttendance();
 
         previousMonth = datePicker.selectedDateProperty().get().getMonth();
         previousYear = datePicker.selectedDateProperty().get().getYear();
@@ -137,4 +135,7 @@ public class WindowAttendanceController<T extends DtoEmployeesFullName> {
         }
     }
 
+    public TableViewController getTableViewController() {
+        return tableViewController;
+    }
 }

@@ -10,7 +10,6 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.Cursor;
-import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import dto.DtoEmployeesFullName;
@@ -20,7 +19,6 @@ import sample.ODBC_PubsBD;
 import java.util.stream.IntStream;
 
 public class TableViewController<T extends DtoEmployeesFullName> {
-
 
     @FXML
     public StackPane rootBorderPane;
@@ -202,8 +200,8 @@ public class TableViewController<T extends DtoEmployeesFullName> {
     public void checkEmployeesAttendance(){
         IntStream.range(0, employeesFullNameList.size()).forEach(i -> {
             int j = 1;
+            int employeesId =  employeesFullNameList.get(i).getId();
             for (GridPane gridPane : tableView.getTableView().getItems().get(i).getGridPaneList()) {
-                int employeesId =  employeesFullNameList.get(i).getId();
                 String date = tableView.getTableView().getColumns().get(j).getId();
                 if(initialAttendanceDataMap.get(employeesId).get(date) != -1) {
                     CheckBox checkBox = (CheckBox) gridPane.getChildren().get(0);
@@ -229,12 +227,48 @@ public class TableViewController<T extends DtoEmployeesFullName> {
     }
 
     public void initAttendanceDataMap(String firstDayOfMonth){
+        ODBC_PubsBD.initTableDaysOfMonth(firstDayOfMonth);
         employeesFullNameList.forEach(item -> {
             ObservableMap<String, Integer> valuesObservableMap = FXCollections.observableHashMap();
-            ODBC_PubsBD.selectWorkingHours(firstDayOfMonth, item.getId()).forEach(record -> {
+            ODBC_PubsBD.selectWorkingHoursADay(firstDayOfMonth, item.getId()).forEach(record -> {
                 valuesObservableMap.put(record.getDate(), record.getWorkingHours());
             });
             initialAttendanceDataMap.put(item.getId(), valuesObservableMap);
+        });
+    }
+
+    public void saveToDB () {
+        IntStream.range(0, employeesFullNameList.size()).forEach(i -> {
+            int j = 1;
+            int employeesId =  employeesFullNameList.get(i).getId();
+            for (GridPane gridPane : tableView.getTableView().getItems().get(i).getGridPaneList()) {
+                String date = tableView.getTableView().getColumns().get(j).getId();
+
+                CheckBox checkBox = (CheckBox) gridPane.getChildren().get(0);
+
+                int initialWorkingHours = initialAttendanceDataMap.get(employeesId).get(date);
+
+                if (checkBox.isSelected()){
+                    TextField textField = (TextField) gridPane.getChildren().get(1);
+                    Integer workingHoursFromTextField = Integer.parseInt(textField.getText());
+
+                    if(initialWorkingHours != workingHoursFromTextField){
+                        if (initialWorkingHours == -1) {
+//                            insert..
+                            ODBC_PubsBD.insertIntoWorkTracking(date, workingHoursFromTextField, employeesId);
+                        }
+                        else {
+//                            update..
+                            ODBC_PubsBD.updateWorkTracking(date, workingHoursFromTextField, employeesId);
+                        }
+                    }
+                }
+                else if (initialWorkingHours != -1) {
+//                    delete ..
+                    ODBC_PubsBD.deleteFromWorkTracking(date, employeesId);
+                }
+                j++;
+            }
         });
     }
 }
