@@ -1,4 +1,4 @@
-package dto;
+package employees.attendance.table.dto;
 
 /**
  * Created by Andriy on 03/14/2016.

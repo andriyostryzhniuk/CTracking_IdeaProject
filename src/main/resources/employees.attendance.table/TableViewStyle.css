@@ -9,3 +9,7 @@
 .table-view .table-column {
    -fx-padding: 0 0 0 -1;
  }
+
+ .table-view:focused {
+     -fx-background-color: transparent ,-fx-box-border,-fx-control-inner-background;
+ }

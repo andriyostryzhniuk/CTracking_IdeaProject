@@ -1,11 +1,11 @@
 package sample;
 
-import dto.DtoWokingHoursADay;
+import employees.attendance.table.dto.DtoWokingHoursADay;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import dto.DtoEmployeesFullName;
+import employees.attendance.table.dto.DtoEmployeesFullName;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 
 import java.util.List;

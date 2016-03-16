@@ -1,4 +1,4 @@
-package dto;
+package employees.attendance.table.dto;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -109,8 +109,9 @@ public class DtoEmployeesFullName {
         Label fullNameLabel = new Label(fullName);
 
         gridPane.add(fullNameLabel, 0, 0);
-        gridPane.add(sumOfWorkingHoursLabel, 0, 1);
+        gridPane.setMargin(fullNameLabel, new Insets(3, 0, 0, 3));
 
+        gridPane.add(sumOfWorkingHoursLabel, 0, 1);
         gridPane.setHalignment(sumOfWorkingHoursLabel, HPos.RIGHT);
         gridPane.setValignment(sumOfWorkingHoursLabel, VPos.BOTTOM);
         gridPane.setMargin(sumOfWorkingHoursLabel, new Insets(0, 5, 0, 0));

@@ -1,6 +1,6 @@
 package employees.attendance.table;
 
-import dto.DtoEmployeesFullName;
+import employees.attendance.table.dto.DtoEmployeesFullName;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.collections.ObservableList;
@@ -103,6 +103,14 @@ public class WindowAttendanceController<T extends DtoEmployeesFullName> {
         tableViewController.initCheckBox();
         tableViewController.initAttendanceDataMap(firstDayOfMonth);
         tableViewController.checkEmployeesAttendance();
+
+        int i = 0;
+        for (Object item : tableViewController.getEmployeesFullNameList()) {
+            DtoEmployeesFullName employeesFullName = (DtoEmployeesFullName)item;
+            employeesFullName.getSumOfWorkingHoursLabel().setText(tableViewController.sumWorkingHours(i).toString());
+            employeesFullName.setGridPaneFullName(employeesFullName.initGridPaneFullName());
+            i++;
+        }
 
         previousMonth = datePicker.selectedDateProperty().get().getMonth();
         previousYear = datePicker.selectedDateProperty().get().getYear();

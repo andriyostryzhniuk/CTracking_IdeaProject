@@ -6,7 +6,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
@@ -15,7 +14,7 @@ import javafx.geometry.VPos;
 import javafx.scene.Cursor;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import dto.DtoEmployeesFullName;
+import employees.attendance.table.dto.DtoEmployeesFullName;
 import javafx.scene.layout.*;
 import sample.ODBC_PubsBD;
 
@@ -24,7 +23,7 @@ import java.util.stream.IntStream;
 public class TableViewController<T extends DtoEmployeesFullName> {
 
     @FXML
-    public StackPane rootBorderPane;
+    public StackPane rootStackPane;
     @FXML
     private TableViewHolder<T> tableView = new TableViewHolder<>();
 
@@ -98,7 +97,7 @@ public class TableViewController<T extends DtoEmployeesFullName> {
         fillTableView();
 
         tableView.getTableView().setItems(employeesFullNameList);
-        rootBorderPane.getChildren().add(tableView);
+        rootStackPane.getChildren().add(tableView);
 
 //        initCheckBox();
     }
