@@ -2,7 +2,13 @@ package dto;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.geometry.HPos;
+import javafx.geometry.Insets;
+import javafx.geometry.VPos;
+import javafx.scene.control.Label;
+import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Priority;
 
 /**
  * Created by Andriy on 01/28/2016.
@@ -11,6 +17,8 @@ public class DtoEmployeesFullName {
     private int id;
     private String fullName;
     private int workingHours;
+    private GridPane gridPaneFullName = new GridPane();
+    private Label sumOfWorkingHoursLabel = new Label();
     private GridPane gridPane1 = new GridPane();
     private GridPane gridPane2 = new GridPane();
     private GridPane gridPane3 = new GridPane();
@@ -80,6 +88,41 @@ public class DtoEmployeesFullName {
 
     public void setFullName(String fullName) {
         this.fullName = fullName;
+    }
+
+    public GridPane getGridPaneFullName() {
+        return gridPaneFullName;
+    }
+
+    public void setGridPaneFullName(GridPane gridPaneFullName) {
+        this.gridPaneFullName = gridPaneFullName;
+    }
+
+    public GridPane initGridPaneFullName() {
+        GridPane gridPane = new GridPane();
+
+        ColumnConstraints columnConstraints = new ColumnConstraints();
+        columnConstraints.setFillWidth(true);
+        columnConstraints.setHgrow(Priority.ALWAYS);
+        gridPane.getColumnConstraints().add(columnConstraints);
+
+        Label fullNameLabel = new Label(fullName);
+
+        gridPane.add(fullNameLabel, 0, 0);
+        gridPane.add(sumOfWorkingHoursLabel, 0, 1);
+
+        gridPane.setHalignment(sumOfWorkingHoursLabel, HPos.RIGHT);
+        gridPane.setValignment(sumOfWorkingHoursLabel, VPos.BOTTOM);
+        gridPane.setMargin(sumOfWorkingHoursLabel, new Insets(0, 5, 0, 0));
+        return gridPane;
+    }
+
+    public Label getSumOfWorkingHoursLabel() {
+        return sumOfWorkingHoursLabel;
+    }
+
+    public void setSumOfWorkingHoursLabel(Label sumOfWorkingHoursLabel) {
+        this.sumOfWorkingHoursLabel = sumOfWorkingHoursLabel;
     }
 
     public int getWorkingHours() {

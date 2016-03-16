@@ -1,9 +1,12 @@
 package employees.attendance.table;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
 import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.HPos;
 import javafx.geometry.Insets;
@@ -26,7 +29,7 @@ public class TableViewController<T extends DtoEmployeesFullName> {
     private TableViewHolder<T> tableView = new TableViewHolder<>();
 
     @FXML
-    public CustomTableColumn<T, String> colName = new CustomTableColumn<>("Працівник");
+    public CustomTableColumn<T, GridPane> colName = new CustomTableColumn<>("Працівник");
     public CustomTableColumn<T, GridPane> colDate1 = new CustomTableColumn<>(null);
     public CustomTableColumn<T, GridPane> colDate2 = new CustomTableColumn<>(null);
     public CustomTableColumn<T, GridPane> colDate3 = new CustomTableColumn<>(null);
@@ -88,7 +91,7 @@ public class TableViewController<T extends DtoEmployeesFullName> {
 
         colName.setPercentWidth(150.0);
         colName.setMinWidth(150.0);
-        colName.setCellValueFactory(new PropertyValueFactory<>("fullName"));
+        colName.setCellValueFactory(new PropertyValueFactory<>("gridPaneFullName"));
 
         setColsDateProperties();
 
@@ -187,9 +190,10 @@ public class TableViewController<T extends DtoEmployeesFullName> {
                         T employeesFullName = tableView.getTableView().getItems().get(cell.getTableRow().getIndex());
 
                         textField.setText(Integer.toString(employeesFullName.getWorkingHours()));
-                        addTextFiledToGridPane(gridPane, textField);
+                        addTextFiledToGridPane(gridPane, textField, i);
                     } else {
                         gridPane.getChildren().remove(1);
+                        employeesFullNameList.get(i).getSumOfWorkingHoursLabel().setText(sumWorkingHours(i).toString().toString());
                     }
                 });
                 j++;
@@ -209,21 +213,37 @@ public class TableViewController<T extends DtoEmployeesFullName> {
 
                     TextField textField = new TextField();
                     textField.setText(Integer.toString(initialAttendanceDataMap.get(employeesId).get(date)));
-                    addTextFiledToGridPane(gridPane, textField);
+                    addTextFiledToGridPane(gridPane, textField, i);
                 }
                 j++;
             }
         });
     }
 
-    public void addTextFiledToGridPane(GridPane gridPane, TextField textField) {
+    public void addTextFiledToGridPane(GridPane gridPane, TextField textField, int rowIndex) {
         textField.setPrefHeight(16.0);
         textField.setMinHeight(16.0);
         textField.setAlignment(Pos.CENTER);
         textField.setPadding(Insets.EMPTY);
+
         gridPane.add(textField, 0, 0);
         gridPane.setHalignment(textField, HPos.CENTER);
         gridPane.setValignment(textField, VPos.BOTTOM);
+
+        employeesFullNameList.get(rowIndex).getSumOfWorkingHoursLabel().setText(sumWorkingHours(rowIndex).toString().toString());
+
+        textField.setOnAction((ActionEvent event) -> {
+            employeesFullNameList.get(rowIndex).getSumOfWorkingHoursLabel().setText(sumWorkingHours(rowIndex).toString().toString());
+        });
+
+        textField.focusedProperty().addListener(new ChangeListener<Boolean>() {
+            @Override
+            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
+                if(!newValue) {
+                    employeesFullNameList.get(rowIndex).getSumOfWorkingHoursLabel().setText(sumWorkingHours(rowIndex).toString().toString());
+                }
+            }
+        });
     }
 
     public void initAttendanceDataMap(String firstDayOfMonth){
@@ -270,5 +290,23 @@ public class TableViewController<T extends DtoEmployeesFullName> {
                 j++;
             }
         });
+    }
+
+    public Integer sumWorkingHours(Integer indexItem){
+        Integer sumOfWorkingHours = 0;
+        int i = 1;
+        for (GridPane gridPane : tableView.getTableView().getItems().get(indexItem).getGridPaneList()) {
+            if (tableView.getTableView().getColumns().get(i).getStyleClass().indexOf("disable") != -1) {
+                i++;
+                continue;
+            }
+            CheckBox checkBox = (CheckBox) gridPane.getChildren().get(0);
+            if (checkBox.isSelected()){
+                TextField textField = (TextField) gridPane.getChildren().get(1);
+                sumOfWorkingHours = sumOfWorkingHours + Integer.parseInt(textField.getText());
+            }
+            i++;
+        }
+        return sumOfWorkingHours;
     }
 }
