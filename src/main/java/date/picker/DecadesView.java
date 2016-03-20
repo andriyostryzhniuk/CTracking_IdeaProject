@@ -72,9 +72,10 @@ final class DecadesView extends DatePane {
             a += 10;
         }
         int startYear = year - a;
-        for (int i = 0; i < 10 * NUMBER_OF_DECADES; i++) {
+        for (int i = 0; i < NUMBER_OF_DECADES * 10; i++) {
             final int y = i + startYear;
             Button button = (Button) getChildren().get(i);
+//            button.setDisable(true);
             button.setText(Integer.toString(y));
             button.setUserData(y);
         }

@@ -1,22 +1,33 @@
 package employees.attendance.table;
 
+import combo.box.AutoCompleteComboBoxListener;
 import employees.attendance.table.dto.DtoEmployeesFullName;
+import employees.attendance.table.dto.DtoObject;
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.collections.ObservableMap;
+import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
-import sample.ODBC_PubsBD;
+import javafx.scene.layout.GridPane;
+import javafx.util.Callback;
+
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.Locale;
+import java.util.stream.IntStream;
 
 public class WindowAttendanceController<T extends DtoEmployeesFullName> {
 
@@ -24,17 +35,31 @@ public class WindowAttendanceController<T extends DtoEmployeesFullName> {
     public BorderPane rootBorderPane;
 
     public date.picker.DatePicker datePicker;
+    public ComboBox comboBox;
 
     private int previousMonth;
     private int previousYear;
     private TableViewController tableViewController;
 
+    private ObservableMap<String, DtoObject> objectMap = FXCollections.observableHashMap();
+
     @FXML
     private void initialize() {
 
-        initDatePicker();
+        GridPane gridPane = new GridPane();
+        datePicker = initDatePicker();
+        gridPane.add(datePicker, 0, 0);
 
-//        System.out.println(getDatePickerValue());
+        Label label = new Label("Вибрати об'єкт:");
+        gridPane.add(label, 1, 0);
+        gridPane.setMargin(label, new Insets(0, 10, 0, 80));
+
+        comboBox = initComboBox();
+        gridPane.add(comboBox, 2, 0);
+
+        rootBorderPane.setTop(gridPane);
+        rootBorderPane.setAlignment(gridPane, Pos.TOP_LEFT);
+        rootBorderPane.setMargin(gridPane, new Insets(0.0, 0.0, 20.0, 0.0));
 
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/employees.attendance.table/TableView.fxml"));
         try {
@@ -46,14 +71,15 @@ public class WindowAttendanceController<T extends DtoEmployeesFullName> {
         updateEmployeesFullNameList();
     }
 
-    public void initDatePicker() {
+    public date.picker.DatePicker initDatePicker() {
+        date.picker.DatePicker datePicker;
         datePicker = new date.picker.DatePicker();
 
         datePicker.setLocale(new Locale("uk"));
         datePicker.getCalendarView().setShowWeeks(false);
 
         datePicker.setSelectedDate(new Date());
-        datePicker.deselectSelection();
+        datePicker.deselect();
 
         previousMonth = datePicker.selectedDateProperty().get().getMonth();
         previousYear = datePicker.selectedDateProperty().get().getYear();
@@ -70,16 +96,56 @@ public class WindowAttendanceController<T extends DtoEmployeesFullName> {
                 }
                 if (isException == false && previousMonth != datePicker.selectedDateProperty().get().getMonth() ||
                         isException == false && previousYear != datePicker.selectedDateProperty().get().getYear()) {
-
+                    fillComboBoxItems (comboBox);
                     updateEmployeesFullNameList ();
-
                 }
             }
         });
+        return datePicker;
+    }
 
-        rootBorderPane.setTop(datePicker);
-        rootBorderPane.setAlignment(rootBorderPane, Pos.TOP_LEFT);
-        rootBorderPane.setMargin(datePicker, new Insets(0.0, 0.0, 20.0, 0.0));
+    public ComboBox initComboBox(){
+        ComboBox comboBox = new ComboBox();
+        ComboBox comboBoxListener = new ComboBox();
+
+        comboBox.getStylesheets().add(getClass().getResource("/ComboBoxStyle.css").toExternalForm());
+
+        new AutoCompleteComboBoxListener<>(comboBox, comboBoxListener);
+
+        comboBox.setCellFactory(new Callback<ListView<String>, ListCell<String>>() {
+            @Override
+            public ListCell<String> call(ListView<String> param) {
+                final ListCell<String> cell = new ListCell<String>() {
+                    {
+                        super.setOnMousePressed(new EventHandler<MouseEvent>() {
+                            @Override
+                            public void handle(MouseEvent event) {
+//                                mouse pressed
+                                comboBoxListener.setValue(comboBox.getValue());
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void updateItem(String item, boolean empty) {
+                        super.updateItem(item, empty);
+                        setText(item);
+                    }
+                };
+                return cell;
+            }
+        });
+
+        comboBoxListener.valueProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue observableValue, String oldValue, String newValue) {
+//                change detected
+//                System.out.println(comboBox.getValue().toString());
+                updateEmployeesFullNameList();
+            }
+        });
+        fillComboBoxItems(comboBox);
+        return comboBox;
     }
 
     public void updateEmployeesFullNameList () {
@@ -97,7 +163,13 @@ public class WindowAttendanceController<T extends DtoEmployeesFullName> {
 
         tableViewController.getEmployeesFullNameList().clear();
         tableViewController.getInitialAttendanceDataMap().clear();
-        tableViewController.getEmployeesFullNameList().addAll(ODBC_PubsBD.selectEmployeesFullName(firstDayOfMonth, lastDayOfMonth));
+        Object comboBoxValue = comboBox.getValue();
+        if (comboBoxValue.equals("Всі об'єкти")) {
+            tableViewController.getEmployeesFullNameList().addAll(ODBC_PubsBD.selectEmployeesFullNameOnAnyObject(firstDayOfMonth, lastDayOfMonth));
+        } else {
+            tableViewController.getEmployeesFullNameList().
+                    addAll(ODBC_PubsBD.selectEmployeesFullNameOnSomeObject(firstDayOfMonth, lastDayOfMonth, objectMap.get(comboBoxValue.toString()).getId()));
+        }
 
         updateDateInTableHeader (calendar);
         tableViewController.initCheckBox();
@@ -118,6 +190,15 @@ public class WindowAttendanceController<T extends DtoEmployeesFullName> {
 
     public void updateDateInTableHeader (Calendar calendar) {
 //        tableViewController.getCalendar().setTime(datePicker.selectedDateProperty().get());
+
+        java.sql.Date startDateObject = null;
+        java.sql.Date finishDateObject= null;
+
+        if (!comboBox.getValue().equals("Всі об'єкти")){
+            startDateObject = objectMap.get(comboBox.getValue().toString()).getStartDate();
+            finishDateObject = objectMap.get(comboBox.getValue().toString()).getFinishDate();
+        }
+
         DateFormat dateFormatForText = new SimpleDateFormat("dd.MM");
         DateFormat dateFormatForId = new SimpleDateFormat("yyyy-MM-dd");
 
@@ -129,14 +210,36 @@ public class WindowAttendanceController<T extends DtoEmployeesFullName> {
         Calendar dayIncrement = calendar;
         dayIncrement.set(Calendar.DAY_OF_MONTH, 1);
 
-        for (TableColumn<T, ?> C: tableColumns) {
+        for (TableColumn<T, ?> tableColumn: tableColumns) {
             if (i > 0) {
-                C.getStyleClass().remove("disable");
-                C.setText(dateFormatForText.format(dayIncrement.getTime()));
-                C.setId(dateFormatForId.format(dayIncrement.getTime()));
-                if (dayIncrement.get(Calendar.MONTH) != thisMonth) {
-                    C.getStyleClass().add("disable");
+//                tableColumn.getStyleClass().remove("disable");
+
+                IntStream.range(0, tableColumn.getStyleClass().size()).forEach(j ->{
+                    if (tableColumn.getStyleClass().get(j).equals("disable")) {
+                        tableColumn.getStyleClass().remove(j);
+                    }
+                });
+
+                tableColumn.setText(dateFormatForText.format(dayIncrement.getTime()));
+                tableColumn.setId(dateFormatForId.format(dayIncrement.getTime()));
+
+                if (startDateObject != null) {
+                    if (dayIncrement.getTime().before(startDateObject)) {
+                        tableColumn.getStyleClass().add("disable");
+                    }
                 }
+                if(finishDateObject != null) {
+                    if (dayIncrement.getTime().after(finishDateObject)) {
+                        tableColumn.getStyleClass().add("disable");
+                    }
+                }
+                if (dayIncrement.get(Calendar.MONTH) != thisMonth) {
+                    tableColumn.getStyleClass().add("disable");
+                }
+
+//                if (dayIncrement.get(Calendar.MONTH) != thisMonth) {
+//                    tableColumn.getStyleClass().add("disable");
+//                }
                 dayIncrement.add(Calendar.DAY_OF_MONTH, 1);
             }
             i++;
@@ -145,5 +248,37 @@ public class WindowAttendanceController<T extends DtoEmployeesFullName> {
 
     public TableViewController getTableViewController() {
         return tableViewController;
+    }
+
+    public void fillComboBoxItems (ComboBox comboBox) {
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(datePicker.selectedDateProperty().get());
+
+        DateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd");
+
+        int daysOfMonthNumber = calendar.getActualMaximum(Calendar.DAY_OF_MONTH);
+
+        calendar.set(Calendar.DAY_OF_MONTH, 1);
+        String firstDayOfMonth = dateFormat.format(calendar.getTime());
+        calendar.set(Calendar.DAY_OF_MONTH, daysOfMonthNumber);
+        String lastDayOfMonth = dateFormat.format(calendar.getTime());
+
+        Object lastComboBoxValue = comboBox.getValue();
+        comboBox.getItems().clear();
+        objectMap.clear();
+        comboBox.getItems().add("Всі об'єкти");
+        ODBC_PubsBD.selectObjectList(firstDayOfMonth, lastDayOfMonth).forEach(item -> {
+            objectMap.put(item.getAddress(), item);
+            comboBox.getItems().add(item.getAddress());
+        });
+
+        if(lastComboBoxValue == null) {
+            comboBox.setValue(comboBox.getItems().get(0));
+        } else {
+            comboBox.setValue(lastComboBoxValue);
+        }
+
+//        System.out.println(objectMap.get(comboBox.getValue().toString()).getStartDate());
+//        System.out.println(objectMap.get(comboBox.getValue().toString()).getStartDate());
     }
 }

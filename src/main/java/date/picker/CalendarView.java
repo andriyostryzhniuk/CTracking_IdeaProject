@@ -27,6 +27,15 @@ public class CalendarView extends VBox {
     private static final String CSS_CALENDAR_FOOTER = "calendar-footer";
     private static final String CSS_CALENDAR = "calendar";
     private static final String CSS_CALENDAR_TODAY_BUTTON = "calendar-today-button";
+    private Date oldSelectedDate;
+
+    public Date getOldSelectedDate() {
+        return oldSelectedDate;
+    }
+
+    public void setOldSelectedDate(Date oldSelectedDate) {
+        this.oldSelectedDate = oldSelectedDate;
+    }
 
     /**
      * Initializes a calendar with the default locale.

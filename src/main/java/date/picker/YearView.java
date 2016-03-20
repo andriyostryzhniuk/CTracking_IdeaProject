@@ -19,7 +19,6 @@ final class YearView extends DatePane {
     private static final String CSS_CALENDAR_YEAR_VIEW = "calendar-year-view";
     private static final String CSS_CALENDAR_MONTH_BUTTON = "calendar-month-button";
 
-
     public YearView(final CalendarView calendarView) {
         super(calendarView);
 
@@ -64,6 +63,7 @@ final class YearView extends DatePane {
                         calendarView.getCalendar().set(Calendar.MONTH, j);
                         calendarView.currentlyViewing.set(Calendar.YEAR);
                         calendarView.selectedDate.set(calendarView.getCalendar().getTime());
+                        calendarView.setOldSelectedDate(calendarView.selectedDate.get());
                     }
                 }
             });
@@ -79,8 +79,11 @@ final class YearView extends DatePane {
     @Override
     protected void updateContent() {
         Date month = new Date();
-        for (int i = 0; i < 12; i++) {
+        int numberOfMonths = calendarView.getCalendar().getMaximum(Calendar.MONTH) + 1;
+
+        for (int i = 0; i < numberOfMonths; i++) {
             Button button = (Button) getChildren().get(i);
+//            button.setDisable(true);
             month.setMonth(i);
             button.setText(calendarView.convertMonthName(month));
         }

@@ -22,17 +22,13 @@ import javafx.stage.Popup;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Date;
-import java.util.Locale;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.*;
 
 public class DatePicker extends HBox {
 
 
     private static final String CSS_DATE_PICKER_VALID = "datepicker-valid";
     private static final String CSS_DATE_PICKER_INVALID = "datepicker-invalid";
-
 
     /**
      * Initializes the date picker with the default locale.
@@ -392,6 +388,10 @@ public class DatePicker extends HBox {
             popup.getContent().add(calendarView);
         }
 
+        if (calendarView.getOldSelectedDate() != null) {
+            calendarView.getCalendar().setTime(calendarView.getOldSelectedDate());
+        }
+
         Bounds calendarBounds = calendarView.getBoundsInLocal();
         Bounds bounds = localToScene(getBoundsInLocal());
 
@@ -399,10 +399,9 @@ public class DatePicker extends HBox {
         double posY = calendarBounds.getMinY() + bounds.getHeight() + bounds.getMinY() + getScene().getY() + getScene().getWindow().getY();
 
         popup.show(this, posX, posY);
-
     }
 
-    public void deselectSelection() {
+    public void deselect() {
         textField.setStyle("-fx-highlight-text-fill: null;");
     }
 }

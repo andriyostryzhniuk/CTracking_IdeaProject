@@ -1,5 +1,6 @@
-package sample;
+package employees.attendance.table;
 
+import employees.attendance.table.dto.DtoObject;
 import employees.attendance.table.dto.DtoWokingHoursADay;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -18,7 +19,7 @@ public class ODBC_PubsBD {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ODBC_PubsBD.class);
 
-    public static List<DtoEmployeesFullName> selectEmployeesFullName(String firstDayOfMonth, String lastDayOfMonth) {
+    public static List<DtoEmployeesFullName> selectEmployeesFullNameOnAnyObject(String firstDayOfMonth, String lastDayOfMonth) {
         List<DtoEmployeesFullName> dtoEmployeesFullNames = getJdbcTemplate().query("select employees.id, " +
                 "concat(employees.surname, ' ', left (employees.name, 1), '. ', left (employees.middleName, 1), '.') as fullName, " +
                 "employees.workingHours " +
@@ -29,6 +30,26 @@ public class ODBC_PubsBD {
                 "finishDate between convert('" + firstDayOfMonth + "', DATE) and convert('" + lastDayOfMonth + "', DATE) or " +
                 "startDate < convert('" + firstDayOfMonth + "', DATE) and finishDate > convert('" + lastDayOfMonth + "', DATE) or " +
                 "startDate < convert('" + firstDayOfMonth + "', DATE) and finishDate is null) who_is_on_object " +
+                "on employees.id = who_is_on_object.employees_id " +
+                "where who_is_on_object.employees_id is not null and " +
+                "(employees.lastDay is null or " +
+                "employees.lastDay > convert('" + firstDayOfMonth + "', DATE)) " +
+                "order by employees.surname asc", BeanPropertyRowMapper.newInstance(DtoEmployeesFullName.class));
+        return dtoEmployeesFullNames;
+    }
+
+    public static List<DtoEmployeesFullName> selectEmployeesFullNameOnSomeObject(String firstDayOfMonth, String lastDayOfMonth, int objectId) {
+        List<DtoEmployeesFullName> dtoEmployeesFullNames = getJdbcTemplate().query("select employees.id, " +
+                "concat(employees.surname, ' ', left (employees.name, 1), '. ', left (employees.middleName, 1), '.') as fullName, " +
+                "employees.workingHours " +
+                "from employees left join " +
+                "(select distinct employees_id " +
+                "from object_employees " +
+                "where object_employees.object_id = '" + objectId + "' and ( " +
+                "startDate between convert('" + firstDayOfMonth + "', DATE) and convert('" + lastDayOfMonth + "', DATE) or " +
+                "finishDate between convert('" + firstDayOfMonth + "', DATE) and convert('" + lastDayOfMonth + "', DATE) or " +
+                "startDate < convert('" + firstDayOfMonth + "', DATE) and finishDate > convert('" + lastDayOfMonth + "', DATE) or " +
+                "startDate < convert('" + firstDayOfMonth + "', DATE) and finishDate is null)) who_is_on_object " +
                 "on employees.id = who_is_on_object.employees_id " +
                 "where who_is_on_object.employees_id is not null and " +
                 "(employees.lastDay is null or " +
@@ -97,5 +118,16 @@ public class ODBC_PubsBD {
         getJdbcTemplate().update("DELETE FROM worktracking " +
                 "WHERE object_employees_id = '" + objectEmployeesId + "' and " +
                 "date = convert('" + date + "', DATE)");
+    }
+
+    public static List<DtoObject> selectObjectList(String firstDayOfMonth, String lastDayOfMonth) {
+        List<DtoObject> dtoObjectList = getJdbcTemplate().query("select address, id, startDate, finishDate " +
+                "from object " +
+                "where startDate between convert('" + firstDayOfMonth + "', DATE) and convert('" + lastDayOfMonth + "', DATE) or " +
+                "finishDate between convert('" + firstDayOfMonth + "', DATE) and convert('" + lastDayOfMonth + "', DATE) or " +
+                "startDate < convert('" + firstDayOfMonth + "', DATE) and finishDate > convert('" + lastDayOfMonth + "', DATE) or " +
+                "startDate < convert('" + firstDayOfMonth + "', DATE) and finishDate is null " +
+                "order by address asc", BeanPropertyRowMapper.newInstance(DtoObject.class));
+        return dtoObjectList;
     }
 }

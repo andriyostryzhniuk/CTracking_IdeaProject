@@ -16,7 +16,6 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import employees.attendance.table.dto.DtoEmployeesFullName;
 import javafx.scene.layout.*;
-import sample.ODBC_PubsBD;
 
 import java.util.stream.IntStream;
 

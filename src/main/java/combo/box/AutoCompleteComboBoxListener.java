@@ -81,9 +81,8 @@ public class AutoCompleteComboBoxListener<T> implements EventHandler<KeyEvent> {
 
         ObservableList list = FXCollections.observableArrayList();
         for (int i=0; i<data.size(); i++) {
-            if(data.get(i).toString().toLowerCase().startsWith(
-                    AutoCompleteComboBoxListener.this.comboBox
-                            .getEditor().getText().toLowerCase())) {
+            if(data.get(i).toString().toLowerCase().
+                            indexOf(AutoCompleteComboBoxListener.this.comboBox.getEditor().getText().toLowerCase()) != -1) {
                 list.add(data.get(i));
             }
         }
