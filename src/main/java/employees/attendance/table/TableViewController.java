@@ -78,6 +78,8 @@ public class TableViewController<T extends DtoEmployeesFullName> {
         return initialAttendanceDataMap;
     }
 
+    private int objectId;
+
     @FXML
     public void initialize() {
 
@@ -205,13 +207,38 @@ public class TableViewController<T extends DtoEmployeesFullName> {
             int employeesId =  employeesFullNameList.get(i).getId();
             for (GridPane gridPane : tableView.getTableView().getItems().get(i).getGridPaneList()) {
                 String date = tableView.getTableView().getColumns().get(j).getId();
-                if(initialAttendanceDataMap.get(employeesId).get(date) != -1) {
-                    CheckBox checkBox = (CheckBox) gridPane.getChildren().get(0);
-                    checkBox.setSelected(true);
+                if (objectId == -1) {
+                    if (ODBC_PubsBD.selectIsAnyObjectADay(date, employeesId) == -1) {
+                        CheckBox checkBox = (CheckBox) gridPane.getChildren().get(0);
+                        checkBox.setDisable(true);
 
-                    TextField textField = new TextField();
-                    textField.setText(Integer.toString(initialAttendanceDataMap.get(employeesId).get(date)));
-                    addTextFiledToGridPane(gridPane, textField, i);
+                        Pane pane = new Pane();
+                        pane.setStyle("-fx-background-color: Silver");
+                        gridPane.add(pane, 0, 0);
+                    } else if (initialAttendanceDataMap.get(employeesId).get(date) != -1) {
+                        CheckBox checkBox = (CheckBox) gridPane.getChildren().get(0);
+                        checkBox.setSelected(true);
+
+                        TextField textField = new TextField();
+                        textField.setText(Integer.toString(initialAttendanceDataMap.get(employeesId).get(date)));
+                        addTextFiledToGridPane(gridPane, textField, i);
+                    }
+                } else {
+                    if (ODBC_PubsBD.selectIsSomeObjectADay(date, employeesId, objectId) == -1) {
+                        CheckBox checkBox = (CheckBox) gridPane.getChildren().get(0);
+                        checkBox.setDisable(true);
+
+                        Pane pane = new Pane();
+                        pane.setStyle("-fx-background-color: Silver");
+                        gridPane.add(pane, 0, 0);
+                    } else if (initialAttendanceDataMap.get(employeesId).get(date) != -1) {
+                        CheckBox checkBox = (CheckBox) gridPane.getChildren().get(0);
+                        checkBox.setSelected(true);
+
+                        TextField textField = new TextField();
+                        textField.setText(Integer.toString(initialAttendanceDataMap.get(employeesId).get(date)));
+                        addTextFiledToGridPane(gridPane, textField, i);
+                    }
                 }
                 j++;
             }
@@ -306,5 +333,9 @@ public class TableViewController<T extends DtoEmployeesFullName> {
             i++;
         }
         return sumOfWorkingHours;
+    }
+
+    public void setObjectId(int objectId) {
+        this.objectId = objectId;
     }
 }

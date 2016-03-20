@@ -388,8 +388,8 @@ public class DatePicker extends HBox {
             popup.getContent().add(calendarView);
         }
 
-        if (calendarView.getOldSelectedDate() != null) {
-            calendarView.getCalendar().setTime(calendarView.getOldSelectedDate());
+        if (calendarView.getLastSelectedDate() != null) {
+            calendarView.getCalendar().setTime(calendarView.getLastSelectedDate());
         }
 
         Bounds calendarBounds = calendarView.getBoundsInLocal();
@@ -403,5 +403,9 @@ public class DatePicker extends HBox {
 
     public void deselect() {
         textField.setStyle("-fx-highlight-text-fill: null;");
+    }
+
+    public Date getLastSelectedDate() {
+        return calendarView.getLastSelectedDate();
     }
 }

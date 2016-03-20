@@ -27,14 +27,14 @@ public class CalendarView extends VBox {
     private static final String CSS_CALENDAR_FOOTER = "calendar-footer";
     private static final String CSS_CALENDAR = "calendar";
     private static final String CSS_CALENDAR_TODAY_BUTTON = "calendar-today-button";
-    private Date oldSelectedDate;
+    private Date lastSelectedDate;
 
-    public Date getOldSelectedDate() {
-        return oldSelectedDate;
+    public Date getLastSelectedDate() {
+        return lastSelectedDate;
     }
 
-    public void setOldSelectedDate(Date oldSelectedDate) {
-        this.oldSelectedDate = oldSelectedDate;
+    public void setLastSelectedDate(Date lastSelectedDate) {
+        this.lastSelectedDate = lastSelectedDate;
     }
 
     /**

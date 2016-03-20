@@ -89,9 +89,40 @@ public class ODBC_PubsBD {
         SqlRowSet rs = getJdbcTemplate().queryForRowSet("select object_employees.id " +
                 "from object_employees " +
                 "where object_employees.employees_id = '" + employeesId + "' and " +
-                "(object_employees.startDate <= convert('" + date + "', DATE) and " +
+                "((object_employees.startDate <= convert('" + date + "', DATE) and " +
                 "object_employees.finishDate is null) or " +
-                "convert('" + date + "', DATE) between object_employees.startDate and object_employees.finishDate");
+                "convert('" + date + "', DATE) between object_employees.startDate and object_employees.finishDate)");
+        Integer objectEmployeesId = null;
+        while (rs.next()) {
+            objectEmployeesId = new Integer(rs.getInt(1));
+        }
+        return objectEmployeesId;
+    }
+
+    public static Integer selectIsAnyObjectADay(String date, int employeesId) {
+        SqlRowSet rs = getJdbcTemplate().queryForRowSet("select ifnull(( " +
+                "select id " +
+                "from object_employees " +
+                "where employees_id = '" + employeesId + "' and " +
+                "((startDate <= convert('" + date + "', DATE) and " +
+                "finishDate is null) or " +
+                "convert('" + date + "', DATE) between startDate and finishDate)), -1)");
+        Integer objectEmployeesId = null;
+        while (rs.next()) {
+            objectEmployeesId = new Integer(rs.getInt(1));
+        }
+        return objectEmployeesId;
+    }
+
+    public static Integer selectIsSomeObjectADay(String date, int employeesId, int objectId) {
+        SqlRowSet rs = getJdbcTemplate().queryForRowSet("select ifnull(( " +
+                "select id " +
+                "from object_employees " +
+                "where object_id = '" + objectId + "' and " +
+                "employees_id = '" + employeesId + "' and " +
+                "((startDate <= convert('" + date + "', DATE) and " +
+                "finishDate is null) or " +
+                "convert('" + date + "', DATE) between startDate and finishDate)), -1)");
         Integer objectEmployeesId = null;
         while (rs.next()) {
             objectEmployeesId = new Integer(rs.getInt(1));
@@ -101,6 +132,7 @@ public class ODBC_PubsBD {
 
     public static void insertIntoWorkTracking(String date, int workingHours, int employeesId){
         final int objectEmployeesId = selectObjectEmployeesId(date, employeesId);
+        System.out.println(objectEmployeesId);
         getJdbcTemplate().update("INSERT INTO worktracking (id, object_employees_id, date, workingHours) " +
                 "VALUES (null, '" + objectEmployeesId + "', convert('" + date + "', DATE), '" + workingHours + "')");
     }

@@ -63,7 +63,7 @@ final class YearView extends DatePane {
                         calendarView.getCalendar().set(Calendar.MONTH, j);
                         calendarView.currentlyViewing.set(Calendar.YEAR);
                         calendarView.selectedDate.set(calendarView.getCalendar().getTime());
-                        calendarView.setOldSelectedDate(calendarView.selectedDate.get());
+                        calendarView.setLastSelectedDate(calendarView.selectedDate.get());
                     }
                 }
             });
