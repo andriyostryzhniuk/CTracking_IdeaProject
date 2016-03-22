@@ -7,6 +7,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.layout.GridPane;
+import stock.tracking.WindowStockTrackingController;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -16,6 +17,7 @@ public class MainWindowController {
     public GridPane mainGridPane;
 
     private WindowAttendanceController windowAttendanceController;
+    private WindowStockTrackingController windowStockTrackingController;
 
     public void initEmployeesWorkTracking(ActionEvent actionEvent) throws IOException {
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/employees.attendance.table/WindowAttendance.fxml"));
@@ -61,5 +63,15 @@ public class MainWindowController {
         buttonContainer.setMargin(buttonClose, new Insets(20, 0, 0, 0));
 
         return buttonContainer;
+    }
+
+    public void initStockTracking(ActionEvent actionEvent) throws IOException {
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/stock.tracking/WindowStockTracking.fxml"));
+        try {
+            mainGridPane.add(fxmlLoader.load(), 1, 1);
+            windowStockTrackingController = fxmlLoader.getController();
+        } catch (IOException exception) {
+            throw new UncheckedIOException(exception);
+        }
     }
 }

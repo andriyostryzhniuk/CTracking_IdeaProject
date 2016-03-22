@@ -88,6 +88,7 @@ public class TableViewController<T extends DtoEmployeesFullName> {
         tableView.setStyle("-fx-accent: derive(-fx-control-inner-background, -20%); -fx-control-inner-background, -80%;");
         tableView.getTableView().setFixedCellSize(40.0);
         tableView.getTableView().getStylesheets().add(getClass().getResource("/employees.attendance.table/TableViewStyle.css").toExternalForm());
+        tableView.getTableView().setPlaceholder(new Label("Немає жодного працівника на даному об'єкті"));
 
         colName.setPercentWidth(150.0);
         colName.setMinWidth(150.0);
