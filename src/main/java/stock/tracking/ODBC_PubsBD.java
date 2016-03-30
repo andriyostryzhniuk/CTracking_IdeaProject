@@ -12,6 +12,7 @@ import stock.tracking.dto.DtoStockCategory;
 
 import java.util.List;
 
+import static sample.DB_Connector.getDataSource;
 import static sample.DB_Connector.getJdbcTemplate;
 
 
@@ -36,7 +37,7 @@ public class ODBC_PubsBD {
         return dtoStockList;
     }
 
-    public static List<DtoStock> selectStockOfCategory(String stockType) {
+    public static List<DtoStock> selectStockOfCategory(String stockCategory) {
         List<DtoStock> dtoStockList = getJdbcTemplate().query("select stock.id, " +
                 "ifnull(stock.name, stockCategory.name) as name, stockCategory.name as stockCategory " +
                 "from stockCategory, stock left join " +
@@ -48,7 +49,7 @@ public class ODBC_PubsBD {
                 "where usingStock.stock_id is null and " +
                 "stock.status = 'доступно' and " +
                 "stock.stockCategory_id = stockCategory.id and " +
-                "stockCategory.name = '" + stockType + "' " +
+                "stockCategory.name = '" + stockCategory + "' " +
                 "order by stock.name asc", BeanPropertyRowMapper.newInstance(DtoStock.class));
         return dtoStockList;
     }
@@ -113,5 +114,33 @@ public class ODBC_PubsBD {
             stockCategoryList.add(rs.getString(1));
         }
         return stockCategoryList;
+    }
+
+    public static List<DtoStock> selectStockOfCategoryWithId (int stockCategoryId) {
+        List<DtoStock> dtoStockList = getJdbcTemplate().query("select stock.id, " +
+                "ifnull(stock.name, stockCategory.name) as name, stockCategory.name as stockCategory " +
+                "from stockCategory, stock left join " +
+                "   (select distinct stocktracking.stock_id " +
+                "   from stocktracking " +
+                "   where stocktracking.returnDate is null or " +
+                "   stocktracking.returnDate > curdate()) usingStock " +
+                "   on stock.id = usingStock.stock_id " +
+                "where usingStock.stock_id is null and " +
+                "stock.status = 'доступно' and " +
+                "stock.stockCategory_id = stockCategory.id and " +
+                "stockCategory.id = '" + stockCategoryId + "' " +
+                "order by stock.name asc", BeanPropertyRowMapper.newInstance(DtoStock.class));
+        return dtoStockList;
+    }
+
+    public static String selectStockCategoryNameWithId (int stockCategoryId) {
+        SqlRowSet rs = getJdbcTemplate().queryForRowSet("select stockCategory.name " +
+                "from stockCategory " +
+                "where stockCategory.id = '" + stockCategoryId + "'");
+        String stockCategoryName = new String();
+        while (rs.next()) {
+            stockCategoryName = rs.getString(1);
+        }
+        return stockCategoryName;
     }
 }

@@ -19,8 +19,10 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.util.Callback;
 import stock.tracking.dto.DtoEmployees;
+import stock.tracking.dto.DtoStock;
 import java.io.IOException;
 import java.util.Map;
+
 import static stock.tracking.ODBC_PubsBD.insertIntoWorkTracking;
 import static stock.tracking.ODBC_PubsBD.selectStockCategoryName;
 
@@ -34,6 +36,7 @@ public class WindowStockTrackingController {
 
     public ListView<Pane> liableListView;
     private ObservableList<DtoEmployees> employeesDataList = FXCollections.observableArrayList();
+    private ObservableList<DtoStock> stockDataList = FXCollections.observableArrayList();
 
     public ObservableMap<Integer, Integer> resultMap = FXCollections.observableHashMap();
 
@@ -201,13 +204,48 @@ public class WindowStockTrackingController {
                 boolean success = false;
                 if (db.hasString()) {
                     if (Integer.parseInt(db.getString().substring(0, 1)) == 0) {
-                        resultMap.put(Integer.parseInt(db.getString().substring(2)), Integer.parseInt(pane.getId()));
+                        int stockId = Integer.parseInt(db.getString().substring(2));
+                        resultMap.put(stockId, Integer.parseInt(pane.getId()));
                         stockListViewController.setResultMap(resultMap);
-                        stockListViewController.setDisableDroppedSource(Integer.parseInt(db.getString().substring(2)));
+                        stockListViewController.setDisableDroppedSource(stockId);
                         setTextNumberOfStock(Integer.parseInt(pane.getId()));
                     } else {
-                        PromptOfNumberStock promptOfNumberStock = new PromptOfNumberStock();
-                        promptOfNumberStock.startPrompt(pane.getScene().getWindow());
+
+                        int stockCategoryId = Integer.parseInt(db.getString().substring(2));
+                        stockDataList.addAll(ODBC_PubsBD.selectStockOfCategoryWithId(stockCategoryId));
+                        int numberOfStockGranted = 0;
+                        if (!resultMap.isEmpty()) {
+                            for (DtoStock dtoStock : stockDataList) {
+                                for (Map.Entry<Integer, Integer> entry : resultMap.entrySet()) {
+                                    if (entry.getKey() == dtoStock.getId()) {
+                                        numberOfStockGranted++;
+                                    }
+                                }
+                            }
+                        }
+                        int numberOfAvailableStock = stockDataList.size() - numberOfStockGranted;
+
+                        Label namesLiableLabel = (Label) pane.getChildren().get(0);
+                        String namesLiable = namesLiableLabel.getText();
+                        PromptOfNumberStock promptOfNumberStock = new PromptOfNumberStock(stockCategoryId, namesLiable);
+                        int numberOfStockToGrant =
+                                promptOfNumberStock.showPrompt(pane.getScene().getWindow(), numberOfAvailableStock);
+                        if (numberOfStockToGrant != 0) {
+                            int i = 0;
+                            for (DtoStock item : stockDataList) {
+                                if (resultMap.get(item.getId()) == null) {
+                                    resultMap.put(item.getId(), Integer.parseInt(pane.getId()));
+                                    i++;
+                                }
+                                if (i == numberOfStockToGrant) {
+                                    break;
+                                }
+                            }
+                            stockListViewController.setResultMap(resultMap);
+                            stockListViewController.setTextOfAvailableStock(stockCategoryId);
+                            setTextNumberOfStock(Integer.parseInt(pane.getId()));
+                        }
+                        stockDataList.clear();
                     }
                     success = true;
                 }

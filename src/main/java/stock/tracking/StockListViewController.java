@@ -12,7 +12,6 @@ import javafx.scene.layout.Pane;
 import stock.tracking.dto.DtoStock;
 import stock.tracking.dto.DtoStockCategory;
 import java.util.Map;
-import static stock.tracking.ODBC_PubsBD.selectStockCategory;
 
 public class StockListViewController extends ListView {
     public GridPane rootGridPane;
@@ -39,21 +38,10 @@ public class StockListViewController extends ListView {
         stockListView.getItems().clear();
 
         if (stockCategory.equals("Всі категорії")) {
-            stockCategoryDataList.addAll(selectStockCategory(stockType));
+            stockCategoryDataList.addAll(ODBC_PubsBD.selectStockCategory(stockType));
 //            count of stock available in each category
             stockCategoryDataList.forEach(item -> {
-                int numberOfStockGranted = 0;
-                if (!resultMap.isEmpty()) {
-                    stockDataList.addAll(ODBC_PubsBD.selectStockOfCategory(item.getName()));
-                    for (DtoStock dtoStock : stockDataList) {
-                        for (Map.Entry<Integer, Integer> entry : resultMap.entrySet()) {
-                            if (entry.getKey() == dtoStock.getId()) {
-                                numberOfStockGranted++;
-                            }
-                        }
-                    }
-                    stockDataList.clear();
-                }
+                int numberOfStockGranted = countStockOfCategory(item.getId());
                 item.initPaneContainer(numberOfStockGranted);
             });
             stockCategoryDataList.forEach(item -> {
@@ -151,5 +139,29 @@ public class StockListViewController extends ListView {
 
     public void setStockTypeChoiceBox(ChoiceBox stockTypeChoiceBox) {
         this.stockTypeChoiceBox = stockTypeChoiceBox;
+    }
+
+    public int countStockOfCategory(int stockCategoryId) {
+        int numberOfStockGranted = 0;
+        if (!resultMap.isEmpty()) {
+            stockDataList.addAll(ODBC_PubsBD.selectStockOfCategoryWithId(stockCategoryId));
+            for (DtoStock dtoStock : stockDataList) {
+                for (Map.Entry<Integer, Integer> entry : resultMap.entrySet()) {
+                    if (entry.getKey() == dtoStock.getId()) {
+                        numberOfStockGranted++;
+                    }
+                }
+            }
+            stockDataList.clear();
+        }
+        return numberOfStockGranted;
+    }
+
+    public void setTextOfAvailableStock (int stockCategoryId){
+        stockCategoryDataList.stream().filter(item -> item.getId() == stockCategoryId).forEach(item -> {
+            Label numberOfStockLabel = (Label) item.getPaneContainer().getChildren().get(1);
+            numberOfStockLabel.setText("Кількість: " +
+                    Integer.toString(item.getNumberOfStock() - countStockOfCategory(stockCategoryId)));
+        });
     }
 }
