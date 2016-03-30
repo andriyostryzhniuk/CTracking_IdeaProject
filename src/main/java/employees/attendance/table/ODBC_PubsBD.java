@@ -132,7 +132,6 @@ public class ODBC_PubsBD {
 
     public static void insertIntoWorkTracking(String date, int workingHours, int employeesId){
         final int objectEmployeesId = selectObjectEmployeesId(date, employeesId);
-        System.out.println(objectEmployeesId);
         getJdbcTemplate().update("INSERT INTO worktracking (id, object_employees_id, date, workingHours) " +
                 "VALUES (null, '" + objectEmployeesId + "', convert('" + date + "', DATE), '" + workingHours + "')");
     }

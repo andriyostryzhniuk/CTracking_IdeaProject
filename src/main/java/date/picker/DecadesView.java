@@ -6,6 +6,8 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 
+import java.text.DateFormat;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 
 /**
@@ -72,10 +74,30 @@ final class DecadesView extends DatePane {
             a += 10;
         }
         int startYear = year - a;
+
+        java.sql.Date startDateObject = calendarView.getStartDateObject();
+        java.sql.Date finishDateObject = calendarView.getFinishDateObject();
+        DateFormat dateFormat = new SimpleDateFormat("yyyy");
+
         for (int i = 0; i < NUMBER_OF_DECADES * 10; i++) {
             final int y = i + startYear;
             Button button = (Button) getChildren().get(i);
-//            button.setDisable(true);
+
+            button.getStyleClass().remove("forObject");
+
+            if (startDateObject != null) {
+                int startYearOfObject = Integer.parseInt(dateFormat.format(startDateObject));
+                if (finishDateObject == null) {
+                    if (y >= startYearOfObject) {
+                        button.getStyleClass().add("forObject");
+                    }
+                } else {
+                    if (y >= startYearOfObject && y <= Integer.parseInt(dateFormat.format(finishDateObject))) {
+                        button.getStyleClass().add("forObject");
+                    }
+                }
+            }
+
             button.setText(Integer.toString(y));
             button.setUserData(y);
         }

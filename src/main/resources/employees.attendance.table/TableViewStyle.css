@@ -10,6 +10,10 @@
    -fx-padding: 0 0 0 -1;
  }
 
- .table-view:focused {
-     -fx-background-color: transparent ,-fx-box-border,-fx-control-inner-background;
- }
+.table-view:focused {
+    -fx-background-color: transparent ,-fx-box-border,-fx-control-inner-background;
+}
+
+.table-view {
+    -fx-accent: derive(-fx-control-inner-background, -20%); -fx-control-inner-background, -80%;
+}

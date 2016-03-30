@@ -1,0 +1,15 @@
+.list-view .list-cell {
+    -fx-padding: 1 0 0 0;
+}
+
+.list-view:focused {
+    -fx-background-color: transparent ,-fx-box-border,-fx-control-inner-background;
+}
+
+.list-view {
+    -fx-accent: derive(-fx-control-inner-background, -20%); -fx-control-inner-background, -80%;
+}
+
+
+
+

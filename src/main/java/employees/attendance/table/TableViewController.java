@@ -85,7 +85,6 @@ public class TableViewController<T extends DtoEmployeesFullName> {
 
         fillColsDateList();
 
-        tableView.setStyle("-fx-accent: derive(-fx-control-inner-background, -20%); -fx-control-inner-background, -80%;");
         tableView.getTableView().setFixedCellSize(40.0);
         tableView.getTableView().getStylesheets().add(getClass().getResource("/employees.attendance.table/TableViewStyle.css").toExternalForm());
         tableView.getTableView().setPlaceholder(new Label("Немає жодного працівника на даному об'єкті"));
@@ -273,6 +272,7 @@ public class TableViewController<T extends DtoEmployeesFullName> {
     }
 
     public void initAttendanceDataMap(String firstDayOfMonth){
+        initialAttendanceDataMap.clear();
         ODBC_PubsBD.initTableDaysOfMonth(firstDayOfMonth);
         employeesFullNameList.forEach(item -> {
             ObservableMap<String, Integer> valuesObservableMap = FXCollections.observableHashMap();
@@ -316,6 +316,7 @@ public class TableViewController<T extends DtoEmployeesFullName> {
                 j++;
             }
         });
+        initAttendanceDataMap(tableView.getTableView().getColumns().get(1).getId());
     }
 
     public Integer sumWorkingHours(Integer indexItem){

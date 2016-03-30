@@ -21,7 +21,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.util.Callback;
-
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -39,7 +38,8 @@ public class WindowAttendanceController<T extends DtoEmployeesFullName> {
     private int previousYear;
     private Date previousDate;
     private TableViewController tableViewController;
-    private GridPane gridPane = new GridPane();
+    private GridPane topGridPane = new GridPane();
+    public ComboBox comboBoxListener = new ComboBox();
 
     private ObservableMap<String, DtoObject> objectMap = FXCollections.observableHashMap();
 
@@ -47,18 +47,18 @@ public class WindowAttendanceController<T extends DtoEmployeesFullName> {
     private void initialize() {
 
         datePicker = initDatePicker();
-        gridPane.add(datePicker, 0, 0);
+        topGridPane.add(datePicker, 0, 0);
 
         Label label = new Label("Вибрати об'єкт:");
-        gridPane.add(label, 1, 0);
-        gridPane.setMargin(label, new Insets(0, 10, 0, 80));
+        topGridPane.add(label, 1, 0);
+        topGridPane.setMargin(label, new Insets(0, 10, 0, 80));
 
         comboBox = initComboBox();
-        gridPane.add(comboBox, 2, 0);
+        topGridPane.add(comboBox, 2, 0);
 
-        rootBorderPane.setTop(gridPane);
-        rootBorderPane.setAlignment(gridPane, Pos.TOP_LEFT);
-        rootBorderPane.setMargin(gridPane, new Insets(0.0, 0.0, 20.0, 0.0));
+        rootBorderPane.setTop(topGridPane);
+        rootBorderPane.setAlignment(topGridPane, Pos.TOP_LEFT);
+        rootBorderPane.setMargin(topGridPane, new Insets(0.0, 0.0, 20.0, 0.0));
 
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/employees.attendance.table/TableView.fxml"));
         try {
@@ -114,14 +114,14 @@ public class WindowAttendanceController<T extends DtoEmployeesFullName> {
                     if (comboBox.getItems().size() == 1) {
                         Label notificationLabel = new Label("Не знайдено жодного об'єкта за даний період");
                         notificationLabel.setStyle("-fx-text-fill: red;");
-                        gridPane.add(notificationLabel, 3, 0);
-                        gridPane.setMargin(notificationLabel, new Insets(0, 0, 0, 30));
+                        topGridPane.add(notificationLabel, 3, 0);
+                        topGridPane.setMargin(notificationLabel, new Insets(0, 0, 0, 30));
                         Timer timer = new Timer();
                         timer.scheduleAtFixedRate(new TimerTask() {
                             @Override
                             public void run() {
                                 Platform.runLater(() -> {
-                                    gridPane.getChildren().remove(notificationLabel);
+                                    topGridPane.getChildren().remove(notificationLabel);
                                 });
                             }
                         }, 3000, 1000);
@@ -139,14 +139,14 @@ public class WindowAttendanceController<T extends DtoEmployeesFullName> {
 
                             Label notificationLabel = new Label("На вибраному об'єкті не проводилось робіт за даний період");
                             notificationLabel.setStyle("-fx-text-fill: red;");
-                            gridPane.add(notificationLabel, 3, 0);
-                            gridPane.setMargin(notificationLabel, new Insets(0, 0, 0, 30));
+                            topGridPane.add(notificationLabel, 3, 0);
+                            topGridPane.setMargin(notificationLabel, new Insets(0, 0, 0, 30));
                             Timer timer = new Timer();
                             timer.scheduleAtFixedRate(new TimerTask() {
                                 @Override
                                 public void run() {
                                     Platform.runLater(() -> {
-                                        gridPane.getChildren().remove(notificationLabel);
+                                        topGridPane.getChildren().remove(notificationLabel);
                                     });
                                 }
                             }, 3000, 1000);
@@ -164,9 +164,9 @@ public class WindowAttendanceController<T extends DtoEmployeesFullName> {
 
     public ComboBox initComboBox(){
         ComboBox comboBox = new ComboBox();
-        ComboBox comboBoxListener = new ComboBox();
+//        ComboBox comboBoxListener = new ComboBox();
 
-        comboBox.getStylesheets().add(getClass().getResource("/ComboBoxStyle.css").toExternalForm());
+        comboBox.getStylesheets().add(getClass().getResource("/employees.attendance.table/ComboBoxStyle.css").toExternalForm());
 
         new AutoCompleteComboBoxListener<>(comboBox, comboBoxListener);
 
@@ -363,5 +363,6 @@ public class WindowAttendanceController<T extends DtoEmployeesFullName> {
         } else {
             comboBox.setValue(lastComboBoxValue);
         }
+        new AutoCompleteComboBoxListener<>(comboBox, comboBoxListener);
     }
 }

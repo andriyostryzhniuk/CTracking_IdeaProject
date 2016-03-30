@@ -28,6 +28,9 @@ public class CalendarView extends VBox {
     private static final String CSS_CALENDAR = "calendar";
     private static final String CSS_CALENDAR_TODAY_BUTTON = "calendar-today-button";
     private Date lastSelectedDate;
+    private java.sql.Date startDateObject = null;
+    private java.sql.Date finishDateObject = null;
+    private MainStackPane mainStackPane;
 
     public Date getLastSelectedDate() {
         return lastSelectedDate;
@@ -35,6 +38,22 @@ public class CalendarView extends VBox {
 
     public void setLastSelectedDate(Date lastSelectedDate) {
         this.lastSelectedDate = lastSelectedDate;
+    }
+
+    public java.sql.Date getStartDateObject() {
+        return startDateObject;
+    }
+
+    public void setStartDateObject(java.sql.Date startDateObject) {
+        this.startDateObject = startDateObject;
+    }
+
+    public java.sql.Date getFinishDateObject() {
+        return finishDateObject;
+    }
+
+    public void setFinishDateObject(java.sql.Date finishDateObject) {
+        this.finishDateObject = finishDateObject;
     }
 
     /**
@@ -105,7 +124,7 @@ public class CalendarView extends VBox {
                 calendarDate.set(date);
             }
         });
-        MainStackPane mainStackPane = new MainStackPane(this);
+        mainStackPane = new MainStackPane(this);
         VBox.setVgrow(mainStackPane, Priority.ALWAYS);
         mainNavigationPane = new MainNavigationPane(this);
 
@@ -319,5 +338,9 @@ public class CalendarView extends VBox {
             case 11: return "Грудень";
         }
         return null;
+    }
+
+    public void updateContent(){
+        mainStackPane.updateContent();
     }
 }

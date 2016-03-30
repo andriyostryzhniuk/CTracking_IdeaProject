@@ -7,8 +7,6 @@ import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
-import javafx.scene.Node;
-import javafx.scene.control.Button;
 import javafx.scene.layout.StackPane;
 import javafx.scene.shape.Rectangle;
 import javafx.util.Duration;
@@ -23,22 +21,33 @@ import java.util.Calendar;
  */
 final class MainStackPane extends StackPane {
 
-    private AnimatedStackPane yearView;
-    private AnimatedStackPane decadesView;
+    private AnimatedStackPane animatedStackPaneYearView;
+    private AnimatedStackPane animatedStackPaneDecadesView;
     private CalendarView calendarView;
+    private YearView yearView1;
+    private YearView yearView2;
+    private DecadesView decadesView1;
+    private DecadesView decadesView2;
 
 
     public MainStackPane(final CalendarView calendarView) {
 
         this.calendarView = calendarView;
-        yearView = new AnimatedStackPane(new YearView(calendarView), new YearView(calendarView));
-        decadesView = new AnimatedStackPane(new DecadesView(calendarView), new DecadesView(calendarView));
 
-        getChildren().addAll(yearView, decadesView);
+        yearView1 = new YearView(calendarView);
+        yearView2 = new YearView(calendarView);
 
-        calendarView.title.bind(yearView.actualPane.titleProperty());
+        decadesView1 = new DecadesView(calendarView);
+        decadesView2 = new DecadesView(calendarView);
 
-        decadesView.setVisible(false);
+        animatedStackPaneYearView = new AnimatedStackPane(yearView1, yearView2);
+        animatedStackPaneDecadesView = new AnimatedStackPane(decadesView1, decadesView2);
+
+        getChildren().addAll(animatedStackPaneYearView, animatedStackPaneDecadesView);
+
+        calendarView.title.bind(animatedStackPaneYearView.actualPane.titleProperty());
+
+        animatedStackPaneDecadesView.setVisible(false);
 
         // When the view changes.
         calendarView.currentlyViewing.addListener(new ChangeListener<Number>() {
@@ -51,8 +60,8 @@ final class MainStackPane extends StackPane {
                         switch (newNumber.intValue()) {
                             // Switch from decades to month.
                             case Calendar.ERA:
-                                showOrHide(decadesView, true);
-                                calendarView.title.bind(decadesView.actualPane.titleProperty());
+                                showOrHide(animatedStackPaneDecadesView, true);
+                                calendarView.title.bind(animatedStackPaneDecadesView.actualPane.titleProperty());
                                 break;
                         }
                         break;
@@ -60,8 +69,8 @@ final class MainStackPane extends StackPane {
                         switch (newNumber.intValue()) {
                             // Switch from decades to year.
                             case Calendar.YEAR:
-                                showOrHide(decadesView, false);
-                                calendarView.title.bind(yearView.actualPane.titleProperty());
+                                showOrHide(animatedStackPaneDecadesView, false);
+                                calendarView.title.bind(animatedStackPaneYearView.actualPane.titleProperty());
                                 break;
 
                         }
@@ -117,5 +126,10 @@ final class MainStackPane extends StackPane {
                 }
             }
         });
+    }
+
+    public void updateContent(){
+        yearView1.updateContent();
+        decadesView1.updateContent();
     }
 }

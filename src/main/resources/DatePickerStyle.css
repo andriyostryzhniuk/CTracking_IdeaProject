@@ -52,8 +52,23 @@
     -fx-background-radius: 8;
 }
 
+.calendar-cell-current-month, .calendar-year-button.forObject, .calendar-month-button.forObject {
+    -fx-background-color: DeepSkyBlue;
+    -fx-background-color: rgba(0, 0, 255, .1);
+    -fx-background-radius: 0;
+    -fx-background-insets: 1, 1, 1, 1;
+    -fx-cursor: hand;
+    -fx-padding: 0.7em;
+    -fx-font-weight: bold;
+    -fx-background-radius: 8;
+}
+
 /* The hover state of the buttons */
 .calendar-cell-current-month:hover, .calendar-year-button:hover, .calendar-month-button:hover {
+    -fx-background-color: -fx-cell-hover-color;
+}
+
+.calendar-cell-current-month:hover, .calendar-year-button.forObject:hover, .calendar-month-button.forObject:hover {
     -fx-background-color: -fx-cell-hover-color;
 }
 

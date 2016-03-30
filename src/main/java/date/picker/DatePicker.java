@@ -19,10 +19,12 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.stage.Popup;
 
+import java.sql.*;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.Date;
 
 public class DatePicker extends HBox {
 
@@ -185,7 +187,6 @@ public class DatePicker extends HBox {
         button.setOnAction(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
-
                 showPopup();
 
             }
@@ -407,5 +408,9 @@ public class DatePicker extends HBox {
 
     public Date getLastSelectedDate() {
         return calendarView.getLastSelectedDate();
+    }
+
+    public void setLastSelectedDate(Date date){
+        calendarView.setLastSelectedDate(date);
     }
 }
