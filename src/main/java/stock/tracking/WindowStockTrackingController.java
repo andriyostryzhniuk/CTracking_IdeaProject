@@ -23,9 +23,6 @@ import stock.tracking.dto.DtoStock;
 import java.io.IOException;
 import java.util.Map;
 
-import static stock.tracking.ODBC_PubsBD.insertIntoWorkTracking;
-import static stock.tracking.ODBC_PubsBD.selectStockCategoryName;
-
 public class WindowStockTrackingController {
 
     public BorderPane rootBorderPane;
@@ -61,13 +58,23 @@ public class WindowStockTrackingController {
     }
 
     public void initTopGridPane() {
+        ChoiceBox repositoryChoiceBox = initRepositoryChoiceBox();
+        stockListViewController.setRepositoryChoiceBox(repositoryChoiceBox);
+
         ComboBox stockCategoryComboBox = initStockCategoryComboBox();
         stockListViewController.setStockCategoryComboBox(stockCategoryComboBox);
+
         ChoiceBox stockTypeChoiceBox = initStockTypeChoiceBox();
         stockListViewController.setStockTypeChoiceBox(stockTypeChoiceBox);
-        topGridPane.add(stockTypeChoiceBox, 0, 0);
-        topGridPane.add(initGoBackButton(), 1, 0);
-        topGridPane.add(stockCategoryComboBox, 2, 0);
+
+        CheckBox showDisableStockCheckBox = initShowDisableStockCheckBox();
+        stockListViewController.setShowDisableStockCheckBox(showDisableStockCheckBox);
+
+        topGridPane.add(repositoryChoiceBox, 0, 0);
+        topGridPane.add(stockTypeChoiceBox, 1, 0);
+        topGridPane.add(initGoBackButton(), 2, 0);
+        topGridPane.add(stockCategoryComboBox, 3, 0);
+        topGridPane.add(showDisableStockCheckBox, 4, 0);
     }
 
     public ChoiceBox initStockTypeChoiceBox() {
@@ -78,12 +85,19 @@ public class WindowStockTrackingController {
             @Override
             public void changed(ObservableValue observableValue, String oldValue, String newValue) {
 //                change detected
-                stockListViewController.stockCategoryNameList.clear();
-                stockListViewController.stockCategoryNameList.addAll(selectStockCategoryName(choiceBox.getValue().toString()));
-                stockListViewController.stockCategoryComboBox.setItems(stockListViewController.stockCategoryNameList);
+                stockListViewController.stockTypeChoiceBox.setValue(choiceBox.getValue());
+
+                Object oldStockCategoryComboBoxValue = stockListViewController.comboBoxListener.getValue();
+
+                stockListViewController.updateStockCategoryComboBoxItems();
+
                 stockListViewController.stockCategoryComboBox.setValue(stockListViewController.stockCategoryComboBox.getItems().get(0));
+                stockListViewController.comboBoxListener.setValue(stockListViewController.stockCategoryComboBox.getValue());
                 new AutoCompleteComboBoxListener<>(stockListViewController.stockCategoryComboBox, stockListViewController.comboBoxListener);
-                stockListViewController.initStockListView(choiceBox.getValue().toString(), stockListViewController.stockCategoryComboBox.getValue().toString());
+
+                if (oldStockCategoryComboBoxValue != null && oldStockCategoryComboBoxValue.equals(stockListViewController.comboBoxListener.getValue())) {
+                    stockListViewController.initStockListView(choiceBox.getValue().toString(), stockListViewController.comboBoxListener.getValue().toString());
+                }
             }
         });
         choiceBox.setValue(choiceBox.getItems().get(0));
@@ -108,6 +122,7 @@ public class WindowStockTrackingController {
                             @Override
                             public void handle(MouseEvent event) {
 //                                mouse pressed
+                                comboBox.getStyleClass().remove("warning");
                                 stockListViewController.comboBoxListener.setValue(comboBox.getValue());
                             }
                         });
@@ -127,22 +142,77 @@ public class WindowStockTrackingController {
             @Override
             public void changed(ObservableValue observableValue, String oldValue, String newValue) {
 //                change detected
-                stockListViewController.initStockListView(stockListViewController.stockTypeChoiceBox.getValue().toString(),
-                        stockListViewController.stockCategoryComboBox.getValue().toString());
+                if (newValue != null) {
+                    comboBox.getStyleClass().remove("warning");
+                    stockListViewController.initStockListView(stockListViewController.stockTypeChoiceBox.getValue().toString(),
+                            stockListViewController.comboBoxListener.getValue().toString());
+                }
             }
         });
         return comboBox;
     }
 
+    public ChoiceBox initRepositoryChoiceBox(){
+        ChoiceBox choiceBox = new ChoiceBox();
+        choiceBox.getStylesheets().add(getClass().getResource("/stock.tracking/ChoiceBoxStyle.css").toExternalForm());
+
+        choiceBox.setItems(ODBC_PubsBD.selectRepositoryName());
+        choiceBox.setValue(choiceBox.getItems().get(0));
+
+        choiceBox.valueProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue observableValue, String oldValue, String newValue) {
+//                change detected
+                Object oldStockCategoryComboBoxValue = stockListViewController.comboBoxListener.getValue();
+
+                stockListViewController.updateStockCategoryComboBoxItems();
+
+                if (oldStockCategoryComboBoxValue != null) {
+                    stockListViewController.stockCategoryComboBox.setValue(oldStockCategoryComboBoxValue);
+                    stockListViewController.comboBoxListener.setValue(oldStockCategoryComboBoxValue);
+                }
+                new AutoCompleteComboBoxListener<>(stockListViewController.stockCategoryComboBox, stockListViewController.comboBoxListener);
+
+                stockListViewController.initStockListView(stockListViewController.stockTypeChoiceBox.getValue().toString(),
+                        stockListViewController.comboBoxListener.getValue().toString());
+            }
+        });
+
+        return choiceBox;
+    }
+
     public Button initGoBackButton() {
         Button button = new Button("Back");
         button.setOnAction((ActionEvent event) -> {
-            if (!stockListViewController.stockCategoryComboBox.getValue().equals("Всі категорії")) {
+            if (!stockListViewController.comboBoxListener.getValue().equals("Всі категорії")) {
                 stockListViewController.stockCategoryComboBox.setValue("Всі категорії");
                 stockListViewController.comboBoxListener.setValue(stockListViewController.stockCategoryComboBox.getValue());
             }
         });
         return button;
+    }
+
+    public CheckBox initShowDisableStockCheckBox(){
+        CheckBox checkBox = new CheckBox("Показувати недоступні категорії");
+        checkBox.setSelected(false);
+        checkBox.setOnAction((ActionEvent event) -> {
+            Object oldStockCategoryComboBoxValue = stockListViewController.comboBoxListener.getValue();
+
+            stockListViewController.updateStockCategoryComboBoxItems();
+
+            if (oldStockCategoryComboBoxValue != null) {
+                stockListViewController.stockCategoryComboBox.setValue(oldStockCategoryComboBoxValue);
+                stockListViewController.comboBoxListener.setValue(oldStockCategoryComboBoxValue);
+                stockListViewController.stockCategoryComboBox.getStyleClass().remove("warning");
+            }
+            new AutoCompleteComboBoxListener<>(stockListViewController.stockCategoryComboBox, stockListViewController.comboBoxListener);
+
+            if (stockListViewController.comboBoxListener.getValue().equals("Всі категорії")) {
+                stockListViewController.initStockListView(stockListViewController.stockTypeChoiceBox.getValue().toString(),
+                        stockListViewController.comboBoxListener.getValue().toString());
+            }
+        });
+        return checkBox;
     }
 
     public void initLiableListView() {
@@ -212,7 +282,15 @@ public class WindowStockTrackingController {
                     } else {
 
                         int stockCategoryId = Integer.parseInt(db.getString().substring(2));
-                        stockDataList.addAll(ODBC_PubsBD.selectStockOfCategoryWithId(stockCategoryId));
+
+                        if (stockListViewController.repositoryChoiceBox.getValue().equals("Всі склади")) {
+                            stockDataList.addAll(ODBC_PubsBD.selectStockOfCategoryWithId(stockCategoryId));
+                        } else {
+                            stockDataList.addAll(ODBC_PubsBD.
+                                    selectStockOfCategoryWithIdInRepository(stockCategoryId,
+                                            stockListViewController.repositoryChoiceBox.getValue().toString()));
+                        }
+
                         int numberOfStockGranted = 0;
                         if (!resultMap.isEmpty()) {
                             for (DtoStock dtoStock : stockDataList) {
@@ -277,7 +355,7 @@ public class WindowStockTrackingController {
 
     public void saveToDB() {
         resultMap.entrySet().stream().forEach((entry) -> {
-            insertIntoWorkTracking(entry.getKey(), entry.getValue());
+            ODBC_PubsBD.insertIntoWorkTracking(entry.getKey(), entry.getValue());
         });
         resultMap.clear();
         stockListViewController.setResultMap(resultMap);

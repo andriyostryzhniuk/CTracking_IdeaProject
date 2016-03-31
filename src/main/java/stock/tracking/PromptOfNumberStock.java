@@ -19,15 +19,9 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.Window;
 import numberSpinner.NumberSpinner;
-
 import java.util.Timer;
 import java.util.TimerTask;
 
-import static stock.tracking.ODBC_PubsBD.selectStockCategoryNameWithId;
-
-/**
- * Created by Andriy on 03/29/2016.
- */
 public class PromptOfNumberStock {
     private boolean isException = false;
     private int numberOfStockToGrant = 0;
@@ -134,7 +128,7 @@ public class PromptOfNumberStock {
     }
 
     private Pane initLabelPane(int maxValue){
-        String stockCategoryName = selectStockCategoryNameWithId(this.stockCategoryId);
+        String stockCategoryName = ODBC_PubsBD.selectStockCategoryNameWithId(this.stockCategoryId);
         if (stockCategoryName.length() > 23) {
             stockCategoryName = stockCategoryName.replace(stockCategoryName, stockCategoryName.substring(0, 22)+"..");
         }

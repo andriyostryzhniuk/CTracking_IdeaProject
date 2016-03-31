@@ -20,6 +20,8 @@ public class StockListViewController extends ListView {
     public ChoiceBox stockTypeChoiceBox = new ChoiceBox();
     public ComboBox stockCategoryComboBox = new ComboBox();
     public ComboBox comboBoxListener = new ComboBox();
+    public ChoiceBox repositoryChoiceBox = new ChoiceBox();
+    public CheckBox showDisableStockCheckBox = new CheckBox();
 
     public ObservableList<DtoStock> stockDataList = FXCollections.observableArrayList();
     public ObservableList<String> stockCategoryNameList = FXCollections.observableArrayList();
@@ -37,8 +39,17 @@ public class StockListViewController extends ListView {
         stockCategoryDataList.clear();
         stockListView.getItems().clear();
 
+        stockCategoryComboBox.setValue(comboBoxListener.getValue());
+        stockCategoryComboBox.getStyleClass().remove("warning");
+
         if (stockCategory.equals("Всі категорії")) {
-            stockCategoryDataList.addAll(ODBC_PubsBD.selectStockCategory(stockType));
+            if (repositoryChoiceBox.getValue().equals("Всі склади")) {
+                stockCategoryDataList.addAll(ODBC_PubsBD.selectStockCategory(stockType, showDisableStockCheckBox.isSelected()));
+            } else {
+                stockCategoryDataList.addAll(ODBC_PubsBD.
+                        selectStockCategoryInRepository(stockType, repositoryChoiceBox.getValue().toString(),
+                                showDisableStockCheckBox.isSelected()));
+            }
 //            count of stock available in each category
             stockCategoryDataList.forEach(item -> {
                 int numberOfStockGranted = countStockOfCategory(item.getId());
@@ -60,7 +71,12 @@ public class StockListViewController extends ListView {
                 stockListView.getItems().add(item.getPaneContainer());
             });
         } else if (stockCategory.equals("Весь інвентар")) {
-            stockDataList.addAll(ODBC_PubsBD.selectAllStockOfType(stockType));
+            if (repositoryChoiceBox.getValue().equals("Всі склади")) {
+                stockDataList.addAll(ODBC_PubsBD.selectAllStockOfType(stockType));
+            } else {
+                stockDataList.addAll(ODBC_PubsBD.
+                        selectAllStockOfTypeInRepository(stockType, repositoryChoiceBox.getValue().toString()));
+            }
             stockDataList.forEach(item -> item.initPaneContainer());
             stockDataList.forEach(item -> {
                 setSourceDragAndDrop(item.getPaneContainer());
@@ -68,7 +84,12 @@ public class StockListViewController extends ListView {
                 stockListView.getItems().add(item.getPaneContainer());
             });
         } else {
-            stockDataList.addAll(ODBC_PubsBD.selectStockOfCategory(stockCategory));
+            if (repositoryChoiceBox.getValue().equals("Всі склади")) {
+                stockDataList.addAll(ODBC_PubsBD.selectStockOfCategory(stockCategory));
+            } else {
+                stockDataList.addAll(ODBC_PubsBD.
+                        selectStockOfCategoryInRepository(stockCategory, repositoryChoiceBox.getValue().toString()));
+            }
             stockDataList.forEach(item -> item.initPaneContainer());
             stockDataList.forEach(item -> {
                 setSourceDragAndDrop(item.getPaneContainer());
@@ -141,10 +162,21 @@ public class StockListViewController extends ListView {
         this.stockTypeChoiceBox = stockTypeChoiceBox;
     }
 
+    public void setRepositoryChoiceBox(ChoiceBox repositoryChoiceBox) {
+        this.repositoryChoiceBox = repositoryChoiceBox;
+    }
+
     public int countStockOfCategory(int stockCategoryId) {
         int numberOfStockGranted = 0;
         if (!resultMap.isEmpty()) {
-            stockDataList.addAll(ODBC_PubsBD.selectStockOfCategoryWithId(stockCategoryId));
+            if (repositoryChoiceBox.getValue().equals("Всі склади")) {
+                stockDataList.addAll(ODBC_PubsBD.selectStockOfCategoryWithId(stockCategoryId));
+            } else {
+                stockDataList.addAll(ODBC_PubsBD.
+                        selectStockOfCategoryWithIdInRepository(stockCategoryId,
+                                repositoryChoiceBox.getValue().toString()));
+            }
+
             for (DtoStock dtoStock : stockDataList) {
                 for (Map.Entry<Integer, Integer> entry : resultMap.entrySet()) {
                     if (entry.getKey() == dtoStock.getId()) {
@@ -164,4 +196,25 @@ public class StockListViewController extends ListView {
                     Integer.toString(item.getNumberOfStock() - countStockOfCategory(stockCategoryId)));
         });
     }
+
+    public void setShowDisableStockCheckBox(CheckBox showDisableStockCheckBox) {
+        this.showDisableStockCheckBox = showDisableStockCheckBox;
+    }
+
+    public void updateStockCategoryComboBoxItems() {
+        stockCategoryNameList.clear();
+        if (repositoryChoiceBox.getValue().equals("Всі склади")) {
+            stockCategoryNameList.addAll(ODBC_PubsBD.
+                    selectStockCategoryName(stockTypeChoiceBox.getValue().toString(),
+                            showDisableStockCheckBox.isSelected()));
+        } else {
+            stockCategoryNameList.addAll(ODBC_PubsBD.
+                    selectStockCategoryNameInRepository(stockTypeChoiceBox.getValue().toString(),
+                            repositoryChoiceBox.getValue().toString(),
+                            showDisableStockCheckBox.isSelected()));
+        }
+
+        stockCategoryComboBox.setItems(stockCategoryNameList);
+    }
+
 }
