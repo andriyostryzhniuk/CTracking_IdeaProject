@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<GridPane fx:id="rootGridPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="stock.tracking.LiableListViewController">
+    <columnConstraints>
+        <ColumnConstraints hgrow="SOMETIMES" maxWidth="250.0" minWidth="200.0" />
+    </columnConstraints>
+    <rowConstraints>
+        <RowConstraints maxHeight="24.0" minHeight="24.0" prefHeight="24.0" vgrow="SOMETIMES" />
+        <RowConstraints vgrow="SOMETIMES" />
+    </rowConstraints>
+    <children>
+        <ListView fx:id="liableListView" fixedCellSize="50.0" maxWidth="250.0" minWidth="200.0" GridPane.rowIndex="1" />
+        <Pane style="-fx-background-color: rgba(65, 105, 225, .5);">
+            <children>
+                <Label layoutX="87.0" layoutY="4.0" text="Відповідальні" />
+            </children>
+        </Pane>
+    </children>
+</GridPane>

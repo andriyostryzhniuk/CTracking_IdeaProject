@@ -28,7 +28,7 @@ public class StockListViewController extends ListView {
     public ObservableList<String> stockCategoryNameList = FXCollections.observableArrayList();
     public ObservableList<DtoStockCategory> stockCategoryDataList = FXCollections.observableArrayList();
 
-    public ObservableMap<Integer, Integer> resultMap = FXCollections.observableHashMap();
+    private ObservableMap<Integer, Integer> resultMap = FXCollections.observableHashMap();
 
     @FXML
     public void initialize() {

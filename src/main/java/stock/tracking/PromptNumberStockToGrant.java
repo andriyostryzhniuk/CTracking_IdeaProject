@@ -22,13 +22,13 @@ import numberSpinner.NumberSpinner;
 import java.util.Timer;
 import java.util.TimerTask;
 
-public class PromptOfNumberStock {
+public class PromptNumberStockToGrant {
     private boolean isException = false;
     private int numberOfStockToGrant = 0;
     private int stockCategoryId;
     private String namesLiable;
 
-    public PromptOfNumberStock(int stockCategoryId, String namesLiable) {
+    public PromptNumberStockToGrant(int stockCategoryId, String namesLiable) {
         this.stockCategoryId = stockCategoryId;
         this.namesLiable = namesLiable;
     }
