@@ -132,10 +132,7 @@ public class WindowAttendanceController<T extends DtoEmployeesFullName> {
                     } else if (!comboBoxValue.equals("Всі об'єкти")) {
                         if (comboBox.getItems().indexOf(comboBoxValue) == -1) {
                             comboBox.setValue(comboBox.getItems().get(0));
-                            datePicker.getCalendarView().setStartDateObject(null);
-                            datePicker.getCalendarView().setFinishDateObject(null);
-                            datePicker.getCalendarView().updateContent();
-                            updateEmployeesFullNameList();
+                            comboBoxListener.setValue(comboBox.getValue());
 
                             Label notificationLabel = new Label("На вибраному об'єкті не проводилось робіт за даний період");
                             notificationLabel.setStyle("-fx-text-fill: red;");
@@ -168,6 +165,8 @@ public class WindowAttendanceController<T extends DtoEmployeesFullName> {
 
         comboBox.getStylesheets().add(getClass().getResource("/employees.attendance.table/ComboBoxStyle.css").toExternalForm());
 
+        comboBoxListener.setValue("Всі об'єкти");
+
         new AutoCompleteComboBoxListener<>(comboBox, comboBoxListener);
 
         comboBox.setCellFactory(new Callback<ListView<String>, ListCell<String>>() {
@@ -179,6 +178,7 @@ public class WindowAttendanceController<T extends DtoEmployeesFullName> {
                             @Override
                             public void handle(MouseEvent event) {
 //                                mouse pressed
+                                comboBox.getStyleClass().remove("warning");
                                 comboBoxListener.setValue(comboBox.getValue());
                             }
                         });
@@ -198,6 +198,8 @@ public class WindowAttendanceController<T extends DtoEmployeesFullName> {
             @Override
             public void changed(ObservableValue observableValue, String oldValue, String newValue) {
 //                change detected
+                comboBox.getStyleClass().remove("warning");
+                new AutoCompleteComboBoxListener<>(comboBox, comboBoxListener);
                 java.sql.Date startDateObject = null;
                 java.sql.Date finishDateObject = null;
 
@@ -349,7 +351,7 @@ public class WindowAttendanceController<T extends DtoEmployeesFullName> {
         calendar.set(Calendar.DAY_OF_MONTH, daysOfMonthNumber);
         String lastDayOfMonth = dateFormat.format(calendar.getTime());
 
-        Object lastComboBoxValue = comboBox.getValue();
+        Object lastComboBoxValue = comboBoxListener.getValue();
         comboBox.getItems().clear();
         objectMap.clear();
         comboBox.getItems().add("Всі об'єкти");
@@ -363,6 +365,7 @@ public class WindowAttendanceController<T extends DtoEmployeesFullName> {
         } else {
             comboBox.setValue(lastComboBoxValue);
         }
+        comboBox.getStyleClass().remove("warning");
         new AutoCompleteComboBoxListener<>(comboBox, comboBoxListener);
     }
 }

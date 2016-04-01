@@ -22,6 +22,7 @@ public class StockListViewController extends ListView {
     public ComboBox comboBoxListener = new ComboBox();
     public ChoiceBox repositoryChoiceBox = new ChoiceBox();
     public CheckBox showDisableStockCheckBox = new CheckBox();
+    public Button goBackButton = new Button();
 
     public ObservableList<DtoStock> stockDataList = FXCollections.observableArrayList();
     public ObservableList<String> stockCategoryNameList = FXCollections.observableArrayList();
@@ -43,10 +44,11 @@ public class StockListViewController extends ListView {
         stockCategoryComboBox.getStyleClass().remove("warning");
 
         if (stockCategory.equals("Всі категорії")) {
+            goBackButton.setDisable(true);
             if (repositoryChoiceBox.getValue().equals("Всі склади")) {
-                stockCategoryDataList.addAll(ODBC_PubsBD.selectStockCategory(stockType, showDisableStockCheckBox.isSelected()));
+                stockCategoryDataList.addAll(ODBC_PubsBDForStock.selectStockCategory(stockType, showDisableStockCheckBox.isSelected()));
             } else {
-                stockCategoryDataList.addAll(ODBC_PubsBD.
+                stockCategoryDataList.addAll(ODBC_PubsBDForStock.
                         selectStockCategoryInRepository(stockType, repositoryChoiceBox.getValue().toString(),
                                 showDisableStockCheckBox.isSelected()));
             }
@@ -71,10 +73,11 @@ public class StockListViewController extends ListView {
                 stockListView.getItems().add(item.getPaneContainer());
             });
         } else if (stockCategory.equals("Весь інвентар")) {
+            goBackButton.setDisable(false);
             if (repositoryChoiceBox.getValue().equals("Всі склади")) {
-                stockDataList.addAll(ODBC_PubsBD.selectAllStockOfType(stockType));
+                stockDataList.addAll(ODBC_PubsBDForStock.selectAllStockOfType(stockType));
             } else {
-                stockDataList.addAll(ODBC_PubsBD.
+                stockDataList.addAll(ODBC_PubsBDForStock.
                         selectAllStockOfTypeInRepository(stockType, repositoryChoiceBox.getValue().toString()));
             }
             stockDataList.forEach(item -> item.initPaneContainer());
@@ -84,10 +87,11 @@ public class StockListViewController extends ListView {
                 stockListView.getItems().add(item.getPaneContainer());
             });
         } else {
+            goBackButton.setDisable(false);
             if (repositoryChoiceBox.getValue().equals("Всі склади")) {
-                stockDataList.addAll(ODBC_PubsBD.selectStockOfCategory(stockCategory));
+                stockDataList.addAll(ODBC_PubsBDForStock.selectStockOfCategory(stockCategory));
             } else {
-                stockDataList.addAll(ODBC_PubsBD.
+                stockDataList.addAll(ODBC_PubsBDForStock.
                         selectStockOfCategoryInRepository(stockCategory, repositoryChoiceBox.getValue().toString()));
             }
             stockDataList.forEach(item -> item.initPaneContainer());
@@ -146,33 +150,13 @@ public class StockListViewController extends ListView {
         });
     }
 
-    public ObservableMap<Integer, Integer> getResultMap() {
-        return resultMap;
-    }
-
-    public void setResultMap(ObservableMap<Integer, Integer> resultMap) {
-        this.resultMap = resultMap;
-    }
-
-    public void setStockCategoryComboBox(ComboBox stockCategoryComboBox) {
-        this.stockCategoryComboBox = stockCategoryComboBox;
-    }
-
-    public void setStockTypeChoiceBox(ChoiceBox stockTypeChoiceBox) {
-        this.stockTypeChoiceBox = stockTypeChoiceBox;
-    }
-
-    public void setRepositoryChoiceBox(ChoiceBox repositoryChoiceBox) {
-        this.repositoryChoiceBox = repositoryChoiceBox;
-    }
-
     public int countStockOfCategory(int stockCategoryId) {
         int numberOfStockGranted = 0;
         if (!resultMap.isEmpty()) {
             if (repositoryChoiceBox.getValue().equals("Всі склади")) {
-                stockDataList.addAll(ODBC_PubsBD.selectStockOfCategoryWithId(stockCategoryId));
+                stockDataList.addAll(ODBC_PubsBDForStock.selectStockOfCategoryWithId(stockCategoryId));
             } else {
-                stockDataList.addAll(ODBC_PubsBD.
+                stockDataList.addAll(ODBC_PubsBDForStock.
                         selectStockOfCategoryWithIdInRepository(stockCategoryId,
                                 repositoryChoiceBox.getValue().toString()));
             }
@@ -197,18 +181,14 @@ public class StockListViewController extends ListView {
         });
     }
 
-    public void setShowDisableStockCheckBox(CheckBox showDisableStockCheckBox) {
-        this.showDisableStockCheckBox = showDisableStockCheckBox;
-    }
-
     public void updateStockCategoryComboBoxItems() {
         stockCategoryNameList.clear();
         if (repositoryChoiceBox.getValue().equals("Всі склади")) {
-            stockCategoryNameList.addAll(ODBC_PubsBD.
+            stockCategoryNameList.addAll(ODBC_PubsBDForStock.
                     selectStockCategoryName(stockTypeChoiceBox.getValue().toString(),
                             showDisableStockCheckBox.isSelected()));
         } else {
-            stockCategoryNameList.addAll(ODBC_PubsBD.
+            stockCategoryNameList.addAll(ODBC_PubsBDForStock.
                     selectStockCategoryNameInRepository(stockTypeChoiceBox.getValue().toString(),
                             repositoryChoiceBox.getValue().toString(),
                             showDisableStockCheckBox.isSelected()));
@@ -217,4 +197,31 @@ public class StockListViewController extends ListView {
         stockCategoryComboBox.setItems(stockCategoryNameList);
     }
 
+    public ObservableMap<Integer, Integer> getResultMap() {
+        return resultMap;
+    }
+
+    public void setResultMap(ObservableMap<Integer, Integer> resultMap) {
+        this.resultMap = resultMap;
+    }
+
+    public void setStockCategoryComboBox(ComboBox stockCategoryComboBox) {
+        this.stockCategoryComboBox = stockCategoryComboBox;
+    }
+
+    public void setStockTypeChoiceBox(ChoiceBox stockTypeChoiceBox) {
+        this.stockTypeChoiceBox = stockTypeChoiceBox;
+    }
+
+    public void setRepositoryChoiceBox(ChoiceBox repositoryChoiceBox) {
+        this.repositoryChoiceBox = repositoryChoiceBox;
+    }
+
+    public void setShowDisableStockCheckBox(CheckBox showDisableStockCheckBox) {
+        this.showDisableStockCheckBox = showDisableStockCheckBox;
+    }
+
+    public void setGoBackButton(Button goBackButton) {
+        this.goBackButton = goBackButton;
+    }
 }

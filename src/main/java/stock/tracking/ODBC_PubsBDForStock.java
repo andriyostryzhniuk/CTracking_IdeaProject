@@ -15,9 +15,9 @@ import java.util.List;
 import static main.DB_Connector.getJdbcTemplate;
 
 
-public class ODBC_PubsBD {
+public class ODBC_PubsBDForStock {
 
-    private static final Logger LOGGER = LoggerFactory.getLogger(ODBC_PubsBD.class);
+    private static final Logger LOGGER = LoggerFactory.getLogger(ODBC_PubsBDForStock.class);
 
     public static List<DtoStock> selectAllStockOfType(String stockType) {
         List<DtoStock> dtoStockList = getJdbcTemplate().query("select stock.id, " +
@@ -89,21 +89,6 @@ public class ODBC_PubsBD {
                 "stockCategory.name = '" + stockCategory + "' " +
                 "order by stock.name asc", BeanPropertyRowMapper.newInstance(DtoStock.class));
         return dtoStockList;
-    }
-
-    public static List<DtoEmployees> selectEmployees() {
-        List<DtoEmployees> dtoEmployeesList = getJdbcTemplate().query("select employees.id, " +
-                "concat( employees.surname, ' ', left (employees.name, 1), '. ', " +
-                "   left (employees.middleName, 1), '.' ) as fullName " +
-                "from employees " +
-                "where employees.lastDay is null " +
-                "order by employees.surname asc;", BeanPropertyRowMapper.newInstance(DtoEmployees.class));
-        return dtoEmployeesList;
-    }
-
-    public static void insertIntoWorkTracking(int stockId, int employeesId){
-        getJdbcTemplate().update("INSERT INTO stocktracking (id, stock_id, employees_id, object_id, givingDate, returnDate) " +
-                "VALUES (null, '" + stockId + "', '" + employeesId + "', null, curdate(), null)");
     }
 
     public static ObservableList<String> selectStockCategoryName(String stockType, boolean showDisableStock) {

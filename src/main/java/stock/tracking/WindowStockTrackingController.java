@@ -64,6 +64,9 @@ public class WindowStockTrackingController {
         ComboBox stockCategoryComboBox = initStockCategoryComboBox();
         stockListViewController.setStockCategoryComboBox(stockCategoryComboBox);
 
+        Button goBackStockButton = initGoBackStockButton();
+        stockListViewController.setGoBackButton(goBackStockButton);
+
         ChoiceBox stockTypeChoiceBox = initStockTypeChoiceBox();
         stockListViewController.setStockTypeChoiceBox(stockTypeChoiceBox);
 
@@ -72,7 +75,7 @@ public class WindowStockTrackingController {
 
         topGridPane.add(repositoryChoiceBox, 0, 0);
         topGridPane.add(stockTypeChoiceBox, 1, 0);
-        topGridPane.add(initGoBackButton(), 2, 0);
+        topGridPane.add(goBackStockButton, 2, 0);
         topGridPane.add(stockCategoryComboBox, 3, 0);
         topGridPane.add(showDisableStockCheckBox, 4, 0);
     }
@@ -156,7 +159,7 @@ public class WindowStockTrackingController {
         ChoiceBox choiceBox = new ChoiceBox();
         choiceBox.getStylesheets().add(getClass().getResource("/stock.tracking/ChoiceBoxStyle.css").toExternalForm());
 
-        choiceBox.setItems(ODBC_PubsBD.selectRepositoryName());
+        choiceBox.setItems(ODBC_PubsBDForStock.selectRepositoryName());
         choiceBox.setValue(choiceBox.getItems().get(0));
 
         choiceBox.valueProperty().addListener(new ChangeListener<String>() {
@@ -181,7 +184,7 @@ public class WindowStockTrackingController {
         return choiceBox;
     }
 
-    public Button initGoBackButton() {
+    public Button initGoBackStockButton() {
         Button button = new Button("Back");
         button.setOnAction((ActionEvent event) -> {
             if (!stockListViewController.comboBoxListener.getValue().equals("Всі категорії")) {
@@ -216,7 +219,7 @@ public class WindowStockTrackingController {
     }
 
     public void initLiableListView() {
-        employeesDataList.addAll(ODBC_PubsBD.selectEmployees());
+        employeesDataList.addAll(ODBC_PubsBDForLiable.selectEmployees());
         employeesDataList.forEach(item -> item.initPaneContainer());
 
         employeesDataList.forEach(item -> {
@@ -284,9 +287,9 @@ public class WindowStockTrackingController {
                         int stockCategoryId = Integer.parseInt(db.getString().substring(2));
 
                         if (stockListViewController.repositoryChoiceBox.getValue().equals("Всі склади")) {
-                            stockDataList.addAll(ODBC_PubsBD.selectStockOfCategoryWithId(stockCategoryId));
+                            stockDataList.addAll(ODBC_PubsBDForStock.selectStockOfCategoryWithId(stockCategoryId));
                         } else {
-                            stockDataList.addAll(ODBC_PubsBD.
+                            stockDataList.addAll(ODBC_PubsBDForStock.
                                     selectStockOfCategoryWithIdInRepository(stockCategoryId,
                                             stockListViewController.repositoryChoiceBox.getValue().toString()));
                         }
@@ -355,7 +358,7 @@ public class WindowStockTrackingController {
 
     public void saveToDB() {
         resultMap.entrySet().stream().forEach((entry) -> {
-            ODBC_PubsBD.insertIntoWorkTracking(entry.getKey(), entry.getValue());
+            ODBC_PubsBDForLiable.insertIntoWorkTracking(entry.getKey(), entry.getValue());
         });
         resultMap.clear();
         stockListViewController.setResultMap(resultMap);

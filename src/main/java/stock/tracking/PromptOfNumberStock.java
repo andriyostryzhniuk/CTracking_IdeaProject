@@ -128,7 +128,7 @@ public class PromptOfNumberStock {
     }
 
     private Pane initLabelPane(int maxValue){
-        String stockCategoryName = ODBC_PubsBD.selectStockCategoryNameWithId(this.stockCategoryId);
+        String stockCategoryName = ODBC_PubsBDForStock.selectStockCategoryNameWithId(this.stockCategoryId);
         if (stockCategoryName.length() > 23) {
             stockCategoryName = stockCategoryName.replace(stockCategoryName, stockCategoryName.substring(0, 22)+"..");
         }
