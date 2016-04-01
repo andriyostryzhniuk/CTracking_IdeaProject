@@ -11,8 +11,8 @@ import org.springframework.jdbc.support.rowset.SqlRowSet;
 
 import java.util.List;
 
-import static sample.DB_Connector.getJdbcTemplate;
-import static sample.DB_Connector.getSimpleJdbcCall;
+import static main.DB_Connector.getJdbcTemplate;
+import static main.DB_Connector.getSimpleJdbcCall;
 
 
 public class ODBC_PubsBD {

@@ -12,8 +12,7 @@ import stock.tracking.dto.DtoStockCategory;
 
 import java.util.List;
 
-import static sample.DB_Connector.getDataSource;
-import static sample.DB_Connector.getJdbcTemplate;
+import static main.DB_Connector.getJdbcTemplate;
 
 
 public class ODBC_PubsBD {

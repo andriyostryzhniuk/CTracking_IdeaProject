@@ -1,4 +1,4 @@
-package sample;
+package main;
 
 import employees.attendance.table.WindowAttendanceController;
 import javafx.event.ActionEvent;

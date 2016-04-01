@@ -47,7 +47,7 @@ public class PromptOfNumberStock {
         vBox.setPadding(new Insets(100, 0, 0, 40));
         HBox hBox = new HBox(3);
 
-        Label exceptionLabel = new Label("Ви ввели некоректне значення");
+        Label exceptionLabel = new Label("Значення неприпустиме");
         exceptionLabel.setStyle("-fx-text-fill: red");
 
         NumberSpinner numberSpinner = initNumberSpinner(maxValue);
