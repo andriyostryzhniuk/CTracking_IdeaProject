@@ -1,9 +1,8 @@
-package date.picker;
+package overridden.elements.date.picker;
 
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 
 import java.text.DateFormat;
@@ -38,8 +37,8 @@ final class DecadesView extends DatePane {
             final Button button = new Button();
             button.setMaxWidth(Double.MAX_VALUE);
             button.setMaxHeight(Double.MAX_VALUE);
-            GridPane.setVgrow(button, Priority.ALWAYS);
-            GridPane.setHgrow(button, Priority.ALWAYS);
+            setVgrow(button, Priority.ALWAYS);
+            setHgrow(button, Priority.ALWAYS);
 
             button.getStyleClass().add("calendar-year-button");
             button.setOnAction(new EventHandler<ActionEvent>() {

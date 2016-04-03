@@ -1,4 +1,4 @@
-package combo.box;
+package overridden.elements.combo.box;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;

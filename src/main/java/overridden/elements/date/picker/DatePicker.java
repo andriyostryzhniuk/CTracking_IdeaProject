@@ -1,4 +1,4 @@
-package date.picker;
+package overridden.elements.date.picker;
 
 import javafx.application.Platform;
 import javafx.beans.InvalidationListener;
@@ -12,6 +12,7 @@ import javafx.event.EventHandler;
 import javafx.geometry.Bounds;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
+import javafx.scene.control.Tooltip;
 import javafx.scene.effect.DropShadow;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
@@ -19,7 +20,6 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.HBox;
 import javafx.stage.Popup;
 
-import java.sql.*;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -412,5 +412,9 @@ public class DatePicker extends HBox {
 
     public void setLastSelectedDate(Date date){
         calendarView.setLastSelectedDate(date);
+    }
+
+    public void setTooltipText (String text) {
+        Tooltip.install(textField, new Tooltip(text));
     }
 }

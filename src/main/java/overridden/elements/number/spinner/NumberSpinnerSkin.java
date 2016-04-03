@@ -1,4 +1,4 @@
-package numberSpinner;
+package overridden.elements.number.spinner;
 
 import javafx.application.Platform;
 import javafx.beans.binding.BooleanBinding;

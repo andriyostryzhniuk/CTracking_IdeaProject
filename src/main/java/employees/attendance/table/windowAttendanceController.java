@@ -1,6 +1,6 @@
 package employees.attendance.table;
 
-import combo.box.AutoCompleteComboBoxListener;
+import overridden.elements.combo.box.AutoCompleteComboBoxListener;
 import employees.attendance.table.dto.DtoEmployeesFullName;
 import employees.attendance.table.dto.DtoObject;
 import javafx.application.Platform;
@@ -21,6 +21,8 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.util.Callback;
+import overridden.elements.date.picker.DatePicker;
+
 import java.io.IOException;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
@@ -31,7 +33,7 @@ public class WindowAttendanceController<T extends DtoEmployeesFullName> {
 
     @FXML
     public BorderPane rootBorderPane;
-    public date.picker.DatePicker datePicker;
+    public DatePicker datePicker;
     public ComboBox comboBox;
 
     private int previousMonth;
@@ -70,9 +72,10 @@ public class WindowAttendanceController<T extends DtoEmployeesFullName> {
         updateEmployeesFullNameList();
     }
 
-    public date.picker.DatePicker initDatePicker() {
+    public DatePicker initDatePicker() {
 
-        date.picker.DatePicker datePicker = new date.picker.DatePicker();
+        DatePicker datePicker = new DatePicker();
+        datePicker.setTooltipText("Період виконання робіт");
 
         datePicker.getCalendarView().setStartDateObject(null);
         datePicker.getCalendarView().setFinishDateObject(null);
@@ -161,7 +164,7 @@ public class WindowAttendanceController<T extends DtoEmployeesFullName> {
 
     public ComboBox initComboBox(){
         ComboBox comboBox = new ComboBox();
-//        ComboBox comboBoxListener = new ComboBox();
+        Tooltip.install(comboBox, new Tooltip("Вибрати об'єкт"));
 
         comboBox.getStylesheets().add(getClass().getResource("/employees.attendance.table/ComboBoxStyle.css").toExternalForm());
 

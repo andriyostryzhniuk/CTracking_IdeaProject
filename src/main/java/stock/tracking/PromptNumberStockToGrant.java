@@ -18,7 +18,7 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import javafx.stage.Window;
-import numberSpinner.NumberSpinner;
+import overridden.elements.number.spinner.NumberSpinner;
 import java.util.Timer;
 import java.util.TimerTask;
 

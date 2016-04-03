@@ -175,6 +175,7 @@ public class TableViewController<T extends DtoEmployeesFullName> {
                 gridPane.getRowConstraints().add(rowConstraints);
 
                 CheckBox checkBox = new CheckBox();
+                checkBox.prefWidthProperty().bind(tableView.getTableView().getColumns().get(1).widthProperty().multiply(1));
                 checkBox.getStylesheets().add(getClass().getResource("/employees.attendance.table/CheckBoxStyle.css").toExternalForm());
                 checkBox.setCursor(Cursor.HAND);
                 if (tableView.getTableView().getColumns().get(j).getStyleClass().indexOf("disable") != -1) {

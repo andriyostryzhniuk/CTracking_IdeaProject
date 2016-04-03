@@ -1,5 +1,5 @@
 .number-spinner {
-    -fx-skin: "numberSpinner.NumberSpinnerSkin";
+    -fx-skin: "overridden.elements.number.spinner.NumberSpinnerSkin";
     -fx-padding: 0 0 0 0;
     -fx-cursor: default; /* Override the cursor since the "text" cursor is inherited from text field. But we want the default cursor over the buttons. */
 }

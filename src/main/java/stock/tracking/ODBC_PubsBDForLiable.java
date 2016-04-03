@@ -7,6 +7,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import stock.tracking.dto.DtoEmployees;
+import stock.tracking.dto.DtoObject;
 import stock.tracking.dto.DtoStock;
 import stock.tracking.dto.DtoStockCategory;
 
@@ -32,6 +33,16 @@ public class ODBC_PubsBDForLiable {
     public static void insertIntoWorkTracking(int stockId, int employeesId){
         getJdbcTemplate().update("INSERT INTO stocktracking (id, stock_id, employees_id, object_id, givingDate, returnDate) " +
                 "VALUES (null, '" + stockId + "', '" + employeesId + "', null, curdate(), null)");
+    }
+
+    public static List<DtoObject> selectObjects(){
+        List<DtoObject> dtoObjectList = getJdbcTemplate().query("select id, address " +
+                "from object " +
+                "where startDate <= curdate() and " +
+                "(finishDate >= curdate() or " +
+                "finishDate is null) " +
+                "order by address asc", BeanPropertyRowMapper.newInstance(DtoObject.class));
+        return dtoObjectList;
     }
 
 }

@@ -1,9 +1,9 @@
  .choice-box {
-    -fx-pref-width: 120;
+    -fx-pref-width: 200;
  }
 
  #choice-box-menu-item {
-    -fx-pref-width: 120;
+    -fx-pref-width: 200;
  }
 
 

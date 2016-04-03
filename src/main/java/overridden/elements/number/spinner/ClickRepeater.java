@@ -1,4 +1,4 @@
-package numberSpinner;
+package overridden.elements.number.spinner;
 
 import javafx.animation.Animation;
 import javafx.animation.PauseTransition;

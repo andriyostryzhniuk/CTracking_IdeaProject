@@ -1,8 +1,9 @@
 package stock.tracking;
 
 import javafx.fxml.FXMLLoader;
+import javafx.geometry.Pos;
 import javafx.scene.layout.BorderPane;
-import combo.box.AutoCompleteComboBoxListener;
+import overridden.elements.combo.box.AutoCompleteComboBoxListener;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
@@ -11,17 +12,18 @@ import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
-import javafx.geometry.Pos;
 import javafx.scene.control.*;
 import javafx.scene.input.*;
 import javafx.scene.layout.GridPane;
 import javafx.util.Callback;
 import java.io.IOException;
+import overridden.elements.group.box.GroupBox;
 
 public class WindowStockTrackingController {
 
     public BorderPane rootBorderPane;
-    private GridPane topGridPane = new GridPane();
+    public GridPane leftSideGridPane;
+    public GridPane rightSideGridPane;
     public GridPane gridPane;
 
     public StockListViewController stockListViewController;
@@ -47,25 +49,22 @@ public class WindowStockTrackingController {
             throw new RuntimeException(exception);
         }
 
-        initTopGridPane();
-        rootBorderPane.setTop(topGridPane);
-        rootBorderPane.setAlignment(topGridPane, Pos.TOP_LEFT);
-        rootBorderPane.setMargin(topGridPane, new Insets(0.0, 0.0, 20.0, 0.0));
+        initLeftSideGritPane();
+//        rootBorderPane.setTop(topGridPane);
+//        rootBorderPane.setAlignment(topGridPane, Pos.TOP_LEFT);
+//        rootBorderPane.setMargin(topGridPane, new Insets(0.0, 0.0, 20.0, 0.0));
 
         liableListViewController.setResultMap(resultMap);
         liableListViewController.setStockListViewController(stockListViewController);
         liableListViewController.initLiableListView();
     }
 
-    public void initTopGridPane() {
+    public void initLeftSideGritPane() {
         ChoiceBox repositoryChoiceBox = initRepositoryChoiceBox();
         stockListViewController.setRepositoryChoiceBox(repositoryChoiceBox);
 
         ComboBox stockCategoryComboBox = initStockCategoryComboBox();
         stockListViewController.setStockCategoryComboBox(stockCategoryComboBox);
-
-        Button goBackStockButton = initGoBackStockButton();
-        stockListViewController.setGoBackButton(goBackStockButton);
 
         ChoiceBox stockTypeChoiceBox = initStockTypeChoiceBox();
         stockListViewController.setStockTypeChoiceBox(stockTypeChoiceBox);
@@ -73,16 +72,30 @@ public class WindowStockTrackingController {
         CheckBox showDisableStockCheckBox = initShowDisableStockCheckBox();
         stockListViewController.setShowDisableStockCheckBox(showDisableStockCheckBox);
 
-        topGridPane.add(repositoryChoiceBox, 0, 0);
-        topGridPane.add(stockTypeChoiceBox, 1, 0);
-        topGridPane.add(goBackStockButton, 2, 0);
-        topGridPane.add(stockCategoryComboBox, 3, 0);
-        topGridPane.add(showDisableStockCheckBox, 4, 0);
+        GridPane stockControlsGritPane = new GridPane();
+        stockControlsGritPane.add(stockCategoryComboBox, 0, 0);
+        stockControlsGritPane.setMargin(stockCategoryComboBox, new Insets(0, 0, 8, 0));
+        stockControlsGritPane.add(stockTypeChoiceBox, 0, 1);
+        stockControlsGritPane.setMargin(stockTypeChoiceBox, new Insets(8, 0, 8, 0));
+        stockControlsGritPane.add(repositoryChoiceBox, 0, 2);
+        stockControlsGritPane.setMargin(repositoryChoiceBox, new Insets(8, 0, 8, 0));
+        stockControlsGritPane.add(showDisableStockCheckBox, 0, 3);
+        stockControlsGritPane.setMargin(showDisableStockCheckBox, new Insets(8, 0, 5, 0));
+
+        stockControlsGritPane.setAlignment(Pos.CENTER);
+
+        GroupBox groupBox = new GroupBox("Склад", stockControlsGritPane);
+        groupBox.setMaxWidth(350);
+        groupBox.getStylesheets().add(getClass().getResource("/overridden.elements/GroupBoxStyle.css").toExternalForm());
+
+        leftSideGridPane.setPadding(new Insets(0, 10, 0, 0));
+        leftSideGridPane.add(groupBox, 0, 0);
     }
 
     public ChoiceBox initStockTypeChoiceBox() {
         ChoiceBox choiceBox = new ChoiceBox();
-        choiceBox.getItems().addAll("вартісні", "розхідні");
+        Tooltip.install(choiceBox, new Tooltip("Вибрати тип інвентаря\n(Вартісний/Розхідний)"));
+        choiceBox.getItems().addAll("Вартісні", "Розхідні");
         choiceBox.getStylesheets().add(getClass().getResource("/stock.tracking/ChoiceBoxStyle.css").toExternalForm());
         choiceBox.valueProperty().addListener(new ChangeListener<String>() {
             @Override
@@ -111,6 +124,7 @@ public class WindowStockTrackingController {
         ComboBox comboBox = new ComboBox();
 
         comboBox.getStylesheets().add(getClass().getResource("/stock.tracking/ComboBoxStyle.css").toExternalForm());
+        Tooltip.install(comboBox, new Tooltip("Вибрати ктегорію"));
 
         comboBox.setItems(stockListViewController.stockCategoryNameList);
 
@@ -158,6 +172,7 @@ public class WindowStockTrackingController {
     public ChoiceBox initRepositoryChoiceBox(){
         ChoiceBox choiceBox = new ChoiceBox();
         choiceBox.getStylesheets().add(getClass().getResource("/stock.tracking/ChoiceBoxStyle.css").toExternalForm());
+        Tooltip.install(choiceBox, new Tooltip("Вибрати склад"));
 
         choiceBox.setItems(ODBC_PubsBDForStock.selectRepositoryName());
         choiceBox.setValue(choiceBox.getItems().get(0));
@@ -184,19 +199,10 @@ public class WindowStockTrackingController {
         return choiceBox;
     }
 
-    public Button initGoBackStockButton() {
-        Button button = new Button("Back");
-        button.setOnAction((ActionEvent event) -> {
-            if (!stockListViewController.comboBoxListener.getValue().equals("Всі категорії")) {
-                stockListViewController.stockCategoryComboBox.setValue("Всі категорії");
-                stockListViewController.comboBoxListener.setValue(stockListViewController.stockCategoryComboBox.getValue());
-            }
-        });
-        return button;
-    }
-
     public CheckBox initShowDisableStockCheckBox(){
         CheckBox checkBox = new CheckBox("Показувати недоступні категорії");
+        Tooltip.install(checkBox, new Tooltip("Показувати категорії в яких\nнемає жодного доступного" +
+                "\nна даний момент інвентаря"));
         checkBox.setSelected(false);
         checkBox.setOnAction((ActionEvent event) -> {
             Object oldStockCategoryComboBoxValue = stockListViewController.comboBoxListener.getValue();

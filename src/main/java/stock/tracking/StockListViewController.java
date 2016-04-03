@@ -3,9 +3,12 @@ package stock.tracking;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
+import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
@@ -16,13 +19,14 @@ import java.util.Map;
 public class StockListViewController extends ListView {
     public GridPane rootGridPane;
     public ListView<Pane> stockListView;
+    public Pane headerPane;
 
     public ChoiceBox stockTypeChoiceBox = new ChoiceBox();
     public ComboBox stockCategoryComboBox = new ComboBox();
     public ComboBox comboBoxListener = new ComboBox();
     public ChoiceBox repositoryChoiceBox = new ChoiceBox();
     public CheckBox showDisableStockCheckBox = new CheckBox();
-    public Button goBackButton = new Button();
+    public Button levelUpButton;
 
     public ObservableList<DtoStock> stockDataList = FXCollections.observableArrayList();
     public ObservableList<String> stockCategoryNameList = FXCollections.observableArrayList();
@@ -33,6 +37,10 @@ public class StockListViewController extends ListView {
     @FXML
     public void initialize() {
         stockListView.getStylesheets().add(getClass().getResource("/stock.tracking/ListViewStyle.css").toExternalForm());
+        levelUpButton = initLevelUpStockButton();
+        headerPane.getChildren().add(levelUpButton);
+        levelUpButton.setLayoutX(10);
+        levelUpButton.setLayoutY(0);
     }
 
     public void initStockListView(String stockType, String stockCategory) {
@@ -44,7 +52,7 @@ public class StockListViewController extends ListView {
         stockCategoryComboBox.getStyleClass().remove("warning");
 
         if (stockCategory.equals("Всі категорії")) {
-            goBackButton.setDisable(true);
+            levelUpButton.setDisable(true);
             if (repositoryChoiceBox.getValue().equals("Всі склади")) {
                 stockCategoryDataList.addAll(ODBC_PubsBDForStock.selectStockCategory(stockType, showDisableStockCheckBox.isSelected()));
             } else {
@@ -73,7 +81,7 @@ public class StockListViewController extends ListView {
                 stockListView.getItems().add(item.getPaneContainer());
             });
         } else if (stockCategory.equals("Весь інвентар")) {
-            goBackButton.setDisable(false);
+            levelUpButton.setDisable(false);
             if (repositoryChoiceBox.getValue().equals("Всі склади")) {
                 stockDataList.addAll(ODBC_PubsBDForStock.selectAllStockOfType(stockType));
             } else {
@@ -87,7 +95,7 @@ public class StockListViewController extends ListView {
                 stockListView.getItems().add(item.getPaneContainer());
             });
         } else {
-            goBackButton.setDisable(false);
+            levelUpButton.setDisable(false);
             if (repositoryChoiceBox.getValue().equals("Всі склади")) {
                 stockDataList.addAll(ODBC_PubsBDForStock.selectStockOfCategory(stockCategory));
             } else {
@@ -197,6 +205,23 @@ public class StockListViewController extends ListView {
         stockCategoryComboBox.setItems(stockCategoryNameList);
     }
 
+    public Button initLevelUpStockButton() {
+        Button button = new Button();
+        Image image = new Image(getClass().getResourceAsStream("/image/level_up_icon.png"));
+        button.getStylesheets().add(getClass().getResource("/stock.tracking/ButtonStyle.css").toExternalForm());
+        button.setGraphic(new ImageView(image));
+        button.setPrefWidth(10);
+        button.setMaxWidth(10);
+        button.setOnAction((ActionEvent event) -> {
+            if (!comboBoxListener.getValue().equals("Всі категорії")) {
+                stockCategoryComboBox.setValue("Всі категорії");
+                comboBoxListener.setValue(stockCategoryComboBox.getValue());
+            }
+        });
+        Tooltip.install(button, new Tooltip("Повернутись до категорій"));
+        return button;
+    }
+
     public ObservableMap<Integer, Integer> getResultMap() {
         return resultMap;
     }
@@ -221,7 +246,4 @@ public class StockListViewController extends ListView {
         this.showDisableStockCheckBox = showDisableStockCheckBox;
     }
 
-    public void setGoBackButton(Button goBackButton) {
-        this.goBackButton = goBackButton;
-    }
 }

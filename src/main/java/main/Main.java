@@ -17,7 +17,7 @@ public class Main extends Application {
         Parent root = FXMLLoader.load(classLoader.getResource("main/MainWindow.fxml"));
         primaryStage.setTitle("Hello World! I'm little CTracking, but I'll be big smart program!");
         Scene scene = new Scene(root);
-        scene.getStylesheets().add("DatePickerStyle.css");
+        scene.getStylesheets().add("/overridden.elements/DatePickerStyle.css");
         primaryStage.setScene(scene);
         primaryStage.setMaximized(true);
         DB_Connector.getDataSource();

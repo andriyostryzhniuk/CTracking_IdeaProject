@@ -1,11 +1,10 @@
-package date.picker;
+package overridden.elements.date.picker;
 
 import javafx.beans.InvalidationListener;
 import javafx.beans.Observable;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.scene.control.Button;
-import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -56,8 +55,8 @@ final class YearView extends DatePane {
             button.setMinHeight(58.0);
             button.setMaxWidth(Double.MAX_VALUE);
             button.setMaxHeight(Double.MAX_VALUE);
-            GridPane.setVgrow(button, Priority.ALWAYS);
-            GridPane.setHgrow(button, Priority.ALWAYS);
+            setVgrow(button, Priority.ALWAYS);
+            setHgrow(button, Priority.ALWAYS);
 
             button.setOnAction(new EventHandler<ActionEvent>() {
                 @Override

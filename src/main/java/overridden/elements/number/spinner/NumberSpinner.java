@@ -1,4 +1,4 @@
-package numberSpinner;
+package overridden.elements.number.spinner;
 
 import javafx.beans.property.ObjectProperty;
 import javafx.beans.property.SimpleObjectProperty;
@@ -96,7 +96,7 @@ public class NumberSpinner extends TextField {
             @Override
             public void changed(ObservableValue<? extends Scene> observableValue, Scene scene, Scene scene1) {
                 if (scene1 != null) {
-                    scene1.getStylesheets().add(getClass().getResource("/NumberSpinnerStyle.css").toExternalForm());
+                    scene1.getStylesheets().add(getClass().getResource("/overridden.elements/NumberSpinnerStyle.css").toExternalForm());
                 }
             }
         });
@@ -350,6 +350,6 @@ public class NumberSpinner extends TextField {
 
     @Override
     public String getUserAgentStylesheet() {
-        return getClass().getResource("/NumberSpinnerStyle.css").toExternalForm();
+        return getClass().getResource("/overridden.elements/NumberSpinnerStyle.css").toExternalForm();
     }
 }
