@@ -6,7 +6,7 @@ import javafx.scene.layout.Pane;
 /**
  * Created by Andriy on 04/03/2016.
  */
-public class DtoObject {
+public class DtoObject extends DtoLiableListView {
     private int id;
     private String address;
     private Pane paneContainer = new Pane();

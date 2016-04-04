@@ -2,9 +2,9 @@ package stock.tracking;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.collections.ObservableMap;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
+import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.input.DragEvent;
@@ -12,10 +12,11 @@ import javafx.scene.input.Dragboard;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
-import stock.tracking.dto.DtoEmployees;
+import stock.tracking.dto.DtoLiableListView;
+import stock.tracking.dto.DtoResult;
 import stock.tracking.dto.DtoStock;
-
-import java.util.Map;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by Andriy on 04/01/2016.
@@ -25,11 +26,13 @@ public class LiableListViewController {
     public GridPane rootGridPane;
     public ListView<Pane> liableListView;
 
-    public ObservableList<DtoEmployees> employeesDataList = FXCollections.observableArrayList();
+    public ChoiceBox liableTypeChoiceBox = new ChoiceBox();
+
+    public ObservableList<DtoLiableListView> liableDataList = FXCollections.observableArrayList();
     public ObservableList<DtoStock> stockDataList = FXCollections.observableArrayList();
     private StockListViewController stockListViewController;
 
-    private ObservableMap<Integer, Integer> resultMap = FXCollections.observableHashMap();
+    private List<DtoResult> resultList = new ArrayList<>();
 
     @FXML
     public void initialize() {
@@ -37,10 +40,18 @@ public class LiableListViewController {
     }
 
     public void initLiableListView() {
-        employeesDataList.addAll(ODBC_PubsBDForLiable.selectEmployees());
-        employeesDataList.forEach(item -> item.initPaneContainer());
+        liableDataList.clear();
+        liableListView.getItems().clear();
 
-        employeesDataList.forEach(item -> {
+        if (liableTypeChoiceBox.getValue().equals("Об'єкти")) {
+            liableDataList.addAll(ODBC_PubsBDForLiable.selectObjects());
+        } else {
+            liableDataList.addAll(ODBC_PubsBDForLiable.selectEmployees());
+        }
+
+        liableDataList.forEach(item -> item.initPaneContainer());
+
+        liableDataList.forEach(item -> {
             setTargetDragAndDrop(item.getPaneContainer());
             liableListView.getItems().add(item.getPaneContainer());
         });
@@ -96,8 +107,8 @@ public class LiableListViewController {
                 if (db.hasString()) {
                     if (Integer.parseInt(db.getString().substring(0, 1)) == 0) {
                         int stockId = Integer.parseInt(db.getString().substring(2));
-                        resultMap.put(stockId, Integer.parseInt(pane.getId()));
-                        stockListViewController.setResultMap(resultMap);
+                        resultList.add(new DtoResult(stockId, Integer.parseInt(pane.getId()), null));
+                        stockListViewController.setResultList(resultList);
                         stockListViewController.setDisableDroppedSource(stockId);
                         setTextNumberOfStock(Integer.parseInt(pane.getId()));
                     } else {
@@ -113,10 +124,10 @@ public class LiableListViewController {
                         }
 
                         int numberOfStockGranted = 0;
-                        if (!resultMap.isEmpty()) {
+                        if (!resultList.isEmpty()) {
                             for (DtoStock dtoStock : stockDataList) {
-                                for (Map.Entry<Integer, Integer> entry : resultMap.entrySet()) {
-                                    if (entry.getKey() == dtoStock.getId()) {
+                                for (DtoResult item : resultList) {
+                                    if (item.getStockId() == dtoStock.getId()) {
                                         numberOfStockGranted++;
                                     }
                                 }
@@ -132,15 +143,15 @@ public class LiableListViewController {
                         if (numberOfStockToGrant != 0) {
                             int i = 0;
                             for (DtoStock item : stockDataList) {
-                                if (resultMap.get(item.getId()) == null) {
-                                    resultMap.put(item.getId(), Integer.parseInt(pane.getId()));
+                                if (!resultList.contains(item.getId())) {
+                                    resultList.add(new DtoResult(item.getId(), Integer.parseInt(pane.getId()), null));
                                     i++;
                                 }
                                 if (i == numberOfStockToGrant) {
                                     break;
                                 }
                             }
-                            stockListViewController.setResultMap(resultMap);
+                            stockListViewController.setResultList(resultList);
                             stockListViewController.setTextOfAvailableStock(stockCategoryId);
                             setTextNumberOfStock(Integer.parseInt(pane.getId()));
                         }
@@ -159,8 +170,8 @@ public class LiableListViewController {
 
     public void setTextNumberOfStock(int employeesID) {
         int i = 0;
-        for (Map.Entry<Integer, Integer> entry : resultMap.entrySet()) {
-            if (entry.getValue() == employeesID) {
+        for (DtoResult item : resultList) {
+            if (item.getEmployeesId() == employeesID) {
                 i++;
             }
         }
@@ -174,15 +185,19 @@ public class LiableListViewController {
         }
     }
 
-    public ObservableMap<Integer, Integer> getResultMap() {
-        return resultMap;
+    public List<DtoResult> getResultList() {
+        return resultList;
     }
 
-    public void setResultMap(ObservableMap<Integer, Integer> resultMap) {
-        this.resultMap = resultMap;
+    public void setResultList(List<DtoResult> resultList) {
+        this.resultList = resultList;
     }
 
     public void setStockListViewController(StockListViewController stockListViewController) {
         this.stockListViewController = stockListViewController;
+    }
+
+    public void setLiableTypeChoiceBox(ChoiceBox liableTypeChoiceBox) {
+        this.liableTypeChoiceBox = liableTypeChoiceBox;
     }
 }

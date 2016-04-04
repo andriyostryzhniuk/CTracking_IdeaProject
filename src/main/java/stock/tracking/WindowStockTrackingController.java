@@ -6,8 +6,6 @@ import javafx.scene.layout.BorderPane;
 import overridden.elements.combo.box.AutoCompleteComboBoxListener;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
-import javafx.collections.ObservableMap;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -17,7 +15,11 @@ import javafx.scene.input.*;
 import javafx.scene.layout.GridPane;
 import javafx.util.Callback;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
+
 import overridden.elements.group.box.GroupBox;
+import stock.tracking.dto.DtoResult;
 
 public class WindowStockTrackingController {
 
@@ -29,7 +31,7 @@ public class WindowStockTrackingController {
     public StockListViewController stockListViewController;
 
     public LiableListViewController liableListViewController;
-    public ObservableMap<Integer, Integer> resultMap = FXCollections.observableHashMap();
+    public List<DtoResult> resultList = new ArrayList<>();
 
     @FXML
     public void initialize() {
@@ -54,12 +56,18 @@ public class WindowStockTrackingController {
 //        rootBorderPane.setAlignment(topGridPane, Pos.TOP_LEFT);
 //        rootBorderPane.setMargin(topGridPane, new Insets(0.0, 0.0, 20.0, 0.0));
 
-        liableListViewController.setResultMap(resultMap);
+        liableListViewController.setResultList(resultList);
         liableListViewController.setStockListViewController(stockListViewController);
         liableListViewController.initLiableListView();
     }
 
     public void initLeftSideGritPane() {
+        leftSideGridPane.setPadding(new Insets(0, 10, 0, 0));
+        leftSideGridPane.add(initStockGroupBox(), 0, 0);
+        leftSideGridPane.add(initLiableGroupBox(), 0, 1);
+    }
+
+    public GroupBox initStockGroupBox(){
         ChoiceBox repositoryChoiceBox = initRepositoryChoiceBox();
         stockListViewController.setRepositoryChoiceBox(repositoryChoiceBox);
 
@@ -84,12 +92,28 @@ public class WindowStockTrackingController {
 
         stockControlsGritPane.setAlignment(Pos.CENTER);
 
-        GroupBox groupBox = new GroupBox("Склад", stockControlsGritPane);
+        GroupBox groupBox = new GroupBox(stockControlsGritPane, "Склад", -70);
         groupBox.setMaxWidth(350);
         groupBox.getStylesheets().add(getClass().getResource("/overridden.elements/GroupBoxStyle.css").toExternalForm());
 
-        leftSideGridPane.setPadding(new Insets(0, 10, 0, 0));
-        leftSideGridPane.add(groupBox, 0, 0);
+        return groupBox;
+    }
+
+    public GroupBox initLiableGroupBox(){
+        ChoiceBox liableTypeChoiceBox = initLiableTypeChoiceBox();
+        liableListViewController.setLiableTypeChoiceBox(liableTypeChoiceBox);
+
+        GridPane liableControlsGritPane = new GridPane();
+        liableControlsGritPane.add(liableTypeChoiceBox, 0, 0);
+        liableControlsGritPane.setMargin(liableTypeChoiceBox, new Insets(0, 0, 8, 0));
+
+        liableControlsGritPane.setAlignment(Pos.CENTER);
+
+        GroupBox groupBox = new GroupBox(liableControlsGritPane, "Відповідальні", -50);
+        groupBox.setMaxWidth(350);
+        groupBox.getStylesheets().add(getClass().getResource("/overridden.elements/GroupBoxStyle.css").toExternalForm());
+
+        return groupBox;
     }
 
     public ChoiceBox initStockTypeChoiceBox() {
@@ -224,12 +248,33 @@ public class WindowStockTrackingController {
         return checkBox;
     }
 
-    public void saveToDB() {
-        resultMap.entrySet().stream().forEach((entry) -> {
-            ODBC_PubsBDForLiable.insertIntoWorkTracking(entry.getKey(), entry.getValue());
+    public ChoiceBox initLiableTypeChoiceBox(){
+        ChoiceBox choiceBox = new ChoiceBox();
+        choiceBox.getStylesheets().add(getClass().getResource("/stock.tracking/ChoiceBoxStyle.css").toExternalForm());
+        Tooltip.install(choiceBox, new Tooltip("Вибрати дані"));
+
+        choiceBox.getItems().addAll("Об'єкти", "Працівники");
+        choiceBox.setValue(choiceBox.getItems().get(0));
+
+        choiceBox.valueProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue observableValue, String oldValue, String newValue) {
+//                change detected
+                liableListViewController.liableTypeChoiceBox.setValue(choiceBox.getValue());
+                liableListViewController.initLiableListView();
+            }
         });
-        resultMap.clear();
-        stockListViewController.setResultMap(resultMap);
-        liableListViewController.setResultMap(resultMap);
+
+        return choiceBox;
+    }
+
+    public void saveToDB() {
+        resultList.forEach(item -> {
+            ODBC_PubsBDForLiable.insertIntoWorkTracking(item.getStockId(), item.getEmployeesId(), item.getObjectId());
+        });
+
+        resultList.clear();
+        stockListViewController.setResultList(resultList);
+        liableListViewController.setResultList(resultList);
     }
 }

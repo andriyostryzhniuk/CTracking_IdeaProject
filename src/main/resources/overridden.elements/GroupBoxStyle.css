@@ -6,7 +6,6 @@
 .bordered-titled-title {
   -fx-background-color: rgb(244, 244, 244);
   -fx-translate-y: -10;
-  -fx-translate-x: -70;
 }
 
 .bordered-titled-border {

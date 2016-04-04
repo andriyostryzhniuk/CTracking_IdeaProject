@@ -8,7 +8,6 @@ import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import stock.tracking.dto.DtoEmployees;
 import stock.tracking.dto.DtoObject;
-import stock.tracking.dto.DtoStock;
 import stock.tracking.dto.DtoStockCategory;
 
 import java.util.List;
@@ -30,9 +29,9 @@ public class ODBC_PubsBDForLiable {
         return dtoEmployeesList;
     }
 
-    public static void insertIntoWorkTracking(int stockId, int employeesId){
+    public static void insertIntoWorkTracking(Integer stockId, Integer employeesId, Integer objectId){
         getJdbcTemplate().update("INSERT INTO stocktracking (id, stock_id, employees_id, object_id, givingDate, returnDate) " +
-                "VALUES (null, '" + stockId + "', '" + employeesId + "', null, curdate(), null)");
+                "VALUES (null, " + stockId + ", " + employeesId + ", " + objectId + ", curdate(), null)");
     }
 
     public static List<DtoObject> selectObjects(){

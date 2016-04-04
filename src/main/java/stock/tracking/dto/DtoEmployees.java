@@ -6,7 +6,7 @@ import javafx.scene.layout.Pane;
 /**
  * Created by Andriy on 03/24/2016.
  */
-public class DtoEmployees {
+public class DtoEmployees extends DtoLiableListView {
     private int id;
     private String fullName;
     private Pane paneContainer = new Pane();

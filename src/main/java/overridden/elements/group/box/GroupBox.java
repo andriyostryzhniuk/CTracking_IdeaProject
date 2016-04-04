@@ -6,9 +6,10 @@ import javafx.scene.control.Label;
 import javafx.scene.layout.StackPane;
 
 public class GroupBox extends StackPane {
-    public GroupBox(String titleString, Node content) {
+    public GroupBox(Node content, String titleString, int titleTranslateX) {
         Label title = new Label(" " + titleString + " ");
         title.getStyleClass().add("bordered-titled-title");
+        title.setStyle("-fx-translate-x: "+ Integer.toString(titleTranslateX) +";");
         StackPane.setAlignment(title, Pos.TOP_CENTER);
 
         StackPane contentPane = new StackPane();

@@ -12,8 +12,12 @@ import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import stock.tracking.dto.DtoResult;
 import stock.tracking.dto.DtoStock;
 import stock.tracking.dto.DtoStockCategory;
+
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Map;
 
 public class StockListViewController extends ListView {
@@ -32,7 +36,7 @@ public class StockListViewController extends ListView {
     public ObservableList<String> stockCategoryNameList = FXCollections.observableArrayList();
     public ObservableList<DtoStockCategory> stockCategoryDataList = FXCollections.observableArrayList();
 
-    private ObservableMap<Integer, Integer> resultMap = FXCollections.observableHashMap();
+    private List<DtoResult> resultList = new ArrayList<>();
 
     @FXML
     public void initialize() {
@@ -134,7 +138,7 @@ public class StockListViewController extends ListView {
         /* the drag and drop gesture ended */
         /* if the data was successfully moved, clear it */
                 if (event.getTransferMode() == TransferMode.MOVE) {
-//                    System.out.println(resultMap.entrySet());
+//                    System.out.println(resultList);
                 }
                 event.consume();
             }
@@ -143,8 +147,8 @@ public class StockListViewController extends ListView {
 
     public void checkDisable(Pane pane) {
         int paneId = Integer.parseInt(pane.getId().substring(2));
-        resultMap.entrySet().stream().forEach((entry) -> {
-            if (entry.getKey() == paneId) {
+        resultList.forEach(item -> {
+            if (item.getStockId() == paneId) {
                 pane.setDisable(true);
             }
         });
@@ -160,7 +164,7 @@ public class StockListViewController extends ListView {
 
     public int countStockOfCategory(int stockCategoryId) {
         int numberOfStockGranted = 0;
-        if (!resultMap.isEmpty()) {
+        if (!resultList.isEmpty()) {
             if (repositoryChoiceBox.getValue().equals("Всі склади")) {
                 stockDataList.addAll(ODBC_PubsBDForStock.selectStockOfCategoryWithId(stockCategoryId));
             } else {
@@ -170,8 +174,8 @@ public class StockListViewController extends ListView {
             }
 
             for (DtoStock dtoStock : stockDataList) {
-                for (Map.Entry<Integer, Integer> entry : resultMap.entrySet()) {
-                    if (entry.getKey() == dtoStock.getId()) {
+                for(DtoResult item : resultList) {
+                    if (item.getStockId() == dtoStock.getId()) {
                         numberOfStockGranted++;
                     }
                 }
@@ -222,12 +226,12 @@ public class StockListViewController extends ListView {
         return button;
     }
 
-    public ObservableMap<Integer, Integer> getResultMap() {
-        return resultMap;
+    public List<DtoResult> getResultList() {
+        return resultList;
     }
 
-    public void setResultMap(ObservableMap<Integer, Integer> resultMap) {
-        this.resultMap = resultMap;
+    public void setResultList(List<DtoResult> resultList) {
+        this.resultList = resultList;
     }
 
     public void setStockCategoryComboBox(ComboBox stockCategoryComboBox) {
