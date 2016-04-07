@@ -19,13 +19,31 @@ public class ODBC_PubsBDForLiable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ODBC_PubsBDForLiable.class);
 
-    public static List<DtoEmployees> selectEmployees() {
+    public static List<DtoEmployees> selectAllEmployees() {
         List<DtoEmployees> dtoEmployeesList = getJdbcTemplate().query("select employees.id, " +
                 "concat( employees.surname, ' ', left (employees.name, 1), '. ', " +
                 "   left (employees.middleName, 1), '.' ) as fullName " +
                 "from employees " +
                 "where employees.lastDay is null " +
                 "order by employees.surname asc;", BeanPropertyRowMapper.newInstance(DtoEmployees.class));
+        return dtoEmployeesList;
+    }
+
+    public static List<DtoEmployees> selectEmployeesOnObject(Integer objectId) {
+        List<DtoEmployees> dtoEmployeesList = getJdbcTemplate().query("select employees.id, " +
+                "concat( employees.surname, ' ', left (employees.name, 1), '. ', " +
+                "   left (employees.middleName, 1), '.' ) as fullName " +
+                "from employees, object_employees, object " +
+                "where object.id = '" + objectId + "' and " +
+                "object.startDate <= curdate() and " +
+                "(object.finishDate >= curdate() or " +
+                "object.finishDate is null) and " +
+                "object.id = object_employees.object_id and " +
+                "object_employees.startDate <= curdate() and " +
+                "(object_employees.finishDate >= curdate() or " +
+                "object_employees.finishDate is null) and " +
+                "object_employees.employees_id = employees.id " +
+                "order by employees.surname asc", BeanPropertyRowMapper.newInstance(DtoEmployees.class));
         return dtoEmployeesList;
     }
 

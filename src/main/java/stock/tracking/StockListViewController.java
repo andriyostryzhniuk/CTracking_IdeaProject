@@ -2,7 +2,6 @@ package stock.tracking;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
-import javafx.collections.ObservableMap;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
@@ -18,7 +17,6 @@ import stock.tracking.dto.DtoStockCategory;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 public class StockListViewController extends ListView {
     public GridPane rootGridPane;
@@ -41,13 +39,13 @@ public class StockListViewController extends ListView {
     @FXML
     public void initialize() {
         stockListView.getStylesheets().add(getClass().getResource("/stock.tracking/ListViewStyle.css").toExternalForm());
-        levelUpButton = initLevelUpStockButton();
+        levelUpButton = initLevelUpButton();
         headerPane.getChildren().add(levelUpButton);
         levelUpButton.setLayoutX(10);
         levelUpButton.setLayoutY(0);
     }
 
-    public void initStockListView(String stockType, String stockCategory) {
+    public void initListView(String stockType, String stockCategory) {
         stockDataList.clear();
         stockCategoryDataList.clear();
         stockListView.getItems().clear();
@@ -209,7 +207,7 @@ public class StockListViewController extends ListView {
         stockCategoryComboBox.setItems(stockCategoryNameList);
     }
 
-    public Button initLevelUpStockButton() {
+    public Button initLevelUpButton() {
         Button button = new Button();
         Image image = new Image(getClass().getResourceAsStream("/image/level_up_icon.png"));
         button.getStylesheets().add(getClass().getResource("/stock.tracking/ButtonStyle.css").toExternalForm());
@@ -224,10 +222,6 @@ public class StockListViewController extends ListView {
         });
         Tooltip.install(button, new Tooltip("Повернутись до категорій"));
         return button;
-    }
-
-    public List<DtoResult> getResultList() {
-        return resultList;
     }
 
     public void setResultList(List<DtoResult> resultList) {

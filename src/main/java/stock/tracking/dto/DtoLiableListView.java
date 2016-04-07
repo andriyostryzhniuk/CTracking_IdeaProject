@@ -9,4 +9,9 @@ public abstract class DtoLiableListView {
     public abstract Pane getPaneContainer();
 
     public abstract void initPaneContainer();
+
+    public abstract int getId();
+
+    public abstract String getString();
+
 }

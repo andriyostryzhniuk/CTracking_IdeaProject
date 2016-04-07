@@ -31,6 +31,10 @@ public class DtoObject extends DtoLiableListView {
         return address;
     }
 
+    public String getString() {
+        return address;
+    }
+
     public void setAddress(String address) {
         this.address = address;
     }

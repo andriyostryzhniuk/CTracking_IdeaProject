@@ -31,6 +31,10 @@ public class DtoEmployees extends DtoLiableListView {
         return fullName;
     }
 
+    public String getString() {
+        return fullName;
+    }
+
     public void setFullName(String fullName) {
         this.fullName = fullName;
     }

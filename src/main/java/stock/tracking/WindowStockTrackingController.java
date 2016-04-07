@@ -58,7 +58,7 @@ public class WindowStockTrackingController {
 
         liableListViewController.setResultList(resultList);
         liableListViewController.setStockListViewController(stockListViewController);
-        liableListViewController.initLiableListView();
+        liableListViewController.initListView();
     }
 
     public void initLeftSideGritPane() {
@@ -103,9 +103,14 @@ public class WindowStockTrackingController {
         ChoiceBox liableTypeChoiceBox = initLiableTypeChoiceBox();
         liableListViewController.setLiableTypeChoiceBox(liableTypeChoiceBox);
 
+        ComboBox comboBoxSearch = initComboBoxSearch();
+        liableListViewController.setComboBoxSearch(comboBoxSearch);
+
         GridPane liableControlsGritPane = new GridPane();
         liableControlsGritPane.add(liableTypeChoiceBox, 0, 0);
         liableControlsGritPane.setMargin(liableTypeChoiceBox, new Insets(0, 0, 8, 0));
+        liableControlsGritPane.add(comboBoxSearch, 0, 1);
+        liableControlsGritPane.setMargin(comboBoxSearch, new Insets(8, 0, 8, 0));
 
         liableControlsGritPane.setAlignment(Pos.CENTER);
 
@@ -136,7 +141,7 @@ public class WindowStockTrackingController {
                 new AutoCompleteComboBoxListener<>(stockListViewController.stockCategoryComboBox, stockListViewController.comboBoxListener);
 
                 if (oldStockCategoryComboBoxValue != null && oldStockCategoryComboBoxValue.equals(stockListViewController.comboBoxListener.getValue())) {
-                    stockListViewController.initStockListView(choiceBox.getValue().toString(), stockListViewController.comboBoxListener.getValue().toString());
+                    stockListViewController.initListView(choiceBox.getValue().toString(), stockListViewController.comboBoxListener.getValue().toString());
                 }
             }
         });
@@ -185,7 +190,7 @@ public class WindowStockTrackingController {
 //                change detected
                 if (newValue != null) {
                     comboBox.getStyleClass().remove("warning");
-                    stockListViewController.initStockListView(stockListViewController.stockTypeChoiceBox.getValue().toString(),
+                    stockListViewController.initListView(stockListViewController.stockTypeChoiceBox.getValue().toString(),
                             stockListViewController.comboBoxListener.getValue().toString());
                 }
             }
@@ -215,7 +220,7 @@ public class WindowStockTrackingController {
                 }
                 new AutoCompleteComboBoxListener<>(stockListViewController.stockCategoryComboBox, stockListViewController.comboBoxListener);
 
-                stockListViewController.initStockListView(stockListViewController.stockTypeChoiceBox.getValue().toString(),
+                stockListViewController.initListView(stockListViewController.stockTypeChoiceBox.getValue().toString(),
                         stockListViewController.comboBoxListener.getValue().toString());
             }
         });
@@ -241,7 +246,7 @@ public class WindowStockTrackingController {
             new AutoCompleteComboBoxListener<>(stockListViewController.stockCategoryComboBox, stockListViewController.comboBoxListener);
 
             if (stockListViewController.comboBoxListener.getValue().equals("Всі категорії")) {
-                stockListViewController.initStockListView(stockListViewController.stockTypeChoiceBox.getValue().toString(),
+                stockListViewController.initListView(stockListViewController.stockTypeChoiceBox.getValue().toString(),
                         stockListViewController.comboBoxListener.getValue().toString());
             }
         });
@@ -253,19 +258,70 @@ public class WindowStockTrackingController {
         choiceBox.getStylesheets().add(getClass().getResource("/stock.tracking/ChoiceBoxStyle.css").toExternalForm());
         Tooltip.install(choiceBox, new Tooltip("Вибрати дані"));
 
-        choiceBox.getItems().addAll("Об'єкти", "Працівники");
+        choiceBox.getItems().addAll("Об'єкти", "Всі працівники");
         choiceBox.setValue(choiceBox.getItems().get(0));
+        liableListViewController.setListViewDateParameter(choiceBox.getValue().toString());
 
         choiceBox.valueProperty().addListener(new ChangeListener<String>() {
             @Override
             public void changed(ObservableValue observableValue, String oldValue, String newValue) {
 //                change detected
                 liableListViewController.liableTypeChoiceBox.setValue(choiceBox.getValue());
-                liableListViewController.initLiableListView();
+                liableListViewController.setListViewDateParameter(choiceBox.getValue().toString());
+                liableListViewController.initListView();
             }
         });
 
         return choiceBox;
+    }
+
+    public ComboBox initComboBoxSearch() {
+        ComboBox comboBox = new ComboBox();
+
+        comboBox.getStylesheets().add(getClass().getResource("/stock.tracking/ComboBoxStyle.css").toExternalForm());
+        Tooltip.install(comboBox, new Tooltip("Пошук"));
+        comboBox.setPromptText("Пошук");
+
+        comboBox.setItems(liableListViewController.liableNamesList);
+
+        new AutoCompleteComboBoxListener<>(comboBox, liableListViewController.comboBoxListener);
+
+        comboBox.setCellFactory(new Callback<ListView<String>, ListCell<String>>() {
+            @Override
+            public ListCell<String> call(ListView<String> param) {
+                final ListCell<String> cell = new ListCell<String>() {
+                    {
+                        super.setOnMousePressed(new EventHandler<MouseEvent>() {
+                            @Override
+                            public void handle(MouseEvent event) {
+//                                mouse pressed
+                                liableListViewController.comboBoxListener.setValue(comboBox.getValue());
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void updateItem(String item, boolean empty) {
+                        super.updateItem(item, empty);
+                        setText(item);
+                    }
+                };
+                return cell;
+            }
+        });
+
+        liableListViewController.comboBoxListener.valueProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue observableValue, String oldValue, String newValue) {
+//                change detected
+                if (newValue != null) {
+                    comboBox.getStyleClass().remove("warning");
+                    liableListViewController.searchInListView();
+                    liableListViewController.comboBoxListener.setValue(null);
+                }
+            }
+        });
+        return comboBox;
     }
 
     public void saveToDB() {
