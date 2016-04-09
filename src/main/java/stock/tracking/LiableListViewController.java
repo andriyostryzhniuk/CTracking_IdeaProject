@@ -55,10 +55,6 @@ public class LiableListViewController {
 
         headerGridPane.add(levelUpButton, 0, 0);
         headerGridPane.setMargin(levelUpButton, new Insets(0, 10, 0, 10));
-
-//        headerStackPane.getChildren().add(levelUpButton);
-//        headerStackPane.setAlignment(levelUpButton, Pos.CENTER_LEFT);
-//        headerStackPane.setMargin(levelUpButton, new Insets(0, 10, 0, 10));
     }
 
     public void initListView() {
@@ -154,8 +150,10 @@ public class LiableListViewController {
                         int stockId = Integer.parseInt(db.getString().substring(2));
                         if (listViewDateParameter.equals("Об'єкти")) {
                             resultList.add(new DtoResult(stockId, null, Integer.parseInt(pane.getId())));
-                        } else {
+                        } else if (listViewDateParameter.equals("Всі працівники")) {
                             resultList.add(new DtoResult(stockId, Integer.parseInt(pane.getId()), null));
+                        } else {
+                            resultList.add(new DtoResult(stockId, Integer.parseInt(pane.getId()), objectId));
                         }
                         stockListViewController.setResultList(resultList);
                         stockListViewController.setDisableDroppedSource(stockId);
@@ -195,8 +193,10 @@ public class LiableListViewController {
                                 if (!resultList.contains(item.getId())) {
                                     if (listViewDateParameter.equals("Об'єкти")) {
                                         resultList.add(new DtoResult(item.getId(), null, Integer.parseInt(pane.getId())));
-                                    } else {
+                                    } else if (listViewDateParameter.equals("Всі працівники")) {
                                         resultList.add(new DtoResult(item.getId(), Integer.parseInt(pane.getId()), null));
+                                    } else {
+                                        resultList.add(new DtoResult(item.getId(), Integer.parseInt(pane.getId()), objectId));
                                     }
                                     i++;
                                 }

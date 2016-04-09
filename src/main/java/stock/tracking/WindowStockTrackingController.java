@@ -332,5 +332,8 @@ public class WindowStockTrackingController {
         resultList.clear();
         stockListViewController.setResultList(resultList);
         liableListViewController.setResultList(resultList);
+        liableListViewController.initListView();
+        stockListViewController.initListView(stockListViewController.stockTypeChoiceBox.getValue().toString(),
+                stockListViewController.comboBoxListener.getValue().toString());
     }
 }
