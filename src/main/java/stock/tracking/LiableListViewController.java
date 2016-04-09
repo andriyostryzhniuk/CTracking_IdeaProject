@@ -182,9 +182,16 @@ public class LiableListViewController {
                         }
                         int numberOfAvailableStock = stockDataList.size() - numberOfStockGranted;
 
-                        Label namesLiableLabel = (Label) pane.getChildren().get(0);
-                        String namesLiable = namesLiableLabel.getText();
-                        PromptNumberStockToGrant promptNumberStockToGrant = new PromptNumberStockToGrant(stockCategoryId, namesLiable);
+                        Label liableNameLabel = (Label) pane.getChildren().get(0);
+                        String liableName = liableNameLabel.getText();
+                        PromptNumberStockToGrant promptNumberStockToGrant;
+                        if (listViewDateParameter.equals("Об'єкти")) {
+                            promptNumberStockToGrant = new PromptNumberStockToGrant(stockCategoryId, null, liableName);
+                        } else if (listViewDateParameter.equals("Всі працівники")) {
+                            promptNumberStockToGrant = new PromptNumberStockToGrant(stockCategoryId, liableName, null);
+                        } else {
+                            promptNumberStockToGrant = new PromptNumberStockToGrant(stockCategoryId, liableName , listViewDateParameter);
+                        }
                         int numberOfStockToGrant =
                                 promptNumberStockToGrant.showPrompt(pane.getScene().getWindow(), numberOfAvailableStock);
                         if (numberOfStockToGrant != 0) {

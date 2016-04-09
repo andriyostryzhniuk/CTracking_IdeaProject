@@ -14,7 +14,6 @@ import java.util.List;
 
 import static main.DB_Connector.getJdbcTemplate;
 
-
 public class ODBC_PubsBDForLiable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ODBC_PubsBDForLiable.class);

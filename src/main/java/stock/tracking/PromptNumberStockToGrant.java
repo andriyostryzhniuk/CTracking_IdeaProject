@@ -21,16 +21,22 @@ import javafx.stage.Window;
 import overridden.elements.number.spinner.NumberSpinner;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.stream.IntStream;
 
 public class PromptNumberStockToGrant {
     private boolean isException = false;
     private int numberOfStockToGrant = 0;
     private int stockCategoryId;
-    private String namesLiable;
+    private String employeesName;
+    private String objectName;
 
-    public PromptNumberStockToGrant(int stockCategoryId, String namesLiable) {
+    public PromptNumberStockToGrant() {
+    }
+
+    public PromptNumberStockToGrant(int stockCategoryId, String employeesName, String objectName) {
         this.stockCategoryId = stockCategoryId;
-        this.namesLiable = namesLiable;
+        this.employeesName = employeesName;
+        this.objectName = objectName;
     }
 
     public int showPrompt(Window window, int maxValue) {
@@ -130,25 +136,42 @@ public class PromptNumberStockToGrant {
     private Pane initLabelPane(int maxValue){
         String stockCategoryName = ODBC_PubsBDForStock.selectStockCategoryNameWithId(this.stockCategoryId);
         if (stockCategoryName.length() > 23) {
-            stockCategoryName = stockCategoryName.replace(stockCategoryName, stockCategoryName.substring(0, 22)+"..");
+            stockCategoryName = stockCategoryName.replace(stockCategoryName, stockCategoryName.substring(0, 22)+"...");
         }
         Label labelStock = new Label(stockCategoryName+"\nДоступно одиниць: "+maxValue);
 
-        String namesLiable = this.namesLiable;
-        if (namesLiable.length() > 19) {
-            namesLiable = namesLiable.replace(namesLiable, namesLiable.substring(0, 18)+"..");
+        String employeesName = this.employeesName;
+        if (employeesName != null) {
+            if (employeesName.length() > 19) {
+                employeesName = employeesName.replace(employeesName, employeesName.substring(0, 19)+"...");
+            }
+        } else {
+            employeesName = "-";
         }
-        Label labelLiable = new Label("Кому:\n"+namesLiable);
+        Label labelEmployee = new Label("Кому:\n"+employeesName);
+
+        String objectName = this.objectName;
+        if (objectName != null) {
+            if (objectName.length() > 19) {
+                objectName = objectName.replace(objectName, objectName.substring(0, 19)+"...");
+            }
+        } else {
+            objectName = "-";
+        }
+        Label labelObject = new Label("Об'єкт:\n"+objectName);
 
         labelStock.setStyle("-fx-text-fill: white");
-        labelLiable.setStyle("-fx-text-fill: white");
+        labelEmployee.setStyle("-fx-text-fill: white");
+        labelObject.setStyle("-fx-text-fill: white");
 
         Pane labelPane = new Pane();
-        labelPane.getChildren().addAll(labelStock, labelLiable);
+        labelPane.getChildren().addAll(labelStock, labelEmployee, labelObject);
         labelStock.setLayoutX(10);
         labelStock.setLayoutY(10);
-        labelLiable.setLayoutX(180);
-        labelLiable.setLayoutY(10);
+        labelEmployee.setLayoutX(180);
+        labelEmployee.setLayoutY(10);
+        labelObject.setLayoutX(180);
+        labelObject.setLayoutY(50);
         return labelPane;
     }
 }
