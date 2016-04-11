@@ -1,5 +1,7 @@
 package stock.tracking;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -13,6 +15,7 @@ import javafx.scene.input.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
+import javafx.util.Callback;
 import overridden.elements.combo.box.AutoCompleteComboBoxListener;
 import stock.tracking.dto.DtoLiableListView;
 import stock.tracking.dto.DtoResult;
@@ -47,6 +50,10 @@ public class LiableListViewController {
     public void initialize() {
         listView.getStylesheets().add(getClass().getResource("/stock.tracking/ListViewStyle.css").toExternalForm());
         levelUpButton = initLevelUpButton();
+
+        comboBoxSearch = initLiableComboBoxSearch();
+        rootGridPane.add(comboBoxSearch, 0, 0);
+        comboBoxSearch.setMaxWidth(Double.MAX_VALUE);
 
         headerGridPane.add(levelUpButton, 0, 0);
         headerGridPane.setMargin(levelUpButton, new Insets(0, 10, 0, 10));
@@ -248,6 +255,55 @@ public class LiableListViewController {
         }
     }
 
+    public ComboBox initLiableComboBoxSearch() {
+        ComboBox comboBox = new ComboBox();
+
+        comboBox.getStylesheets().add(getClass().getResource("/stock.tracking/ComboBoxStyle.css").toExternalForm());
+        comboBox.setTooltip(new Tooltip("Пошук"));
+        comboBox.setPromptText("Пошук");
+
+        comboBox.setItems(liableNamesList);
+
+        new AutoCompleteComboBoxListener<>(comboBox, comboBoxListener);
+
+        comboBox.setCellFactory(new Callback<ListView<String>, ListCell<String>>() {
+            @Override
+            public ListCell<String> call(ListView<String> param) {
+                final ListCell<String> cell = new ListCell<String>() {
+                    {
+                        super.setOnMousePressed(new EventHandler<MouseEvent>() {
+                            @Override
+                            public void handle(MouseEvent event) {
+//                                mouse pressed
+                                comboBoxListener.setValue(comboBox.getValue());
+                            }
+                        });
+                    }
+
+                    @Override
+                    public void updateItem(String item, boolean empty) {
+                        super.updateItem(item, empty);
+                        setText(item);
+                    }
+                };
+                return cell;
+            }
+        });
+
+        comboBoxListener.valueProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue observableValue, String oldValue, String newValue) {
+//                change detected
+                if (newValue != null) {
+                    comboBox.getStyleClass().remove("warning");
+                    searchInListView();
+                    comboBoxListener.setValue(null);
+                }
+            }
+        });
+        return comboBox;
+    }
+
     public void searchInListView() {
         Object comboBoxListenerValue = comboBoxListener.getValue();
         Integer liableID = null;
@@ -317,7 +373,4 @@ public class LiableListViewController {
         setTextToHeaderLabel(listViewDateParameter);
     }
 
-    public void setComboBoxSearch(ComboBox comboBoxSearch) {
-        this.comboBoxSearch = comboBoxSearch;
-    }
 }

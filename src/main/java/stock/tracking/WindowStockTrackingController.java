@@ -3,17 +3,13 @@ package stock.tracking;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.layout.BorderPane;
-import overridden.elements.combo.box.AutoCompleteComboBoxListener;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
-import javafx.scene.input.*;
 import javafx.scene.layout.GridPane;
-import javafx.util.Callback;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
@@ -29,8 +25,8 @@ public class WindowStockTrackingController {
     public GridPane gridPane;
 
     public StockListViewController stockListViewController;
-
     public LiableListViewController liableListViewController;
+
     public List<DtoResult> resultList = new ArrayList<>();
 
     @FXML
@@ -75,9 +71,6 @@ public class WindowStockTrackingController {
         ChoiceBox contentChoiceBox = initContentChoiceBox();
         stockListViewController.setContentChoiceBox(contentChoiceBox);
 
-        ComboBox comboBoxSearch = initStockComboBoxSearch();
-        stockListViewController.setComboBoxSearch(comboBoxSearch);
-
         ChoiceBox stockTypeChoiceBox = initStockTypeChoiceBox();
         stockListViewController.setStockTypeChoiceBox(stockTypeChoiceBox);
 
@@ -85,15 +78,13 @@ public class WindowStockTrackingController {
         stockListViewController.setShowDisableStockCheckBox(showDisableStockCheckBox);
 
         GridPane stockControlsGritPane = new GridPane();
-        stockControlsGritPane.add(comboBoxSearch, 0, 0);
-        stockControlsGritPane.setMargin(comboBoxSearch, new Insets(0, 0, 8, 0));
-        stockControlsGritPane.add(contentChoiceBox, 0, 1);
-        stockControlsGritPane.setMargin(contentChoiceBox, new Insets(8, 0, 8, 0));
-        stockControlsGritPane.add(stockTypeChoiceBox, 0, 2);
+        stockControlsGritPane.add(contentChoiceBox, 0, 0);
+        stockControlsGritPane.setMargin(contentChoiceBox, new Insets(0, 0, 8, 0));
+        stockControlsGritPane.add(stockTypeChoiceBox, 0, 1);
         stockControlsGritPane.setMargin(stockTypeChoiceBox, new Insets(8, 0, 8, 0));
-        stockControlsGritPane.add(repositoryChoiceBox, 0, 3);
+        stockControlsGritPane.add(repositoryChoiceBox, 0, 2);
         stockControlsGritPane.setMargin(repositoryChoiceBox, new Insets(8, 0, 8, 0));
-        stockControlsGritPane.add(showDisableStockCheckBox, 0, 4);
+        stockControlsGritPane.add(showDisableStockCheckBox, 0, 3);
         stockControlsGritPane.setMargin(showDisableStockCheckBox, new Insets(8, 0, 5, 0));
 
         stockControlsGritPane.setAlignment(Pos.CENTER);
@@ -109,14 +100,9 @@ public class WindowStockTrackingController {
         ChoiceBox liableTypeChoiceBox = initLiableTypeChoiceBox();
         liableListViewController.setLiableTypeChoiceBox(liableTypeChoiceBox);
 
-        ComboBox comboBoxSearch = initLiableComboBoxSearch();
-        liableListViewController.setComboBoxSearch(comboBoxSearch);
-
         GridPane liableControlsGritPane = new GridPane();
         liableControlsGritPane.add(liableTypeChoiceBox, 0, 0);
         liableControlsGritPane.setMargin(liableTypeChoiceBox, new Insets(0, 0, 8, 0));
-        liableControlsGritPane.add(comboBoxSearch, 0, 1);
-        liableControlsGritPane.setMargin(comboBoxSearch, new Insets(8, 0, 8, 0));
 
         liableControlsGritPane.setAlignment(Pos.CENTER);
 
@@ -164,55 +150,6 @@ public class WindowStockTrackingController {
         });
         choiceBox.setValue(choiceBox.getItems().get(0));
         return choiceBox;
-    }
-
-    public ComboBox initStockComboBoxSearch() {
-        ComboBox comboBox = new ComboBox();
-
-        comboBox.getStylesheets().add(getClass().getResource("/stock.tracking/ComboBoxStyle.css").toExternalForm());
-        comboBox.setTooltip(new Tooltip("Пошук"));
-        comboBox.setPromptText("Пошук");
-
-        comboBox.setItems(stockListViewController.stockNameList);
-
-        new AutoCompleteComboBoxListener<>(comboBox, stockListViewController.comboBoxListener);
-
-        comboBox.setCellFactory(new Callback<ListView<String>, ListCell<String>>() {
-            @Override
-            public ListCell<String> call(ListView<String> param) {
-                final ListCell<String> cell = new ListCell<String>() {
-                    {
-                        super.setOnMousePressed(new EventHandler<MouseEvent>() {
-                            @Override
-                            public void handle(MouseEvent event) {
-//                                mouse pressed
-                                stockListViewController.comboBoxListener.setValue(comboBox.getValue());
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void updateItem(String item, boolean empty) {
-                        super.updateItem(item, empty);
-                        setText(item);
-                    }
-                };
-                return cell;
-            }
-        });
-
-        stockListViewController.comboBoxListener.valueProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue observableValue, String oldValue, String newValue) {
-//                change detected
-                if (newValue != null) {
-                    comboBox.getStyleClass().remove("warning");
-                    stockListViewController.searchInListView();
-                    stockListViewController.comboBoxListener.setValue(null);
-                }
-            }
-        });
-        return comboBox;
     }
 
     public ChoiceBox initRepositoryChoiceBox(){
@@ -268,55 +205,6 @@ public class WindowStockTrackingController {
         });
 
         return choiceBox;
-    }
-
-    public ComboBox initLiableComboBoxSearch() {
-        ComboBox comboBox = new ComboBox();
-
-        comboBox.getStylesheets().add(getClass().getResource("/stock.tracking/ComboBoxStyle.css").toExternalForm());
-        comboBox.setTooltip(new Tooltip("Пошук"));
-        comboBox.setPromptText("Пошук");
-
-        comboBox.setItems(liableListViewController.liableNamesList);
-
-        new AutoCompleteComboBoxListener<>(comboBox, liableListViewController.comboBoxListener);
-
-        comboBox.setCellFactory(new Callback<ListView<String>, ListCell<String>>() {
-            @Override
-            public ListCell<String> call(ListView<String> param) {
-                final ListCell<String> cell = new ListCell<String>() {
-                    {
-                        super.setOnMousePressed(new EventHandler<MouseEvent>() {
-                            @Override
-                            public void handle(MouseEvent event) {
-//                                mouse pressed
-                                liableListViewController.comboBoxListener.setValue(comboBox.getValue());
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void updateItem(String item, boolean empty) {
-                        super.updateItem(item, empty);
-                        setText(item);
-                    }
-                };
-                return cell;
-            }
-        });
-
-        liableListViewController.comboBoxListener.valueProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue observableValue, String oldValue, String newValue) {
-//                change detected
-                if (newValue != null) {
-                    comboBox.getStyleClass().remove("warning");
-                    liableListViewController.searchInListView();
-                    liableListViewController.comboBoxListener.setValue(null);
-                }
-            }
-        });
-        return comboBox;
     }
 
     public void saveToDB() {

@@ -1,4 +1,4 @@
- .combo-box.warning {
+ .combo-box.warning:focused {
      -fx-background-color: red ,-fx-box-border,-fx-control-inner-background;
  }
 
