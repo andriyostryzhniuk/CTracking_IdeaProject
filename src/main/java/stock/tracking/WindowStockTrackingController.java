@@ -58,6 +58,7 @@ public class WindowStockTrackingController {
 
         liableListViewController.setResultList(resultList);
         liableListViewController.setStockListViewController(stockListViewController);
+        stockListViewController.initListView(stockListViewController.stockTypeChoiceBox.getValue().toString());
         liableListViewController.initListView();
     }
 
@@ -71,8 +72,11 @@ public class WindowStockTrackingController {
         ChoiceBox repositoryChoiceBox = initRepositoryChoiceBox();
         stockListViewController.setRepositoryChoiceBox(repositoryChoiceBox);
 
-        ComboBox stockCategoryComboBox = initStockCategoryComboBox();
-        stockListViewController.setStockCategoryComboBox(stockCategoryComboBox);
+        ChoiceBox contentChoiceBox = initContentChoiceBox();
+        stockListViewController.setContentChoiceBox(contentChoiceBox);
+
+        ComboBox comboBoxSearch = initStockComboBoxSearch();
+        stockListViewController.setComboBoxSearch(comboBoxSearch);
 
         ChoiceBox stockTypeChoiceBox = initStockTypeChoiceBox();
         stockListViewController.setStockTypeChoiceBox(stockTypeChoiceBox);
@@ -81,13 +85,15 @@ public class WindowStockTrackingController {
         stockListViewController.setShowDisableStockCheckBox(showDisableStockCheckBox);
 
         GridPane stockControlsGritPane = new GridPane();
-        stockControlsGritPane.add(stockCategoryComboBox, 0, 0);
-        stockControlsGritPane.setMargin(stockCategoryComboBox, new Insets(0, 0, 8, 0));
-        stockControlsGritPane.add(stockTypeChoiceBox, 0, 1);
+        stockControlsGritPane.add(comboBoxSearch, 0, 0);
+        stockControlsGritPane.setMargin(comboBoxSearch, new Insets(0, 0, 8, 0));
+        stockControlsGritPane.add(contentChoiceBox, 0, 1);
+        stockControlsGritPane.setMargin(contentChoiceBox, new Insets(8, 0, 8, 0));
+        stockControlsGritPane.add(stockTypeChoiceBox, 0, 2);
         stockControlsGritPane.setMargin(stockTypeChoiceBox, new Insets(8, 0, 8, 0));
-        stockControlsGritPane.add(repositoryChoiceBox, 0, 2);
+        stockControlsGritPane.add(repositoryChoiceBox, 0, 3);
         stockControlsGritPane.setMargin(repositoryChoiceBox, new Insets(8, 0, 8, 0));
-        stockControlsGritPane.add(showDisableStockCheckBox, 0, 3);
+        stockControlsGritPane.add(showDisableStockCheckBox, 0, 4);
         stockControlsGritPane.setMargin(showDisableStockCheckBox, new Insets(8, 0, 5, 0));
 
         stockControlsGritPane.setAlignment(Pos.CENTER);
@@ -103,7 +109,7 @@ public class WindowStockTrackingController {
         ChoiceBox liableTypeChoiceBox = initLiableTypeChoiceBox();
         liableListViewController.setLiableTypeChoiceBox(liableTypeChoiceBox);
 
-        ComboBox comboBoxSearch = initComboBoxSearch();
+        ComboBox comboBoxSearch = initLiableComboBoxSearch();
         liableListViewController.setComboBoxSearch(comboBoxSearch);
 
         GridPane liableControlsGritPane = new GridPane();
@@ -121,9 +127,31 @@ public class WindowStockTrackingController {
         return groupBox;
     }
 
+    public ChoiceBox initContentChoiceBox(){
+        ChoiceBox choiceBox = new ChoiceBox();
+        choiceBox.setTooltip(new Tooltip("Вибрати дані"));
+        choiceBox.getStylesheets().add(getClass().getResource("/stock.tracking/ChoiceBoxStyle.css").toExternalForm());
+
+        choiceBox.getItems().addAll("Категорії", "Весь інвентар");
+        choiceBox.setValue(choiceBox.getItems().get(0));
+        stockListViewController.setListViewDateParameter(choiceBox.getValue().toString());
+
+        choiceBox.valueProperty().addListener(new ChangeListener<String>() {
+            @Override
+            public void changed(ObservableValue observableValue, String oldValue, String newValue) {
+//                change detected
+                stockListViewController.contentChoiceBox.setValue(choiceBox.getValue());
+                stockListViewController.setListViewDateParameter(choiceBox.getValue().toString());
+                stockListViewController.initListView(stockListViewController.stockTypeChoiceBox.getValue().toString());
+            }
+        });
+
+        return choiceBox;
+    }
+
     public ChoiceBox initStockTypeChoiceBox() {
         ChoiceBox choiceBox = new ChoiceBox();
-        Tooltip.install(choiceBox, new Tooltip("Вибрати тип інвентаря\n(Вартісний/Розхідний)"));
+        choiceBox.setTooltip(new Tooltip("Вибрати тип інвентаря\n(Вартісний/Розхідний)"));
         choiceBox.getItems().addAll("Вартісні", "Розхідні");
         choiceBox.getStylesheets().add(getClass().getResource("/stock.tracking/ChoiceBoxStyle.css").toExternalForm());
         choiceBox.valueProperty().addListener(new ChangeListener<String>() {
@@ -131,31 +159,21 @@ public class WindowStockTrackingController {
             public void changed(ObservableValue observableValue, String oldValue, String newValue) {
 //                change detected
                 stockListViewController.stockTypeChoiceBox.setValue(choiceBox.getValue());
-
-                Object oldStockCategoryComboBoxValue = stockListViewController.comboBoxListener.getValue();
-
-                stockListViewController.updateStockCategoryComboBoxItems();
-
-                stockListViewController.stockCategoryComboBox.setValue(stockListViewController.stockCategoryComboBox.getItems().get(0));
-                stockListViewController.comboBoxListener.setValue(stockListViewController.stockCategoryComboBox.getValue());
-                new AutoCompleteComboBoxListener<>(stockListViewController.stockCategoryComboBox, stockListViewController.comboBoxListener);
-
-                if (oldStockCategoryComboBoxValue != null && oldStockCategoryComboBoxValue.equals(stockListViewController.comboBoxListener.getValue())) {
-                    stockListViewController.initListView(choiceBox.getValue().toString(), stockListViewController.comboBoxListener.getValue().toString());
-                }
+                stockListViewController.initListView(choiceBox.getValue().toString());
             }
         });
         choiceBox.setValue(choiceBox.getItems().get(0));
         return choiceBox;
     }
 
-    public ComboBox initStockCategoryComboBox() {
+    public ComboBox initStockComboBoxSearch() {
         ComboBox comboBox = new ComboBox();
 
         comboBox.getStylesheets().add(getClass().getResource("/stock.tracking/ComboBoxStyle.css").toExternalForm());
-        Tooltip.install(comboBox, new Tooltip("Вибрати ктегорію"));
+        comboBox.setTooltip(new Tooltip("Пошук"));
+        comboBox.setPromptText("Пошук");
 
-        comboBox.setItems(stockListViewController.stockCategoryNameList);
+        comboBox.setItems(stockListViewController.stockNameList);
 
         new AutoCompleteComboBoxListener<>(comboBox, stockListViewController.comboBoxListener);
 
@@ -168,7 +186,6 @@ public class WindowStockTrackingController {
                             @Override
                             public void handle(MouseEvent event) {
 //                                mouse pressed
-                                comboBox.getStyleClass().remove("warning");
                                 stockListViewController.comboBoxListener.setValue(comboBox.getValue());
                             }
                         });
@@ -190,8 +207,8 @@ public class WindowStockTrackingController {
 //                change detected
                 if (newValue != null) {
                     comboBox.getStyleClass().remove("warning");
-                    stockListViewController.initListView(stockListViewController.stockTypeChoiceBox.getValue().toString(),
-                            stockListViewController.comboBoxListener.getValue().toString());
+                    stockListViewController.searchInListView();
+                    stockListViewController.comboBoxListener.setValue(null);
                 }
             }
         });
@@ -201,7 +218,7 @@ public class WindowStockTrackingController {
     public ChoiceBox initRepositoryChoiceBox(){
         ChoiceBox choiceBox = new ChoiceBox();
         choiceBox.getStylesheets().add(getClass().getResource("/stock.tracking/ChoiceBoxStyle.css").toExternalForm());
-        Tooltip.install(choiceBox, new Tooltip("Вибрати склад"));
+        choiceBox.setTooltip(new Tooltip("Вибрати склад"));
 
         choiceBox.setItems(ODBC_PubsBDForStock.selectRepositoryName());
         choiceBox.setValue(choiceBox.getItems().get(0));
@@ -210,18 +227,7 @@ public class WindowStockTrackingController {
             @Override
             public void changed(ObservableValue observableValue, String oldValue, String newValue) {
 //                change detected
-                Object oldStockCategoryComboBoxValue = stockListViewController.comboBoxListener.getValue();
-
-                stockListViewController.updateStockCategoryComboBoxItems();
-
-                if (oldStockCategoryComboBoxValue != null) {
-                    stockListViewController.stockCategoryComboBox.setValue(oldStockCategoryComboBoxValue);
-                    stockListViewController.comboBoxListener.setValue(oldStockCategoryComboBoxValue);
-                }
-                new AutoCompleteComboBoxListener<>(stockListViewController.stockCategoryComboBox, stockListViewController.comboBoxListener);
-
-                stockListViewController.initListView(stockListViewController.stockTypeChoiceBox.getValue().toString(),
-                        stockListViewController.comboBoxListener.getValue().toString());
+                stockListViewController.initListView(stockListViewController.stockTypeChoiceBox.getValue().toString());
             }
         });
 
@@ -230,24 +236,13 @@ public class WindowStockTrackingController {
 
     public CheckBox initShowDisableStockCheckBox(){
         CheckBox checkBox = new CheckBox("Показувати недоступні категорії");
-        Tooltip.install(checkBox, new Tooltip("Показувати категорії в яких\nнемає жодного доступного" +
+        checkBox.setTooltip(new Tooltip("Показувати категорії в яких\nнемає жодного доступного" +
                 "\nна даний момент інвентаря"));
         checkBox.setSelected(false);
         checkBox.setOnAction((ActionEvent event) -> {
-            Object oldStockCategoryComboBoxValue = stockListViewController.comboBoxListener.getValue();
 
-            stockListViewController.updateStockCategoryComboBoxItems();
-
-            if (oldStockCategoryComboBoxValue != null) {
-                stockListViewController.stockCategoryComboBox.setValue(oldStockCategoryComboBoxValue);
-                stockListViewController.comboBoxListener.setValue(oldStockCategoryComboBoxValue);
-                stockListViewController.stockCategoryComboBox.getStyleClass().remove("warning");
-            }
-            new AutoCompleteComboBoxListener<>(stockListViewController.stockCategoryComboBox, stockListViewController.comboBoxListener);
-
-            if (stockListViewController.comboBoxListener.getValue().equals("Всі категорії")) {
-                stockListViewController.initListView(stockListViewController.stockTypeChoiceBox.getValue().toString(),
-                        stockListViewController.comboBoxListener.getValue().toString());
+            if (stockListViewController.getListViewDateParameter().equals("Категорії")) {
+                stockListViewController.initListView(stockListViewController.stockTypeChoiceBox.getValue().toString());
             }
         });
         return checkBox;
@@ -256,7 +251,7 @@ public class WindowStockTrackingController {
     public ChoiceBox initLiableTypeChoiceBox(){
         ChoiceBox choiceBox = new ChoiceBox();
         choiceBox.getStylesheets().add(getClass().getResource("/stock.tracking/ChoiceBoxStyle.css").toExternalForm());
-        Tooltip.install(choiceBox, new Tooltip("Вибрати дані"));
+        choiceBox.setTooltip(new Tooltip("Вибрати дані"));
 
         choiceBox.getItems().addAll("Об'єкти", "Всі працівники");
         choiceBox.setValue(choiceBox.getItems().get(0));
@@ -275,11 +270,11 @@ public class WindowStockTrackingController {
         return choiceBox;
     }
 
-    public ComboBox initComboBoxSearch() {
+    public ComboBox initLiableComboBoxSearch() {
         ComboBox comboBox = new ComboBox();
 
         comboBox.getStylesheets().add(getClass().getResource("/stock.tracking/ComboBoxStyle.css").toExternalForm());
-        Tooltip.install(comboBox, new Tooltip("Пошук"));
+        comboBox.setTooltip(new Tooltip("Пошук"));
         comboBox.setPromptText("Пошук");
 
         comboBox.setItems(liableListViewController.liableNamesList);
@@ -333,7 +328,6 @@ public class WindowStockTrackingController {
         stockListViewController.setResultList(resultList);
         liableListViewController.setResultList(resultList);
         liableListViewController.initListView();
-        stockListViewController.initListView(stockListViewController.stockTypeChoiceBox.getValue().toString(),
-                stockListViewController.comboBoxListener.getValue().toString());
+        stockListViewController.initListView(stockListViewController.stockTypeChoiceBox.getValue().toString());
     }
 }

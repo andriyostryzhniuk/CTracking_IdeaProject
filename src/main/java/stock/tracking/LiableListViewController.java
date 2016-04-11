@@ -5,13 +5,11 @@ import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.fxml.FXML;
-import javafx.geometry.HPos;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.*;
-import javafx.scene.layout.ColumnConstraints;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
@@ -22,26 +20,23 @@ import stock.tracking.dto.DtoStock;
 import java.util.ArrayList;
 import java.util.List;
 
-/**
- * Created by Andriy on 04/01/2016.
- */
 public class LiableListViewController {
 
     public GridPane rootGridPane;
     public ListView<Pane> listView;
+    public StackPane headerStackPane;
+    public GridPane headerGridPane;
+    public Pane headerPane;
     public Label headerLabel;
 
     public ChoiceBox liableTypeChoiceBox = new ChoiceBox();
     public ComboBox comboBoxSearch = new ComboBox();
     public ComboBox comboBoxListener = new ComboBox();
-    public StackPane headerStackPane;
-    public GridPane headerGridPane;
-    public Pane headerPane;
     private Integer objectId;
     public Button levelUpButton;
     private String listViewDateParameter;
 
-    public ObservableList<DtoLiableListView> liableDataList = FXCollections.observableArrayList();
+    public ObservableList<DtoLiableListView> liableListViewDataList = FXCollections.observableArrayList();
     public ObservableList<String> liableNamesList = FXCollections.observableArrayList();
     public ObservableList<DtoStock> stockDataList = FXCollections.observableArrayList();
     private StockListViewController stockListViewController;
@@ -58,14 +53,14 @@ public class LiableListViewController {
     }
 
     public void initListView() {
-        liableDataList.clear();
+        liableListViewDataList.clear();
         liableNamesList.clear();
         listView.getItems().clear();
 
         if (listViewDateParameter.equals("Об'єкти")) {
             levelUpButton.setDisable(true);
-            liableDataList.addAll(ODBC_PubsBDForLiable.selectObjects());
-            liableDataList.forEach(item -> {
+            liableListViewDataList.addAll(ODBC_PubsBDForLiable.selectObjects());
+            liableListViewDataList.forEach(item -> {
                 item.getPaneContainer().setOnMouseClicked(new EventHandler<MouseEvent>() {
                     @Override
                     public void handle(MouseEvent mouseEvent) {
@@ -81,13 +76,13 @@ public class LiableListViewController {
             });
         } else if (listViewDateParameter.equals("Всі працівники")){
             levelUpButton.setDisable(true);
-            liableDataList.addAll(ODBC_PubsBDForLiable.selectAllEmployees());
+            liableListViewDataList.addAll(ODBC_PubsBDForLiable.selectAllEmployees());
         } else {
             levelUpButton.setDisable(false);
-            liableDataList.addAll(ODBC_PubsBDForLiable.selectEmployeesOnObject(objectId));
+            liableListViewDataList.addAll(ODBC_PubsBDForLiable.selectEmployeesOnObject(objectId));
         }
 
-        liableDataList.forEach(item -> {
+        liableListViewDataList.forEach(item -> {
             item.initPaneContainer();
             liableNamesList.add(item.getString());
             setTargetDragAndDrop(item.getPaneContainer());
@@ -256,7 +251,7 @@ public class LiableListViewController {
     public void searchInListView() {
         Object comboBoxListenerValue = comboBoxListener.getValue();
         Integer liableID = null;
-        for (DtoLiableListView item : liableDataList) {
+        for (DtoLiableListView item : liableListViewDataList) {
             if (item.getString().equals(comboBoxListenerValue)) {
                 liableID = item.getId();
             }
@@ -282,7 +277,6 @@ public class LiableListViewController {
         button.setPrefWidth(10);
         button.setMaxWidth(10);
         button.setOnAction((ActionEvent event) -> {
-            headerLabel.setText("Об'єкти");
             liableTypeChoiceBox.setValue("Об'єкти");
             setListViewDateParameter("Об'єкти");
             initListView();
@@ -316,10 +310,6 @@ public class LiableListViewController {
 
     public void setLiableTypeChoiceBox(ChoiceBox liableTypeChoiceBox) {
         this.liableTypeChoiceBox = liableTypeChoiceBox;
-    }
-
-    public String getListViewDateParameter() {
-        return listViewDateParameter;
     }
 
     public void setListViewDateParameter(String listViewDateParameter) {

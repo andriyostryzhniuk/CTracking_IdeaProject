@@ -13,11 +13,24 @@
         <RowConstraints vgrow="SOMETIMES" />
     </rowConstraints>
     <children>
-        <ListView fx:id="stockListView" fixedCellSize="50.0" maxWidth="250.0" minWidth="200.0" GridPane.rowIndex="1" />
-        <Pane fx:id="headerPane" style="-fx-background-color: rgba(65, 105, 225, .5);">
+        <ListView fx:id="listView" fixedCellSize="50.0" maxWidth="250.0" minWidth="200.0" GridPane.rowIndex="1" />
+        <StackPane fx:id="headerStackPane" alignment="CENTER" style="-fx-background-color: rgba(65, 105, 225, .5);">
             <children>
-                <Label layoutX="108.0" layoutY="4.0" text="Склад" />
+                <GridPane fx:id="headerGridPane">
+                    <children>
+                        <Label fx:id="headerLabel" style="-fx-translate-x: -30;" GridPane.columnIndex="1" />
+                        <Pane fx:id="headerPane" style="-fx-background-color: transparent;" GridPane.columnIndex="1"
+                              GridPane.hgrow="SOMETIMES" />
+                    </children>
+                    <columnConstraints>
+                        <ColumnConstraints />
+                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" />
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints />
+                    </rowConstraints>
+                </GridPane>
             </children>
-        </Pane>
+        </StackPane>
     </children>
 </GridPane>

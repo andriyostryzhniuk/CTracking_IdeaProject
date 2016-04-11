@@ -30,9 +30,6 @@ public class PromptNumberStockToGrant {
     private String employeesName;
     private String objectName;
 
-    public PromptNumberStockToGrant() {
-    }
-
     public PromptNumberStockToGrant(int stockCategoryId, String employeesName, String objectName) {
         this.stockCategoryId = stockCategoryId;
         this.employeesName = employeesName;

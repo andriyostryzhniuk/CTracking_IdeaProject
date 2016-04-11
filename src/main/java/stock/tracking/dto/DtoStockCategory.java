@@ -6,7 +6,7 @@ import javafx.scene.layout.Pane;
 /**
  * Created by Andriy on 03/28/2016.
  */
-public class DtoStockCategory {
+public class DtoStockCategory extends DtoStockListView {
     private int id;
     private String name;
     private int numberOfStock;
@@ -53,7 +53,7 @@ public class DtoStockCategory {
         this.paneContainer = paneContainer;
     }
 
-    public void initPaneContainer (int numberOfStockGranted){
+    public void initCategoryPaneContainer(int numberOfStockGranted){
         paneContainer.setId("1:"+Integer.toString(id));
         paneContainer.setStyle("-fx-background-color: rgba(105, 105, 105, .5);");
         Label label = new Label(name);
@@ -65,5 +65,10 @@ public class DtoStockCategory {
         paneContainer.getChildren().add(numberOfStockLabel);
         numberOfStockLabel.setLayoutX(160);
         numberOfStockLabel.setLayoutY(30);
+    }
+
+    @Override
+    public void initStockPaneContainer() {
+
     }
 }
