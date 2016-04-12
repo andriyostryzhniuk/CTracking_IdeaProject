@@ -24,11 +24,11 @@ public class DtoGrantedStock extends DtoStock {
         label.setLayoutY(3);
 
         getPaneContainer().setOnMouseEntered((MouseEvent event) -> {
-            System.out.println("mouse detected");
+            getPaneContainer().setStyle("-fx-background-color: rgba(220, 220, 220, .2); -fx-border-color: rgba(105, 105, 105, .5);");
         });
 
         getPaneContainer().setOnMouseExited((MouseEvent event) -> {
-            System.out.println("mouse exited");
+            getPaneContainer().setStyle("-fx-background-color: transparent; -fx-border-color: rgba(105, 105, 105, .5);");
         });
     }
 }

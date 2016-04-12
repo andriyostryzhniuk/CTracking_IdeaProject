@@ -66,25 +66,12 @@ public class LiableListViewController {
         liableListViewDataList.clear();
         liableNamesList.clear();
         listView.getItems().clear();
+        grantedStockListViewController.clearListView();
 
         if (listViewDateParameter.equals("Об'єкти")) {
             levelUpButton.setDisable(true);
             liableListViewDataList.addAll(ODBC_PubsBDForLiable.selectObjects());
-            liableListViewDataList.forEach(item -> {
-                item.getPaneContainer().setOnMouseClicked(new EventHandler<MouseEvent>() {
-                    @Override
-                    public void handle(MouseEvent mouseEvent) {
-                        if (mouseEvent.getButton().equals(MouseButton.PRIMARY)) {
-                            if (mouseEvent.getClickCount() == 2) {
-                                setListViewDateParameter(item.getString());
-                                objectId = item.getId();
-                                initListView();
-                            }
-                        }
-                    }
-                });
-            });
-        } else if (listViewDateParameter.equals("Всі працівники")){
+        } else if (listViewDateParameter.equals("Всі працівники")) {
             levelUpButton.setDisable(true);
             liableListViewDataList.addAll(ODBC_PubsBDForLiable.selectAllEmployees());
         } else {
@@ -98,16 +85,26 @@ public class LiableListViewController {
             setTargetDragAndDrop(item.getPaneContainer());
             listView.getItems().add(item.getPaneContainer());
             setTextNumberOfStock(Integer.parseInt(item.getPaneContainer().getId()));
-            item.getPaneContainer().setOnMouseClicked(new EventHandler<MouseEvent>() {
-                @Override
-                public void handle(MouseEvent mouseEvent) {
-                    if (mouseEvent.getButton().equals(MouseButton.PRIMARY)) {
-                        if (mouseEvent.getClickCount() != 2) {
-                            grantedStockListViewController.initListView(getGrantedStockList(item.getId()));
+
+            if (listViewDateParameter.equals("Об'єкти")) {
+                item.getPaneContainer().setOnMouseClicked((MouseEvent event) -> {
+                    if (event.getButton().equals(MouseButton.PRIMARY)) {
+                        if (event.getClickCount() == 2) {
+                            setListViewDateParameter(item.getString());
+                            objectId = item.getId();
+                            initListView();
+                        } else {
+                            initGrantedList(item.getId());
                         }
                     }
-                }
-            });
+                });
+            } else {
+                item.getPaneContainer().setOnMouseClicked((MouseEvent event) -> {
+                    if (event.getButton().equals(MouseButton.PRIMARY)) {
+                        initGrantedList(item.getId());
+                    }
+                });
+            }
         });
         comboBoxSearch.setItems(liableNamesList);
         new AutoCompleteComboBoxListener<>(comboBoxSearch, comboBoxListener);
@@ -161,18 +158,19 @@ public class LiableListViewController {
                 Dragboard db = event.getDragboard();
                 boolean success = false;
                 if (db.hasString()) {
+                    Integer intPaneId = Integer.parseInt(pane.getId());
                     if (Integer.parseInt(db.getString().substring(0, 1)) == 0) {
                         int stockId = Integer.parseInt(db.getString().substring(2));
                         if (listViewDateParameter.equals("Об'єкти")) {
-                            resultList.add(new DtoResult(stockId, null, Integer.parseInt(pane.getId())));
+                            resultList.add(new DtoResult(stockId, null, intPaneId));
                         } else if (listViewDateParameter.equals("Всі працівники")) {
-                            resultList.add(new DtoResult(stockId, Integer.parseInt(pane.getId()), null));
+                            resultList.add(new DtoResult(stockId, intPaneId, null));
                         } else {
-                            resultList.add(new DtoResult(stockId, Integer.parseInt(pane.getId()), objectId));
+                            resultList.add(new DtoResult(stockId, intPaneId, objectId));
                         }
                         stockListViewController.setResultList(resultList);
                         stockListViewController.setDisableDroppedSource(stockId);
-                        setTextNumberOfStock(Integer.parseInt(pane.getId()));
+                        setTextNumberOfStock(intPaneId);
                     } else {
 
                         int stockCategoryId = Integer.parseInt(db.getString().substring(2));
@@ -214,11 +212,11 @@ public class LiableListViewController {
                             for (DtoStock item : stockDataList) {
                                 if (!resultList.contains(item.getId())) {
                                     if (listViewDateParameter.equals("Об'єкти")) {
-                                        resultList.add(new DtoResult(item.getId(), null, Integer.parseInt(pane.getId())));
+                                        resultList.add(new DtoResult(item.getId(), null, intPaneId));
                                     } else if (listViewDateParameter.equals("Всі працівники")) {
-                                        resultList.add(new DtoResult(item.getId(), Integer.parseInt(pane.getId()), null));
+                                        resultList.add(new DtoResult(item.getId(), intPaneId, null));
                                     } else {
-                                        resultList.add(new DtoResult(item.getId(), Integer.parseInt(pane.getId()), objectId));
+                                        resultList.add(new DtoResult(item.getId(), intPaneId, objectId));
                                     }
                                     i++;
                                 }
@@ -228,9 +226,12 @@ public class LiableListViewController {
                             }
                             stockListViewController.setResultList(resultList);
                             stockListViewController.setTextOfAvailableStock(stockCategoryId);
-                            setTextNumberOfStock(Integer.parseInt(pane.getId()));
+                            setTextNumberOfStock(intPaneId);
                         }
                         stockDataList.clear();
+                    }
+                    if (grantedStockListViewController.getLiableId() == intPaneId) {
+                        initGrantedList(intPaneId);
                     }
                     success = true;
                 }
@@ -369,7 +370,7 @@ public class LiableListViewController {
         headerLabel.setVisible(true);
     }
 
-    public LinkedList<Integer> getGrantedStockList(Integer liableId){
+    public void initGrantedList(Integer liableId){
         LinkedList<Integer> stockIdList = new LinkedList<>();
         if (listViewDateParameter.equals("Об'єкти")){
             resultList.forEach(item -> {
@@ -384,7 +385,9 @@ public class LiableListViewController {
                 }
             });
         }
-        return stockIdList;
+        grantedStockListViewController.setLiableId(liableId);
+        grantedStockListViewController.setStockIdList(stockIdList);
+        grantedStockListViewController.initListView();
     }
 
     public void setResultList(List<DtoResult> resultList) {

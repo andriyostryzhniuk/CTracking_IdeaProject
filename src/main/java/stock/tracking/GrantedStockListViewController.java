@@ -7,7 +7,6 @@ import javafx.scene.control.ListView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import stock.tracking.dto.DtoGrantedStock;
-
 import java.util.LinkedList;
 
 /**
@@ -17,6 +16,8 @@ public class GrantedStockListViewController {
     public GridPane rootGridPane;
     public ListView<Pane> listView;
 
+    private LinkedList<Integer> stockIdList = new LinkedList<>();
+    private Integer liableId;
     private ObservableList<DtoGrantedStock> listViewDataList = FXCollections.observableArrayList();
 
     @FXML
@@ -24,7 +25,7 @@ public class GrantedStockListViewController {
         listView.getStylesheets().add(getClass().getResource("/stock.tracking/GrantedStockListViewStyle.css").toExternalForm());
     }
 
-    public void initListView(LinkedList<Integer> stockIdList) {
+    public void initListView() {
         listView.getItems().clear();
         listViewDataList.clear();
         if (!stockIdList.isEmpty()) {
@@ -35,5 +36,23 @@ public class GrantedStockListViewController {
                 listView.getItems().add(item.getPaneContainer());
             });
         }
+    }
+
+    public void clearListView(){
+        listView.getItems().clear();
+        listViewDataList.clear();
+        liableId = null;
+    }
+
+    public void setStockIdList(LinkedList<Integer> stockIdList) {
+        this.stockIdList = stockIdList;
+    }
+
+    public Integer getLiableId() {
+        return liableId;
+    }
+
+    public void setLiableId(Integer liableId) {
+        this.liableId = liableId;
     }
 }

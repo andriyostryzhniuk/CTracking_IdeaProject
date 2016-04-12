@@ -53,11 +53,6 @@ public class WindowStockTrackingController {
 //        rootBorderPane.setAlignment(topGridPane, Pos.TOP_LEFT);
 //        rootBorderPane.setMargin(topGridPane, new Insets(0.0, 0.0, 20.0, 0.0));
 
-        liableListViewController.setResultList(resultList);
-        liableListViewController.setStockListViewController(stockListViewController);
-        stockListViewController.initListView(stockListViewController.stockTypeChoiceBox.getValue().toString());
-        liableListViewController.initListView();
-
         fxmlLoader = new FXMLLoader(getClass().getResource("/stock.tracking/GrantedStockListView.fxml"));
         try {
             gridPane.add(fxmlLoader.load(), 5, 0);
@@ -66,6 +61,11 @@ public class WindowStockTrackingController {
         } catch (IOException exception) {
             throw new RuntimeException(exception);
         }
+
+        liableListViewController.setResultList(resultList);
+        liableListViewController.setStockListViewController(stockListViewController);
+        stockListViewController.initListView(stockListViewController.stockTypeChoiceBox.getValue().toString());
+        liableListViewController.initListView();
 
     }
 
