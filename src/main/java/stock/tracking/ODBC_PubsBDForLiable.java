@@ -67,7 +67,8 @@ public class ODBC_PubsBDForLiable {
         ObservableList<DtoGrantedStock> dtoGrantedStock = FXCollections.observableArrayList();
         stockIdList.forEach(stockId -> {
             dtoGrantedStock.addAll(getJdbcTemplate().query("select stock.id as id, " +
-                    "ifnull(stock.name, stockCategory.name) as name, stockCategory.name as stockCategory " +
+                    "ifnull(stock.name, stockCategory.name) as name, stockCategory.name as stockCategory, " +
+                    "stockCategory.id as stockCategoryId " +
                     "from stockCategory, stock " +
                     "where stock.id = '" + stockId + "' and " +
                     "stock.stockCategory_id = stockCategory.id", BeanPropertyRowMapper.newInstance(DtoGrantedStock.class)));

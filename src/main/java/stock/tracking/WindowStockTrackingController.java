@@ -13,7 +13,6 @@ import javafx.scene.layout.GridPane;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-
 import overridden.elements.group.box.GroupBox;
 import stock.tracking.dto.DtoResult;
 
@@ -62,8 +61,8 @@ public class WindowStockTrackingController {
             throw new RuntimeException(exception);
         }
 
-        liableListViewController.setResultList(resultList);
         liableListViewController.setStockListViewController(stockListViewController);
+        liableListViewController.setResultList(resultList);
         stockListViewController.initListView(stockListViewController.stockTypeChoiceBox.getValue().toString());
         liableListViewController.initListView();
 

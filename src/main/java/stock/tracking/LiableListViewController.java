@@ -43,7 +43,7 @@ public class LiableListViewController {
     public ObservableList<DtoLiableListView> liableListViewDataList = FXCollections.observableArrayList();
     public ObservableList<String> liableNamesList = FXCollections.observableArrayList();
     public ObservableList<DtoStock> stockDataList = FXCollections.observableArrayList();
-    private StockListViewController stockListViewController;
+    public StockListViewController stockListViewController;
 
     private List<DtoResult> resultList = new ArrayList<>();
 
@@ -60,6 +60,7 @@ public class LiableListViewController {
 
         headerGridPane.add(levelUpButton, 0, 0);
         headerGridPane.setMargin(levelUpButton, new Insets(0, 10, 0, 10));
+
     }
 
     public void initListView() {
@@ -94,14 +95,14 @@ public class LiableListViewController {
                             objectId = item.getId();
                             initListView();
                         } else {
-                            initGrantedList(item.getId());
+                            initGrantedList(item.getId(), item.getPaneContainer());
                         }
                     }
                 });
             } else {
                 item.getPaneContainer().setOnMouseClicked((MouseEvent event) -> {
                     if (event.getButton().equals(MouseButton.PRIMARY)) {
-                        initGrantedList(item.getId());
+                        initGrantedList(item.getId(), item.getPaneContainer());
                     }
                 });
             }
@@ -231,7 +232,7 @@ public class LiableListViewController {
                         stockDataList.clear();
                     }
                     if (grantedStockListViewController.getLiableId() == intPaneId) {
-                        initGrantedList(intPaneId);
+                        initGrantedList(intPaneId, pane);
                     }
                     success = true;
                 }
@@ -370,7 +371,7 @@ public class LiableListViewController {
         headerLabel.setVisible(true);
     }
 
-    public void initGrantedList(Integer liableId){
+    public void initGrantedList(Integer liableId, Pane pane){
         LinkedList<Integer> stockIdList = new LinkedList<>();
         if (listViewDateParameter.equals("Об'єкти")){
             resultList.forEach(item -> {
@@ -386,12 +387,15 @@ public class LiableListViewController {
             });
         }
         grantedStockListViewController.setLiableId(liableId);
+        grantedStockListViewController.setLiablePane(pane);
         grantedStockListViewController.setStockIdList(stockIdList);
         grantedStockListViewController.initListView();
     }
 
     public void setResultList(List<DtoResult> resultList) {
         this.resultList = resultList;
+        grantedStockListViewController.setResultList(resultList);
+        grantedStockListViewController.setStockListViewController(stockListViewController);
     }
 
     public void setStockListViewController(StockListViewController stockListViewController) {
