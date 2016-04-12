@@ -6,10 +6,7 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
-import stock.tracking.dto.DtoEmployees;
-import stock.tracking.dto.DtoStock;
-import stock.tracking.dto.DtoStockCategory;
-
+import stock.tracking.dto.*;
 import java.util.List;
 
 import static main.DB_Connector.getJdbcTemplate;
@@ -89,103 +86,6 @@ public class ODBC_PubsBDForStock {
                 "stockCategory.name = '" + stockCategory + "' " +
                 "order by stock.name asc", BeanPropertyRowMapper.newInstance(DtoStock.class));
         return dtoStockList;
-    }
-
-    public static ObservableList<String> selectStockCategoryName(String stockType, boolean showDisableStock) {
-        SqlRowSet rs = getJdbcTemplate().queryForRowSet("select stockCategory.name " +
-                "from stockCategory, stock left join " +
-                "   (select distinct stocktracking.stock_id " +
-                "   from stocktracking " +
-                "   where stocktracking.returnDate is null or " +
-                "   stocktracking.returnDate > curdate()) usingStock " +
-                "   on stock.id = usingStock.stock_id " +
-                "where usingStock.stock_id is null and " +
-                "stock.status = 'доступно' and " +
-                "stock.stockCategory_id = stockCategory.id  and " +
-                "stockCategory.type = '" + stockType+ "' " +
-                "group by stockCategory.id " +
-                "order by stockCategory.name asc;");
-        ObservableList<String> stockCategoryList = FXCollections.observableArrayList();
-        stockCategoryList.addAll("Всі категорії", "Весь інвентар");
-        while (rs.next()) {
-            stockCategoryList.add(rs.getString(1));
-        }
-
-        if (showDisableStock) {
-            rs = getJdbcTemplate().queryForRowSet("select stockCategory.name " +
-                    "from stockcategory left join " +
-                    "   (select stockCategory.id as id, count(*) as count  " +
-                    "   from stockCategory, stock left join " +
-                    "       (select distinct stocktracking.stock_id " +
-                    "       from stocktracking " +
-                    "       where stocktracking.returnDate is null or " +
-                    "       stocktracking.returnDate > curdate()) usingStock " +
-                    "       on stock.id = usingStock.stock_id " +
-                    "   where usingStock.stock_id is null and " +
-                    "   stock.status = 'доступно' and " +
-                    "   stock.stockCategory_id = stockCategory.id " +
-                    "   group by stockCategory.id) numberOfAvailableStockCategory " +
-                    "   on numberOfAvailableStockCategory.id = stockcategory.id " +
-                    "where stockCategory.type = '" + stockType + "' and " +
-                    "numberOfAvailableStockCategory.count is null " +
-                    "order by stockCategory.name asc;");
-            while (rs.next()) {
-                stockCategoryList.add(rs.getString(1));
-            }
-        }
-
-        return stockCategoryList;
-    }
-
-    public static ObservableList<String> selectStockCategoryNameInRepository
-            (String stockType, String repositoryName, boolean showDisableStock) {
-        SqlRowSet rs = getJdbcTemplate().queryForRowSet("select stockCategory.name " +
-                "from repository, stockCategory, stock left join " +
-                "   (select distinct stocktracking.stock_id " +
-                "   from stocktracking " +
-                "   where stocktracking.returnDate is null or " +
-                "   stocktracking.returnDate > curdate()) usingStock " +
-                "   on stock.id = usingStock.stock_id " +
-                "where usingStock.stock_id is null and " +
-                "stock.repository_id = repository.id and " +
-                "repository.name = '" + repositoryName + "' and " +
-                "stock.status = 'доступно' and " +
-                "stock.stockCategory_id = stockCategory.id  and " +
-                "stockCategory.type = '" + stockType+ "' " +
-                "group by stockCategory.id " +
-                "order by stockCategory.name asc;");
-        ObservableList<String> stockCategoryList = FXCollections.observableArrayList();
-        stockCategoryList.addAll("Всі категорії", "Весь інвентар");
-        while (rs.next()) {
-            stockCategoryList.add(rs.getString(1));
-        }
-
-        if (showDisableStock) {
-            rs = getJdbcTemplate().queryForRowSet("select stockCategory.name " +
-                    "from stockcategory left join " +
-                    "   (select stockCategory.id as id, count(*) as count  " +
-                    "   from repository, stockCategory, stock left join " +
-                    "       (select distinct stocktracking.stock_id " +
-                    "       from stocktracking " +
-                    "       where stocktracking.returnDate is null or " +
-                    "       stocktracking.returnDate > curdate()) usingStock " +
-                    "       on stock.id = usingStock.stock_id " +
-                    "   where usingStock.stock_id is null and " +
-                    "   stock.repository_id = repository.id and " +
-                    "   repository.name = '" + repositoryName + "' and " +
-                    "   stock.status = 'доступно' and " +
-                    "   stock.stockCategory_id = stockCategory.id " +
-                    "   group by stockCategory.id) numberOfAvailableStockCategory " +
-                    "   on numberOfAvailableStockCategory.id = stockcategory.id " +
-                    "where stockCategory.type = '" + stockType + "' and " +
-                    "numberOfAvailableStockCategory.count is null " +
-                    "order by stockCategory.name asc;");
-            while (rs.next()) {
-                stockCategoryList.add(rs.getString(1));
-            }
-        }
-
-        return stockCategoryList;
     }
 
     public static List<DtoStockCategory> selectStockCategory(String stockType, boolean showDisableStock) {
@@ -330,4 +230,5 @@ public class ODBC_PubsBDForStock {
         }
         return repositoryNameList;
     }
+
 }

@@ -21,6 +21,7 @@ import stock.tracking.dto.DtoLiableListView;
 import stock.tracking.dto.DtoResult;
 import stock.tracking.dto.DtoStock;
 import java.util.ArrayList;
+import java.util.LinkedList;
 import java.util.List;
 
 public class LiableListViewController {
@@ -45,6 +46,8 @@ public class LiableListViewController {
     private StockListViewController stockListViewController;
 
     private List<DtoResult> resultList = new ArrayList<>();
+
+    private GrantedStockListViewController grantedStockListViewController;
 
     @FXML
     public void initialize() {
@@ -95,6 +98,16 @@ public class LiableListViewController {
             setTargetDragAndDrop(item.getPaneContainer());
             listView.getItems().add(item.getPaneContainer());
             setTextNumberOfStock(Integer.parseInt(item.getPaneContainer().getId()));
+            item.getPaneContainer().setOnMouseClicked(new EventHandler<MouseEvent>() {
+                @Override
+                public void handle(MouseEvent mouseEvent) {
+                    if (mouseEvent.getButton().equals(MouseButton.PRIMARY)) {
+                        if (mouseEvent.getClickCount() != 2) {
+                            grantedStockListViewController.initListView(getGrantedStockList(item.getId()));
+                        }
+                    }
+                }
+            });
         });
         comboBoxSearch.setItems(liableNamesList);
         new AutoCompleteComboBoxListener<>(comboBoxSearch, comboBoxListener);
@@ -356,6 +369,24 @@ public class LiableListViewController {
         headerLabel.setVisible(true);
     }
 
+    public LinkedList<Integer> getGrantedStockList(Integer liableId){
+        LinkedList<Integer> stockIdList = new LinkedList<>();
+        if (listViewDateParameter.equals("Об'єкти")){
+            resultList.forEach(item -> {
+                if (item.getObjectId() == liableId) {
+                    stockIdList.add(item.getStockId());
+                }
+            });
+        } else {
+            resultList.forEach(item -> {
+                if (item.getEmployeesId() == liableId) {
+                    stockIdList.add(item.getStockId());
+                }
+            });
+        }
+        return stockIdList;
+    }
+
     public void setResultList(List<DtoResult> resultList) {
         this.resultList = resultList;
     }
@@ -371,6 +402,10 @@ public class LiableListViewController {
     public void setListViewDateParameter(String listViewDateParameter) {
         this.listViewDateParameter = listViewDateParameter;
         setTextToHeaderLabel(listViewDateParameter);
+    }
+
+    public void setGrantedStockListViewController(GrantedStockListViewController grantedStockListViewController) {
+        this.grantedStockListViewController = grantedStockListViewController;
     }
 
 }

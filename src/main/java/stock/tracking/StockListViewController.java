@@ -44,8 +44,6 @@ public class StockListViewController {
 
     private List<DtoResult> resultList = new ArrayList<>();
 
-    private GrantedStockListViewController grantedStockListViewController;
-
     @FXML
     public void initialize() {
         listView.getStylesheets().add(getClass().getResource("/stock.tracking/ListViewStyle.css").toExternalForm());

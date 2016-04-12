@@ -7,9 +7,11 @@ import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import stock.tracking.dto.DtoEmployees;
+import stock.tracking.dto.DtoGrantedStock;
 import stock.tracking.dto.DtoObject;
 import stock.tracking.dto.DtoStockCategory;
 
+import java.util.LinkedList;
 import java.util.List;
 
 import static main.DB_Connector.getJdbcTemplate;
@@ -59,6 +61,18 @@ public class ODBC_PubsBDForLiable {
                 "finishDate is null) " +
                 "order by address asc", BeanPropertyRowMapper.newInstance(DtoObject.class));
         return dtoObjectList;
+    }
+
+    public static ObservableList<DtoGrantedStock> selectStockWithId(LinkedList<Integer> stockIdList) {
+        ObservableList<DtoGrantedStock> dtoGrantedStock = FXCollections.observableArrayList();
+        stockIdList.forEach(stockId -> {
+            dtoGrantedStock.addAll(getJdbcTemplate().query("select stock.id as id, " +
+                    "ifnull(stock.name, stockCategory.name) as name, stockCategory.name as stockCategory " +
+                    "from stockCategory, stock " +
+                    "where stock.id = '" + stockId + "' and " +
+                    "stock.stockCategory_id = stockCategory.id", BeanPropertyRowMapper.newInstance(DtoGrantedStock.class)));
+        });
+        return dtoGrantedStock;
     }
 
 }

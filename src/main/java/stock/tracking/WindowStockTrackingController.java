@@ -61,10 +61,11 @@ public class WindowStockTrackingController {
         fxmlLoader = new FXMLLoader(getClass().getResource("/stock.tracking/GrantedStockListView.fxml"));
         try {
             gridPane.add(fxmlLoader.load(), 5, 0);
+            grantedStockListViewController = fxmlLoader.getController();
+            liableListViewController.setGrantedStockListViewController(grantedStockListViewController);
         } catch (IOException exception) {
             throw new RuntimeException(exception);
         }
-        grantedStockListViewController = fxmlLoader.getController();
 
     }
 
