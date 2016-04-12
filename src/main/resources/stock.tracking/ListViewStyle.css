@@ -1,5 +1,6 @@
 .list-view .list-cell {
     -fx-padding: 1 0 0 0;
+/*    -fx-background-color: red; */
 }
 
 .list-view:focused {
@@ -9,7 +10,6 @@
 .list-view {
     -fx-accent: derive(-fx-control-inner-background, -20%); -fx-control-inner-background, -80%;
 }
-
 
 
 

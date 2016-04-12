@@ -1,0 +1,19 @@
+.list-view .list-cell {
+    -fx-padding: 1 0 0 0;
+    -fx-background-color: rgb(244,244,244);
+}
+
+.list-view:focused {
+    -fx-background-color: rgb(244,244,244);
+    -fx-box-border: rgb(244,244,244);
+    -fx-control-inner-background: rgb(244,244,244);
+}
+
+.list-view {
+    -fx-accent: derive(-fx-control-inner-background, -20%); -fx-control-inner-background, -80%;
+    -fx-background-color: rgb(244,244,244);
+}
+
+
+
+

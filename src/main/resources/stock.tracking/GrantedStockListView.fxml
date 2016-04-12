@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<GridPane fx:id="rootGridPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="stock.tracking.GrantedStockListViewController">
+    <columnConstraints>
+        <ColumnConstraints hgrow="SOMETIMES" maxWidth="250.0" minWidth="200.0" />
+    </columnConstraints>
+    <rowConstraints>
+        <RowConstraints maxHeight="35.0" minHeight="35.0" prefHeight="35.0" valignment="TOP" vgrow="SOMETIMES" />
+        <RowConstraints vgrow="SOMETIMES" />
+    </rowConstraints>
+    <children>
+        <ListView fx:id="listView" fixedCellSize="50.0" maxWidth="250.0" minWidth="200.0" GridPane.rowIndex="1" />
+    </children>
+</GridPane>

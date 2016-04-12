@@ -26,6 +26,7 @@ public class WindowStockTrackingController {
 
     public StockListViewController stockListViewController;
     public LiableListViewController liableListViewController;
+    public GrantedStockListViewController grantedStockListViewController;
 
     public List<DtoResult> resultList = new ArrayList<>();
 
@@ -56,6 +57,15 @@ public class WindowStockTrackingController {
         liableListViewController.setStockListViewController(stockListViewController);
         stockListViewController.initListView(stockListViewController.stockTypeChoiceBox.getValue().toString());
         liableListViewController.initListView();
+
+        fxmlLoader = new FXMLLoader(getClass().getResource("/stock.tracking/GrantedStockListView.fxml"));
+        try {
+            gridPane.add(fxmlLoader.load(), 5, 0);
+        } catch (IOException exception) {
+            throw new RuntimeException(exception);
+        }
+        grantedStockListViewController = fxmlLoader.getController();
+
     }
 
     public void initLeftSideGritPane() {
