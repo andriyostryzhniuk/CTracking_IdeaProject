@@ -220,7 +220,6 @@ public class LiableListViewController {
                                         }
                                     }
                                     if (stockItemIsInResultList == false) {
-                                        System.out.println(item.getId());
                                         if (listViewDateParameter.equals("Об'єкти")) {
                                             resultList.add(new DtoResult(item.getId(), null, intPaneId));
                                         } else if (listViewDateParameter.equals("Всі працівники")) {

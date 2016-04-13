@@ -52,8 +52,8 @@ public class GrantedStockListViewController {
         Button rejectStockButton = (Button) item.getPaneContainer().getChildren().get(1);
         rejectStockButton.setOnAction((ActionEvent event) -> {
             IntStream.range(0, resultList.size()).forEach(i -> {
-                Integer stockId = resultList.get(i).getStockId();
-                if (resultList.size() > i && stockId == item.getId()) {
+                if (resultList.size() > i && resultList.get(i).getStockId() == item.getId()) {
+                    Integer stockId = resultList.get(i).getStockId();
                     resultList.remove(i);
                     listView.getItems().remove(item.getPaneContainer());
                     updateNumberOfGrantedStock();

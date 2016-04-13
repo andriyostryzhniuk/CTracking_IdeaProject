@@ -152,9 +152,9 @@ public class StockListViewController {
 //                System.out.println("source.setOnDragDone");
         /* the drag and drop gesture ended */
         /* if the data was successfully moved, clear it */
-                if (event.getTransferMode() == TransferMode.MOVE) {
+//                if (event.getTransferMode() == TransferMode.MOVE) {
 //                    System.out.println(resultList);
-                }
+//                }
                 event.consume();
             }
         });
