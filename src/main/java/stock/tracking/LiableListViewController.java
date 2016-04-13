@@ -245,24 +245,31 @@ public class LiableListViewController {
         });
     }
 
-    public void setTextNumberOfStock(int liableID) {
+    public void setTextNumberOfStock(int liableId) {
         int i = 0;
         if (listViewDateParameter.equals("Об'єкти")) {
             for (DtoResult item : resultList) {
-                if (item.getObjectId() != null && item.getObjectId() == liableID) {
+                if (item.getObjectId() != null && item.getObjectId() == liableId && item.getEmployeesId() == null) {
+                    i++;
+                }
+            }
+        } else if (listViewDateParameter.equals("Всі працівники")){
+            for (DtoResult item : resultList) {
+                if (item.getEmployeesId() != null && item.getObjectId() == null && item.getEmployeesId() == liableId) {
                     i++;
                 }
             }
         } else {
             for (DtoResult item : resultList) {
-                if (item.getEmployeesId() != null && item.getEmployeesId() == liableID) {
+                if (item.getEmployeesId() != null && item.getObjectId() != null &&
+                        item.getEmployeesId() == liableId && item.getObjectId() == objectId) {
                     i++;
                 }
             }
         }
         if (i != 0) {
             for (Pane pane : listView.getItems()) {
-                if (Integer.parseInt(pane.getId()) == liableID) {
+                if (Integer.parseInt(pane.getId()) == liableId) {
                     Label label = (Label) pane.getChildren().get(1);
                     label.setText("Кількість: " + i);
                 }
@@ -343,7 +350,7 @@ public class LiableListViewController {
     public Button initLevelUpButton() {
         Button button = new Button();
         Image image = new Image(getClass().getResourceAsStream("/image/level_up_icon.png"));
-        button.getStylesheets().add(getClass().getResource("/stock.tracking/ButtonStyle.css").toExternalForm());
+        button.getStylesheets().add(getClass().getResource("/stock.tracking/LevelUpButtonStyle.css").toExternalForm());
         button.setGraphic(new ImageView(image));
         button.setPrefWidth(10);
         button.setMaxWidth(10);
@@ -375,19 +382,26 @@ public class LiableListViewController {
         LinkedList<Integer> stockIdList = new LinkedList<>();
         if (listViewDateParameter.equals("Об'єкти")){
             resultList.forEach(item -> {
-                if (item.getObjectId() == liableId) {
+                if (item.getObjectId() == liableId && item.getEmployeesId() == null) {
                     stockIdList.add(item.getStockId());
                 }
             });
-        } else {
+        } else if (listViewDateParameter.equals("Всі працівники")){
             resultList.forEach(item -> {
-                if (item.getEmployeesId() == liableId) {
+                if (item.getEmployeesId() == liableId && item.getObjectId() == null) {
+                    stockIdList.add(item.getStockId());
+                }
+            });
+        } else  {
+            resultList.forEach(item -> {
+                if (item.getEmployeesId() == liableId && item.getObjectId() == objectId) {
                     stockIdList.add(item.getStockId());
                 }
             });
         }
         grantedStockListViewController.setLiableId(liableId);
         grantedStockListViewController.setLiablePane(pane);
+        grantedStockListViewController.setListViewDateParameter(listViewDateParameter);
         grantedStockListViewController.setStockIdList(stockIdList);
         grantedStockListViewController.initListView();
     }

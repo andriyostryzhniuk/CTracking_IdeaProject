@@ -4,10 +4,6 @@
 }
 
 .button:hover {
-    -fx-background-color: -fx-hover-base;
-}
-
-.button:hover {
     -fx-background-color:
         linear-gradient(from 0% 93% to 0% 100%, #c1cfdd 0%, #acbfd2 100%),
         rgba(128, 128, 128, 1),

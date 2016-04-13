@@ -16,7 +16,7 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.stream.IntStream;
 
-public class GrantedStockListViewController extends LiableListViewController {
+public class GrantedStockListViewController {
     public GridPane rootGridPane;
     public ListView<Pane> listView;
 
@@ -25,6 +25,7 @@ public class GrantedStockListViewController extends LiableListViewController {
     private ObservableList<DtoGrantedStock> listViewDataList = FXCollections.observableArrayList();
 
     private List<DtoResult> resultList = new ArrayList<>();
+    private String listViewDateParameter;
     private Pane liablePane;
     private StockListViewController stockListViewController;
 
@@ -61,11 +62,25 @@ public class GrantedStockListViewController extends LiableListViewController {
     }
 
     private void updateNumberOfGrantedStock(){
+        int i = 0;
+        if (listViewDateParameter.equals("Об'єкти")) {
+            for (DtoResult item : resultList) {
+                if (item.getObjectId() != null && item.getObjectId() == liableId) {
+                    i++;
+                }
+            }
+        } else {
+            for (DtoResult item : resultList) {
+                if (item.getEmployeesId() != null && item.getEmployeesId() == liableId) {
+                    i++;
+                }
+            }
+        }
         Label label = (Label) liablePane.getChildren().get(1);
-        if (resultList.size() == 0) {
+        if (i == 0) {
             label.setText("");
         } else {
-            label.setText("Кількість: " + resultList.size());
+            label.setText("Кількість: " + i);
         }
     }
 
@@ -98,4 +113,9 @@ public class GrantedStockListViewController extends LiableListViewController {
     public void setStockListViewController(StockListViewController stockListViewController) {
         this.stockListViewController = stockListViewController;
     }
+
+    public void setListViewDateParameter(String listViewDateParameter) {
+        this.listViewDateParameter = listViewDateParameter;
+    }
+
 }

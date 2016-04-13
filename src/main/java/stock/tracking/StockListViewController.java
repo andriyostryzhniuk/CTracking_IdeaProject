@@ -282,7 +282,7 @@ public class StockListViewController {
     public Button initLevelUpButton() {
         Button button = new Button();
         Image image = new Image(getClass().getResourceAsStream("/image/level_up_icon.png"));
-        button.getStylesheets().add(getClass().getResource("/stock.tracking/ButtonStyle.css").toExternalForm());
+        button.getStylesheets().add(getClass().getResource("/stock.tracking/LevelUpButtonStyle.css").toExternalForm());
         button.setGraphic(new ImageView(image));
         button.setPrefWidth(10);
         button.setMaxWidth(10);

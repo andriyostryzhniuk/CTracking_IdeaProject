@@ -2,6 +2,8 @@ package stock.tracking.dto;
 
 import javafx.scene.control.Button;
 import javafx.scene.control.Label;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 
 /**
@@ -34,7 +36,11 @@ public class DtoGrantedStock extends DtoStock {
         label.setLayoutX(5);
         label.setLayoutY(3);
 
-        Button rejectStockButton = new Button("X");
+        Button rejectStockButton = new Button();
+        Image image = new Image(getClass().getResourceAsStream("/image/reject_icon.png"));
+        rejectStockButton.setGraphic(new ImageView(image));
+        rejectStockButton.getStylesheets().add(getClass().
+                getResource("/stock.tracking/RejectStockButtonStyle.css").toExternalForm());
         rejectStockButton.setDisable(true);
         rejectStockButton.setVisible(false);
         getPaneContainer().getChildren().add(rejectStockButton);
