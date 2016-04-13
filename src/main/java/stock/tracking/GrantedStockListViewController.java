@@ -26,6 +26,7 @@ public class GrantedStockListViewController {
 
     private List<DtoResult> resultList = new ArrayList<>();
     private String listViewDateParameter;
+    private Integer objectId;
     private Pane liablePane;
     private StockListViewController stockListViewController;
 
@@ -51,11 +52,13 @@ public class GrantedStockListViewController {
         Button rejectStockButton = (Button) item.getPaneContainer().getChildren().get(1);
         rejectStockButton.setOnAction((ActionEvent event) -> {
             IntStream.range(0, resultList.size()).forEach(i -> {
-                if (resultList.size() > i && resultList.get(i).getStockId() == item.getId()) {
+                Integer stockId = resultList.get(i).getStockId();
+                if (resultList.size() > i && stockId == item.getId()) {
                     resultList.remove(i);
                     listView.getItems().remove(item.getPaneContainer());
                     updateNumberOfGrantedStock();
                     stockListViewController.setTextOfAvailableStock(item.getStockCategoryId());
+                    stockListViewController.setAvailableDroppedSource(stockId);
                 }
             });
         });
@@ -65,13 +68,20 @@ public class GrantedStockListViewController {
         int i = 0;
         if (listViewDateParameter.equals("Об'єкти")) {
             for (DtoResult item : resultList) {
-                if (item.getObjectId() != null && item.getObjectId() == liableId) {
+                if (item.getObjectId() != null && item.getObjectId() == liableId && item.getEmployeesId() == null) {
+                    i++;
+                }
+            }
+        } else if (listViewDateParameter.equals("Всі працівники")){
+            for (DtoResult item : resultList) {
+                if (item.getEmployeesId() != null && item.getObjectId() == null && item.getEmployeesId() == liableId) {
                     i++;
                 }
             }
         } else {
             for (DtoResult item : resultList) {
-                if (item.getEmployeesId() != null && item.getEmployeesId() == liableId) {
+                if (item.getEmployeesId() != null && item.getObjectId() != null &&
+                        item.getEmployeesId() == liableId && item.getObjectId() == objectId) {
                     i++;
                 }
             }
@@ -118,4 +128,7 @@ public class GrantedStockListViewController {
         this.listViewDateParameter = listViewDateParameter;
     }
 
+    public void setObjectId(Integer objectId) {
+        this.objectId = objectId;
+    }
 }

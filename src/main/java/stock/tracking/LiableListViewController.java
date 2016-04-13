@@ -204,14 +204,34 @@ public class LiableListViewController {
                         } else if (listViewDateParameter.equals("Всі працівники")) {
                             promptNumberStockToGrant = new PromptNumberStockToGrant(stockCategoryId, liableName, null);
                         } else {
-                            promptNumberStockToGrant = new PromptNumberStockToGrant(stockCategoryId, liableName , listViewDateParameter);
+                            promptNumberStockToGrant = new PromptNumberStockToGrant(stockCategoryId, liableName, listViewDateParameter);
                         }
                         int numberOfStockToGrant =
                                 promptNumberStockToGrant.showPrompt(pane.getScene().getWindow(), numberOfAvailableStock);
                         if (numberOfStockToGrant != 0) {
                             int i = 0;
                             for (DtoStock item : stockDataList) {
-                                if (!resultList.contains(item.getId())) {
+                                if (!resultList.isEmpty()) {
+                                    boolean stockItemIsInResultList = false;
+                                    for (DtoResult resultListItem : resultList) {
+                                        if (resultListItem.getStockId() == item.getId()) {
+                                            stockItemIsInResultList = true;
+                                            break;
+                                        }
+                                    }
+                                    if (stockItemIsInResultList == false) {
+                                        System.out.println(item.getId());
+                                        if (listViewDateParameter.equals("Об'єкти")) {
+                                            resultList.add(new DtoResult(item.getId(), null, intPaneId));
+                                        } else if (listViewDateParameter.equals("Всі працівники")) {
+                                            resultList.add(new DtoResult(item.getId(), intPaneId, null));
+                                        } else {
+                                            resultList.add(new DtoResult(item.getId(), intPaneId, objectId));
+                                        }
+                                        i++;
+                                        break;
+                                    }
+                                } else {
                                     if (listViewDateParameter.equals("Об'єкти")) {
                                         resultList.add(new DtoResult(item.getId(), null, intPaneId));
                                     } else if (listViewDateParameter.equals("Всі працівники")) {
@@ -402,6 +422,7 @@ public class LiableListViewController {
         grantedStockListViewController.setLiableId(liableId);
         grantedStockListViewController.setLiablePane(pane);
         grantedStockListViewController.setListViewDateParameter(listViewDateParameter);
+        grantedStockListViewController.setObjectId(objectId);
         grantedStockListViewController.setStockIdList(stockIdList);
         grantedStockListViewController.initListView();
     }

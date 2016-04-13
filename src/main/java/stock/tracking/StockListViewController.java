@@ -169,10 +169,18 @@ public class StockListViewController {
         });
     }
 
-    public void setDisableDroppedSource(int nodeId) {
+    public void setDisableDroppedSource(int stockId) {
         listView.getItems().forEach(item -> {
-            if (Integer.parseInt(item.getId().substring(2)) == nodeId) {
+            if (Integer.parseInt(item.getId().substring(2)) == stockId) {
                 item.setDisable(true);
+            }
+        });
+    }
+
+    public void setAvailableDroppedSource(int stockId) {
+        listView.getItems().forEach(item -> {
+            if (Integer.parseInt(item.getId().substring(2)) == stockId) {
+                item.setDisable(false);
             }
         });
     }
