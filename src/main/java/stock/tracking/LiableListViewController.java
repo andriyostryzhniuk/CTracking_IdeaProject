@@ -228,7 +228,6 @@ public class LiableListViewController {
                                             resultList.add(new DtoResult(item.getId(), intPaneId, objectId));
                                         }
                                         i++;
-                                        break;
                                     }
                                 } else {
                                     if (listViewDateParameter.equals("Об'єкти")) {
