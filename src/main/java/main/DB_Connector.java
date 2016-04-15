@@ -9,24 +9,32 @@ import javax.sql.DataSource;
 import java.beans.PropertyVetoException;
 
 public class DB_Connector {
+
+    private static DataSource dataSource;
+    private static JdbcTemplate jdbcTemplate;
+    private static NamedParameterJdbcTemplate namedParameterJdbcTemplate;
+    private static SimpleJdbcCall simpleJdbcCall;
+
     private DB_Connector(){
     }
 
     public static DataSource getDataSource() {
-        if(dataSource == null) {
-            dataSource = dataSource("127.0.0.1", "3306", "construction", "root", "qwerty");
+        // double check locking
+        if (dataSource == null) {
+            synchronized (DB_Connector.class) {
+                if (dataSource == null) {
+                    dataSource = createDataSource("127.0.0.1", "3306", "construction", "root", "qwerty");
+                }
+            }
         }
         return dataSource;
     }
 
-    private static DataSource dataSource;
-
-
-    public static DataSource dataSource(String address,
-                                        String port,
-                                        String dbName,
-                                        String dbUser,
-                                        String dbPassword) {
+    public static DataSource createDataSource(String address,
+                                              String port,
+                                              String dbName,
+                                              String dbUser,
+                                              String dbPassword) {
         try {
             ComboPooledDataSource c3p0 = new ComboPooledDataSource();
             c3p0.setDriverClass("com.mysql.jdbc.Driver");
@@ -40,14 +48,23 @@ public class DB_Connector {
     }
 
     public static JdbcTemplate getJdbcTemplate() {
-        return new JdbcTemplate(getDataSource());
+        if (jdbcTemplate == null) {
+            jdbcTemplate = new JdbcTemplate(getDataSource());
+        }
+        return jdbcTemplate;
     }
 
     public static NamedParameterJdbcTemplate getNamedParameterJdbcTemplate() {
-        return new NamedParameterJdbcTemplate(getDataSource());
+        if (namedParameterJdbcTemplate == null) {
+            namedParameterJdbcTemplate = new NamedParameterJdbcTemplate(getDataSource());
+        }
+        return namedParameterJdbcTemplate;
     }
 
     public static SimpleJdbcCall getSimpleJdbcCall(){
-        return new SimpleJdbcCall(getDataSource());
+        if (simpleJdbcCall == null) {
+            simpleJdbcCall = new SimpleJdbcCall(getDataSource());
+        }
+        return simpleJdbcCall;
     }
 }
