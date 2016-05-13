@@ -1,7 +1,5 @@
 package employees.attendance.table;
 
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
@@ -262,12 +260,9 @@ public class TableViewController<T extends DtoEmployeesFullName> {
             employeesFullNameList.get(rowIndex).getSumOfWorkingHoursLabel().setText(sumWorkingHours(rowIndex).toString().toString());
         });
 
-        textField.focusedProperty().addListener(new ChangeListener<Boolean>() {
-            @Override
-            public void changed(ObservableValue<? extends Boolean> observable, Boolean oldValue, Boolean newValue) {
-                if(!newValue) {
-                    employeesFullNameList.get(rowIndex).getSumOfWorkingHoursLabel().setText(sumWorkingHours(rowIndex).toString().toString());
-                }
+        textField.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            if(!newValue) {
+                employeesFullNameList.get(rowIndex).getSumOfWorkingHoursLabel().setText(sumWorkingHours(rowIndex).toString().toString());
             }
         });
     }

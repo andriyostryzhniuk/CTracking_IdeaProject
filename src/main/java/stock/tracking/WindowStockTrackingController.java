@@ -132,14 +132,11 @@ public class WindowStockTrackingController {
         choiceBox.setValue(choiceBox.getItems().get(0));
         stockListViewController.setListViewDateParameter(choiceBox.getValue().toString());
 
-        choiceBox.valueProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue observableValue, String oldValue, String newValue) {
+        choiceBox.valueProperty().addListener((ChangeListener<String>) (observableValue, oldValue, newValue) -> {
 //                change detected
-                stockListViewController.contentChoiceBox.setValue(choiceBox.getValue());
-                stockListViewController.setListViewDateParameter(choiceBox.getValue().toString());
-                stockListViewController.initListView(stockListViewController.stockTypeChoiceBox.getValue().toString());
-            }
+            stockListViewController.contentChoiceBox.setValue(choiceBox.getValue());
+            stockListViewController.setListViewDateParameter(choiceBox.getValue().toString());
+            stockListViewController.initListView(stockListViewController.stockTypeChoiceBox.getValue().toString());
         });
 
         return choiceBox;
@@ -150,13 +147,10 @@ public class WindowStockTrackingController {
         choiceBox.setTooltip(new Tooltip("Вибрати тип інвентаря\n(Вартісний/Розхідний)"));
         choiceBox.getItems().addAll("Вартісні", "Розхідні");
         choiceBox.getStylesheets().add(getClass().getResource("/stock.tracking/ChoiceBoxStyle.css").toExternalForm());
-        choiceBox.valueProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue observableValue, String oldValue, String newValue) {
+        choiceBox.valueProperty().addListener((ChangeListener<String>) (observableValue, oldValue, newValue) -> {
 //                change detected
-                stockListViewController.stockTypeChoiceBox.setValue(choiceBox.getValue());
-                stockListViewController.initListView(choiceBox.getValue().toString());
-            }
+            stockListViewController.stockTypeChoiceBox.setValue(choiceBox.getValue());
+            stockListViewController.initListView(choiceBox.getValue().toString());
         });
         choiceBox.setValue(choiceBox.getItems().get(0));
         return choiceBox;
@@ -170,21 +164,18 @@ public class WindowStockTrackingController {
         choiceBox.setItems(ODBC_PubsBDForStock.selectRepositoryName());
         choiceBox.setValue(choiceBox.getItems().get(0));
 
-        choiceBox.valueProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue observableValue, String oldValue, String newValue) {
+        choiceBox.valueProperty().addListener((ChangeListener<String>) (observableValue, oldValue, newValue) -> {
 //                change detected
-                stockListViewController.initListView(stockListViewController.stockTypeChoiceBox.getValue().toString());
-            }
+            stockListViewController.initListView(stockListViewController.stockTypeChoiceBox.getValue().toString());
         });
 
         return choiceBox;
     }
 
     public CheckBox initShowDisableStockCheckBox(){
-        CheckBox checkBox = new CheckBox("Показувати недоступні категорії");
-        checkBox.setTooltip(new Tooltip("Показувати категорії в яких\nнемає жодного доступного" +
-                "\nна даний момент інвентаря"));
+        CheckBox checkBox = new CheckBox("Недоступні категорії");
+        checkBox.setTooltip(new Tooltip("Показувати категорії в яких на даний момент" +
+                "\nнемає жодного доступного інвентаря"));
         checkBox.setSelected(false);
         checkBox.setOnAction((ActionEvent event) -> {
 
@@ -204,14 +195,11 @@ public class WindowStockTrackingController {
         choiceBox.setValue(choiceBox.getItems().get(0));
         liableListViewController.setListViewDateParameter(choiceBox.getValue().toString());
 
-        choiceBox.valueProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue observableValue, String oldValue, String newValue) {
+        choiceBox.valueProperty().addListener((ChangeListener<String>) (observableValue, oldValue, newValue) -> {
 //                change detected
-                liableListViewController.liableTypeChoiceBox.setValue(choiceBox.getValue());
-                liableListViewController.setListViewDateParameter(choiceBox.getValue().toString());
-                liableListViewController.initListView();
-            }
+            liableListViewController.liableTypeChoiceBox.setValue(choiceBox.getValue());
+            liableListViewController.setListViewDateParameter(choiceBox.getValue().toString());
+            liableListViewController.initListView();
         });
 
         return choiceBox;

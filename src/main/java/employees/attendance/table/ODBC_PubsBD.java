@@ -20,7 +20,7 @@ public class ODBC_PubsBD {
     private static final Logger LOGGER = LoggerFactory.getLogger(ODBC_PubsBD.class);
 
     public static List<DtoEmployeesFullName> selectEmployeesFullNameOnAnyObject(String firstDayOfMonth, String lastDayOfMonth) {
-        List<DtoEmployeesFullName> dtoEmployeesFullNames = getJdbcTemplate().query("select employees.id, " +
+        return getJdbcTemplate().query("select employees.id, " +
                 "concat(employees.surname, ' ', left (employees.name, 1), '. ', left (employees.middleName, 1), '.') as fullName, " +
                 "employees.workingHours " +
                 "from employees left join " +
@@ -35,7 +35,6 @@ public class ODBC_PubsBD {
                 "(employees.lastDay is null or " +
                 "employees.lastDay > convert('" + firstDayOfMonth + "', DATE)) " +
                 "order by employees.surname asc", BeanPropertyRowMapper.newInstance(DtoEmployeesFullName.class));
-        return dtoEmployeesFullNames;
     }
 
     public static List<DtoEmployeesFullName> selectEmployeesFullNameOnSomeObject(String firstDayOfMonth, String lastDayOfMonth, int objectId) {
@@ -133,22 +132,22 @@ public class ODBC_PubsBD {
     public static void insertIntoWorkTracking(String date, int workingHours, int employeesId){
         final int objectEmployeesId = selectObjectEmployeesId(date, employeesId);
         getJdbcTemplate().update("INSERT INTO worktracking (id, object_employees_id, date, workingHours) " +
-                "VALUES (null, '" + objectEmployeesId + "', convert('" + date + "', DATE), '" + workingHours + "')");
+                "VALUES (null, ?, convert(?, DATE), ?)", objectEmployeesId, date, workingHours);
     }
 
     public static void updateWorkTracking(String date, int workingHours, int employeesId){
         final int objectEmployeesId = selectObjectEmployeesId(date, employeesId);
         getJdbcTemplate().update("UPDATE worktracking " +
-                "SET workingHours = '" + workingHours + "' " +
-                "WHERE object_employees_id = '" + objectEmployeesId + "' and " +
-                "date = convert('" + date + "', DATE)");
+                "SET workingHours = ? " +
+                "WHERE object_employees_id = ? and " +
+                "date = convert(?, DATE)", workingHours, objectEmployeesId, date);
     }
 
     public static void deleteFromWorkTracking(String date, int employeesId){
         final int objectEmployeesId = selectObjectEmployeesId(date, employeesId);
         getJdbcTemplate().update("DELETE FROM worktracking " +
-                "WHERE object_employees_id = '" + objectEmployeesId + "' and " +
-                "date = convert('" + date + "', DATE)");
+                "WHERE object_employees_id = ? and " +
+                "date = convert(?, DATE)", objectEmployeesId, date);
     }
 
     public static List<DtoObject> selectObjectList(String firstDayOfMonth, String lastDayOfMonth) {

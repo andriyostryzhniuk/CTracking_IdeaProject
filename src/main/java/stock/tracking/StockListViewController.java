@@ -80,15 +80,12 @@ public class StockListViewController {
                 item.initCategoryPaneContainer(numberOfStockGranted);
 
                 setSourceDragAndDrop(item.getPaneContainer());
-                item.getPaneContainer().setOnMouseClicked(new EventHandler<MouseEvent>() {
-                    @Override
-                    public void handle(MouseEvent mouseEvent) {
-                        if (mouseEvent.getButton().equals(MouseButton.PRIMARY)) {
-                            if (mouseEvent.getClickCount() == 2) {
-                                setListViewDateParameter(item.getName());
+                item.getPaneContainer().setOnMouseClicked(mouseEvent -> {
+                    if (mouseEvent.getButton().equals(MouseButton.PRIMARY)) {
+                        if (mouseEvent.getClickCount() == 2) {
+                            setListViewDateParameter(item.getName());
 //                                objectId = item.getId();
-                                initListView(stockTypeChoiceBox.getValue().toString());
-                            }
+                            initListView(stockTypeChoiceBox.getValue().toString());
                         }
                     }
                 });
@@ -131,32 +128,28 @@ public class StockListViewController {
     }
 
     public void setSourceDragAndDrop(Pane pane) {
-        pane.setOnDragDetected(new EventHandler<MouseEvent>() {
-            public void handle(MouseEvent event) {
+        pane.setOnDragDetected(event -> {
 //                System.out.println("source.setOnDragDetected");
-        /* drag was detected, start a drag-and-drop gesture*/
-        /* allow any transfer mode */
-                Dragboard db = pane.startDragAndDrop(TransferMode.ANY);
+    /* drag was detected, start a drag-and-drop gesture*/
+    /* allow any transfer mode */
+            Dragboard db = pane.startDragAndDrop(TransferMode.ANY);
 
-        /* Put a string on a dragboard */
-                ClipboardContent content = new ClipboardContent();
-                content.putString(pane.getId());
-                db.setContent(content);
+    /* Put a string on a dragboard */
+            ClipboardContent content = new ClipboardContent();
+            content.putString(pane.getId());
+            db.setContent(content);
 
-                event.consume();
-            }
+            event.consume();
         });
 
-        pane.setOnDragDone(new EventHandler<DragEvent>() {
-            public void handle(DragEvent event) {
+        pane.setOnDragDone(event -> {
 //                System.out.println("source.setOnDragDone");
-        /* the drag and drop gesture ended */
-        /* if the data was successfully moved, clear it */
+    /* the drag and drop gesture ended */
+    /* if the data was successfully moved, clear it */
 //                if (event.getTransferMode() == TransferMode.MOVE) {
 //                    System.out.println(resultList);
 //                }
-                event.consume();
-            }
+            event.consume();
         });
     }
 
@@ -233,12 +226,9 @@ public class StockListViewController {
             public ListCell<String> call(ListView<String> param) {
                 final ListCell<String> cell = new ListCell<String>() {
                     {
-                        super.setOnMousePressed(new EventHandler<MouseEvent>() {
-                            @Override
-                            public void handle(MouseEvent event) {
+                        super.setOnMousePressed(event -> {
 //                                mouse pressed
-                                comboBoxListener.setValue(comboBox.getValue());
-                            }
+                            comboBoxListener.setValue(comboBox.getValue());
                         });
                     }
 
