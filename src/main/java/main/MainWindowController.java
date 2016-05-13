@@ -21,27 +21,31 @@ public class MainWindowController {
     private WindowStockTrackingController windowStockTrackingController;
 
     public void initEmployeesWorkTracking(ActionEvent actionEvent) throws IOException {
-        removeMainGridPaneChildren();
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/employees.attendance.table/WindowAttendance.fxml"));
-        try {
-            mainGridPane.add(fxmlLoader.load(), 1, 1);
-            windowAttendanceController = fxmlLoader.getController();
-        } catch (IOException exception) {
-            throw new UncheckedIOException(exception);
+        if (windowAttendanceController == null) {
+            removeMainGridPaneChildren();
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/employees.attendance.table/WindowAttendance.fxml"));
+            try {
+                mainGridPane.add(fxmlLoader.load(), 1, 1);
+                windowAttendanceController = fxmlLoader.getController();
+            } catch (IOException exception) {
+                throw new UncheckedIOException(exception);
+            }
+            mainGridPane.add(initButtonContainer(initButtonAttendanceSave(), initButtonClose()), 1, 2);
         }
-        mainGridPane.add(initButtonContainer(initButtonAttendanceSave(), initButtonClose()), 1, 2);
     }
 
     public void initStockTracking(ActionEvent actionEvent) throws IOException {
-        removeMainGridPaneChildren();
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/stock.tracking/WindowStockTracking.fxml"));
-        try {
-            mainGridPane.add(fxmlLoader.load(), 1, 1);
-            windowStockTrackingController = fxmlLoader.getController();
-        } catch (IOException exception) {
-            throw new UncheckedIOException(exception);
+        if (windowStockTrackingController == null) {
+            removeMainGridPaneChildren();
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/stock.tracking/WindowStockTracking.fxml"));
+            try {
+                mainGridPane.add(fxmlLoader.load(), 1, 1);
+                windowStockTrackingController = fxmlLoader.getController();
+            } catch (IOException exception) {
+                throw new UncheckedIOException(exception);
+            }
+            mainGridPane.add(initButtonContainer(initButtonStockTrackingSave(), initButtonClose()), 1, 2);
         }
-        mainGridPane.add(initButtonContainer(initButtonStockTrackingSave(), initButtonClose()), 1, 2);
     }
 
     public Button initButton(String text){
@@ -95,5 +99,7 @@ public class MainWindowController {
         for (int i = mainGridPane.getChildren().size(); i > 1; i--) {
             mainGridPane.getChildren().remove(i-1);
         }
+        windowAttendanceController = null;
+        windowStockTrackingController = null;
     }
 }
