@@ -17,7 +17,7 @@ import java.util.List;
 import java.util.stream.IntStream;
 
 public class GrantedStockListViewController {
-    public GridPane rootGridPane;
+
     public ListView<Pane> listView;
 
     private LinkedList<Integer> stockIdList = new LinkedList<>();

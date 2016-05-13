@@ -98,7 +98,6 @@ public class TableViewController<T extends DtoEmployeesFullName> {
         tableView.getTableView().setItems(employeesFullNameList);
         rootStackPane.getChildren().add(tableView);
 
-//        initCheckBox();
     }
 
     private void fillColsDateList() {
@@ -152,12 +151,12 @@ public class TableViewController<T extends DtoEmployeesFullName> {
     }
 
     public void setColsDateProperties(){
-        for (CustomTableColumn<T, ?> c : colsDateList) {
-            c.setPercentWidth(40.0);
-            c.setMinWidth(40.0);
-            c.setResizable(false);
-            c.setSortable(false);
-        }
+        colsDateList.forEach(item -> {
+            item.setPercentWidth(40.0);
+            item.setMinWidth(40.0);
+            item.setResizable(false);
+            item.setSortable(false);
+        });
     }
 
     public void initCheckBox() {

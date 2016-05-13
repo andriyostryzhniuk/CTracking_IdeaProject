@@ -57,7 +57,7 @@ public class DtoEmployees extends DtoLiableListView {
 
         Label numberOfStockLabel = new Label();
         paneContainer.getChildren().add(numberOfStockLabel);
-        numberOfStockLabel.setLayoutX(160);
+        numberOfStockLabel.setLayoutX(210);
         numberOfStockLabel.setLayoutY(30);
     }
 }

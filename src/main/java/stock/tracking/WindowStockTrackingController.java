@@ -48,13 +48,11 @@ public class WindowStockTrackingController {
         }
 
         initLeftSideGritPane();
-//        rootBorderPane.setTop(topGridPane);
-//        rootBorderPane.setAlignment(topGridPane, Pos.TOP_LEFT);
-//        rootBorderPane.setMargin(topGridPane, new Insets(0.0, 0.0, 20.0, 0.0));
+        initRightSideGridPane();
 
         fxmlLoader = new FXMLLoader(getClass().getResource("/stock.tracking/GrantedStockListView.fxml"));
         try {
-            gridPane.add(fxmlLoader.load(), 5, 0);
+            rightSideGridPane.add(fxmlLoader.load(), 0, 1);
             grantedStockListViewController = fxmlLoader.getController();
             liableListViewController.setGrantedStockListViewController(grantedStockListViewController);
         } catch (IOException exception) {
@@ -69,12 +67,16 @@ public class WindowStockTrackingController {
     }
 
     public void initLeftSideGritPane() {
-        leftSideGridPane.setPadding(new Insets(0, 10, 0, 0));
         leftSideGridPane.add(initStockGroupBox(), 0, 0);
-        leftSideGridPane.add(initLiableGroupBox(), 0, 1);
     }
 
-    public GroupBox initStockGroupBox(){
+    public void initRightSideGridPane(){
+        ChoiceBox liableTypeChoiceBox = initLiableTypeChoiceBox();
+        liableListViewController.setLiableTypeChoiceBox(liableTypeChoiceBox);
+        rightSideGridPane.add(liableTypeChoiceBox, 0, 0);
+    }
+
+    public GridPane initStockGroupBox(){
         ChoiceBox repositoryChoiceBox = initRepositoryChoiceBox();
         stockListViewController.setRepositoryChoiceBox(repositoryChoiceBox);
 
@@ -97,35 +99,18 @@ public class WindowStockTrackingController {
         stockControlsGritPane.add(showDisableStockCheckBox, 0, 3);
         stockControlsGritPane.setMargin(showDisableStockCheckBox, new Insets(8, 0, 5, 0));
 
-        stockControlsGritPane.setAlignment(Pos.CENTER);
+        stockControlsGritPane.setAlignment(Pos.TOP_CENTER);
 
-        GroupBox groupBox = new GroupBox(stockControlsGritPane, "Склад", -70);
-        groupBox.setMaxWidth(350);
-        groupBox.getStylesheets().add(getClass().getResource("/overridden.elements/GroupBoxStyle.css").toExternalForm());
+//        GroupBox groupBox = new GroupBox(stockControlsGritPane, "Склад", -70);
+//        groupBox.setMaxWidth(350);
+//        groupBox.getStylesheets().add(getClass().getResource("/overridden.elements/GroupBoxStyle.css").toExternalForm());
 
-        return groupBox;
-    }
-
-    public GroupBox initLiableGroupBox(){
-        ChoiceBox liableTypeChoiceBox = initLiableTypeChoiceBox();
-        liableListViewController.setLiableTypeChoiceBox(liableTypeChoiceBox);
-
-        GridPane liableControlsGritPane = new GridPane();
-        liableControlsGritPane.add(liableTypeChoiceBox, 0, 0);
-        liableControlsGritPane.setMargin(liableTypeChoiceBox, new Insets(0, 0, 8, 0));
-
-        liableControlsGritPane.setAlignment(Pos.CENTER);
-
-        GroupBox groupBox = new GroupBox(liableControlsGritPane, "Відповідальні", -50);
-        groupBox.setMaxWidth(350);
-        groupBox.getStylesheets().add(getClass().getResource("/overridden.elements/GroupBoxStyle.css").toExternalForm());
-
-        return groupBox;
+        return stockControlsGritPane;
     }
 
     public ChoiceBox initContentChoiceBox(){
         ChoiceBox choiceBox = new ChoiceBox();
-        choiceBox.setTooltip(new Tooltip("Вибрати дані"));
+        choiceBox.setTooltip(new Tooltip("Вибрати перегляд"));
         choiceBox.getStylesheets().add(getClass().getResource("/stock.tracking/ChoiceBoxStyle.css").toExternalForm());
 
         choiceBox.getItems().addAll("Категорії", "Весь інвентар");
@@ -189,7 +174,7 @@ public class WindowStockTrackingController {
     public ChoiceBox initLiableTypeChoiceBox(){
         ChoiceBox choiceBox = new ChoiceBox();
         choiceBox.getStylesheets().add(getClass().getResource("/stock.tracking/ChoiceBoxStyle.css").toExternalForm());
-        choiceBox.setTooltip(new Tooltip("Вибрати дані"));
+        choiceBox.setTooltip(new Tooltip("Вибрати перегляд"));
 
         choiceBox.getItems().addAll("Об'єкти", "Всі працівники");
         choiceBox.setValue(choiceBox.getItems().get(0));
@@ -201,6 +186,8 @@ public class WindowStockTrackingController {
             liableListViewController.setListViewDateParameter(choiceBox.getValue().toString());
             liableListViewController.initListView();
         });
+        choiceBox.setMinWidth(237);
+        choiceBox.setMaxWidth(237);
 
         return choiceBox;
     }

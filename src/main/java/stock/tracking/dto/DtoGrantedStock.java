@@ -29,6 +29,7 @@ public class DtoGrantedStock extends DtoStock {
     }
 
     public void initStockPaneContainer(){
+        getPaneContainer().setMaxWidth(237);
         getPaneContainer().setId("0:"+Integer.toString(getId()));
         getPaneContainer().setStyle("-fx-border-color: rgba(105, 105, 105, .5);");
         Label label = new Label(getName());
@@ -44,7 +45,7 @@ public class DtoGrantedStock extends DtoStock {
         rejectStockButton.setDisable(true);
         rejectStockButton.setVisible(false);
         getPaneContainer().getChildren().add(rejectStockButton);
-        rejectStockButton.setLayoutX(215);
+        rejectStockButton.setLayoutX(211);
         rejectStockButton.setLayoutY(3);
 
         getPaneContainer().setOnMouseEntered((MouseEvent event) -> {

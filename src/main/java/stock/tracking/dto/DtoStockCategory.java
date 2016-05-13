@@ -63,7 +63,7 @@ public class DtoStockCategory extends DtoStockListView {
 
         Label numberOfStockLabel = new Label("Кількість: " + Integer.toString(numberOfStock - numberOfStockGranted));
         paneContainer.getChildren().add(numberOfStockLabel);
-        numberOfStockLabel.setLayoutX(160);
+        numberOfStockLabel.setLayoutX(210);
         numberOfStockLabel.setLayoutY(30);
     }
 
