@@ -21,21 +21,20 @@ public class ODBC_PubsBDForLiable {
     private static final Logger LOGGER = LoggerFactory.getLogger(ODBC_PubsBDForLiable.class);
 
     public static List<DtoEmployees> selectAllEmployees() {
-        List<DtoEmployees> dtoEmployeesList = getJdbcTemplate().query("select employees.id, " +
+        return getJdbcTemplate().query("select employees.id, " +
                 "concat( employees.surname, ' ', left (employees.name, 1), '. ', " +
                 "   left (employees.middleName, 1), '.' ) as fullName " +
                 "from employees " +
                 "where employees.lastDay is null " +
                 "order by employees.surname asc;", BeanPropertyRowMapper.newInstance(DtoEmployees.class));
-        return dtoEmployeesList;
     }
 
     public static List<DtoEmployees> selectEmployeesOnObject(Integer objectId) {
-        List<DtoEmployees> dtoEmployeesList = getJdbcTemplate().query("select employees.id, " +
+        return getJdbcTemplate().query("select employees.id, " +
                 "concat( employees.surname, ' ', left (employees.name, 1), '. ', " +
                 "   left (employees.middleName, 1), '.' ) as fullName " +
                 "from employees, object_employees, object " +
-                "where object.id = '" + objectId + "' and " +
+                "where object.id = ? and " +
                 "object.startDate <= curdate() and " +
                 "(object.finishDate >= curdate() or " +
                 "object.finishDate is null) and " +
@@ -44,23 +43,21 @@ public class ODBC_PubsBDForLiable {
                 "(object_employees.finishDate >= curdate() or " +
                 "object_employees.finishDate is null) and " +
                 "object_employees.employees_id = employees.id " +
-                "order by employees.surname asc", BeanPropertyRowMapper.newInstance(DtoEmployees.class));
-        return dtoEmployeesList;
+                "order by employees.surname asc", BeanPropertyRowMapper.newInstance(DtoEmployees.class), objectId);
     }
 
     public static void insertIntoWorkTracking(Integer stockId, Integer employeesId, Integer objectId){
         getJdbcTemplate().update("INSERT INTO stocktracking (id, stock_id, employees_id, object_id, givingDate, returnDate) " +
-                "VALUES (null, " + stockId + ", " + employeesId + ", " + objectId + ", curdate(), null)");
+                "VALUES (null, ?, ?, ?, curdate(), null)", stockId, employeesId, objectId);
     }
 
     public static List<DtoObject> selectObjects(){
-        List<DtoObject> dtoObjectList = getJdbcTemplate().query("select id, address " +
+        return getJdbcTemplate().query("select id, address " +
                 "from object " +
                 "where startDate <= curdate() and " +
                 "(finishDate >= curdate() or " +
                 "finishDate is null) " +
                 "order by address asc", BeanPropertyRowMapper.newInstance(DtoObject.class));
-        return dtoObjectList;
     }
 
     public static ObservableList<DtoGrantedStock> selectStockWithId(LinkedList<Integer> stockIdList) {

@@ -24,9 +24,11 @@ import javafx.util.Callback;
 import overridden.elements.date.picker.DatePicker;
 
 import java.io.IOException;
+import java.sql.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
+import java.util.Date;
 import java.util.stream.IntStream;
 
 public class WindowAttendanceController<T extends DtoEmployeesFullName> {
@@ -97,25 +99,45 @@ public class WindowAttendanceController<T extends DtoEmployeesFullName> {
             previousDate = datePicker.selectedDateProperty().get();
         }
 
-        datePicker.selectedDateProperty().addListener(new InvalidationListener() {
-            @Override
-            public void invalidated(Observable observable) {
-                boolean isException = false;
-                DateFormat dateFormat = new SimpleDateFormat("yyyy-MM");
-                try {
-                    dateFormat.format(datePicker.selectedDateProperty().get());
-                } catch (NullPointerException e) {
-                    isException = true;
-                }
+        datePicker.selectedDateProperty().addListener(observable -> {
+            boolean isException = false;
+            DateFormat dateFormat = new SimpleDateFormat("yyyy-MM");
+            try {
+                dateFormat.format(datePicker.selectedDateProperty().get());
+            } catch (NullPointerException e) {
+                isException = true;
+            }
 
-                if (isException == false && previousMonth != datePicker.selectedDateProperty().get().getMonth() ||
-                        isException == false && previousYear != datePicker.selectedDateProperty().get().getYear() ) {
+            if (isException == false && previousMonth != datePicker.selectedDateProperty().get().getMonth() ||
+                    isException == false && previousYear != datePicker.selectedDateProperty().get().getYear() ) {
 
+                fillComboBoxItems (comboBox);
+
+                Object comboBoxValue = comboBox.getValue();
+                if (comboBox.getItems().size() == 1) {
+                    Label notificationLabel = new Label("Не знайдено жодного об'єкта за даний період");
+                    notificationLabel.setStyle("-fx-text-fill: red;");
+                    topGridPane.add(notificationLabel, 3, 0);
+                    topGridPane.setMargin(notificationLabel, new Insets(0, 0, 0, 30));
+                    Timer timer = new Timer();
+                    timer.scheduleAtFixedRate(new TimerTask() {
+                        @Override
+                        public void run() {
+                            Platform.runLater(() -> {
+                                topGridPane.getChildren().remove(notificationLabel);
+                            });
+                        }
+                    }, 3000, 1000);
+
+                    datePicker.setSelectedDate(previousDate);
                     fillComboBoxItems (comboBox);
 
-                    Object comboBoxValue = comboBox.getValue();
-                    if (comboBox.getItems().size() == 1) {
-                        Label notificationLabel = new Label("Не знайдено жодного об'єкта за даний період");
+                } else if (!comboBoxValue.equals("Всі об'єкти")) {
+                    if (comboBox.getItems().indexOf(comboBoxValue) == -1) {
+                        comboBox.setValue(comboBox.getItems().get(0));
+                        comboBoxListener.setValue(comboBox.getValue());
+
+                        Label notificationLabel = new Label("На вибраному об'єкті не проводилось робіт за даний період");
                         notificationLabel.setStyle("-fx-text-fill: red;");
                         topGridPane.add(notificationLabel, 3, 0);
                         topGridPane.setMargin(notificationLabel, new Insets(0, 0, 0, 30));
@@ -128,34 +150,11 @@ public class WindowAttendanceController<T extends DtoEmployeesFullName> {
                                 });
                             }
                         }, 3000, 1000);
-
-                        datePicker.setSelectedDate(previousDate);
-                        fillComboBoxItems (comboBox);
-
-                    } else if (!comboBoxValue.equals("Всі об'єкти")) {
-                        if (comboBox.getItems().indexOf(comboBoxValue) == -1) {
-                            comboBox.setValue(comboBox.getItems().get(0));
-                            comboBoxListener.setValue(comboBox.getValue());
-
-                            Label notificationLabel = new Label("На вибраному об'єкті не проводилось робіт за даний період");
-                            notificationLabel.setStyle("-fx-text-fill: red;");
-                            topGridPane.add(notificationLabel, 3, 0);
-                            topGridPane.setMargin(notificationLabel, new Insets(0, 0, 0, 30));
-                            Timer timer = new Timer();
-                            timer.scheduleAtFixedRate(new TimerTask() {
-                                @Override
-                                public void run() {
-                                    Platform.runLater(() -> {
-                                        topGridPane.getChildren().remove(notificationLabel);
-                                    });
-                                }
-                            }, 3000, 1000);
-                        } else {
-                            updateEmployeesFullNameList();
-                        }
                     } else {
                         updateEmployeesFullNameList();
                     }
+                } else {
+                    updateEmployeesFullNameList();
                 }
             }
         });
@@ -177,13 +176,10 @@ public class WindowAttendanceController<T extends DtoEmployeesFullName> {
             public ListCell<String> call(ListView<String> param) {
                 final ListCell<String> cell = new ListCell<String>() {
                     {
-                        super.setOnMousePressed(new EventHandler<MouseEvent>() {
-                            @Override
-                            public void handle(MouseEvent event) {
+                        super.setOnMousePressed(event -> {
 //                                mouse pressed
-                                comboBox.getStyleClass().remove("warning");
-                                comboBoxListener.setValue(comboBox.getValue());
-                            }
+                            comboBox.getStyleClass().remove("warning");
+                            comboBoxListener.setValue(comboBox.getValue());
                         });
                     }
 
@@ -197,24 +193,21 @@ public class WindowAttendanceController<T extends DtoEmployeesFullName> {
             }
         });
 
-        comboBoxListener.valueProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue observableValue, String oldValue, String newValue) {
+        comboBoxListener.valueProperty().addListener((ChangeListener<String>) (observableValue, oldValue, newValue) -> {
 //                change detected
-                comboBox.getStyleClass().remove("warning");
-                new AutoCompleteComboBoxListener<>(comboBox, comboBoxListener);
-                java.sql.Date startDateObject = null;
-                java.sql.Date finishDateObject = null;
+            comboBox.getStyleClass().remove("warning");
+            new AutoCompleteComboBoxListener<>(comboBox, comboBoxListener);
+            java.sql.Date startDateObject = null;
+            java.sql.Date finishDateObject = null;
 
-                if (!comboBox.getValue().equals("Всі об'єкти")){
-                    startDateObject = objectMap.get(comboBox.getValue().toString()).getStartDate();
-                    finishDateObject = objectMap.get(comboBox.getValue().toString()).getFinishDate();
-                }
-                datePicker.getCalendarView().setStartDateObject(startDateObject);
-                datePicker.getCalendarView().setFinishDateObject(finishDateObject);
-                datePicker.getCalendarView().updateContent();
-                updateEmployeesFullNameList();
+            if (!comboBox.getValue().equals("Всі об'єкти")){
+                startDateObject = objectMap.get(comboBox.getValue().toString()).getStartDate();
+                finishDateObject = objectMap.get(comboBox.getValue().toString()).getFinishDate();
             }
+            datePicker.getCalendarView().setStartDateObject(startDateObject);
+            datePicker.getCalendarView().setFinishDateObject(finishDateObject);
+            datePicker.getCalendarView().updateContent();
+            updateEmployeesFullNameList();
         });
         fillComboBoxItems(comboBox);
         return comboBox;
