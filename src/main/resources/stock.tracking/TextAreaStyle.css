@@ -1,0 +1,31 @@
+.text-area {
+    -fx-text-box-border: transparent;
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
+
+.text-field:focused{
+    -fx-focus-color: transparent;
+    -fx-faint-focus-color: transparent;
+}
+
+.text-area .content{
+    -fx-background-color: transparent;
+}
+
+TextArea *.scroll-bar *.increment-button,
+TextArea *.scroll-bar *.decrement-button{
+    -fx-background-color: null;
+    -fx-background-radius: 0;
+    -fx-background-insets: 0;
+    -fx-padding: 0;
+    -fx-shape: null;
+}
+TextArea *.scroll-bar *.increment-arrow,
+TextArea *.scroll-bar *.decrement-arrow{
+    -fx-background-color: null;
+    -fx-background-radius: 0;
+    -fx-background-insets: 0;
+    -fx-padding: 0;
+    -fx-shape: null;
+}

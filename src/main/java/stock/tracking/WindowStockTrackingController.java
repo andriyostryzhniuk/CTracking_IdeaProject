@@ -21,6 +21,7 @@ public class WindowStockTrackingController {
     public BorderPane rootBorderPane;
     public GridPane leftSideGridPane;
     public GridPane rightSideGridPane;
+    public TextArea notesTextArea;
     public GridPane gridPane;
 
     public StockListViewController stockListViewController;
@@ -31,10 +32,12 @@ public class WindowStockTrackingController {
 
     @FXML
     public void initialize() {
+        notesTextArea.getStylesheets().add(getClass().getResource("/stock.tracking/TextAreaStyle.css").toExternalForm());
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/stock.tracking/StockListView.fxml"));
         try {
             gridPane.add(fxmlLoader.load(), 1, 0);
             stockListViewController = fxmlLoader.getController();
+            stockListViewController.setNotesTextArea(notesTextArea);
         } catch (IOException exception) {
             throw new RuntimeException(exception);
         }
@@ -135,6 +138,11 @@ public class WindowStockTrackingController {
         choiceBox.valueProperty().addListener((ChangeListener<String>) (observableValue, oldValue, newValue) -> {
 //                change detected
             stockListViewController.stockTypeChoiceBox.setValue(choiceBox.getValue());
+            if (! stockListViewController.getListViewDateParameter().equals("Категорії") &&
+                    ! stockListViewController.getListViewDateParameter().equals("Весь інвентар")) {
+                stockListViewController.getContentChoiceBox().setValue("Категорії");
+                stockListViewController.setListViewDateParameter("Категорії");
+            }
             stockListViewController.initListView(choiceBox.getValue().toString());
         });
         choiceBox.setValue(choiceBox.getItems().get(0));
@@ -203,4 +211,5 @@ public class WindowStockTrackingController {
         liableListViewController.initListView();
         stockListViewController.initListView(stockListViewController.stockTypeChoiceBox.getValue().toString());
     }
+
 }

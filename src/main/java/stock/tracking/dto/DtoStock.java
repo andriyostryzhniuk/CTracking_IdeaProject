@@ -10,15 +10,17 @@ public class DtoStock extends DtoStockListView {
     private int id;
     private String name;
     private String stockCategory;
+    private String notes;
     private Pane paneContainer = new Pane();
 
     public DtoStock() {
     }
 
-    public DtoStock(int id, String name, String stockCategory) {
+    public DtoStock(int id, String name, String stockCategory, String notes) {
         this.id = id;
         this.name = name;
         this.stockCategory = stockCategory;
+        this.notes = notes;
     }
 
     public int getId() {
@@ -43,6 +45,14 @@ public class DtoStock extends DtoStockListView {
 
     public void setStockCategory(String stockCategory) {
         this.stockCategory = stockCategory;
+    }
+
+    public String getNotes() {
+        return notes;
+    }
+
+    public void setNotes(String notes) {
+        this.notes = notes;
     }
 
     public Pane getPaneContainer() {

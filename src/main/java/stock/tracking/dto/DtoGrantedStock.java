@@ -15,8 +15,8 @@ public class DtoGrantedStock extends DtoStock {
     public DtoGrantedStock() {
     }
 
-    public DtoGrantedStock(int id, String name, String stockCategory, int stockCategoryId) {
-        super(id, name, stockCategory);
+    public DtoGrantedStock(int id, String name, String stockCategory, int stockCategoryId, String notes) {
+        super(id, name, stockCategory, notes);
         this.stockCategoryId = stockCategoryId;
     }
 

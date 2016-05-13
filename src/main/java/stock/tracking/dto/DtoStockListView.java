@@ -17,4 +17,6 @@ public abstract class DtoStockListView {
     public abstract void initStockPaneContainer();
 
     public abstract void initCategoryPaneContainer(int numberOfStockGranted);
+
+    public abstract String getNotes();
 }

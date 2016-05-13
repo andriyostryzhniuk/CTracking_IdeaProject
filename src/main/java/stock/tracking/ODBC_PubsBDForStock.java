@@ -18,7 +18,7 @@ public class ODBC_PubsBDForStock {
 
     public static List<DtoStock> selectAllStockOfType(String stockType) {
         return getJdbcTemplate().query("select stock.id, " +
-                "ifnull(stock.name, stockCategory.name) as name, stockCategory.name as stockCategory " +
+                "ifnull(stock.name, stockCategory.name) as name, stockCategory.name as stockCategory, stock.notes " +
                 "from stockCategory, stock left join " +
                 "   (select distinct stocktracking.stock_id " +
                 "   from stocktracking " +
@@ -34,7 +34,7 @@ public class ODBC_PubsBDForStock {
 
     public static List<DtoStock> selectAllStockOfTypeInRepository(String stockType, String repositoryName) {
         return getJdbcTemplate().query("select stock.id, " +
-                "ifnull(stock.name, stockCategory.name) as name, stockCategory.name as stockCategory " +
+                "ifnull(stock.name, stockCategory.name) as name, stockCategory.name as stockCategory, stock.notes " +
                 "from repository, stockCategory, stock left join " +
                 "   (select distinct stocktracking.stock_id " +
                 "   from stocktracking " +
@@ -52,7 +52,7 @@ public class ODBC_PubsBDForStock {
 
     public static List<DtoStock> selectStockOfCategory(String stockCategory) {
         return getJdbcTemplate().query("select stock.id, " +
-                "ifnull(stock.name, stockCategory.name) as name, stockCategory.name as stockCategory " +
+                "ifnull(stock.name, stockCategory.name) as name, stockCategory.name as stockCategory, stock.notes " +
                 "from stockCategory, stock left join " +
                 "   (select distinct stocktracking.stock_id " +
                 "   from stocktracking " +
@@ -68,7 +68,7 @@ public class ODBC_PubsBDForStock {
 
     public static List<DtoStock> selectStockOfCategoryInRepository(String stockCategory, String repositoryName) {
         return getJdbcTemplate().query("select stock.id, " +
-                "ifnull(stock.name, stockCategory.name) as name, stockCategory.name as stockCategory " +
+                "ifnull(stock.name, stockCategory.name) as name, stockCategory.name as stockCategory, stock.notes " +
                 "from repository, stockCategory, stock left join " +
                 "   (select distinct stocktracking.stock_id " +
                 "   from stocktracking " +
@@ -173,7 +173,7 @@ public class ODBC_PubsBDForStock {
 
     public static List<DtoStock> selectStockOfCategoryWithId (int stockCategoryId) {
         return getJdbcTemplate().query("select stock.id, " +
-                "ifnull(stock.name, stockCategory.name) as name, stockCategory.name as stockCategory " +
+                "ifnull(stock.name, stockCategory.name) as name, stockCategory.name as stockCategory, stock.notes " +
                 "from stockCategory, stock left join " +
                 "   (select distinct stocktracking.stock_id " +
                 "   from stocktracking " +
@@ -189,7 +189,7 @@ public class ODBC_PubsBDForStock {
 
     public static List<DtoStock> selectStockOfCategoryWithIdInRepository (int stockCategoryId, String repositoryName) {
         return getJdbcTemplate().query("select stock.id, " +
-                "ifnull(stock.name, stockCategory.name) as name, stockCategory.name as stockCategory " +
+                "ifnull(stock.name, stockCategory.name) as name, stockCategory.name as stockCategory, stock.notes " +
                 "from repository, stockCategory, stock left join " +
                 "   (select distinct stocktracking.stock_id " +
                 "   from stocktracking " +

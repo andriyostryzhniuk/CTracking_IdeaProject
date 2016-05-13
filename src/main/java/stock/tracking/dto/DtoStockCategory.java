@@ -68,6 +68,11 @@ public class DtoStockCategory extends DtoStockListView {
     }
 
     @Override
+    public String getNotes() {
+        return null;
+    }
+
+    @Override
     public void initStockPaneContainer() {
 
     }

@@ -36,6 +36,7 @@ public class StockListViewController {
     public ChoiceBox repositoryChoiceBox = new ChoiceBox();
     public CheckBox showDisableStockCheckBox = new CheckBox();
     public Button levelUpButton;
+    public TextArea notesTextArea;
     private String listViewDateParameter;
 
     public ObservableList<DtoStockListView> stockListViewDataList = FXCollections.observableArrayList();
@@ -62,6 +63,7 @@ public class StockListViewController {
         stockListViewDataList.clear();
         listView.getItems().clear();
         showDisableStockCheckBox.setDisable(true);
+        notesTextArea.clear();
 
         if (listViewDateParameter.equals("Категорії")) {
             showDisableStockCheckBox.setDisable(false);
@@ -84,7 +86,6 @@ public class StockListViewController {
                     if (mouseEvent.getButton().equals(MouseButton.PRIMARY)) {
                         if (mouseEvent.getClickCount() == 2) {
                             setListViewDateParameter(item.getName());
-//                                objectId = item.getId();
                             initListView(stockTypeChoiceBox.getValue().toString());
                         }
                     }
@@ -101,6 +102,7 @@ public class StockListViewController {
                         selectAllStockOfTypeInRepository(stockType, repositoryChoiceBox.getValue().toString()));
             }
             stockListViewDataList.forEach(item -> {
+                item.getPaneContainer().setOnMouseClicked(mouseEvent -> notesTextArea.setText(item.getNotes()));
                 item.initStockPaneContainer();
                 setSourceDragAndDrop(item.getPaneContainer());
                 checkDisable(item.getPaneContainer());
@@ -116,6 +118,7 @@ public class StockListViewController {
                         selectStockOfCategoryInRepository(listViewDateParameter, repositoryChoiceBox.getValue().toString()));
             }
             stockListViewDataList.forEach(item -> {
+                item.getPaneContainer().setOnMouseClicked(mouseEvent -> notesTextArea.setText(item.getNotes()));
                 item.initStockPaneContainer();
                 setSourceDragAndDrop(item.getPaneContainer());
                 checkDisable(item.getPaneContainer());
@@ -326,6 +329,10 @@ public class StockListViewController {
         this.showDisableStockCheckBox = showDisableStockCheckBox;
     }
 
+    public ChoiceBox getContentChoiceBox() {
+        return contentChoiceBox;
+    }
+
     public void setContentChoiceBox(ChoiceBox contentChoiceBox) {
         this.contentChoiceBox = contentChoiceBox;
     }
@@ -338,5 +345,10 @@ public class StockListViewController {
         this.listViewDateParameter = listViewDateParameter;
         setTextToHeaderLabel(listViewDateParameter);
     }
+
+    public void setNotesTextArea(TextArea notesTextArea) {
+        this.notesTextArea = notesTextArea;
+    }
+
 
 }
