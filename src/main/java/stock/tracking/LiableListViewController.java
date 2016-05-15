@@ -1,7 +1,5 @@
 package stock.tracking;
 
-import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
@@ -15,7 +13,6 @@ import javafx.scene.input.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
-import javafx.util.Callback;
 import overridden.elements.combo.box.AutoCompleteComboBoxListener;
 import stock.tracking.dto.DtoLiableListView;
 import stock.tracking.dto.DtoResult;
@@ -54,7 +51,7 @@ public class LiableListViewController {
         listView.getStylesheets().add(getClass().getResource("/stock.tracking/ListViewStyle.css").toExternalForm());
         levelUpButton = initLevelUpButton();
 
-        comboBoxSearch = initLiableComboBoxSearch();
+        initLiableComboBoxSearch();
         rootGridPane.add(comboBoxSearch, 0, 0);
         comboBoxSearch.setMaxWidth(Double.MAX_VALUE);
 
@@ -295,53 +292,41 @@ public class LiableListViewController {
         }
     }
 
-    public ComboBox initLiableComboBoxSearch() {
-        ComboBox comboBox = new ComboBox();
+    public void initLiableComboBoxSearch() {
+        comboBoxSearch.getStylesheets().add(getClass().getResource("/stock.tracking/ComboBoxStyle.css").toExternalForm());
+        comboBoxSearch.setTooltip(new Tooltip("Пошук"));
+        comboBoxSearch.setPromptText("Пошук");
 
-        comboBox.getStylesheets().add(getClass().getResource("/stock.tracking/ComboBoxStyle.css").toExternalForm());
-        comboBox.setTooltip(new Tooltip("Пошук"));
-        comboBox.setPromptText("Пошук");
+        comboBoxSearch.setItems(liableNamesList);
 
-        comboBox.setItems(liableNamesList);
+        new AutoCompleteComboBoxListener<>(comboBoxSearch, comboBoxListener);
 
-        new AutoCompleteComboBoxListener<>(comboBox, comboBoxListener);
+        comboBoxSearch.setCellFactory(listCell -> {
+            final ListCell<String> cell = new ListCell<String>() {
+                {
+                    super.setOnMousePressed((MouseEvent event) -> {
+//                            mouse pressed
+                        comboBoxListener.setValue(comboBoxSearch.getValue());
+                    });
+                }
 
-        comboBox.setCellFactory(new Callback<ListView<String>, ListCell<String>>() {
-            @Override
-            public ListCell<String> call(ListView<String> param) {
-                final ListCell<String> cell = new ListCell<String>() {
-                    {
-                        super.setOnMousePressed(new EventHandler<MouseEvent>() {
-                            @Override
-                            public void handle(MouseEvent event) {
-//                                mouse pressed
-                                comboBoxListener.setValue(comboBox.getValue());
-                            }
-                        });
-                    }
-
-                    @Override
-                    public void updateItem(String item, boolean empty) {
-                        super.updateItem(item, empty);
-                        setText(item);
-                    }
-                };
-                return cell;
-            }
+                @Override
+                public void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
+                    setText(item);
+                }
+            };
+            return cell;
         });
 
-        comboBoxListener.valueProperty().addListener(new ChangeListener<String>() {
-            @Override
-            public void changed(ObservableValue observableValue, String oldValue, String newValue) {
+        comboBoxListener.valueProperty().addListener((observableValue, oldValue, newValue) -> {
 //                change detected
                 if (newValue != null) {
-                    comboBox.getStyleClass().remove("warning");
+                    comboBoxSearch.getStyleClass().remove("warning");
                     searchInListView();
                     comboBoxListener.setValue(null);
                 }
-            }
         });
-        return comboBox;
     }
 
     public void searchInListView() {
