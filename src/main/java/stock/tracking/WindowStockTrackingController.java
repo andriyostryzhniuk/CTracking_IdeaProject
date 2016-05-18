@@ -4,7 +4,6 @@ import javafx.fxml.FXMLLoader;
 import javafx.geometry.Pos;
 import javafx.scene.layout.BorderPane;
 import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
@@ -13,7 +12,7 @@ import javafx.scene.layout.GridPane;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
-import overridden.elements.group.box.GroupBox;
+
 import stock.tracking.dto.DtoResult;
 
 public class WindowStockTrackingController {
@@ -114,7 +113,7 @@ public class WindowStockTrackingController {
     public ChoiceBox initContentChoiceBox(){
         ChoiceBox choiceBox = new ChoiceBox();
         choiceBox.setTooltip(new Tooltip("Вибрати перегляд"));
-        choiceBox.getStylesheets().add(getClass().getResource("/stock.tracking/ChoiceBoxStyle.css").toExternalForm());
+        choiceBox.getStylesheets().add(getClass().getResource("/styles/ChoiceBoxStyle.css").toExternalForm());
 
         choiceBox.getItems().addAll("Категорії", "Весь інвентар");
         choiceBox.setValue(choiceBox.getItems().get(0));
@@ -134,7 +133,7 @@ public class WindowStockTrackingController {
         ChoiceBox choiceBox = new ChoiceBox();
         choiceBox.setTooltip(new Tooltip("Вибрати тип інвентаря\n(Вартісний/Розхідний)"));
         choiceBox.getItems().addAll("Вартісні", "Розхідні");
-        choiceBox.getStylesheets().add(getClass().getResource("/stock.tracking/ChoiceBoxStyle.css").toExternalForm());
+        choiceBox.getStylesheets().add(getClass().getResource("/styles/ChoiceBoxStyle.css").toExternalForm());
         choiceBox.valueProperty().addListener((ChangeListener<String>) (observableValue, oldValue, newValue) -> {
 //                change detected
             stockListViewController.stockTypeChoiceBox.setValue(choiceBox.getValue());
@@ -151,7 +150,7 @@ public class WindowStockTrackingController {
 
     public ChoiceBox initRepositoryChoiceBox(){
         ChoiceBox choiceBox = new ChoiceBox();
-        choiceBox.getStylesheets().add(getClass().getResource("/stock.tracking/ChoiceBoxStyle.css").toExternalForm());
+        choiceBox.getStylesheets().add(getClass().getResource("/styles/ChoiceBoxStyle.css").toExternalForm());
         choiceBox.setTooltip(new Tooltip("Вибрати склад"));
 
         choiceBox.setItems(ODBC_PubsBDForStock.selectRepositoryName());
@@ -181,7 +180,7 @@ public class WindowStockTrackingController {
 
     public ChoiceBox initLiableTypeChoiceBox(){
         ChoiceBox choiceBox = new ChoiceBox();
-        choiceBox.getStylesheets().add(getClass().getResource("/stock.tracking/ChoiceBoxStyle.css").toExternalForm());
+        choiceBox.getStylesheets().add(getClass().getResource("/styles/ChoiceBoxStyle.css").toExternalForm());
         choiceBox.setTooltip(new Tooltip("Вибрати перегляд"));
 
         choiceBox.getItems().addAll("Об'єкти", "Всі працівники");

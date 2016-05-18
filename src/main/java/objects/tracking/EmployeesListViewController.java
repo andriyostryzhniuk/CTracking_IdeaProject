@@ -10,6 +10,8 @@ import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import objects.tracking.dto.DTOEmployees;
 
+import java.util.List;
+
 import static objects.tracking.ODBC_PubsBD.selectFreeEmployees;
 
 public class EmployeesListViewController {
@@ -21,13 +23,13 @@ public class EmployeesListViewController {
 
     @FXML
     public void initialize(){
-        listView.getStylesheets().add(getClass().getResource("/styles/ListViewStyle.css").toExternalForm());
-        initList();
+
     }
 
-    private void initList(){
+    public void initList(List<DTOEmployees> dtoEmployees){
         employeesListViewDataList.clear();
-        employeesListViewDataList.addAll(selectFreeEmployees());
+        employeesListViewDataList.addAll(dtoEmployees);
+        listView.getItems().clear();
 
         employeesListViewDataList.forEach(item -> {
             item.initPaneContainer();

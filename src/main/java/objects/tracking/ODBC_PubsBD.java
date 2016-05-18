@@ -27,13 +27,29 @@ public class ODBC_PubsBD {
                 "employees.lastDay is null " +
                 "order by employees.surname asc", BeanPropertyRowMapper.newInstance(DTOEmployees.class));
 
-        dtoEmployeesList.forEach(item -> item.setSkills(getJdbcTemplate().query("select skills.skill " +
+        dtoEmployeesList.forEach(item -> selectSkills(item.getId()));
+
+        return dtoEmployeesList;
+    }
+
+    public static List<DTOEmployees> selectAllEmployees() {
+        List<DTOEmployees> dtoEmployeesList = getJdbcTemplate().query("select id, " +
+                "concat(surname, ' ', left (name, 1), '. ', left (middleName, 1), '.' ) as fullName " +
+                "from employees " +
+                "where lastDay is null " +
+                "order by surname asc", BeanPropertyRowMapper.newInstance(DTOEmployees.class));
+
+        dtoEmployeesList.forEach(item -> selectSkills(item.getId()));
+
+        return dtoEmployeesList;
+    }
+
+    public static List<String> selectSkills(Integer employeeId){
+        return getJdbcTemplate().query("select skills.skill " +
                 "from skills_employees, skills " +
                 "where skills_employees.employees_id = ? and " +
                 "skills_employees.skills_id = skills.id", (RowMapper) (resultSet, i) -> resultSet.getString(1),
-                    item.getId())));
-
-        return dtoEmployeesList;
+                employeeId);
     }
 
 }

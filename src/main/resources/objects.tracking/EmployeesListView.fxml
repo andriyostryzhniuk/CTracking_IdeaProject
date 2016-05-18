@@ -15,7 +15,8 @@
         <RowConstraints vgrow="SOMETIMES"/>
     </rowConstraints>
     <children>
-        <ListView fx:id="listView" fixedCellSize="50.0" maxWidth="300.0" minWidth="300.0" GridPane.rowIndex="2"/>
+        <ListView fx:id="listView" fixedCellSize="50.0" maxWidth="300.0" minWidth="300.0"
+                  stylesheets="@../styles/ListViewStyle.css" GridPane.rowIndex="2"/>
         <Pane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: rgba(65, 105, 225, .5);"
               GridPane.rowIndex="1">
             <children>

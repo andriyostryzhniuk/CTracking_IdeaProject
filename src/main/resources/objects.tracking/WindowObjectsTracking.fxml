@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
@@ -30,10 +31,29 @@
                         <RowConstraints minHeight="5.0" vgrow="SOMETIMES"/>
                         <RowConstraints maxHeight="220.0" minHeight="220.0" prefHeight="220.0" vgrow="SOMETIMES"/>
                     </rowConstraints>
+                    <children>
+                        <GridPane alignment="TOP_CENTER" GridPane.hgrow="SOMETIMES" GridPane.vgrow="SOMETIMES">
+                            <columnConstraints>
+                                <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0"
+                                                   prefWidth="100.0"/>
+                            </columnConstraints>
+                            <rowConstraints>
+                                <RowConstraints percentHeight="0.0" vgrow="SOMETIMES"/>
+                                <RowConstraints vgrow="SOMETIMES"/>
+                            </rowConstraints>
+                            <children>
+                                <ChoiceBox fx:id="contentTypeChoiceBox" prefWidth="150.0" stylesheets="@../styles/ChoiceBoxStyle.css">
+                                    <GridPane.margin>
+                                        <Insets bottom="8.0"/>
+                                    </GridPane.margin>
+                                </ChoiceBox>
+                            </children>
+                        </GridPane>
+                    </children>
                     <!--<children>-->
-                        <!--<TextArea fx:id="notesTextArea" editable="false" focusTraversable="false" prefColumnCount="0"-->
-                                  <!--prefRowCount="0" wrapText="true" GridPane.hgrow="SOMETIMES" GridPane.rowIndex="2"-->
-                                  <!--GridPane.vgrow="SOMETIMES"/>-->
+                    <!--<TextArea fx:id="notesTextArea" editable="false" focusTraversable="false" prefColumnCount="0"-->
+                    <!--prefRowCount="0" wrapText="true" GridPane.hgrow="SOMETIMES" GridPane.rowIndex="2"-->
+                    <!--GridPane.vgrow="SOMETIMES"/>-->
                     <!--</children>-->
                 </GridPane>
                 <GridPane fx:id="rightSideGridPane" GridPane.columnIndex="5">
