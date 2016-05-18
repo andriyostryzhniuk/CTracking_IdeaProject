@@ -7,6 +7,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.layout.GridPane;
+import objects.tracking.WindowObjectsTrackingController;
 import stock.tracking.WindowStockTrackingController;
 
 import java.io.IOException;
@@ -19,6 +20,7 @@ public class MainWindowController {
 
     private WindowAttendanceController windowAttendanceController;
     private WindowStockTrackingController windowStockTrackingController;
+    private WindowObjectsTrackingController windowObjectsTrackingController;
 
     public void initEmployeesWorkTracking(ActionEvent actionEvent) throws IOException {
         if (windowAttendanceController == null) {
@@ -101,5 +103,20 @@ public class MainWindowController {
         }
         windowAttendanceController = null;
         windowStockTrackingController = null;
+        windowObjectsTrackingController = null;
+    }
+
+    public void initObjectsTracking(ActionEvent actionEvent) {
+        if (windowObjectsTrackingController == null) {
+            removeMainGridPaneChildren();
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/objects.tracking/WindowObjectsTracking.fxml"));
+            try {
+                mainGridPane.add(fxmlLoader.load(), 1, 1);
+                windowObjectsTrackingController = fxmlLoader.getController();
+            } catch (IOException exception) {
+                throw new UncheckedIOException(exception);
+            }
+            mainGridPane.add(initButtonContainer(initButtonClose()), 1, 2);
+        }
     }
 }

@@ -5,70 +5,81 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<ScrollPane fitToHeight="true" fitToWidth="true" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="main.MainWindowController">
-   <content>
-      <BorderPane>
-         <top>
-            <MenuBar fx:id="menuBar" BorderPane.alignment="TOP_LEFT">
-              <menus>
-                <Menu mnemonicParsing="false" text="File">
-                  <items>
-                    <MenuItem mnemonicParsing="false" text="Close" />
-                  </items>
-                </Menu>
-                <Menu mnemonicParsing="false" text="Edit">
-                  <items>
-                    <MenuItem mnemonicParsing="false" text="Delete" />
-                  </items>
-                </Menu>
-                <Menu mnemonicParsing="false" text="Help">
-                  <items>
-                    <MenuItem mnemonicParsing="false" text="About" />
-                  </items>
-                </Menu>
-              </menus>
-            </MenuBar>
-         </top>
-         <center>
-            <GridPane fx:id="mainGridPane" prefHeight="573.0" prefWidth="1298.0" BorderPane.alignment="CENTER">
-              <columnConstraints>
-                  <ColumnConstraints hgrow="SOMETIMES" minWidth="150.0" />
-                  <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="1200.0" />
-                  <ColumnConstraints hgrow="ALWAYS" maxWidth="30.0" minWidth="10.0" />
-                  <ColumnConstraints hgrow="SOMETIMES" maxWidth="190.0" minWidth="0.0" prefWidth="9.0" />
-              </columnConstraints>
-              <rowConstraints>
-                  <RowConstraints maxHeight="30.0" minHeight="10.0" vgrow="SOMETIMES" />
-                  <RowConstraints minHeight="557.0" vgrow="SOMETIMES" />
-                  <RowConstraints maxHeight="120.0" minHeight="70.0" vgrow="SOMETIMES" />
-              </rowConstraints>
-               <children>
-                  <GridPane prefHeight="517.0" prefWidth="216.0" GridPane.rowIndex="1">
+<ScrollPane fitToHeight="true" fitToWidth="true" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+            fx:controller="main.MainWindowController">
+    <content>
+        <BorderPane>
+            <top>
+                <MenuBar fx:id="menuBar" BorderPane.alignment="TOP_LEFT">
+                    <menus>
+                        <Menu mnemonicParsing="false" text="File">
+                            <items>
+                                <MenuItem mnemonicParsing="false" text="Close"/>
+                            </items>
+                        </Menu>
+                        <Menu mnemonicParsing="false" text="Edit">
+                            <items>
+                                <MenuItem mnemonicParsing="false" text="Delete"/>
+                            </items>
+                        </Menu>
+                        <Menu mnemonicParsing="false" text="Help">
+                            <items>
+                                <MenuItem mnemonicParsing="false" text="About"/>
+                            </items>
+                        </Menu>
+                    </menus>
+                </MenuBar>
+            </top>
+            <center>
+                <GridPane fx:id="mainGridPane" prefHeight="573.0" prefWidth="1298.0" BorderPane.alignment="CENTER">
                     <columnConstraints>
-                      <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="150.0"/>
+                        <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="1200.0"/>
+                        <ColumnConstraints hgrow="ALWAYS" maxWidth="30.0" minWidth="10.0"/>
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="190.0" minWidth="0.0" prefWidth="9.0"/>
                     </columnConstraints>
                     <rowConstraints>
-                      <RowConstraints maxHeight="168.0" minHeight="0.0" prefHeight="50.0" vgrow="SOMETIMES" />
-                        <RowConstraints maxHeight="168.0" minHeight="10.0" prefHeight="47.0" vgrow="SOMETIMES" />
-                      <RowConstraints maxHeight="437.0" minHeight="398.0" prefHeight="428.0" vgrow="SOMETIMES" />
-                      <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                        <RowConstraints maxHeight="30.0" minHeight="10.0" vgrow="SOMETIMES"/>
+                        <RowConstraints minHeight="557.0" vgrow="SOMETIMES"/>
+                        <RowConstraints maxHeight="120.0" minHeight="70.0" vgrow="SOMETIMES"/>
                     </rowConstraints>
-                     <children>
-                        <Button mnemonicParsing="false" onAction="#initEmployeesWorkTracking" prefHeight="25.0" prefWidth="130.0" text="Явка" >
-                           <GridPane.margin>
-                              <Insets left="10.0" />
-                           </GridPane.margin>
-                        </Button>
-                        <Button mnemonicParsing="false" onAction="#initStockTracking" prefHeight="25.0" prefWidth="130.0" GridPane.rowIndex="1" text="Мат база" >
-                             <GridPane.margin>
-                                 <Insets left="10.0" />
-                             </GridPane.margin>
-                         </Button>
-                     </children>
-                  </GridPane>
-               </children>
-            </GridPane>
-         </center>
-      </BorderPane>
-   </content>
+                    <children>
+                        <GridPane prefHeight="517.0" prefWidth="216.0" GridPane.rowIndex="1">
+                            <columnConstraints>
+                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                            </columnConstraints>
+                            <rowConstraints>
+                                <RowConstraints maxHeight="168.0" minHeight="50.0" prefHeight="50.0" vgrow="SOMETIMES"/>
+                                <RowConstraints maxHeight="168.0" minHeight="50.0" prefHeight="50.0" vgrow="SOMETIMES"/>
+                                <RowConstraints maxHeight="168.0" minHeight="50.0" prefHeight="47.0" vgrow="SOMETIMES"/>
+                                <RowConstraints maxHeight="378.0" minHeight="378.0" prefHeight="378.0"
+                                                vgrow="SOMETIMES"/>
+                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                            </rowConstraints>
+                            <children>
+                                <Button mnemonicParsing="false" onAction="#initEmployeesWorkTracking" prefHeight="25.0"
+                                        prefWidth="130.0" text="Явка">
+                                    <GridPane.margin>
+                                        <Insets left="10.0"/>
+                                    </GridPane.margin>
+                                </Button>
+                                <Button mnemonicParsing="false" onAction="#initStockTracking" prefHeight="25.0"
+                                        prefWidth="130.0" text="Мат база" GridPane.rowIndex="1">
+                                    <GridPane.margin>
+                                        <Insets left="10.0"/>
+                                    </GridPane.margin>
+                                </Button>
+                                <Button mnemonicParsing="false" onAction="#initObjectsTracking" prefHeight="25.0"
+                                        prefWidth="130.0" text="Об'єкти" GridPane.rowIndex="2">
+                                    <GridPane.margin>
+                                        <Insets left="10.0"/>
+                                    </GridPane.margin>
+                                </Button>
+                            </children>
+                        </GridPane>
+                    </children>
+                </GridPane>
+            </center>
+        </BorderPane>
+    </content>
 </ScrollPane>
