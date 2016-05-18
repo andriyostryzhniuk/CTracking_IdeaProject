@@ -3,15 +3,18 @@ package objects.tracking;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.ComboBox;
-import javafx.scene.control.ListCell;
-import javafx.scene.control.ListView;
-import javafx.scene.control.Tooltip;
+import javafx.scene.control.*;
+import javafx.scene.input.Dragboard;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.input.TransferMode;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import objects.tracking.dto.DTOObjects;
+import objects.tracking.dto.DTOResult;
 import overridden.elements.combo.box.AutoCompleteComboBoxListener;
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 import static objects.tracking.ODBC_PubsBD.selectObjects;
 
@@ -26,6 +29,9 @@ public class ObjectsListViewController {
     private ObservableList<DTOObjects> objectsListViewDataList = FXCollections.observableArrayList();
     private ObservableList<String> objectsNamesList = FXCollections.observableArrayList();
 
+    private List<DTOResult> resultList = new ArrayList<>();
+
+    private EmployeesListViewController employeesListViewController;
 
     @FXML
     public void initialize(){
@@ -43,6 +49,7 @@ public class ObjectsListViewController {
 
         objectsListViewDataList.forEach(item -> {
             item.initPaneContainer();
+            setTargetDragAndDrop(item.getPaneContainer());
             listView.getItems().add(item.getPaneContainer());
             objectsNamesList.add(item.getAddress());
         });
@@ -87,7 +94,7 @@ public class ObjectsListViewController {
         });
     }
 
-    public void searchInListView() {
+    private void searchInListView() {
         Object comboBoxListenerValue = comboBoxListener.getValue();
         Integer objectID = null;
         for (DTOObjects item : objectsListViewDataList) {
@@ -106,5 +113,56 @@ public class ObjectsListViewController {
                 i++;
             }
         }
+    }
+
+    private void setTargetDragAndDrop(Pane pane) {
+        pane.setOnDragOver(event -> {
+            if (event.getGestureSource() != pane &&
+                    event.getDragboard().hasString()) {
+                event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
+            }
+
+            event.consume();
+        });
+
+        pane.setOnDragEntered(event -> {
+            if (event.getGestureSource() != pane &&
+                    event.getDragboard().hasString()) {
+                pane.setStyle("-fx-background-color: rgba(105, 105, 105, .8)");
+            }
+
+            event.consume();
+        });
+
+        pane.setOnDragExited(event -> {
+            pane.setStyle("-fx-background-color: rgba(105, 105, 105, .5)");
+            event.consume();
+        });
+
+        pane.setOnDragDropped(event -> {
+            Dragboard db = event.getDragboard();
+            boolean success = false;
+            if (db.hasString()) {
+                Integer objectId = Integer.parseInt(pane.getId());
+                Integer employeeId = Integer.parseInt(db.getString());
+
+                resultList.add(new DTOResult(objectId, employeeId, new Date(), null));
+
+                success = true;
+            }
+
+            employeesListViewController.setDisablePane(db.getString());
+
+            event.setDropCompleted(success);
+            event.consume();
+        });
+    }
+
+    public void setResultList(List<DTOResult> resultList) {
+        this.resultList = resultList;
+    }
+
+    public void setEmployeesListViewController(EmployeesListViewController employeesListViewController) {
+        this.employeesListViewController = employeesListViewController;
     }
 }

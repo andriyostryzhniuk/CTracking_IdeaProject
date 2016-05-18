@@ -9,8 +9,10 @@ import javafx.scene.control.TextArea;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
-
+import objects.tracking.dto.DTOResult;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import static objects.tracking.ODBC_PubsBD.selectAllEmployees;
 import static objects.tracking.ODBC_PubsBD.selectFreeEmployees;
@@ -26,6 +28,8 @@ public class WindowObjectsTrackingController {
 
     private EmployeesListViewController employeesListViewController;
     private ObjectsListViewController objectsListViewController;
+
+    private List<DTOResult> resultList = new ArrayList<>();
 
     @FXML
     public void initialize(){
@@ -45,6 +49,10 @@ public class WindowObjectsTrackingController {
         } catch (IOException exception) {
             throw new RuntimeException(exception);
         }
+
+        employeesListViewController.setResultList(resultList);
+        objectsListViewController.setResultList(resultList);
+        objectsListViewController.setEmployeesListViewController(employeesListViewController);
     }
 
     private void initContentTypeChoiceBox(){

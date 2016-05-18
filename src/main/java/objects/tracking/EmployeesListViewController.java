@@ -4,12 +4,17 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
+import javafx.scene.input.ClipboardContent;
+import javafx.scene.input.Dragboard;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.input.TransferMode;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import objects.tracking.dto.DTOEmployees;
+import objects.tracking.dto.DTOResult;
 import overridden.elements.combo.box.AutoCompleteComboBoxListener;
-
+import stock.tracking.StockListViewController;
+import java.util.ArrayList;
 import java.util.List;
 
 public class EmployeesListViewController {
@@ -23,6 +28,7 @@ public class EmployeesListViewController {
     private ObservableList<DTOEmployees> employeesListViewDataList = FXCollections.observableArrayList();
     private ObservableList<String> employeesNamesList = FXCollections.observableArrayList();
 
+    private List<DTOResult> resultList = new ArrayList<>();
 
     @FXML
     public void initialize(){
@@ -39,6 +45,8 @@ public class EmployeesListViewController {
 
         employeesListViewDataList.forEach(item -> {
             item.initPaneContainer();
+            setSourceDragAndDrop(item.getPaneContainer());
+            checkDisablePane(item.getId(), item.getPaneContainer());
             listView.getItems().add(item.getPaneContainer());
             employeesNamesList.add(item.getFullName());
         });
@@ -103,4 +111,41 @@ public class EmployeesListViewController {
             }
         }
     }
+
+    private void setSourceDragAndDrop(Pane pane) {
+        pane.setOnDragDetected(event -> {
+            Dragboard db = pane.startDragAndDrop(TransferMode.ANY);
+            ClipboardContent content = new ClipboardContent();
+            content.putString(pane.getId());
+            db.setContent(content);
+            event.consume();
+        });
+
+        pane.setOnDragDone(event -> {
+            event.consume();
+        });
+    }
+
+    private void checkDisablePane(Integer employeeId, Pane pane) {
+        resultList.forEach(item -> {
+            if (employeeId == item.getEmployeeId()) {
+                pane.setDisable(true);
+                return;
+            }
+        });
+    }
+
+    public void setDisablePane(String paneId){
+        listView.getItems().forEach(item -> {
+            if (item.getId().equals(paneId)) {
+                item.setDisable(true);
+                return;
+            }
+        });
+    }
+
+    public void setResultList(List<DTOResult> resultList) {
+        this.resultList = resultList;
+    }
+
 }

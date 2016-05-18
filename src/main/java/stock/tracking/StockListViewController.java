@@ -129,7 +129,7 @@ public class StockListViewController {
         new AutoCompleteComboBoxListener<>(comboBoxSearch, comboBoxListener);
     }
 
-    public void setSourceDragAndDrop(Pane pane) {
+    private void setSourceDragAndDrop(Pane pane) {
         pane.setOnDragDetected(event -> {
 //                System.out.println("source.setOnDragDetected");
     /* drag was detected, start a drag-and-drop gesture*/
