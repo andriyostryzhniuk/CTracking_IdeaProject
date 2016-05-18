@@ -3,16 +3,19 @@ package objects.tracking;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
-import javafx.scene.control.*;
+import javafx.scene.control.ComboBox;
+import javafx.scene.control.ListCell;
+import javafx.scene.control.ListView;
+import javafx.scene.control.Tooltip;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
-import objects.tracking.dto.DTOEmployees;
+import objects.tracking.dto.DTOObjects;
 import overridden.elements.combo.box.AutoCompleteComboBoxListener;
 
-import java.util.List;
+import static objects.tracking.ODBC_PubsBD.selectObjects;
 
-public class EmployeesListViewController {
+public class ObjectsListViewController {
 
     public GridPane rootGridPane;
     public ListView<Pane> listView;
@@ -20,8 +23,8 @@ public class EmployeesListViewController {
     private ComboBox comboBoxSearch = new ComboBox();
     private ComboBox comboBoxListener = new ComboBox();
 
-    private ObservableList<DTOEmployees> employeesListViewDataList = FXCollections.observableArrayList();
-    private ObservableList<String> employeesNamesList = FXCollections.observableArrayList();
+    private ObservableList<DTOObjects> objectsListViewDataList = FXCollections.observableArrayList();
+    private ObservableList<String> objectsNamesList = FXCollections.observableArrayList();
 
 
     @FXML
@@ -29,29 +32,30 @@ public class EmployeesListViewController {
         initComboBoxSearch();
         rootGridPane.add(comboBoxSearch, 0, 0);
         comboBoxSearch.setMaxWidth(Double.MAX_VALUE);
+        initList();
     }
 
-    public void initList(List<DTOEmployees> dtoEmployees){
-        employeesListViewDataList.clear();
+    public void initList(){
+        objectsListViewDataList.clear();
         listView.getItems().clear();
-        employeesNamesList.clear();
-        employeesListViewDataList.addAll(dtoEmployees);
+        objectsNamesList.clear();
+        objectsListViewDataList.addAll(selectObjects());
 
-        employeesListViewDataList.forEach(item -> {
+        objectsListViewDataList.forEach(item -> {
             item.initPaneContainer();
             listView.getItems().add(item.getPaneContainer());
-            employeesNamesList.add(item.getFullName());
+            objectsNamesList.add(item.getAddress());
         });
 
         new AutoCompleteComboBoxListener<>(comboBoxSearch, comboBoxListener);
     }
 
-    private void initComboBoxSearch(){
+    private void initComboBoxSearch() {
         comboBoxSearch.getStylesheets().add(getClass().getResource("/styles/ComboBoxSearchStyle.css").toExternalForm());
         comboBoxSearch.setTooltip(new Tooltip("Пошук"));
         comboBoxSearch.setPromptText("Пошук");
 
-        comboBoxSearch.setItems(employeesNamesList);
+        comboBoxSearch.setItems(objectsNamesList);
 
         new AutoCompleteComboBoxListener<>(comboBoxSearch, comboBoxListener);
 
@@ -85,16 +89,16 @@ public class EmployeesListViewController {
 
     public void searchInListView() {
         Object comboBoxListenerValue = comboBoxListener.getValue();
-        Integer employeeID = null;
-        for (DTOEmployees item : employeesListViewDataList) {
+        Integer objectID = null;
+        for (DTOObjects item : objectsListViewDataList) {
             if (item.getString().equals(comboBoxListenerValue)) {
-                employeeID = item.getId();
+                objectID = item.getId();
             }
         }
-        if (employeeID != null) {
+        if (objectID != null) {
             int i = 0;
             for (Pane pane : listView.getItems()) {
-                if (Integer.parseInt(pane.getId()) == employeeID) {
+                if (Integer.parseInt(pane.getId()) == objectID) {
                     listView.getSelectionModel().select(i);
                     listView.getFocusModel().focus(i);
                     listView.scrollTo(i);

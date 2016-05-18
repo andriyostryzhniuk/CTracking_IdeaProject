@@ -215,7 +215,7 @@ public class StockListViewController {
     public ComboBox initStockComboBoxSearch() {
         ComboBox comboBox = new ComboBox();
 
-        comboBox.getStylesheets().add(getClass().getResource("/stock.tracking/ComboBoxStyle.css").toExternalForm());
+        comboBox.getStylesheets().add(getClass().getResource("/styles/ComboBoxSearchStyle.css").toExternalForm());
         comboBox.setTooltip(new Tooltip("Пошук"));
         comboBox.setPromptText("Пошук");
 

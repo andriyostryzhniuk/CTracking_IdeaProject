@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<GridPane fx:id="rootGridPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+          fx:controller="objects.tracking.ObjectsListViewController">
+    <columnConstraints>
+        <ColumnConstraints hgrow="SOMETIMES"/>
+    </columnConstraints>
+    <rowConstraints>
+        <RowConstraints maxHeight="35.0" minHeight="35.0" prefHeight="35.0" valignment="TOP" vgrow="SOMETIMES"/>
+        <RowConstraints maxHeight="24.0" minHeight="24.0" prefHeight="24.0" vgrow="SOMETIMES"/>
+        <RowConstraints vgrow="SOMETIMES"/>
+    </rowConstraints>
+    <children>
+        <ListView fx:id="listView" fixedCellSize="50.0" maxWidth="300.0" minWidth="300.0"
+                  stylesheets="@../styles/ListViewStyle.css" GridPane.rowIndex="2"/>
+        <Pane prefHeight="200.0" prefWidth="200.0" style="-fx-background-color: rgba(65, 105, 225, .5);"
+              GridPane.rowIndex="1">
+            <children>
+                <Label layoutX="117.0" layoutY="4.0" text="Об'єкти"/>
+            </children>
+        </Pane>
+    </children>
+</GridPane>

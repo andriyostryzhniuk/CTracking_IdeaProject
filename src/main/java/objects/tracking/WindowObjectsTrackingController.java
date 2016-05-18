@@ -25,6 +25,7 @@ public class WindowObjectsTrackingController {
 //    public TextArea notesTextArea;
 
     private EmployeesListViewController employeesListViewController;
+    private ObjectsListViewController objectsListViewController;
 
     @FXML
     public void initialize(){
@@ -36,6 +37,14 @@ public class WindowObjectsTrackingController {
             throw new RuntimeException(exception);
         }
         initContentTypeChoiceBox();
+
+        fxmlLoader = new FXMLLoader(getClass().getResource("/objects.tracking/ObjectsListView.fxml"));
+        try {
+            gridPane.add(fxmlLoader.load(), 3, 0);
+            objectsListViewController = fxmlLoader.getController();
+        } catch (IOException exception) {
+            throw new RuntimeException(exception);
+        }
     }
 
     private void initContentTypeChoiceBox(){

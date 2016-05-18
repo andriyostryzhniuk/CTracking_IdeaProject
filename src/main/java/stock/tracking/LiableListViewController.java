@@ -293,7 +293,7 @@ public class LiableListViewController {
     }
 
     public void initLiableComboBoxSearch() {
-        comboBoxSearch.getStylesheets().add(getClass().getResource("/stock.tracking/ComboBoxStyle.css").toExternalForm());
+        comboBoxSearch.getStylesheets().add(getClass().getResource("/styles/ComboBoxSearchStyle.css").toExternalForm());
         comboBoxSearch.setTooltip(new Tooltip("Пошук"));
         comboBoxSearch.setPromptText("Пошук");
 
