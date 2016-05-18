@@ -50,6 +50,20 @@ public class MainWindowController {
         }
     }
 
+    public void initObjectsTracking(ActionEvent actionEvent) {
+        if (windowObjectsTrackingController == null) {
+            removeMainGridPaneChildren();
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/objects.tracking/WindowObjectsTracking.fxml"));
+            try {
+                mainGridPane.add(fxmlLoader.load(), 1, 1);
+                windowObjectsTrackingController = fxmlLoader.getController();
+            } catch (IOException exception) {
+                throw new UncheckedIOException(exception);
+            }
+            mainGridPane.add(initButtonContainer(initButtonObjectsTrackingSave(), initButtonClose()), 1, 2);
+        }
+    }
+
     public Button initButton(String text){
         Button button = new Button(text);
         button.setPrefHeight(25.0);
@@ -81,6 +95,14 @@ public class MainWindowController {
         return buttonSave;
     }
 
+    public Button initButtonObjectsTrackingSave() {
+        Button buttonSave = initButton("Зберегти");
+        buttonSave.setOnAction((ActionEvent event) -> {
+            windowObjectsTrackingController.saveToDB();
+        });
+        return buttonSave;
+    }
+
     public GridPane initButtonContainer(Button... buttons) {
         GridPane buttonContainer = new GridPane();
         buttonContainer.setAlignment(Pos.TOP_RIGHT);
@@ -106,17 +128,4 @@ public class MainWindowController {
         windowObjectsTrackingController = null;
     }
 
-    public void initObjectsTracking(ActionEvent actionEvent) {
-        if (windowObjectsTrackingController == null) {
-            removeMainGridPaneChildren();
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/objects.tracking/WindowObjectsTracking.fxml"));
-            try {
-                mainGridPane.add(fxmlLoader.load(), 1, 1);
-                windowObjectsTrackingController = fxmlLoader.getController();
-            } catch (IOException exception) {
-                throw new UncheckedIOException(exception);
-            }
-            mainGridPane.add(initButtonContainer(initButtonClose()), 1, 2);
-        }
-    }
 }

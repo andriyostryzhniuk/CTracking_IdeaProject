@@ -2,13 +2,17 @@ package objects.tracking;
 
 import objects.tracking.dto.DTOEmployees;
 import objects.tracking.dto.DTOObjects;
+import objects.tracking.dto.DTOResult;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.SqlParameterSourceUtils;
+
 import java.util.List;
 
 import static main.DB_Connector.getJdbcTemplate;
+import static main.DB_Connector.getNamedParameterJdbcTemplate;
 
 public class ODBC_PubsBD {
 
@@ -60,6 +64,13 @@ public class ODBC_PubsBD {
                 "(finishDate >= curdate() or " +
                 "finishDate is null) " +
                 "order by address asc", BeanPropertyRowMapper.newInstance(DTOObjects.class));
+    }
+
+    public static void insertIntoObjectEmployees(List<DTOResult> dtoResultList){
+        getNamedParameterJdbcTemplate().batchUpdate("INSERT INTO object_employees " +
+                "(id, object_id, employees_id, startDate, finishDate) " +
+                "VALUES (:id, :objectId, :employeeId, :startDate, :finishDate)",
+                SqlParameterSourceUtils.createBatch(dtoResultList.toArray()));
     }
 
 }

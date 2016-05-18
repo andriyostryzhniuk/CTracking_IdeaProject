@@ -17,6 +17,9 @@ import stock.tracking.StockListViewController;
 import java.util.ArrayList;
 import java.util.List;
 
+import static objects.tracking.ODBC_PubsBD.selectAllEmployees;
+import static objects.tracking.ODBC_PubsBD.selectFreeEmployees;
+
 public class EmployeesListViewController {
 
     public GridPane rootGridPane;
@@ -29,6 +32,7 @@ public class EmployeesListViewController {
     private ObservableList<String> employeesNamesList = FXCollections.observableArrayList();
 
     private List<DTOResult> resultList = new ArrayList<>();
+    private boolean isAllEmployees;
 
     @FXML
     public void initialize(){
@@ -37,19 +41,27 @@ public class EmployeesListViewController {
         comboBoxSearch.setMaxWidth(Double.MAX_VALUE);
     }
 
-    public void initList(List<DTOEmployees> dtoEmployees){
+    public void initList(){
         employeesListViewDataList.clear();
         listView.getItems().clear();
         employeesNamesList.clear();
-        employeesListViewDataList.addAll(dtoEmployees);
+
+        if (isAllEmployees == false) {
+            employeesListViewDataList.addAll(selectFreeEmployees());
+        } else {
+            employeesListViewDataList.addAll(selectAllEmployees());
+        }
 
         employeesListViewDataList.forEach(item -> {
             item.initPaneContainer();
             setSourceDragAndDrop(item.getPaneContainer());
-            checkDisablePane(item.getId(), item.getPaneContainer());
             listView.getItems().add(item.getPaneContainer());
             employeesNamesList.add(item.getFullName());
         });
+
+        if (isAllEmployees == false) {
+            checkDisablePane();
+        }
 
         new AutoCompleteComboBoxListener<>(comboBoxSearch, comboBoxListener);
     }
@@ -126,26 +138,33 @@ public class EmployeesListViewController {
         });
     }
 
-    private void checkDisablePane(Integer employeeId, Pane pane) {
-        resultList.forEach(item -> {
-            if (employeeId == item.getEmployeeId()) {
-                pane.setDisable(true);
-                return;
-            }
+    private void checkDisablePane() {
+        listView.getItems().forEach(pane -> {
+            resultList.forEach(item -> {
+                if (Integer.parseInt(pane.getId()) == item.getEmployeeId()) {
+                    pane.setDisable(true);
+                    return;
+                }
+            });
         });
     }
 
     public void setDisablePane(String paneId){
-        listView.getItems().forEach(item -> {
-            if (item.getId().equals(paneId)) {
-                item.setDisable(true);
-                return;
-            }
-        });
+        if (isAllEmployees == false) {
+            listView.getItems().forEach(item -> {
+                if (item.getId().equals(paneId)) {
+                    item.setDisable(true);
+                    return;
+                }
+            });
+        }
     }
 
     public void setResultList(List<DTOResult> resultList) {
         this.resultList = resultList;
     }
 
+    public void setAllEmployees(boolean allEmployees) {
+        isAllEmployees = allEmployees;
+    }
 }

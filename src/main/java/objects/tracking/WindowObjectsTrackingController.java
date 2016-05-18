@@ -14,6 +14,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import static objects.tracking.ODBC_PubsBD.insertIntoObjectEmployees;
 import static objects.tracking.ODBC_PubsBD.selectAllEmployees;
 import static objects.tracking.ODBC_PubsBD.selectFreeEmployees;
 
@@ -61,12 +62,20 @@ public class WindowObjectsTrackingController {
 
         contentTypeChoiceBox.valueProperty().addListener((ChangeListener<String>) (observableValue, oldValue, newValue) -> {
             if (newValue.equals(contentTypeChoiceBox.getItems().get(0))) {
-                employeesListViewController.initList(selectFreeEmployees());
+                employeesListViewController.setAllEmployees(false);
+                employeesListViewController.initList();
             } else {
-                employeesListViewController.initList(selectAllEmployees());
+                employeesListViewController.setAllEmployees(true);
+                employeesListViewController.initList();
             }
         });
 
         contentTypeChoiceBox.setValue(contentTypeChoiceBox.getItems().get(0));
+    }
+
+    public void saveToDB() {
+        insertIntoObjectEmployees(resultList);
+        resultList.clear();
+        employeesListViewController.initList();
     }
 }

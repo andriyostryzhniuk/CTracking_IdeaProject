@@ -4,6 +4,7 @@ import java.util.Date;
 
 public class DTOResult {
 
+    private Integer id = null;
     private Integer objectId;
     private Integer employeeId;
     private Date startDate;
@@ -49,5 +50,13 @@ public class DTOResult {
 
     public void setFinishDate(Date finishDate) {
         this.finishDate = finishDate;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 }
