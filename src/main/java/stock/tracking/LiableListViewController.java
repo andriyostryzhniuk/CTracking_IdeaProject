@@ -48,7 +48,7 @@ public class LiableListViewController {
 
     @FXML
     public void initialize() {
-        listView.getStylesheets().add(getClass().getResource("/stock.tracking/ListViewStyle.css").toExternalForm());
+        listView.getStylesheets().add(getClass().getResource("/styles/ListViewStyle.css").toExternalForm());
         levelUpButton = initLevelUpButton();
 
         initLiableComboBoxSearch();

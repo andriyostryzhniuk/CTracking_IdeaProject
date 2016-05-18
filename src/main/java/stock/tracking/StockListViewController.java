@@ -5,7 +5,6 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
@@ -47,7 +46,7 @@ public class StockListViewController {
 
     @FXML
     public void initialize() {
-        listView.getStylesheets().add(getClass().getResource("/stock.tracking/ListViewStyle.css").toExternalForm());
+        listView.getStylesheets().add(getClass().getResource("/styles/ListViewStyle.css").toExternalForm());
 
         comboBoxSearch = initStockComboBoxSearch();
         rootGridPane.add(comboBoxSearch, 0, 0);
