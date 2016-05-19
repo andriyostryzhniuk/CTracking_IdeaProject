@@ -5,18 +5,15 @@ import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.TextArea;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
-import objects.tracking.dto.DTOResult;
+import objects.tracking.dto.DTOObjectEmployees;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
 import static objects.tracking.ODBC_PubsBD.insertIntoObjectEmployees;
-import static objects.tracking.ODBC_PubsBD.selectAllEmployees;
-import static objects.tracking.ODBC_PubsBD.selectFreeEmployees;
 
 public class WindowObjectsTrackingController {
 
@@ -30,7 +27,7 @@ public class WindowObjectsTrackingController {
     private EmployeesListViewController employeesListViewController;
     private ObjectsListViewController objectsListViewController;
 
-    private List<DTOResult> resultList = new ArrayList<>();
+    private List<DTOObjectEmployees> resultList = new ArrayList<>();
 
     @FXML
     public void initialize(){

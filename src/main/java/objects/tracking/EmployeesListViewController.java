@@ -11,9 +11,9 @@ import javafx.scene.input.TransferMode;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import objects.tracking.dto.DTOEmployees;
-import objects.tracking.dto.DTOResult;
+import objects.tracking.dto.DTOObjectEmployees;
 import overridden.elements.combo.box.AutoCompleteComboBoxListener;
-import stock.tracking.StockListViewController;
+
 import java.util.ArrayList;
 import java.util.List;
 
@@ -31,7 +31,7 @@ public class EmployeesListViewController {
     private ObservableList<DTOEmployees> employeesListViewDataList = FXCollections.observableArrayList();
     private ObservableList<String> employeesNamesList = FXCollections.observableArrayList();
 
-    private List<DTOResult> resultList = new ArrayList<>();
+    private List<DTOObjectEmployees> resultList = new ArrayList<>();
     private boolean isAllEmployees;
 
     @FXML
@@ -160,7 +160,7 @@ public class EmployeesListViewController {
         }
     }
 
-    public void setResultList(List<DTOResult> resultList) {
+    public void setResultList(List<DTOObjectEmployees> resultList) {
         this.resultList = resultList;
     }
 

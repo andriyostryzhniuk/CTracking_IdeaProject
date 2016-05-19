@@ -2,7 +2,7 @@ package objects.tracking;
 
 import objects.tracking.dto.DTOEmployees;
 import objects.tracking.dto.DTOObjects;
-import objects.tracking.dto.DTOResult;
+import objects.tracking.dto.DTOObjectEmployees;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -58,19 +58,34 @@ public class ODBC_PubsBD {
     }
 
     public static List<DTOObjects> selectObjects() {
-        return getJdbcTemplate().query("select id, address " +
+        List<DTOObjects> dtoObjectsList = getJdbcTemplate().query("select id, address " +
                 "from object " +
                 "where startDate <= curdate() and " +
                 "(finishDate >= curdate() or " +
                 "finishDate is null) " +
                 "order by address asc", BeanPropertyRowMapper.newInstance(DTOObjects.class));
+
+        dtoObjectsList.forEach(item -> {
+            item.setObjectEmployeesList(selectObjectEmployeesList(item.getId()));
+        });
+
+        return dtoObjectsList;
     }
 
-    public static void insertIntoObjectEmployees(List<DTOResult> dtoResultList){
+    public static List<DTOObjectEmployees> selectObjectEmployeesList(Integer objectId){
+        return getJdbcTemplate().query("select id, object_id as objectId, employees_id as employeeId, " +
+                "startDate, finishDate " +
+                "from object_employees " +
+                "where object_id = ? " +
+                "order by startDate desc",
+                BeanPropertyRowMapper.newInstance(DTOObjectEmployees.class), objectId);
+    }
+
+    public static void insertIntoObjectEmployees(List<DTOObjectEmployees> resultList){
         getNamedParameterJdbcTemplate().batchUpdate("INSERT INTO object_employees " +
                 "(id, object_id, employees_id, startDate, finishDate) " +
                 "VALUES (:id, :objectId, :employeeId, :startDate, :finishDate)",
-                SqlParameterSourceUtils.createBatch(dtoResultList.toArray()));
+                SqlParameterSourceUtils.createBatch(resultList.toArray()));
     }
 
 }

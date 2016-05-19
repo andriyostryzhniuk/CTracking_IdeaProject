@@ -10,7 +10,7 @@ import javafx.scene.input.TransferMode;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import objects.tracking.dto.DTOObjects;
-import objects.tracking.dto.DTOResult;
+import objects.tracking.dto.DTOObjectEmployees;
 import overridden.elements.combo.box.AutoCompleteComboBoxListener;
 import java.util.ArrayList;
 import java.util.Date;
@@ -29,7 +29,7 @@ public class ObjectsListViewController {
     private ObservableList<DTOObjects> objectsListViewDataList = FXCollections.observableArrayList();
     private ObservableList<String> objectsNamesList = FXCollections.observableArrayList();
 
-    private List<DTOResult> resultList = new ArrayList<>();
+    private List<DTOObjectEmployees> resultList = new ArrayList<>();
 
     private EmployeesListViewController employeesListViewController;
 
@@ -146,7 +146,7 @@ public class ObjectsListViewController {
                 Integer objectId = Integer.parseInt(pane.getId());
                 Integer employeeId = Integer.parseInt(db.getString());
 
-                resultList.add(new DTOResult(objectId, employeeId, new Date(), null));
+                resultList.add(new DTOObjectEmployees(null, objectId, employeeId, new Date(), null));
 
                 success = true;
             }
@@ -158,7 +158,7 @@ public class ObjectsListViewController {
         });
     }
 
-    public void setResultList(List<DTOResult> resultList) {
+    public void setResultList(List<DTOObjectEmployees> resultList) {
         this.resultList = resultList;
     }
 

@@ -2,22 +2,31 @@ package objects.tracking.dto;
 
 import java.util.Date;
 
-public class DTOResult {
+public class DTOObjectEmployees {
 
-    private Integer id = null;
+    private Integer id;
     private Integer objectId;
     private Integer employeeId;
     private Date startDate;
     private Date finishDate;
 
-    public DTOResult() {
+    public DTOObjectEmployees() {
     }
 
-    public DTOResult(Integer objectId, Integer employeeId, Date startDate, Date finishDate) {
+    public DTOObjectEmployees(Integer id, Integer objectId, Integer employeeId, Date startDate, Date finishDate) {
+        this.id = id;
         this.objectId = objectId;
         this.employeeId = employeeId;
         this.startDate = startDate;
         this.finishDate = finishDate;
+    }
+
+    public Integer getId() {
+        return id;
+    }
+
+    public void setId(Integer id) {
+        this.id = id;
     }
 
     public Integer getObjectId() {
@@ -52,11 +61,4 @@ public class DTOResult {
         this.finishDate = finishDate;
     }
 
-    public Integer getId() {
-        return id;
-    }
-
-    public void setId(Integer id) {
-        this.id = id;
-    }
 }
