@@ -1,6 +1,8 @@
 package objects.tracking;
 
 
+import employees.attendance.table.CustomTableColumn;
+import employees.attendance.table.TableViewHolder;
 import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
@@ -8,6 +10,7 @@ import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Tooltip;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.StackPane;
 import objects.tracking.dto.DTOObjectEmployees;
 import java.io.IOException;
 import java.util.ArrayList;
@@ -15,19 +18,25 @@ import java.util.List;
 
 import static objects.tracking.ODBC_PubsBD.insertIntoObjectEmployees;
 
-public class WindowObjectsTrackingController {
+public class WindowObjectsTrackingController<T extends DTOObjectEmployees> {
 
     public BorderPane rootBorderPane;
     public GridPane gridPane;
     public GridPane leftSideGridPane;
     public GridPane rightSideGridPane;
     public ChoiceBox contentTypeChoiceBox;
+    public StackPane stackPane;
 //    public TextArea notesTextArea;
 
     private EmployeesListViewController employeesListViewController;
     private ObjectsListViewController objectsListViewController;
 
     private List<DTOObjectEmployees> resultList = new ArrayList<>();
+
+    private TableViewHolder<T> tableView = new TableViewHolder<>();
+    public CustomTableColumn<T, String> employeeNameCol = new CustomTableColumn<>("Працівники");
+    public CustomTableColumn<T, String> startDateNameCol = new CustomTableColumn<>("Початок");
+    public CustomTableColumn<T, String> finishDateNameCol = new CustomTableColumn<>("Закінчення");
 
     @FXML
     public void initialize(){
@@ -75,4 +84,5 @@ public class WindowObjectsTrackingController {
         resultList.clear();
         employeesListViewController.initList();
     }
+
 }

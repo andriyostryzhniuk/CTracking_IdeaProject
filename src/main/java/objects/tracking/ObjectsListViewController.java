@@ -52,6 +52,12 @@ public class ObjectsListViewController {
             setTargetDragAndDrop(item.getPaneContainer());
             listView.getItems().add(item.getPaneContainer());
             objectsNamesList.add(item.getAddress());
+
+            item.getObjectEmployeesList().forEach(list -> {
+                System.out.println(list.getFullName());
+            });
+            System.out.println("--------------");
+
         });
 
         new AutoCompleteComboBoxListener<>(comboBoxSearch, comboBoxListener);

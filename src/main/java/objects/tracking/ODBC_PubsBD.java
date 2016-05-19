@@ -73,10 +73,12 @@ public class ODBC_PubsBD {
     }
 
     public static List<DTOObjectEmployees> selectObjectEmployeesList(Integer objectId){
-        return getJdbcTemplate().query("select id, object_id as objectId, employees_id as employeeId, " +
-                "startDate, finishDate " +
-                "from object_employees " +
-                "where object_id = ? " +
+        return getJdbcTemplate().query("select object_employees.id, object_id as objectId, " +
+                "   employees_id as employeeId, startDate, finishDate, concat( employees.surname, ' ', " +
+                "   left (employees.name, 1), '. ', left (employees.middleName, 1), '.' ) as fullName " +
+                "from object_employees, employees " +
+                "where object_id = ? and " +
+                "object_employees.employees_id = employees.id " +
                 "order by startDate desc",
                 BeanPropertyRowMapper.newInstance(DTOObjectEmployees.class), objectId);
     }

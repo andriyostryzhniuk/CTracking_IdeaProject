@@ -9,6 +9,7 @@ public class DTOObjectEmployees {
     private Integer employeeId;
     private Date startDate;
     private Date finishDate;
+    private String fullName;
 
     public DTOObjectEmployees() {
     }
@@ -19,6 +20,16 @@ public class DTOObjectEmployees {
         this.employeeId = employeeId;
         this.startDate = startDate;
         this.finishDate = finishDate;
+    }
+
+    public DTOObjectEmployees(Integer id, Integer objectId, Integer employeeId, Date startDate, Date finishDate,
+                              String fullName) {
+        this.id = id;
+        this.objectId = objectId;
+        this.employeeId = employeeId;
+        this.startDate = startDate;
+        this.finishDate = finishDate;
+        this.fullName = fullName;
     }
 
     public Integer getId() {
@@ -61,4 +72,11 @@ public class DTOObjectEmployees {
         this.finishDate = finishDate;
     }
 
+    public String getFullName() {
+        return fullName;
+    }
+
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
+    }
 }
