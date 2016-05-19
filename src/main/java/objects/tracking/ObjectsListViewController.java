@@ -31,7 +31,9 @@ public class ObjectsListViewController {
 
     private List<DTOObjectEmployees> resultList = new ArrayList<>();
 
+    private WindowObjectsTrackingController windowObjectsTrackingController;
     private EmployeesListViewController employeesListViewController;
+    private Integer selectedObjectId;
 
     @FXML
     public void initialize(){
@@ -50,14 +52,12 @@ public class ObjectsListViewController {
         objectsListViewDataList.forEach(item -> {
             item.initPaneContainer();
             setTargetDragAndDrop(item.getPaneContainer());
+            item.getPaneContainer().setOnMouseClicked(event -> {
+                selectedObjectId = item.getId();
+                windowObjectsTrackingController.initTableView(item.getObjectEmployeesList());
+            });
             listView.getItems().add(item.getPaneContainer());
             objectsNamesList.add(item.getAddress());
-
-            item.getObjectEmployeesList().forEach(list -> {
-                System.out.println(list.getFullName());
-            });
-            System.out.println("--------------");
-
         });
 
         new AutoCompleteComboBoxListener<>(comboBoxSearch, comboBoxListener);
@@ -152,7 +152,10 @@ public class ObjectsListViewController {
                 Integer objectId = Integer.parseInt(pane.getId());
                 Integer employeeId = Integer.parseInt(db.getString());
 
-                resultList.add(new DTOObjectEmployees(null, objectId, employeeId, new Date(), null));
+                DTOObjectEmployees newRecord = new DTOObjectEmployees(null, objectId, employeeId, new Date(), null);
+                resultList.add(newRecord);
+
+                setRecordToDataList(newRecord, objectId);
 
                 success = true;
             }
@@ -164,11 +167,26 @@ public class ObjectsListViewController {
         });
     }
 
+    private void setRecordToDataList(DTOObjectEmployees newRecord, Integer objectId) {
+        objectsListViewDataList.forEach(item -> {
+            if (item.getId() == objectId) {
+                item.getObjectEmployeesList().add(0, newRecord);
+                if (objectId == selectedObjectId) {
+                    windowObjectsTrackingController.initTableView(item.getObjectEmployeesList());
+                }
+            }
+        });
+    }
+
     public void setResultList(List<DTOObjectEmployees> resultList) {
         this.resultList = resultList;
     }
 
     public void setEmployeesListViewController(EmployeesListViewController employeesListViewController) {
         this.employeesListViewController = employeesListViewController;
+    }
+
+    public void setWindowObjectsTrackingController(WindowObjectsTrackingController windowObjectsTrackingController) {
+        this.windowObjectsTrackingController = windowObjectsTrackingController;
     }
 }

@@ -90,4 +90,12 @@ public class ODBC_PubsBD {
                 SqlParameterSourceUtils.createBatch(resultList.toArray()));
     }
 
+    public static String selectEmployeesFullName(Integer employeeId) {
+        List<String> stringList = getJdbcTemplate().query("select concat(surname, ' ', left (name, 1), '. ', " +
+                "left (middleName, 1), '.' ) as fullName " +
+                "from employees " +
+                "where id = ?", (RowMapper) (resultSet, i) -> resultSet.getString(1), employeeId);
+        return stringList.get(0);
+    }
+
 }

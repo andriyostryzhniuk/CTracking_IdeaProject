@@ -15,8 +15,7 @@
                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="70.0" minWidth="50.0" prefWidth="50.0"/>
                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="300.0" minWidth="300.0"/>
                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="20.0" minWidth="20.0" prefWidth="20.0"/>
-                <ColumnConstraints hgrow="SOMETIMES" minWidth="250.0"/>
-                <ColumnConstraints hgrow="SOMETIMES"/>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="250.0" prefWidth="250.0"/>
             </columnConstraints>
             <rowConstraints>
                 <RowConstraints vgrow="SOMETIMES"/>
@@ -57,8 +56,7 @@
                     <!--GridPane.vgrow="SOMETIMES"/>-->
                     <!--</children>-->
                 </GridPane>
-                <StackPane fx:id="stackPane" GridPane.columnIndex="5" GridPane.hgrow="SOMETIMES"
-                           GridPane.vgrow="SOMETIMES"/>
+                <StackPane fx:id="stackPane" GridPane.columnIndex="5"/>
             </children>
         </GridPane>
     </center>
