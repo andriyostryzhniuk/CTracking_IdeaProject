@@ -29,7 +29,7 @@ public class ObjectsListViewController {
     private ObservableList<DTOObjects> objectsListViewDataList = FXCollections.observableArrayList();
     private ObservableList<String> objectsNamesList = FXCollections.observableArrayList();
 
-    private List<DTOObjectEmployees> resultList = new ArrayList<>();
+    private List<DTOObjectEmployees> insertResultList = new ArrayList<>();
 
     private WindowObjectsTrackingController windowObjectsTrackingController;
     private EmployeesListViewController employeesListViewController;
@@ -153,14 +153,14 @@ public class ObjectsListViewController {
                 Integer employeeId = Integer.parseInt(db.getString());
 
                 DTOObjectEmployees newRecord = new DTOObjectEmployees(null, objectId, employeeId, new Date(), null);
-                resultList.add(newRecord);
+                insertResultList.add(newRecord);
 
                 setRecordToDataList(newRecord, objectId);
 
                 success = true;
             }
 
-            employeesListViewController.setDisablePane(db.getString());
+            employeesListViewController.setDisablePane(db.getString(), true);
 
             event.setDropCompleted(success);
             event.consume();
@@ -178,8 +178,8 @@ public class ObjectsListViewController {
         });
     }
 
-    public void setResultList(List<DTOObjectEmployees> resultList) {
-        this.resultList = resultList;
+    public void setInsertResultList(List<DTOObjectEmployees> insertResultList) {
+        this.insertResultList = insertResultList;
     }
 
     public void setEmployeesListViewController(EmployeesListViewController employeesListViewController) {

@@ -27,7 +27,7 @@ public class ContextMenu {
 
                 MenuItem removeItem = new MenuItem("Видалити");
                 removeItem.setOnAction(event -> {
-                    windowObjectsTrackingController.removeRecord();
+                    windowObjectsTrackingController.removeRecord(row.getItem());
                 });
                 rowMenu.getItems().addAll(editItem, removeItem);
                 row.contextMenuProperty().bind(

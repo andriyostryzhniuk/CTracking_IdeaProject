@@ -5,12 +5,13 @@ import objects.tracking.dto.DTOObjects;
 import objects.tracking.dto.DTOObjectEmployees;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.SqlParameterSourceUtils;
-
+import java.sql.PreparedStatement;
+import java.sql.SQLException;
 import java.util.List;
-
 import static main.DB_Connector.getJdbcTemplate;
 import static main.DB_Connector.getNamedParameterJdbcTemplate;
 
@@ -32,7 +33,7 @@ public class ODBC_PubsBD {
                 "employees.lastDay is null " +
                 "order by employees.surname asc", BeanPropertyRowMapper.newInstance(DTOEmployees.class));
 
-        dtoEmployeesList.forEach(item -> selectSkills(item.getId()));
+        dtoEmployeesList.forEach(item -> item.setSkills(selectSkills(item.getId())));
 
         return dtoEmployeesList;
     }
@@ -44,9 +45,21 @@ public class ODBC_PubsBD {
                 "where lastDay is null " +
                 "order by surname asc", BeanPropertyRowMapper.newInstance(DTOEmployees.class));
 
-        dtoEmployeesList.forEach(item -> selectSkills(item.getId()));
+        dtoEmployeesList.forEach(item -> item.setSkills(selectSkills(item.getId())));
 
         return dtoEmployeesList;
+    }
+
+    public static DTOEmployees selectEmployeesById(Integer employeeId) {
+        List<DTOEmployees> dtoEmployeesList = getJdbcTemplate().query("select id, " +
+                "concat(surname, ' ', left (name, 1), '. ', left (middleName, 1), '.' ) as fullName " +
+                "from employees " +
+                "where id = ? " +
+                "order by surname asc", BeanPropertyRowMapper.newInstance(DTOEmployees.class), employeeId);
+
+        dtoEmployeesList.forEach(item -> item.setSkills(selectSkills(item.getId())));
+
+        return dtoEmployeesList.get(0);
     }
 
     public static List<String> selectSkills(Integer employeeId){
@@ -88,6 +101,21 @@ public class ODBC_PubsBD {
                 "(id, object_id, employees_id, startDate, finishDate) " +
                 "VALUES (:id, :objectId, :employeeId, :startDate, :finishDate)",
                 SqlParameterSourceUtils.createBatch(resultList.toArray()));
+    }
+
+    public static void deleteFromObjectEmployees(List<Integer> recordsIdList) {
+        getJdbcTemplate().batchUpdate("DELETE FROM object_employees " +
+                "WHERE id = ?", new BatchPreparedStatementSetter() {
+            @Override
+            public void setValues(PreparedStatement ps, int i) throws SQLException {
+                ps.setInt(1, recordsIdList.get(i));
+            }
+
+            @Override
+            public int getBatchSize() {
+                return recordsIdList.size();
+            }
+        });
     }
 
     public static String selectEmployeesFullName(Integer employeeId) {

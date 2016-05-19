@@ -18,10 +18,12 @@ import javafx.scene.layout.StackPane;
 import objects.tracking.dto.DTOObjectEmployees;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
-
 import static objects.tracking.ContextMenu.initContextMenu;
+import static objects.tracking.ODBC_PubsBD.deleteFromObjectEmployees;
 import static objects.tracking.ODBC_PubsBD.insertIntoObjectEmployees;
+import static objects.tracking.ODBC_PubsBD.selectEmployeesById;
 
 public class WindowObjectsTrackingController<T extends DTOObjectEmployees> {
 
@@ -36,8 +38,10 @@ public class WindowObjectsTrackingController<T extends DTOObjectEmployees> {
     private EmployeesListViewController employeesListViewController;
     private ObjectsListViewController objectsListViewController;
 
-    private List<DTOObjectEmployees> resultList = new ArrayList<>();
+    private List<DTOObjectEmployees> insertResultList = new ArrayList<>();
+    private List<Integer> deleteResultList = new ArrayList<>();
     private ObservableList<T> tableViewDataList = FXCollections.observableArrayList();
+    private List<T> dtoObjectEmployeesList;
 
     private TableViewHolder<T> tableView = new TableViewHolder<>();
     public CustomTableColumn<T, String> employeeNameCol = new CustomTableColumn<>("Працівники");
@@ -63,8 +67,8 @@ public class WindowObjectsTrackingController<T extends DTOObjectEmployees> {
             throw new RuntimeException(exception);
         }
 
-        employeesListViewController.setResultList(resultList);
-        objectsListViewController.setResultList(resultList);
+        employeesListViewController.setInsertResultList(insertResultList);
+        objectsListViewController.setInsertResultList(insertResultList);
         objectsListViewController.setEmployeesListViewController(employeesListViewController);
         objectsListViewController.setWindowObjectsTrackingController(this);
 
@@ -99,8 +103,11 @@ public class WindowObjectsTrackingController<T extends DTOObjectEmployees> {
     }
 
     public void saveToDB() {
-        insertIntoObjectEmployees(resultList);
-        resultList.clear();
+        insertIntoObjectEmployees(insertResultList);
+        insertResultList.clear();
+        deleteFromObjectEmployees(deleteResultList);
+        deleteResultList.clear();
+        employeesListViewController.getJustReleasedEmployeesList().clear();
         employeesListViewController.initList();
     }
 
@@ -120,11 +127,12 @@ public class WindowObjectsTrackingController<T extends DTOObjectEmployees> {
         tableView.getTableView().getColumns().addAll(employeeNameCol, startDateNameCol, finishDateNameCol);
     }
 
-    public void initTableView(List<T> dtoObjectEmployees){
+    public void initTableView(List<T> dtoObjectEmployeesList){
+        this.dtoObjectEmployeesList = dtoObjectEmployeesList;
         tableViewDataList.clear();
         tableView.getTableView().getItems().clear();
 
-        tableViewDataList.addAll(dtoObjectEmployees);
+        tableViewDataList.addAll(dtoObjectEmployeesList);
         tableView.getTableView().setItems(tableViewDataList);
     }
 
@@ -132,7 +140,24 @@ public class WindowObjectsTrackingController<T extends DTOObjectEmployees> {
 
     }
 
-    public void removeRecord() {
+    public void removeRecord(T item) {
+        if (item.getId() == null) {
+            insertResultList.remove(item);
+            employeesListViewController.setDisablePane(item.getEmployeeId().toString(), false);
+        } else {
+            if (item.getFinishDate() == null || item.getFinishDate().after(new Date())) {
+                deleteResultList.add(item.getId());
+                employeesListViewController.getJustReleasedEmployeesList().add(selectEmployeesById(item.getEmployeeId()));
+                if (! employeesListViewController.isAllEmployees()) {
+                    employeesListViewController.initList();
+                }
+            }
+        }
+        removeItemFromLists(item);
+    }
 
+    private void removeItemFromLists(T item) {
+        tableViewDataList.remove(item);
+        dtoObjectEmployeesList.remove(item);
     }
 }
