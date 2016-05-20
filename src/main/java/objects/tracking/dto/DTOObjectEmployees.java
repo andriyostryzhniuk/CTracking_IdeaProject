@@ -92,7 +92,7 @@ public class DTOObjectEmployees {
 
     public String getFormatStartDate() {
         if (formatStartDate == null) {
-            formatStartDate = getDateFormat().format(startDate);
+            initFormatStartDate();
         }
         return formatStartDate;
     }
@@ -101,15 +101,27 @@ public class DTOObjectEmployees {
         this.formatStartDate = formatStartDate;
     }
 
+    public void initFormatStartDate(){
+        formatStartDate = getDateFormat().format(startDate);
+    }
+
     public String getFormatFinishDate() {
-        if (formatFinishDate == null && finishDate != null) {
-            formatFinishDate = getDateFormat().format(finishDate);
+        if (formatFinishDate == null) {
+            initFormatFinishDate();
         }
         return formatFinishDate;
     }
 
     public void setFormatFinishDate(String formatFinishDate) {
         this.formatFinishDate = formatFinishDate;
+    }
+
+    public void initFormatFinishDate(){
+        if (finishDate != null) {
+            formatFinishDate = getDateFormat().format(finishDate);
+        } else {
+            formatFinishDate = "-";
+        }
     }
 
     public DateFormat getDateFormat() {

@@ -126,4 +126,19 @@ public class ODBC_PubsBD {
         return stringList.get(0);
     }
 
+    public static String selectObjectName(Integer objectId) {
+        List<String> stringList = getJdbcTemplate().query("select address " +
+                "from object " +
+                "where id = ?", (RowMapper) (resultSet, i) -> resultSet.getString(1), objectId);
+        return stringList.get(0);
+    }
+
+    public static void updateObjectEmployees(List<DTOObjectEmployees> dtoObjectEmployees){
+        getNamedParameterJdbcTemplate().batchUpdate("UPDATE object_employees " +
+                        "SET startDate = :startDate, " +
+                        "finishDate = :finishDate " +
+                        "WHERE id = :id",
+                SqlParameterSourceUtils.createBatch(dtoObjectEmployees.toArray()));
+    }
+
 }

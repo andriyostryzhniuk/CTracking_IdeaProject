@@ -8,6 +8,8 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.ChoiceBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.Tooltip;
@@ -15,15 +17,17 @@ import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import objects.tracking.dto.DTOObjectEmployees;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import static objects.tracking.ContextMenu.initContextMenu;
-import static objects.tracking.ODBC_PubsBD.deleteFromObjectEmployees;
-import static objects.tracking.ODBC_PubsBD.insertIntoObjectEmployees;
-import static objects.tracking.ODBC_PubsBD.selectEmployeesById;
+import static objects.tracking.ODBC_PubsBD.*;
 
 public class WindowObjectsTrackingController<T extends DTOObjectEmployees> {
 
@@ -39,6 +43,7 @@ public class WindowObjectsTrackingController<T extends DTOObjectEmployees> {
     private ObjectsListViewController objectsListViewController;
 
     private List<DTOObjectEmployees> insertResultList = new ArrayList<>();
+    private List<DTOObjectEmployees> updateResultList = new ArrayList<>();
     private List<Integer> deleteResultList = new ArrayList<>();
     private ObservableList<T> tableViewDataList = FXCollections.observableArrayList();
     private List<T> dtoObjectEmployeesList;
@@ -107,6 +112,8 @@ public class WindowObjectsTrackingController<T extends DTOObjectEmployees> {
         insertResultList.clear();
         deleteFromObjectEmployees(deleteResultList);
         deleteResultList.clear();
+        updateObjectEmployees(updateResultList);
+        updateResultList.clear();
         employeesListViewController.getJustReleasedEmployeesList().clear();
         employeesListViewController.initList();
     }
@@ -136,8 +143,26 @@ public class WindowObjectsTrackingController<T extends DTOObjectEmployees> {
         tableView.getTableView().setItems(tableViewDataList);
     }
 
-    public void editRecord() {
+    public void editRecord(T item) {
+        Stage primaryStage = new Stage();
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/objects.tracking/EditingPromptWindow.fxml"));
+        Parent root = null;
+        try {
+            root = fxmlLoader.load();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
+        EditingPromptWindowController editingPromptWindowController = fxmlLoader.getController();
+        editingPromptWindowController.setDtoObjectEmployees(item);
+        editingPromptWindowController.setWindowObjectsTrackingController(this);
+
+        primaryStage.initStyle(StageStyle.TRANSPARENT);
+        primaryStage.setScene(new Scene(root, 400, 200, Color.rgb(0, 0, 0, 0)));
+        editingPromptWindowController.initShortcuts();
+        primaryStage.initModality(Modality.WINDOW_MODAL);
+        primaryStage.initOwner(rootBorderPane.getScene().getWindow());
+        primaryStage.showAndWait();
     }
 
     public void removeRecord(T item) {
@@ -159,5 +184,13 @@ public class WindowObjectsTrackingController<T extends DTOObjectEmployees> {
     private void removeItemFromLists(T item) {
         tableViewDataList.remove(item);
         dtoObjectEmployeesList.remove(item);
+    }
+
+    public List<T> getDtoObjectEmployeesList() {
+        return dtoObjectEmployeesList;
+    }
+
+    public List<DTOObjectEmployees> getUpdateResultList() {
+        return updateResultList;
     }
 }
