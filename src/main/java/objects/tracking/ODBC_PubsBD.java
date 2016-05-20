@@ -1,6 +1,7 @@
 package objects.tracking;
 
 import objects.tracking.dto.DTOEmployees;
+import objects.tracking.dto.DTOObjectEmpAddress;
 import objects.tracking.dto.DTOObjects;
 import objects.tracking.dto.DTOObjectEmployees;
 import org.slf4j.Logger;
@@ -160,6 +161,19 @@ public class ODBC_PubsBD {
             return new java.util.Date(dateList.get(0).getTime());
         }
         return null;
+    }
+
+    public static DTOObjectEmpAddress selectIfEmployeeIsOnObject(Integer employeeId) {
+        List<DTOObjectEmpAddress> dtoObjectEmpAddressesList = getJdbcTemplate().query("select object.address, " +
+                "object_employees.id as objectEmployeesId " +
+                "from object_employees, object " +
+                "where object_employees.employees_id = ? and " +
+                "object_employees.startDate <= curdate() and ( " +
+                "object_employees.finishDate >= curdate() or " +
+                "object_employees.finishDate is null) and " +
+                "object_employees.object_id = object.id", BeanPropertyRowMapper.newInstance(DTOObjectEmpAddress.class),
+                employeeId);
+        return dtoObjectEmpAddressesList.get(0);
     }
 
 }

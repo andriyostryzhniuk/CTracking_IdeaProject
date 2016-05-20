@@ -9,13 +9,17 @@ import javafx.scene.input.MouseEvent;
 import javafx.scene.input.TransferMode;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import objects.tracking.dto.DTOObjectEmpAddress;
 import objects.tracking.dto.DTOObjects;
 import objects.tracking.dto.DTOObjectEmployees;
 import overridden.elements.combo.box.AutoCompleteComboBoxListener;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
+import javafx.scene.control.*;
 
+import static objects.tracking.ODBC_PubsBD.selectIfEmployeeIsOnObject;
 import static objects.tracking.ODBC_PubsBD.selectObjects;
 
 public class ObjectsListViewController {
@@ -155,6 +159,15 @@ public class ObjectsListViewController {
                 Integer objectId = Integer.parseInt(pane.getId());
                 Integer employeeId = Integer.parseInt(db.getString());
 
+                DTOObjectEmpAddress dtoObjectEmpAddress;
+                if ((dtoObjectEmpAddress = selectIfEmployeeIsOnObject(employeeId)) != null) {
+                    if (! showDeletingWarning(dtoObjectEmpAddress.getAddress())) {
+                        return;
+                    } else {
+                        terminateEmployeesJobOnObject(dtoObjectEmpAddress.getObjectEmployeesId());
+                    }
+                }
+
                 DTOObjectEmployees newRecord = new DTOObjectEmployees(null, objectId, employeeId, new Date(), null);
                 insertResultList.add(newRecord);
 
@@ -181,6 +194,32 @@ public class ObjectsListViewController {
         });
     }
 
+    private boolean showDeletingWarning(String objectName){
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setHeaderText(null);
+        alert.setTitle("Попередження");
+        alert.setContentText("Даний працівник уже задіяний на об'єкті \n" + objectName +
+                "\nПрипинити виконання роботи цього працівника на об'єкті?");
+
+        ButtonType okButton = new ButtonType("ОК");
+        ButtonType cancelButton = new ButtonType("Скасувати");
+
+        alert.getButtonTypes().clear();
+        alert.getButtonTypes().setAll(okButton, cancelButton);
+
+        Optional<ButtonType> result = alert.showAndWait();
+
+        if (result.get() == okButton) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private void terminateEmployeesJobOnObject(Integer objectEmployeesId) {
+
+    }
+
     public void setInsertResultList(List<DTOObjectEmployees> insertResultList) {
         this.insertResultList = insertResultList;
     }
@@ -192,4 +231,5 @@ public class ObjectsListViewController {
     public void setWindowObjectsTrackingController(WindowObjectsTrackingController windowObjectsTrackingController) {
         this.windowObjectsTrackingController = windowObjectsTrackingController;
     }
+
 }
