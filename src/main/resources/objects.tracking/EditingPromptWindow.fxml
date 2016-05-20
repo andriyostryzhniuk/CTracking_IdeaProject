@@ -96,9 +96,9 @@
                                 <RowConstraints valignment="BOTTOM" vgrow="SOMETIMES"/>
                             </rowConstraints>
                         </GridPane>
-                        <DatePicker fx:id="startDateDatePicker" editable="false" promptText="Не визначено"
+                        <DatePicker fx:id="startDatePicker" editable="false" promptText="Не визначено"
                                     GridPane.rowIndex="1"/>
-                        <DatePicker fx:id="finishDateDatePicker" editable="false" promptText="Не визначено"
+                        <DatePicker fx:id="finishDatePicker" editable="false" promptText="Не визначено"
                                     GridPane.columnIndex="2" GridPane.rowIndex="1"/>
                         <Label text="Дата початку робіт:" textFill="WHITE"/>
                         <Label text="Дата завершення робіт:" textFill="WHITE" GridPane.columnIndex="2"/>

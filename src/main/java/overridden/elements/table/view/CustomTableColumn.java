@@ -1,4 +1,4 @@
-package employees.attendance.table;
+package overridden.elements.table.view;
 
 import javafx.beans.property.SimpleDoubleProperty;
 import javafx.scene.control.TableColumn;

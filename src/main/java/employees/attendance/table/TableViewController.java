@@ -14,6 +14,8 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import employees.attendance.table.dto.DtoEmployeesFullName;
 import javafx.scene.layout.*;
+import overridden.elements.table.view.CustomTableColumn;
+import overridden.elements.table.view.TableViewHolder;
 
 import java.util.stream.IntStream;
 

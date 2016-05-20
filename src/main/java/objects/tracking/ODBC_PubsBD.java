@@ -11,6 +11,7 @@ import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.SqlParameterSourceUtils;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
+import java.util.Date;
 import java.util.List;
 import static main.DB_Connector.getJdbcTemplate;
 import static main.DB_Connector.getNamedParameterJdbcTemplate;
@@ -126,10 +127,10 @@ public class ODBC_PubsBD {
         return stringList.get(0);
     }
 
-    public static String selectObjectName(Integer objectId) {
-        List<String> stringList = getJdbcTemplate().query("select address " +
+    public static DTOObjects selectObject(Integer objectId) {
+        List<DTOObjects> stringList = getJdbcTemplate().query("select id, address, startDate, finishDate " +
                 "from object " +
-                "where id = ?", (RowMapper) (resultSet, i) -> resultSet.getString(1), objectId);
+                "where id = ?", BeanPropertyRowMapper.newInstance(DTOObjects.class), objectId);
         return stringList.get(0);
     }
 
@@ -139,6 +140,26 @@ public class ODBC_PubsBD {
                         "finishDate = :finishDate " +
                         "WHERE id = :id",
                 SqlParameterSourceUtils.createBatch(dtoObjectEmployees.toArray()));
+    }
+
+    public static Date selectMinWorkDate(Integer objectEmployeesId) {
+        List<Date> dateList = getJdbcTemplate().query("select min(date) " +
+                "from worktracking " +
+                "where object_employees_id = ?", (RowMapper) (resultSet, i) -> resultSet.getDate(1), objectEmployeesId);
+        if (dateList.get(0) != null) {
+            return new java.util.Date(dateList.get(0).getTime());
+        }
+        return null;
+    }
+
+    public static Date selectMaxWorkDate(Integer objectEmployeesId) {
+        List<Date> dateList = getJdbcTemplate().query("select max(date) " +
+                "from worktracking " +
+                "where object_employees_id = ?", (RowMapper) (resultSet, i) -> resultSet.getDate(1), objectEmployeesId);
+        if (dateList.get(0) != null) {
+            return new java.util.Date(dateList.get(0).getTime());
+        }
+        return null;
     }
 
 }

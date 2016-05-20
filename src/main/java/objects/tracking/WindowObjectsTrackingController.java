@@ -1,8 +1,7 @@
 package objects.tracking;
 
-
-import employees.attendance.table.CustomTableColumn;
-import employees.attendance.table.TableViewHolder;
+import overridden.elements.table.view.CustomTableColumn;
+import overridden.elements.table.view.TableViewHolder;
 import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -37,6 +36,7 @@ public class WindowObjectsTrackingController<T extends DTOObjectEmployees> {
     public GridPane rightSideGridPane;
     public ChoiceBox contentTypeChoiceBox;
     public StackPane stackPane;
+    public Label objectLabel;
 //    public TextArea notesTextArea;
 
     private EmployeesListViewController employeesListViewController;
@@ -108,14 +108,27 @@ public class WindowObjectsTrackingController<T extends DTOObjectEmployees> {
     }
 
     public void saveToDB() {
-        insertIntoObjectEmployees(insertResultList);
-        insertResultList.clear();
-        deleteFromObjectEmployees(deleteResultList);
-        deleteResultList.clear();
-        updateObjectEmployees(updateResultList);
-        updateResultList.clear();
-        employeesListViewController.getJustReleasedEmployeesList().clear();
-        employeesListViewController.initList();
+        boolean isSave = false;
+        if (! insertResultList.isEmpty()) {
+            insertIntoObjectEmployees(insertResultList);
+            insertResultList.clear();
+            isSave = true;
+        }
+        if (! updateResultList.isEmpty()) {
+            updateObjectEmployees(updateResultList);
+            updateResultList.clear();
+            isSave = true;
+        }
+        if (! deleteResultList.isEmpty()) {
+            deleteFromObjectEmployees(deleteResultList);
+            deleteResultList.clear();
+            isSave = true;
+        }
+        if (isSave) {
+            employeesListViewController.getJustReleasedEmployeesList().clear();
+            employeesListViewController.initList();
+            objectsListViewController.initList();
+        }
     }
 
     private void fillCols() {
@@ -134,8 +147,9 @@ public class WindowObjectsTrackingController<T extends DTOObjectEmployees> {
         tableView.getTableView().getColumns().addAll(employeeNameCol, startDateNameCol, finishDateNameCol);
     }
 
-    public void initTableView(List<T> dtoObjectEmployeesList){
+    public void initTableView(List<T> dtoObjectEmployeesList, String objectName){
         this.dtoObjectEmployeesList = dtoObjectEmployeesList;
+        objectLabel.setText(objectName);
         tableViewDataList.clear();
         tableView.getTableView().getItems().clear();
 

@@ -9,10 +9,13 @@ import javafx.scene.Scene;
 import javafx.stage.Stage;
 import javafx.stage.WindowEvent;
 
+import java.util.Locale;
+
 public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) throws Exception{
+        Locale.setDefault(new Locale("uk"));
         ClassLoader classLoader = getClass().getClassLoader();
         Parent root = FXMLLoader.load(classLoader.getResource("main/MainWindow.fxml"));
         primaryStage.setTitle("Hello World! I'm little CTracking, but I'll be big smart program!");

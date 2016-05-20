@@ -54,10 +54,13 @@ public class ObjectsListViewController {
             setTargetDragAndDrop(item.getPaneContainer());
             item.getPaneContainer().setOnMouseClicked(event -> {
                 selectedObjectId = item.getId();
-                windowObjectsTrackingController.initTableView(item.getObjectEmployeesList());
+                windowObjectsTrackingController.initTableView(item.getObjectEmployeesList(), item.getAddress());
             });
             listView.getItems().add(item.getPaneContainer());
             objectsNamesList.add(item.getAddress());
+            if (selectedObjectId != null && item.getId() == selectedObjectId ) {
+                windowObjectsTrackingController.initTableView(item.getObjectEmployeesList(), item.getAddress());
+            }
         });
 
         new AutoCompleteComboBoxListener<>(comboBoxSearch, comboBoxListener);
@@ -172,7 +175,7 @@ public class ObjectsListViewController {
             if (item.getId() == objectId) {
                 item.getObjectEmployeesList().add(0, newRecord);
                 if (objectId == selectedObjectId) {
-                    windowObjectsTrackingController.initTableView(item.getObjectEmployeesList());
+                    windowObjectsTrackingController.initTableView(item.getObjectEmployeesList(), item.getAddress());
                 }
             }
         });

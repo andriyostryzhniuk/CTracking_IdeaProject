@@ -1,4 +1,4 @@
-package employees.attendance.table;
+package overridden.elements.table.view;
 
 import javafx.beans.binding.NumberBinding;
 import javafx.collections.ListChangeListener;
