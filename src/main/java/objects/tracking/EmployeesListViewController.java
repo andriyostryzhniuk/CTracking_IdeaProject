@@ -11,11 +11,7 @@ import javafx.scene.input.TransferMode;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import objects.tracking.dto.DTOEmployees;
-import objects.tracking.dto.DTOObjectEmployees;
 import overridden.elements.combo.box.AutoCompleteComboBoxListener;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
 import static objects.tracking.ODBC_PubsBD.selectAllEmployees;
 import static objects.tracking.ODBC_PubsBD.selectFreeEmployees;
 
@@ -29,9 +25,7 @@ public class EmployeesListViewController {
 
     private ObservableList<DTOEmployees> employeesListViewDataList = FXCollections.observableArrayList();
     private ObservableList<String> employeesNamesList = FXCollections.observableArrayList();
-    private List<DTOEmployees> justReleasedEmployeesList = new LinkedList<>();
 
-    private List<DTOObjectEmployees> insertResultList = new ArrayList<>();
     private boolean isAllEmployees;
 
     @FXML
@@ -42,13 +36,13 @@ public class EmployeesListViewController {
     }
 
     public void initList(){
+        Integer selectedRowIndex = listView.getSelectionModel().getSelectedIndex();
         employeesListViewDataList.clear();
         listView.getItems().clear();
         employeesNamesList.clear();
 
         if (isAllEmployees == false) {
             employeesListViewDataList.addAll(selectFreeEmployees());
-            employeesListViewDataList.addAll(justReleasedEmployeesList);
         } else {
             employeesListViewDataList.addAll(selectAllEmployees());
         }
@@ -60,10 +54,9 @@ public class EmployeesListViewController {
             employeesNamesList.add(item.getFullName());
         });
 
-        if (isAllEmployees == false) {
-            checkDisablePane();
-        }
-
+        listView.getSelectionModel().select(selectedRowIndex);
+        listView.getFocusModel().focus(selectedRowIndex);
+        listView.scrollTo(selectedRowIndex);
         new AutoCompleteComboBoxListener<>(comboBoxSearch, comboBoxListener);
     }
 
@@ -139,32 +132,6 @@ public class EmployeesListViewController {
         });
     }
 
-    private void checkDisablePane() {
-        listView.getItems().forEach(pane -> {
-            insertResultList.forEach(item -> {
-                if (Integer.parseInt(pane.getId()) == item.getEmployeeId()) {
-                    pane.setDisable(true);
-                    return;
-                }
-            });
-        });
-    }
-
-    public void setDisablePane(String paneId, boolean state){
-        if (isAllEmployees == false) {
-            listView.getItems().forEach(item -> {
-                if (item.getId().equals(paneId)) {
-                    item.setDisable(state);
-                    return;
-                }
-            });
-        }
-    }
-
-    public void setInsertResultList(List<DTOObjectEmployees> insertResultList) {
-        this.insertResultList = insertResultList;
-    }
-
     public void setAllEmployees(boolean allEmployees) {
         isAllEmployees = allEmployees;
     }
@@ -173,7 +140,4 @@ public class EmployeesListViewController {
         return isAllEmployees;
     }
 
-    public List<DTOEmployees> getJustReleasedEmployeesList() {
-        return justReleasedEmployeesList;
-    }
 }

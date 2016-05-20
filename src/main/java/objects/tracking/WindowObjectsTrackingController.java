@@ -22,8 +22,6 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import objects.tracking.dto.DTOObjectEmployees;
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import static objects.tracking.ContextMenu.initContextMenu;
 import static objects.tracking.ODBC_PubsBD.*;
@@ -42,9 +40,6 @@ public class WindowObjectsTrackingController<T extends DTOObjectEmployees> {
     private EmployeesListViewController employeesListViewController;
     private ObjectsListViewController objectsListViewController;
 
-    private List<DTOObjectEmployees> insertResultList = new ArrayList<>();
-    private List<DTOObjectEmployees> updateResultList = new ArrayList<>();
-    private List<Integer> deleteResultList = new ArrayList<>();
     private ObservableList<T> tableViewDataList = FXCollections.observableArrayList();
     private List<T> dtoObjectEmployeesList;
 
@@ -72,8 +67,6 @@ public class WindowObjectsTrackingController<T extends DTOObjectEmployees> {
             throw new RuntimeException(exception);
         }
 
-        employeesListViewController.setInsertResultList(insertResultList);
-        objectsListViewController.setInsertResultList(insertResultList);
         objectsListViewController.setEmployeesListViewController(employeesListViewController);
         objectsListViewController.setWindowObjectsTrackingController(this);
 
@@ -105,30 +98,6 @@ public class WindowObjectsTrackingController<T extends DTOObjectEmployees> {
         });
 
         contentTypeChoiceBox.setValue(contentTypeChoiceBox.getItems().get(0));
-    }
-
-    public void saveToDB() {
-        boolean isSave = false;
-        if (! insertResultList.isEmpty()) {
-            insertIntoObjectEmployees(insertResultList);
-            insertResultList.clear();
-            isSave = true;
-        }
-        if (! updateResultList.isEmpty()) {
-            updateObjectEmployees(updateResultList);
-            updateResultList.clear();
-            isSave = true;
-        }
-        if (! deleteResultList.isEmpty()) {
-            deleteFromObjectEmployees(deleteResultList);
-            deleteResultList.clear();
-            isSave = true;
-        }
-        if (isSave) {
-            employeesListViewController.getJustReleasedEmployeesList().clear();
-            employeesListViewController.initList();
-            objectsListViewController.initList();
-        }
     }
 
     private void fillCols() {
@@ -180,31 +149,18 @@ public class WindowObjectsTrackingController<T extends DTOObjectEmployees> {
     }
 
     public void removeRecord(T item) {
-        if (item.getId() == null) {
-            insertResultList.remove(item);
-            employeesListViewController.setDisablePane(item.getEmployeeId().toString(), false);
-        } else {
-            if (item.getFinishDate() == null || item.getFinishDate().after(new Date())) {
-                deleteResultList.add(item.getId());
-                employeesListViewController.getJustReleasedEmployeesList().add(selectEmployeesById(item.getEmployeeId()));
-                if (! employeesListViewController.isAllEmployees()) {
-                    employeesListViewController.initList();
-                }
-            }
+        deleteFromObjectEmployees(item.getId());
+        objectsListViewController.initList();
+        if (!employeesListViewController.isAllEmployees()) {
+            employeesListViewController.initList();
         }
-        removeItemFromLists(item);
-    }
-
-    private void removeItemFromLists(T item) {
-        tableViewDataList.remove(item);
-        dtoObjectEmployeesList.remove(item);
     }
 
     public List<T> getDtoObjectEmployeesList() {
         return dtoObjectEmployeesList;
     }
 
-    public List<DTOObjectEmployees> getUpdateResultList() {
-        return updateResultList;
+    public EmployeesListViewController getEmployeesListViewController() {
+        return employeesListViewController;
     }
 }

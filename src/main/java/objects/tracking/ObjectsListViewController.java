@@ -13,12 +13,9 @@ import objects.tracking.dto.DTOObjectEmpAddress;
 import objects.tracking.dto.DTOObjects;
 import objects.tracking.dto.DTOObjectEmployees;
 import overridden.elements.combo.box.AutoCompleteComboBoxListener;
-import java.util.ArrayList;
 import java.util.Date;
-import java.util.List;
 import java.util.Optional;
-import javafx.scene.control.*;
-
+import static objects.tracking.ODBC_PubsBD.insertIntoObjectEmployees;
 import static objects.tracking.ODBC_PubsBD.selectIfEmployeeIsOnObject;
 import static objects.tracking.ODBC_PubsBD.selectObjects;
 
@@ -33,8 +30,6 @@ public class ObjectsListViewController {
     private ObservableList<DTOObjects> objectsListViewDataList = FXCollections.observableArrayList();
     private ObservableList<String> objectsNamesList = FXCollections.observableArrayList();
 
-    private List<DTOObjectEmployees> insertResultList = new ArrayList<>();
-
     private WindowObjectsTrackingController windowObjectsTrackingController;
     private EmployeesListViewController employeesListViewController;
     private Integer selectedObjectId;
@@ -48,6 +43,7 @@ public class ObjectsListViewController {
     }
 
     public void initList(){
+        Integer selectedRowIndex = listView.getSelectionModel().getSelectedIndex();
         objectsListViewDataList.clear();
         listView.getItems().clear();
         objectsNamesList.clear();
@@ -67,6 +63,9 @@ public class ObjectsListViewController {
             }
         });
 
+        listView.getSelectionModel().select(selectedRowIndex);
+        listView.getFocusModel().focus(selectedRowIndex);
+        listView.scrollTo(selectedRowIndex);
         new AutoCompleteComboBoxListener<>(comboBoxSearch, comboBoxListener);
     }
 
@@ -163,34 +162,21 @@ public class ObjectsListViewController {
                 if ((dtoObjectEmpAddress = selectIfEmployeeIsOnObject(employeeId)) != null) {
                     if (! showDeletingWarning(dtoObjectEmpAddress.getAddress())) {
                         return;
-                    } else {
-                        terminateEmployeesJobOnObject(dtoObjectEmpAddress.getObjectEmployeesId());
                     }
+                } else {
+//                    terminateEmployeesJobOnObject(dtoObjectEmpAddress.getObjectEmployeesId());
                 }
 
-                DTOObjectEmployees newRecord = new DTOObjectEmployees(null, objectId, employeeId, new Date(), null);
-                insertResultList.add(newRecord);
+                insertIntoObjectEmployees(new DTOObjectEmployees(null, objectId, employeeId, new Date(), null));
 
-                setRecordToDataList(newRecord, objectId);
+                initList();
+                employeesListViewController.initList();
 
                 success = true;
             }
 
-            employeesListViewController.setDisablePane(db.getString(), true);
-
             event.setDropCompleted(success);
             event.consume();
-        });
-    }
-
-    private void setRecordToDataList(DTOObjectEmployees newRecord, Integer objectId) {
-        objectsListViewDataList.forEach(item -> {
-            if (item.getId() == objectId) {
-                item.getObjectEmployeesList().add(0, newRecord);
-                if (objectId == selectedObjectId) {
-                    windowObjectsTrackingController.initTableView(item.getObjectEmployeesList(), item.getAddress());
-                }
-            }
         });
     }
 
@@ -218,10 +204,6 @@ public class ObjectsListViewController {
 
     private void terminateEmployeesJobOnObject(Integer objectEmployeesId) {
 
-    }
-
-    public void setInsertResultList(List<DTOObjectEmployees> insertResultList) {
-        this.insertResultList = insertResultList;
     }
 
     public void setEmployeesListViewController(EmployeesListViewController employeesListViewController) {

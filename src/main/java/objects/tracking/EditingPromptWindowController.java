@@ -150,9 +150,12 @@ public class EditingPromptWindowController {
             dtoObjectEmployees.setFinishDate(null);
         }
         dtoObjectEmployees.initFormatFinishDate();
-        windowObjectsTrackingController.getUpdateResultList().add(dtoObjectEmployees);
+        updateObjectEmployees(dtoObjectEmployees);
         windowObjectsTrackingController.initTableView(windowObjectsTrackingController.getDtoObjectEmployeesList(),
                 objectLabel.getText());
+        if (! windowObjectsTrackingController.getEmployeesListViewController().isAllEmployees()) {
+            windowObjectsTrackingController.getEmployeesListViewController().initList();
+        }
         close();
     }
 

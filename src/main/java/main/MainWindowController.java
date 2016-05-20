@@ -60,7 +60,7 @@ public class MainWindowController {
             } catch (IOException exception) {
                 throw new UncheckedIOException(exception);
             }
-            mainGridPane.add(initButtonContainer(initButtonObjectsTrackingSave(), initButtonClose()), 1, 2);
+            mainGridPane.add(initButtonContainer(initButtonClose()), 1, 2);
         }
     }
 
@@ -91,14 +91,6 @@ public class MainWindowController {
         Button buttonSave = initButton("Зберегти");
         buttonSave.setOnAction((ActionEvent event) -> {
             windowStockTrackingController.saveToDB();
-        });
-        return buttonSave;
-    }
-
-    public Button initButtonObjectsTrackingSave() {
-        Button buttonSave = initButton("Зберегти");
-        buttonSave.setOnAction((ActionEvent event) -> {
-            windowObjectsTrackingController.saveToDB();
         });
         return buttonSave;
     }

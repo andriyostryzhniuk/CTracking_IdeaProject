@@ -9,6 +9,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.RowMapper;
+import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSourceUtils;
 import java.sql.PreparedStatement;
 import java.sql.SQLException;
@@ -52,18 +53,6 @@ public class ODBC_PubsBD {
         return dtoEmployeesList;
     }
 
-    public static DTOEmployees selectEmployeesById(Integer employeeId) {
-        List<DTOEmployees> dtoEmployeesList = getJdbcTemplate().query("select id, " +
-                "concat(surname, ' ', left (name, 1), '. ', left (middleName, 1), '.' ) as fullName " +
-                "from employees " +
-                "where id = ? " +
-                "order by surname asc", BeanPropertyRowMapper.newInstance(DTOEmployees.class), employeeId);
-
-        dtoEmployeesList.forEach(item -> item.setSkills(selectSkills(item.getId())));
-
-        return dtoEmployeesList.get(0);
-    }
-
     public static List<String> selectSkills(Integer employeeId){
         return getJdbcTemplate().query("select skills.skill " +
                 "from skills_employees, skills " +
@@ -98,26 +87,16 @@ public class ODBC_PubsBD {
                 BeanPropertyRowMapper.newInstance(DTOObjectEmployees.class), objectId);
     }
 
-    public static void insertIntoObjectEmployees(List<DTOObjectEmployees> resultList){
-        getNamedParameterJdbcTemplate().batchUpdate("INSERT INTO object_employees " +
-                "(id, object_id, employees_id, startDate, finishDate) " +
-                "VALUES (:id, :objectId, :employeeId, :startDate, :finishDate)",
-                SqlParameterSourceUtils.createBatch(resultList.toArray()));
+    public static void insertIntoObjectEmployees(DTOObjectEmployees dtoObjectEmployees){
+        getNamedParameterJdbcTemplate().update("INSERT INTO object_employees " +
+                        "(id, object_id, employees_id, startDate, finishDate) " +
+                        "VALUES (:id, :objectId, :employeeId, :startDate, :finishDate)",
+                new BeanPropertySqlParameterSource(dtoObjectEmployees));
     }
 
-    public static void deleteFromObjectEmployees(List<Integer> recordsIdList) {
-        getJdbcTemplate().batchUpdate("DELETE FROM object_employees " +
-                "WHERE id = ?", new BatchPreparedStatementSetter() {
-            @Override
-            public void setValues(PreparedStatement ps, int i) throws SQLException {
-                ps.setInt(1, recordsIdList.get(i));
-            }
-
-            @Override
-            public int getBatchSize() {
-                return recordsIdList.size();
-            }
-        });
+    public static void deleteFromObjectEmployees(Integer recordsIdList) {
+        getJdbcTemplate().update("DELETE FROM object_employees " +
+                "WHERE id = ?", recordsIdList);
     }
 
     public static String selectEmployeesFullName(Integer employeeId) {
@@ -135,12 +114,12 @@ public class ODBC_PubsBD {
         return stringList.get(0);
     }
 
-    public static void updateObjectEmployees(List<DTOObjectEmployees> dtoObjectEmployees){
-        getNamedParameterJdbcTemplate().batchUpdate("UPDATE object_employees " +
+    public static void updateObjectEmployees(DTOObjectEmployees dtoObjectEmployees){
+        getNamedParameterJdbcTemplate().update("UPDATE object_employees " +
                         "SET startDate = :startDate, " +
                         "finishDate = :finishDate " +
                         "WHERE id = :id",
-                SqlParameterSourceUtils.createBatch(dtoObjectEmployees.toArray()));
+                new BeanPropertySqlParameterSource(dtoObjectEmployees));
     }
 
     public static Date selectMinWorkDate(Integer objectEmployeesId) {
@@ -173,7 +152,12 @@ public class ODBC_PubsBD {
                 "object_employees.finishDate is null) and " +
                 "object_employees.object_id = object.id", BeanPropertyRowMapper.newInstance(DTOObjectEmpAddress.class),
                 employeeId);
-        return dtoObjectEmpAddressesList.get(0);
+
+        if (dtoObjectEmpAddressesList.size() == 0) {
+            return null;
+        } else {
+            return dtoObjectEmpAddressesList.get(0);
+        }
     }
 
 }
