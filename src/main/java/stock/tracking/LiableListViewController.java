@@ -352,7 +352,7 @@ public class LiableListViewController {
 
     public Button initLevelUpButton() {
         Button button = new Button();
-        Image image = new Image(getClass().getResourceAsStream("/image/level_up_icon.png"));
+        Image image = new Image(getClass().getResourceAsStream("/icons/level_up_icon.png"));
         button.getStylesheets().add(getClass().getResource("/stock.tracking/LevelUpButtonStyle.css").toExternalForm());
         button.setGraphic(new ImageView(image));
         button.setPrefWidth(10);

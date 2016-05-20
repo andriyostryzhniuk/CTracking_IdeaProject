@@ -3,10 +3,9 @@ package objects.tracking;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.Group;
-import javafx.scene.control.Button;
-import javafx.scene.control.DateCell;
-import javafx.scene.control.DatePicker;
-import javafx.scene.control.Label;
+import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyCodeCombination;
 import javafx.scene.input.KeyCombination;
@@ -35,6 +34,7 @@ public class EditingPromptWindowController {
     public DatePicker finishDatePicker;
     public Button cancelButton;
     public Button saveButton;
+    public Button rejectDateButton;
 
     private WindowObjectsTrackingController windowObjectsTrackingController;
 
@@ -42,6 +42,15 @@ public class EditingPromptWindowController {
     public void initialize(){
         startDatePicker.setOnMouseEntered(event -> setStartDatePickerValidation());
         finishDatePicker.setOnMouseEntered(event -> setFinishDatePickerValidation());
+        initRejectDateButton();
+    }
+
+    private void initRejectDateButton(){
+        Image image = new Image(getClass().getResourceAsStream("/icons/reject_icon.png"));
+        rejectDateButton.getStylesheets().add(getClass().getResource("/objects.tracking/RejectDateButtonStyle.css").toExternalForm());
+        rejectDateButton.setGraphic(new ImageView(image));
+        rejectDateButton.setTooltip(new Tooltip("Відмінити дату"));
+        rejectDateButton.setOnAction(event -> finishDatePicker.setValue(null));
     }
 
     public void setStartDatePickerValidation(){

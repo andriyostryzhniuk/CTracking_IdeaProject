@@ -38,7 +38,7 @@ public class DtoGrantedStock extends DtoStock {
         label.setLayoutY(3);
 
         Button rejectStockButton = new Button();
-        Image image = new Image(getClass().getResourceAsStream("/image/reject_icon.png"));
+        Image image = new Image(getClass().getResourceAsStream("/icons/reject_icon.png"));
         rejectStockButton.setGraphic(new ImageView(image));
         rejectStockButton.getStylesheets().add(getClass().
                 getResource("/stock.tracking/RejectStockButtonStyle.css").toExternalForm());
