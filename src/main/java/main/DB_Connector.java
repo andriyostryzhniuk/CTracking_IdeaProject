@@ -38,7 +38,7 @@ public class DB_Connector {
         try {
             ComboPooledDataSource c3p0 = new ComboPooledDataSource();
             c3p0.setDriverClass("com.mysql.jdbc.Driver");
-            c3p0.setJdbcUrl(String.format("jdbc:mysql://%s:%s/%s", address, port, dbName));
+            c3p0.setJdbcUrl(String.format("jdbc:mysql://%s:%s/%s?useSSL=false", address, port, dbName));
             c3p0.setUser(dbUser);
             c3p0.setPassword(dbPassword);
             return c3p0;

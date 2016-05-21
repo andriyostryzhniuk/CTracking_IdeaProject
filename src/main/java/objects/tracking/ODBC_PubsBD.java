@@ -1,5 +1,6 @@
 package objects.tracking;
 
+import main.BeanPropertyRowMapperWithNullCheck;
 import objects.tracking.dto.DTOEmployees;
 import objects.tracking.dto.DTOObjectEmpAddress;
 import objects.tracking.dto.DTOObjects;
@@ -167,14 +168,15 @@ public class ODBC_PubsBD {
     }
 
     public static LocalDate selectMaxWorkDate(Integer objectEmployeesId) {
-        List<LocalDate> dateList = getJdbcTemplate().query("select max(date) " +
+        LocalDate dateList = getJdbcTemplate().queryForObject("select max(date) " +
                 "from worktracking " +
-                "where object_employees_id = ?", (RowMapper) (resultSet, i) -> resultSet.getObject(1, LocalDate.class),
-                objectEmployeesId);
-        if (dateList.get(0) != null) {
-            return dateList.get(0);
-        }
-        return null;
+                "where object_employees_id = ?",
+                new Object []{objectEmployeesId}, LocalDate.class);
+//        LOGGER.info("localDate: " + dateList.get(0));
+//        if (dateList.get(0) != null) {
+//            return dateList.get(0);
+//        }
+        return dateList;
     }
 
     public static LocalDate selectLastObjEmpFinishDate(Integer employeesId, LocalDate curDate) {
