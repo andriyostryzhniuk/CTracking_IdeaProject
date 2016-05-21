@@ -6,15 +6,14 @@ import objects.tracking.dto.DTOObjects;
 import objects.tracking.dto.DTOObjectEmployees;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.jdbc.core.BatchPreparedStatementSetter;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
-import org.springframework.jdbc.core.namedparam.SqlParameterSourceUtils;
-import java.sql.PreparedStatement;
-import java.sql.SQLException;
+
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
+
 import static main.DB_Connector.getJdbcTemplate;
 import static main.DB_Connector.getNamedParameterJdbcTemplate;
 
@@ -142,6 +141,17 @@ public class ODBC_PubsBD {
         return null;
     }
 
+    public static LocalDate selectMaxWorkDate2(Integer objectEmployeesId) {
+        List<LocalDate> dateList = getJdbcTemplate().query("select max(date) " +
+                "from worktracking " +
+                "where object_employees_id = ?", (RowMapper) (resultSet, i) -> resultSet.getObject(1, LocalDate.class),
+                objectEmployeesId);
+        if (dateList.get(0) != null) {
+            return dateList.get(0);
+        }
+        return null;
+    }
+
     public static DTOObjectEmpAddress selectIfEmployeeIsOnObject(Integer employeeId) {
         List<DTOObjectEmpAddress> dtoObjectEmpAddressesList = getJdbcTemplate().query("select object.address, " +
                 "object_employees.id as objectEmployeesId " +
@@ -158,6 +168,12 @@ public class ODBC_PubsBD {
         } else {
             return dtoObjectEmpAddressesList.get(0);
         }
+    }
+
+    public static void updateFinishDate (Integer objectEmployeesId, LocalDate finishDate){
+        getJdbcTemplate().update("UPDATE object_employees " +
+                "SET finishDate = ? " +
+                "WHERE id = ?", finishDate, objectEmployeesId);
     }
 
 }

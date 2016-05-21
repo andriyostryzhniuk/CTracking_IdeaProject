@@ -13,11 +13,12 @@ import objects.tracking.dto.DTOObjectEmpAddress;
 import objects.tracking.dto.DTOObjects;
 import objects.tracking.dto.DTOObjectEmployees;
 import overridden.elements.combo.box.AutoCompleteComboBoxListener;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import java.util.Date;
 import java.util.Optional;
-import static objects.tracking.ODBC_PubsBD.insertIntoObjectEmployees;
-import static objects.tracking.ODBC_PubsBD.selectIfEmployeeIsOnObject;
-import static objects.tracking.ODBC_PubsBD.selectObjects;
+
+import static objects.tracking.ODBC_PubsBD.*;
 
 public class ObjectsListViewController {
 
@@ -160,11 +161,13 @@ public class ObjectsListViewController {
 
                 DTOObjectEmpAddress dtoObjectEmpAddress;
                 if ((dtoObjectEmpAddress = selectIfEmployeeIsOnObject(employeeId)) != null) {
-                    if (! showDeletingWarning(dtoObjectEmpAddress.getAddress())) {
+                    if (showDeletingConfirmation(dtoObjectEmpAddress.getAddress())) {
+                        if (! terminateEmployeesJobOnObject(dtoObjectEmpAddress.getObjectEmployeesId())) {
+                            return;
+                        }
+                    } else {
                         return;
                     }
-                } else {
-//                    terminateEmployeesJobOnObject(dtoObjectEmpAddress.getObjectEmployeesId());
                 }
 
                 insertIntoObjectEmployees(new DTOObjectEmployees(null, objectId, employeeId, new Date(), null));
@@ -180,10 +183,10 @@ public class ObjectsListViewController {
         });
     }
 
-    private boolean showDeletingWarning(String objectName){
+    private boolean showDeletingConfirmation(String objectName){
         Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setHeaderText(null);
         alert.setTitle("Попередження");
+        alert.setHeaderText(null);
         alert.setContentText("Даний працівник уже задіяний на об'єкті \n" + objectName +
                 "\nПрипинити виконання роботи цього працівника на об'єкті?");
 
@@ -202,8 +205,25 @@ public class ObjectsListViewController {
         }
     }
 
-    private void terminateEmployeesJobOnObject(Integer objectEmployeesId) {
+    private boolean terminateEmployeesJobOnObject(Integer objectEmployeesId) {
+        LocalDate maxWorkDate;
+        if ((maxWorkDate = selectMaxWorkDate2(objectEmployeesId)) != null && maxWorkDate.compareTo(LocalDate.now()) >= 0) {
+            showDeletingError(LocalDate.now().minusDays(1));
+            return false;
+        }
+        updateFinishDate(objectEmployeesId, LocalDate.now().minusDays(1));
+        return true;
+    }
 
+    private void showDeletingError(LocalDate localDate){
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Помилка");
+        alert.setHeaderText(null);
+        alert.setContentText("Неможливо закрити виконання роботи за датою "
+                + localDate.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")) +
+                "\nоскільки за даною датою уже є відпрацьовані години.");
+
+        alert.showAndWait();
     }
 
     public void setEmployeesListViewController(EmployeesListViewController employeesListViewController) {
