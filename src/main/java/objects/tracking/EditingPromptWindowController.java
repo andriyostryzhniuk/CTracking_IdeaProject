@@ -47,21 +47,17 @@ public class EditingPromptWindowController {
 
     private void initRejectDateButton(){
         Image image = new Image(getClass().getResourceAsStream("/icons/reject_icon.png"));
-        rejectDateButton.getStylesheets().add(getClass().getResource("/objects.tracking/RejectDateButtonStyle.css").toExternalForm());
+        rejectDateButton.getStylesheets().add(getClass().getResource("/objects.tracking/RejectButtonStyle.css").toExternalForm());
         rejectDateButton.setGraphic(new ImageView(image));
         rejectDateButton.setTooltip(new Tooltip("Відмінити дату"));
         rejectDateButton.setOnAction(event -> finishDatePicker.setValue(null));
     }
 
     public void setStartDatePickerValidation(){
-        LocalDate minStartDate = determineMinStartDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-        Date utilMaxStartDate = determineMaxStartDate();
-        LocalDate maxStartDate = null;
-        if (utilMaxStartDate != null) {
-            maxStartDate = utilMaxStartDate.toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
-            if (maxStartDate.isBefore(minStartDate)) {
-                maxStartDate = null;
-            }
+        LocalDate minStartDate = determineMinStartDate();
+        LocalDate maxStartDate = determineMaxStartDate();
+        if (maxStartDate != null && maxStartDate.isBefore(minStartDate)) {
+            maxStartDate = null;
         }
 
         LocalDate finalMaxStartDate = maxStartDate;
@@ -88,7 +84,7 @@ public class EditingPromptWindowController {
     }
 
     public void setFinishDatePickerValidation(){
-        LocalDate minFinishDate = determineMinFinishDate().toInstant().atZone(ZoneId.systemDefault()).toLocalDate();
+        LocalDate minFinishDate = determineMinFinishDate();
         Callback<DatePicker, DateCell> dayCellFactory = new Callback<DatePicker, DateCell>() {
             public DateCell call(final DatePicker datePicker) {
                 return new DateCell() {
@@ -107,21 +103,21 @@ public class EditingPromptWindowController {
         finishDatePicker.setDayCellFactory(dayCellFactory);
     }
 
-    public Date determineMinStartDate(){
-        Date minStartDate = new Date();
-        if (minStartDate.before(dtoObjects.getStartDate())) {
+    public LocalDate determineMinStartDate(){
+        LocalDate minStartDate = LocalDate.now();
+        if (minStartDate.isBefore(dtoObjects.getStartDate())) {
             minStartDate = dtoObjects.getStartDate();
         }
         return minStartDate;
     }
 
-    public Date determineMaxStartDate(){
-        Date maxStartDate = null;
+    public LocalDate determineMaxStartDate(){
+        LocalDate maxStartDate = null;
         if (finishDatePicker.getValue() != null) {
-            maxStartDate = Date.from(finishDatePicker.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant());
+            maxStartDate = finishDatePicker.getValue();
         }
-        Date minWorkDate = selectMinWorkDate(dtoObjectEmployees.getId());
-        if (maxStartDate != null && minWorkDate != null && minWorkDate.before(maxStartDate)) {
+        LocalDate minWorkDate = selectMinWorkDate(dtoObjectEmployees.getId());
+        if (maxStartDate != null && minWorkDate != null && minWorkDate.isBefore(maxStartDate)) {
             maxStartDate = minWorkDate;
         } else if (maxStartDate == null && minWorkDate != null) {
             maxStartDate = minWorkDate;
@@ -129,17 +125,17 @@ public class EditingPromptWindowController {
         return maxStartDate;
     }
 
-    public Date determineMinFinishDate(){
-        Date minFinishDate = determineMinStartDate();
+    public LocalDate determineMinFinishDate(){
+        LocalDate minFinishDate = determineMinStartDate();
         if (startDatePicker != null) {
-            minFinishDate = Date.from(startDatePicker.getValue().atStartOfDay(ZoneId.systemDefault()).toInstant());
+            minFinishDate = startDatePicker.getValue();
         }
-        Date maxWorkDate = selectMaxWorkDate(dtoObjectEmployees.getId());
-        if (maxWorkDate != null && minFinishDate.before(maxWorkDate)) {
+        LocalDate maxWorkDate = selectMaxWorkDate(dtoObjectEmployees.getId());
+        if (maxWorkDate != null && minFinishDate.isBefore(maxWorkDate)) {
             minFinishDate = maxWorkDate;
         }
-        if (minFinishDate.before(new Date())) {
-            minFinishDate = new Date();
+        if (minFinishDate.isBefore(LocalDate.now())) {
+            minFinishDate = LocalDate.now();
         }
         return minFinishDate;
     }

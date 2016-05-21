@@ -1,5 +1,11 @@
 package objects.tracking;
 
+import javafx.geometry.Insets;
+import javafx.scene.control.*;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
+import overridden.elements.combo.box.AutoCompleteComboBoxListener;
 import overridden.elements.table.view.CustomTableColumn;
 import overridden.elements.table.view.TableViewHolder;
 import javafx.beans.value.ChangeListener;
@@ -9,9 +15,6 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
-import javafx.scene.control.ChoiceBox;
-import javafx.scene.control.Label;
-import javafx.scene.control.Tooltip;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
@@ -35,6 +38,9 @@ public class WindowObjectsTrackingController<T extends DTOObjectEmployees> {
     public ChoiceBox contentTypeChoiceBox;
     public StackPane stackPane;
     public Label objectLabel;
+    public GridPane skillsGridPane;
+    private ComboBox skillsComboBox;
+    private ComboBox comboBoxListener = new ComboBox();
 //    public TextArea notesTextArea;
 
     private EmployeesListViewController employeesListViewController;
@@ -71,6 +77,16 @@ public class WindowObjectsTrackingController<T extends DTOObjectEmployees> {
         objectsListViewController.setWindowObjectsTrackingController(this);
 
         setTableViewParameters();
+        initSkillsControls();
+
+    }
+
+    private void initSkillsControls(){
+        skillsComboBox = initSkillsComboBox();
+        skillsGridPane.add(skillsComboBox, 0, 0);
+        Button rejectDateButton = initRejectDateButton();
+        skillsGridPane.add(rejectDateButton, 0, 0);
+        skillsGridPane.setMargin(rejectDateButton, new Insets(2, 2, 2, 152));
     }
 
     private void setTableViewParameters(){
@@ -154,6 +170,59 @@ public class WindowObjectsTrackingController<T extends DTOObjectEmployees> {
         if (!employeesListViewController.isAllEmployees()) {
             employeesListViewController.initList();
         }
+    }
+
+    private ComboBox initSkillsComboBox(){
+        ComboBox comboBox = new ComboBox();
+        comboBox.getStylesheets().add(getClass().getResource("/objects.tracking/ComboBoxSkillsStyle.css").toExternalForm());
+        comboBox.setPromptText("Введіть спеціальність");
+        comboBox.setTooltip(new Tooltip("Пошук працівників за спеціальністю"));
+
+        comboBox.setItems(FXCollections.observableArrayList(selectAllSkills()));
+
+        new AutoCompleteComboBoxListener<>(comboBox, comboBoxListener);
+
+        comboBox.setCellFactory(listCell -> {
+            final ListCell<String> cell = new ListCell<String>() {{
+                    super.setOnMousePressed((MouseEvent event) -> {
+                        comboBoxListener.setValue(comboBox.getValue());
+                    });
+                }
+
+                @Override
+                public void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
+                    setText(item);
+                }
+            };
+            return cell;
+        });
+
+        comboBoxListener.valueProperty().addListener((observableValue, oldValue, newValue) -> {
+            if (newValue != null) {
+                comboBox.getStyleClass().remove("warning");
+                employeesListViewController.setEmployeesSkill(newValue.toString());
+                employeesListViewController.initList();
+                comboBoxListener.setValue(null);
+            }
+        });
+        comboBox.getEditor().setPadding(new Insets(4, 28, 4, 4));
+        return comboBox;
+    }
+
+    private Button initRejectDateButton(){
+        Button button = new Button();
+        Image image = new Image(getClass().getResourceAsStream("/icons/reject_icon.png"));
+        button.getStylesheets().add(getClass().getResource("/objects.tracking/RejectButtonStyle.css").toExternalForm());
+        button.setGraphic(new ImageView(image));
+        button.setTooltip(new Tooltip("Відмінити дату"));
+        button.setOnAction(event -> {
+            skillsComboBox.setValue(null);
+            employeesListViewController.setEmployeesSkill(null);
+            employeesListViewController.initList();
+            System.out.println("button pressed");
+        });
+        return button;
     }
 
     public List<T> getDtoObjectEmployeesList() {

@@ -2,14 +2,15 @@ package objects.tracking.dto;
 
 import stock.tracking.dto.DtoObject;
 
+import java.time.LocalDate;
 import java.util.Date;
 import java.util.List;
 
 public class DTOObjects extends DtoObject {
 
     private List<DTOObjectEmployees> objectEmployeesList;
-    private Date startDate;
-    private Date finishDate;
+    private LocalDate startDate;
+    private LocalDate finishDate;
 
     public DTOObjects() {
     }
@@ -18,7 +19,7 @@ public class DTOObjects extends DtoObject {
         super(id, address);
     }
 
-    public DTOObjects(int id, String address, Date startDate, Date finishDate) {
+    public DTOObjects(int id, String address, LocalDate startDate, LocalDate finishDate) {
         super(id, address);
         this.startDate = startDate;
         this.finishDate = finishDate;
@@ -32,19 +33,19 @@ public class DTOObjects extends DtoObject {
         this.objectEmployeesList = objectEmployeesList;
     }
 
-    public Date getStartDate() {
+    public LocalDate getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(Date startDate) {
+    public void setStartDate(LocalDate startDate) {
         this.startDate = startDate;
     }
 
-    public Date getFinishDate() {
+    public LocalDate getFinishDate() {
         return finishDate;
     }
 
-    public void setFinishDate(Date finishDate) {
+    public void setFinishDate(LocalDate finishDate) {
         this.finishDate = finishDate;
     }
 }

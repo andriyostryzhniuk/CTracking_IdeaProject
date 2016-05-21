@@ -9,8 +9,8 @@ import javafx.scene.input.KeyEvent;
 
 public class AutoCompleteComboBoxListener<T> implements EventHandler<KeyEvent> {
 
-    private ComboBox comboBox;
-    private ComboBox comboBoxListener;
+    protected ComboBox comboBox;
+    protected ComboBox comboBoxListener;
     private ObservableList<T> data;
     private boolean moveCaretToPos = false;
     private int caretPos;
@@ -90,7 +90,7 @@ public class AutoCompleteComboBoxListener<T> implements EventHandler<KeyEvent> {
         moveCaretToPos = false;
     }
 
-    private void setValueToComboBoxListener(){
+    protected void setValueToComboBoxListener(){
         if (comboBox.getItems().contains(comboBox.getValue())) {
             comboBoxListener.setValue(comboBox.getValue());
         } else {
@@ -98,7 +98,7 @@ public class AutoCompleteComboBoxListener<T> implements EventHandler<KeyEvent> {
         }
     }
 
-    private void setWarningStyle(){
+    protected void setWarningStyle(){
         if (!comboBox.getStyleClass().contains("warning")) {
             comboBox.getStyleClass().add("warning");
         }

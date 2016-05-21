@@ -207,7 +207,7 @@ public class ObjectsListViewController {
 
     private boolean terminateEmployeesJobOnObject(Integer objectEmployeesId) {
         LocalDate maxWorkDate;
-        if ((maxWorkDate = selectMaxWorkDate2(objectEmployeesId)) != null && maxWorkDate.compareTo(LocalDate.now()) >= 0) {
+        if ((maxWorkDate = selectMaxWorkDate(objectEmployeesId)) != null && maxWorkDate.compareTo(LocalDate.now()) >= 0) {
             showDeletingError(LocalDate.now().minusDays(1));
             return false;
         }
@@ -222,7 +222,6 @@ public class ObjectsListViewController {
         alert.setContentText("Неможливо закрити виконання роботи за датою "
                 + localDate.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")) +
                 "\nоскільки за даною датою уже є відпрацьовані години.");
-
         alert.showAndWait();
     }
 

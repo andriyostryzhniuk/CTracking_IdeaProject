@@ -9,11 +9,8 @@ import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
-
 import java.time.LocalDate;
-import java.util.Date;
 import java.util.List;
-
 import static main.DB_Connector.getJdbcTemplate;
 import static main.DB_Connector.getNamedParameterJdbcTemplate;
 
@@ -35,7 +32,7 @@ public class ODBC_PubsBD {
                 "employees.lastDay is null " +
                 "order by employees.surname asc", BeanPropertyRowMapper.newInstance(DTOEmployees.class));
 
-        dtoEmployeesList.forEach(item -> item.setSkills(selectSkills(item.getId())));
+        dtoEmployeesList.forEach(item -> item.setSkills(selectEmployeesSkills(item.getId())));
 
         return dtoEmployeesList;
     }
@@ -47,12 +44,49 @@ public class ODBC_PubsBD {
                 "where lastDay is null " +
                 "order by surname asc", BeanPropertyRowMapper.newInstance(DTOEmployees.class));
 
-        dtoEmployeesList.forEach(item -> item.setSkills(selectSkills(item.getId())));
+        dtoEmployeesList.forEach(item -> item.setSkills(selectEmployeesSkills(item.getId())));
 
         return dtoEmployeesList;
     }
 
-    public static List<String> selectSkills(Integer employeeId){
+    public static List<DTOEmployees> selectFreeEmployeesSkills(String skill) {
+        List<DTOEmployees> dtoEmployeesList = getJdbcTemplate().query("select employees.id, " +
+                "concat( employees.surname, ' ', left (employees.name, 1), '. ', " +
+                "   left (employees.middleName, 1), '.' ) as fullName " +
+                "from skills_employees, skills, employees left join ( " +
+                "   select employees_id " +
+                "   from object_employees " +
+                "   where (startDate <= curdate() and finishDate is null) or " +
+                "   curdate() between startDate and finishDate) who_is_on_object " +
+                "   on employees.id = who_is_on_object.employees_id " +
+                "where who_is_on_object.employees_id is null and " +
+                "employees.lastDay is null and " +
+                "employees.id = skills_employees.employees_id and " +
+                "skills_employees.skills_id = skills.id and " +
+                "skills.skill = ? " +
+                "order by employees.surname asc", BeanPropertyRowMapper.newInstance(DTOEmployees.class), skill);
+
+        dtoEmployeesList.forEach(item -> item.setSkills(selectEmployeesSkills(item.getId())));
+
+        return dtoEmployeesList;
+    }
+
+    public static List<DTOEmployees> selectAllEmployeesSkills(String skill) {
+        List<DTOEmployees> dtoEmployeesList = getJdbcTemplate().query("select employees.id, " +
+                "concat(surname, ' ', left (name, 1), '. ', left (middleName, 1), '.' ) as fullName " +
+                "from employees, skills_employees, skills " +
+                "where skills.skill = ? and " +
+                "skills.id = skills_employees.skills_id and " +
+                "skills_employees.employees_id = employees.id and " +
+                "employees.lastDay is null " +
+                "order by surname asc", BeanPropertyRowMapper.newInstance(DTOEmployees.class), skill);
+
+        dtoEmployeesList.forEach(item -> item.setSkills(selectEmployeesSkills(item.getId())));
+
+        return dtoEmployeesList;
+    }
+
+    public static List<String> selectEmployeesSkills(Integer employeeId){
         return getJdbcTemplate().query("select skills.skill " +
                 "from skills_employees, skills " +
                 "where skills_employees.employees_id = ? and " +
@@ -105,7 +139,7 @@ public class ODBC_PubsBD {
                 "where id = ?", (RowMapper) (resultSet, i) -> resultSet.getString(1), employeeId);
         return stringList.get(0);
     }
-
+// exception
     public static DTOObjects selectObject(Integer objectId) {
         List<DTOObjects> stringList = getJdbcTemplate().query("select id, address, startDate, finishDate " +
                 "from object " +
@@ -121,31 +155,46 @@ public class ODBC_PubsBD {
                 new BeanPropertySqlParameterSource(dtoObjectEmployees));
     }
 
-    public static Date selectMinWorkDate(Integer objectEmployeesId) {
-        List<Date> dateList = getJdbcTemplate().query("select min(date) " +
+    public static LocalDate selectMinWorkDate(Integer objectEmployeesId) {
+        List<LocalDate> dateList = getJdbcTemplate().query("select min(date) " +
                 "from worktracking " +
-                "where object_employees_id = ?", (RowMapper) (resultSet, i) -> resultSet.getDate(1), objectEmployeesId);
+                "where object_employees_id = ?", (RowMapper) (resultSet, i) -> resultSet.getObject(1, LocalDate.class),
+                objectEmployeesId);
         if (dateList.get(0) != null) {
-            return new java.util.Date(dateList.get(0).getTime());
+            return dateList.get(0);
         }
         return null;
     }
 
-    public static Date selectMaxWorkDate(Integer objectEmployeesId) {
-        List<Date> dateList = getJdbcTemplate().query("select max(date) " +
-                "from worktracking " +
-                "where object_employees_id = ?", (RowMapper) (resultSet, i) -> resultSet.getDate(1), objectEmployeesId);
-        if (dateList.get(0) != null) {
-            return new java.util.Date(dateList.get(0).getTime());
-        }
-        return null;
-    }
-
-    public static LocalDate selectMaxWorkDate2(Integer objectEmployeesId) {
+    public static LocalDate selectMaxWorkDate(Integer objectEmployeesId) {
         List<LocalDate> dateList = getJdbcTemplate().query("select max(date) " +
                 "from worktracking " +
                 "where object_employees_id = ?", (RowMapper) (resultSet, i) -> resultSet.getObject(1, LocalDate.class),
                 objectEmployeesId);
+        if (dateList.get(0) != null) {
+            return dateList.get(0);
+        }
+        return null;
+    }
+
+    public static LocalDate selectLastObjEmpFinishDate(Integer employeesId, LocalDate curDate) {
+        List<LocalDate> dateList = getJdbcTemplate().query("select max(finishDate) " +
+                        "from object_employees " +
+                        "where employees_id = ? and " +
+                        "finishDate < ?", (RowMapper) (resultSet, i) -> resultSet.getObject(1, LocalDate.class),
+                employeesId, curDate);
+        if (dateList.get(0) != null) {
+            return dateList.get(0);
+        }
+        return null;
+    }
+
+    public static LocalDate selectNextObjEmpStartDate(Integer employeesId, LocalDate curDate) {
+        List<LocalDate> dateList = getJdbcTemplate().query("select max(startDate) " +
+                        "from object_employees " +
+                        "where employees_id = ? and " +
+                        "startDate > ?", (RowMapper) (resultSet, i) -> resultSet.getObject(1, LocalDate.class),
+                employeesId, curDate);
         if (dateList.get(0) != null) {
             return dateList.get(0);
         }
@@ -174,6 +223,11 @@ public class ODBC_PubsBD {
         getJdbcTemplate().update("UPDATE object_employees " +
                 "SET finishDate = ? " +
                 "WHERE id = ?", finishDate, objectEmployeesId);
+    }
+
+    public static List<String> selectAllSkills(){
+        return getJdbcTemplate().query("select skill from skills",
+                (RowMapper) (resultSet, i) -> resultSet.getString(1));
     }
 
 }

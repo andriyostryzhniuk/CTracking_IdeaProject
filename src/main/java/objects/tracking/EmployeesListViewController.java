@@ -12,8 +12,8 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import objects.tracking.dto.DTOEmployees;
 import overridden.elements.combo.box.AutoCompleteComboBoxListener;
-import static objects.tracking.ODBC_PubsBD.selectAllEmployees;
-import static objects.tracking.ODBC_PubsBD.selectFreeEmployees;
+
+import static objects.tracking.ODBC_PubsBD.*;
 
 public class EmployeesListViewController {
 
@@ -27,6 +27,7 @@ public class EmployeesListViewController {
     private ObservableList<String> employeesNamesList = FXCollections.observableArrayList();
 
     private boolean isAllEmployees;
+    private String employeesSkill = null;
 
     @FXML
     public void initialize(){
@@ -41,10 +42,14 @@ public class EmployeesListViewController {
         listView.getItems().clear();
         employeesNamesList.clear();
 
-        if (isAllEmployees == false) {
+        if (! isAllEmployees && employeesSkill == null) {
             employeesListViewDataList.addAll(selectFreeEmployees());
-        } else {
+        } else if (isAllEmployees && employeesSkill == null) {
             employeesListViewDataList.addAll(selectAllEmployees());
+        } else if (! isAllEmployees && employeesSkill != null) {
+            employeesListViewDataList.addAll(selectFreeEmployeesSkills(employeesSkill));
+        }   else if (isAllEmployees && employeesSkill != null) {
+            employeesListViewDataList.addAll(selectAllEmployeesSkills(employeesSkill));
         }
 
         employeesListViewDataList.forEach(item -> {
@@ -70,10 +75,8 @@ public class EmployeesListViewController {
         new AutoCompleteComboBoxListener<>(comboBoxSearch, comboBoxListener);
 
         comboBoxSearch.setCellFactory(listCell -> {
-            final ListCell<String> cell = new ListCell<String>() {
-                {
+            final ListCell<String> cell = new ListCell<String>() {{
                     super.setOnMousePressed((MouseEvent event) -> {
-//                            mouse pressed
                         comboBoxListener.setValue(comboBoxSearch.getValue());
                     });
                 }
@@ -88,7 +91,6 @@ public class EmployeesListViewController {
         });
 
         comboBoxListener.valueProperty().addListener((observableValue, oldValue, newValue) -> {
-//                change detected
             if (newValue != null) {
                 comboBoxSearch.getStyleClass().remove("warning");
                 searchInListView();
@@ -140,4 +142,7 @@ public class EmployeesListViewController {
         return isAllEmployees;
     }
 
+    public void setEmployeesSkill(String employeesSkill) {
+        this.employeesSkill = employeesSkill;
+    }
 }
