@@ -140,7 +140,7 @@ public class ODBC_PubsBD {
                 "where id = ?", (RowMapper) (resultSet, i) -> resultSet.getString(1), employeeId);
         return stringList.get(0);
     }
-// exception
+
     public static DTOObjects selectObject(Integer objectId) {
         List<DTOObjects> stringList = getJdbcTemplate().query("select id, address, startDate, finishDate " +
                 "from object " +
@@ -172,10 +172,6 @@ public class ODBC_PubsBD {
                 "from worktracking " +
                 "where object_employees_id = ?",
                 new Object []{objectEmployeesId}, LocalDate.class);
-//        LOGGER.info("localDate: " + dateList.get(0));
-//        if (dateList.get(0) != null) {
-//            return dateList.get(0);
-//        }
         return dateList;
     }
 
