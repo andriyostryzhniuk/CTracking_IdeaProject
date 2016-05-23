@@ -57,7 +57,7 @@ public class JDBC42ResultSet extends JDBC4ResultSet {
      * @throws SQLException
      */
     public <T> T getObject(int columnIndex, Class<T> type) throws SQLException {
-        System.out.println("GET_OBJECT");
+//        System.out.println("GET_OBJECT");
         if (type == null) {
             throw SQLError.createSQLException("Type parameter can not be null", SQLError.SQL_STATE_ILLEGAL_ARGUMENT, getExceptionInterceptor());
         }

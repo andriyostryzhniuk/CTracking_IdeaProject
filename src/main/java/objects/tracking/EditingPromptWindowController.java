@@ -56,11 +56,7 @@ public class EditingPromptWindowController {
     public void setStartDatePickerValidation(){
         LocalDate minStartDate = determineMinStartDate();
         LocalDate maxStartDate = determineMaxStartDate();
-        if (maxStartDate != null && maxStartDate.isBefore(minStartDate)) {
-            maxStartDate = null;
-        }
 
-        LocalDate finalMaxStartDate = maxStartDate;
         Callback<DatePicker, DateCell> dayCellFactory = new Callback<DatePicker, DateCell>() {
             public DateCell call(final DatePicker datePicker) {
                 return new DateCell() {
@@ -72,7 +68,7 @@ public class EditingPromptWindowController {
 //                        if (day == DayOfWeek.SATURDAY || day == DayOfWeek.SUNDAY) {
 //                            this.setTextFill(Color.BLUE);
 //                        }
-                        if (item.isBefore(minStartDate) || (finalMaxStartDate != null && item.isAfter(finalMaxStartDate))) {
+                        if (item.isBefore(minStartDate) || (maxStartDate != null && item.isAfter(maxStartDate))) {
                             this.setDisable(true);
                         }
                     }
@@ -85,6 +81,7 @@ public class EditingPromptWindowController {
 
     public void setFinishDatePickerValidation(){
         LocalDate minFinishDate = determineMinFinishDate();
+        LocalDate maxFinishDate = determineMaxFinishDate();
         Callback<DatePicker, DateCell> dayCellFactory = new Callback<DatePicker, DateCell>() {
             public DateCell call(final DatePicker datePicker) {
                 return new DateCell() {
@@ -92,7 +89,8 @@ public class EditingPromptWindowController {
                     public void updateItem(LocalDate item, boolean empty)
                     {
                         super.updateItem(item, empty);
-                        if (item.isBefore(minFinishDate)) {
+                        if (item.isBefore(minFinishDate) ||
+                                (maxFinishDate != null && item.compareTo(maxFinishDate) >= 0)) {
                             this.setDisable(true);
                         }
                     }
@@ -103,15 +101,17 @@ public class EditingPromptWindowController {
         finishDatePicker.setDayCellFactory(dayCellFactory);
     }
 
-    public LocalDate determineMinStartDate(){
-        LocalDate minStartDate = LocalDate.now();
-        if (minStartDate.isBefore(dtoObjects.getStartDate())) {
-            minStartDate = dtoObjects.getStartDate();
+    private LocalDate determineMinStartDate(){
+        LocalDate minStartDate = dtoObjects.getStartDate();
+        LocalDate lastObjEmpFinishDate =
+                selectLastObjEmpFinishDate(dtoObjectEmployees.getEmployeeId(), startDatePicker.getValue());
+        if (lastObjEmpFinishDate != null && lastObjEmpFinishDate.compareTo(minStartDate) >= 0) {
+            minStartDate = lastObjEmpFinishDate.plusDays(1);
         }
         return minStartDate;
     }
 
-    public LocalDate determineMaxStartDate(){
+    private LocalDate determineMaxStartDate(){
         LocalDate maxStartDate = null;
         if (finishDatePicker.getValue() != null) {
             maxStartDate = finishDatePicker.getValue();
@@ -125,7 +125,7 @@ public class EditingPromptWindowController {
         return maxStartDate;
     }
 
-    public LocalDate determineMinFinishDate(){
+    private LocalDate determineMinFinishDate(){
         LocalDate minFinishDate = determineMinStartDate();
         if (startDatePicker != null) {
             minFinishDate = startDatePicker.getValue();
@@ -134,10 +134,16 @@ public class EditingPromptWindowController {
         if (maxWorkDate != null && minFinishDate.isBefore(maxWorkDate)) {
             minFinishDate = maxWorkDate;
         }
-        if (minFinishDate.isBefore(LocalDate.now())) {
-            minFinishDate = LocalDate.now();
-        }
         return minFinishDate;
+    }
+
+    private LocalDate determineMaxFinishDate(){
+        LocalDate nextObjEmpStartDate =
+                selectNextObjEmpStartDate(dtoObjectEmployees.getEmployeeId(), startDatePicker.getValue());
+        if (nextObjEmpStartDate == null) {
+            return null;
+        }
+        return nextObjEmpStartDate;
     }
 
     public void escape(ActionEvent actionEvent) {

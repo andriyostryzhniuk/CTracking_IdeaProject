@@ -191,7 +191,7 @@ public class ODBC_PubsBD {
         List<LocalDate> dateList = getJdbcTemplate().query("select max(startDate) " +
                         "from object_employees " +
                         "where employees_id = ? and " +
-                        "startDate > ?", (RowMapper) (resultSet, i) -> resultSet.getObject(1, LocalDate.class),
+                        "startDate > ? ", (RowMapper) (resultSet, i) -> resultSet.getObject(1, LocalDate.class),
                 employeesId, curDate);
         if (dateList.get(0) != null) {
             return dateList.get(0);
