@@ -22,7 +22,7 @@ public class ContextMenu {
                 }
                 MenuItem editItem = new MenuItem("Редагувати");
                 editItem.setOnAction(event -> {
-                    windowObjectsTrackingController.editRecord(row.getItem());
+                    windowObjectsTrackingController.editRecord(row.getItem(), false);
                 });
 
                 MenuItem removeItem = new MenuItem("Видалити");

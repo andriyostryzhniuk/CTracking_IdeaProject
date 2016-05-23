@@ -17,11 +17,13 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.time.LocalDate;
 import static objects.tracking.ODBC_PubsBD.*;
+import static objects.tracking.ODBC_PubsBD.insertIntoObjectEmployees;
 
 public class EditingPromptWindowController {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(EditingPromptWindowController.class);
 
+    private boolean toUpdate;
     private DTOObjectEmployees dtoObjectEmployees;
     private DTOObjects dtoObjects;
 
@@ -145,7 +147,7 @@ public class EditingPromptWindowController {
     }
 
     public void escape(ActionEvent actionEvent) {
-        close();
+        close(false);
     }
 
     public void save(ActionEvent actionEvent) {
@@ -157,18 +159,23 @@ public class EditingPromptWindowController {
             dtoObjectEmployees.setFinishDate(null);
         }
         dtoObjectEmployees.initFormatFinishDate();
-        updateObjectEmployees(dtoObjectEmployees);
+        if (toUpdate) {
+            updateObjectEmployees(dtoObjectEmployees);
+        } else {
+            insertIntoObjectEmployees(dtoObjectEmployees);
+        }
+
         windowObjectsTrackingController.initTableView(windowObjectsTrackingController.getDtoObjectEmployeesList(),
                 objectLabel.getText());
         if (! windowObjectsTrackingController.getEmployeesListViewController().isAllEmployees()) {
             windowObjectsTrackingController.getEmployeesListViewController().initList(true);
         }
-        close();
+        close(true);
     }
 
-    public void close(){
+    public void close(boolean success){
+        windowObjectsTrackingController.setSuccessSave(success);
         Stage stage = (Stage) rootGroup.getScene().getWindow();
-//        menuTableView.initTableView();
         stage.close();
     }
 
@@ -200,4 +207,7 @@ public class EditingPromptWindowController {
         this.windowObjectsTrackingController = windowObjectsTrackingController;
     }
 
+    public void setToUpdate(boolean toUpdate) {
+        this.toUpdate = toUpdate;
+    }
 }

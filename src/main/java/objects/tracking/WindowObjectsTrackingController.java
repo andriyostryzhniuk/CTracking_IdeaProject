@@ -48,6 +48,7 @@ public class WindowObjectsTrackingController<T extends DTOObjectEmployees> {
 
     private EmployeesListViewController employeesListViewController;
     private ObjectsListViewController objectsListViewController;
+    private boolean successSave;
 
     private ObservableList<T> tableViewDataList = FXCollections.observableArrayList();
     private List<T> dtoObjectEmployeesList;
@@ -147,7 +148,7 @@ public class WindowObjectsTrackingController<T extends DTOObjectEmployees> {
         tableView.getTableView().setItems(tableViewDataList);
     }
 
-    public void editRecord(T item) {
+    public boolean editRecord(T item, boolean toUpdate) {
         Stage primaryStage = new Stage();
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/objects.tracking/EditingPromptWindow.fxml"));
         Parent root = null;
@@ -158,6 +159,7 @@ public class WindowObjectsTrackingController<T extends DTOObjectEmployees> {
         }
 
         EditingPromptWindowController editingPromptWindowController = fxmlLoader.getController();
+        editingPromptWindowController.setToUpdate(toUpdate);
         editingPromptWindowController.setDtoObjectEmployees(item);
         editingPromptWindowController.setWindowObjectsTrackingController(this);
 
@@ -167,6 +169,8 @@ public class WindowObjectsTrackingController<T extends DTOObjectEmployees> {
         primaryStage.initModality(Modality.WINDOW_MODAL);
         primaryStage.initOwner(rootBorderPane.getScene().getWindow());
         primaryStage.showAndWait();
+
+        return successSave;
     }
 
     public void removeRecord(T item) {
@@ -252,5 +256,9 @@ public class WindowObjectsTrackingController<T extends DTOObjectEmployees> {
 
     public EmployeesListViewController getEmployeesListViewController() {
         return employeesListViewController;
+    }
+
+    public void setSuccessSave(boolean successSave) {
+        this.successSave = successSave;
     }
 }

@@ -176,7 +176,10 @@ public class ObjectsListViewController {
                     finishDate = nextObjEmpStartDate.minusDays(1);
                 }
 
-                insertIntoObjectEmployees(new DTOObjectEmployees(null, objectId, employeeId, startDate, finishDate));
+                if (! windowObjectsTrackingController.editRecord(
+                        new DTOObjectEmployees(null, objectId, employeeId, startDate, finishDate), false)) {
+                    return;
+                }
 
                 initList(true);
                 employeesListViewController.initList(true);
