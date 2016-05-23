@@ -16,7 +16,6 @@ import overridden.elements.combo.box.AutoCompleteComboBoxListener;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.Optional;
-
 import static objects.tracking.ODBC_PubsBD.*;
 
 public class ObjectsListViewController {
@@ -33,21 +32,22 @@ public class ObjectsListViewController {
     private WindowObjectsTrackingController windowObjectsTrackingController;
     private EmployeesListViewController employeesListViewController;
     private Integer selectedObjectId;
+    private LocalDate dateView = LocalDate.now();
 
     @FXML
     public void initialize(){
         initComboBoxSearch();
         rootGridPane.add(comboBoxSearch, 0, 0);
         comboBoxSearch.setMaxWidth(Double.MAX_VALUE);
-        initList();
+        initList(false);
     }
 
-    public void initList(){
+    public void initList(boolean isNeedSelectItems){
         Integer selectedRowIndex = listView.getSelectionModel().getSelectedIndex();
         objectsListViewDataList.clear();
         listView.getItems().clear();
         objectsNamesList.clear();
-        objectsListViewDataList.addAll(selectObjects());
+        objectsListViewDataList.addAll(selectObjects(dateView));
 
         objectsListViewDataList.forEach(item -> {
             item.initPaneContainer();
@@ -63,9 +63,11 @@ public class ObjectsListViewController {
             }
         });
 
-        listView.getSelectionModel().select(selectedRowIndex);
-        listView.getFocusModel().focus(selectedRowIndex);
-        listView.scrollTo(selectedRowIndex);
+        if (isNeedSelectItems) {
+            listView.getSelectionModel().select(selectedRowIndex);
+            listView.getFocusModel().focus(selectedRowIndex);
+            listView.scrollTo(selectedRowIndex);
+        }
         new AutoCompleteComboBoxListener<>(comboBoxSearch, comboBoxListener);
     }
 
@@ -157,12 +159,12 @@ public class ObjectsListViewController {
             if (db.hasString()) {
                 Integer objectId = Integer.parseInt(pane.getId());
                 Integer employeeId = Integer.parseInt(db.getString());
-                LocalDate startDate = LocalDate.now();
+                LocalDate startDate = dateView;
                 LocalDate finishDate = null;
 
                 LocalDate nextObjEmpStartDate;
                 DTOObjectEmpAddress dtoObjectEmpAddress;
-                if ((dtoObjectEmpAddress = selectIfEmployeeIsOnObject(employeeId)) != null) {
+                if ((dtoObjectEmpAddress = selectIfEmployeeIsOnObject(employeeId, dateView)) != null) {
                     if (showDeletingConfirmation(dtoObjectEmpAddress.getAddress())) {
                         if (! terminateEmployeesJobOnObject(dtoObjectEmpAddress)) {
                             return;
@@ -176,8 +178,8 @@ public class ObjectsListViewController {
 
                 insertIntoObjectEmployees(new DTOObjectEmployees(null, objectId, employeeId, startDate, finishDate));
 
-                initList();
-                employeesListViewController.initList();
+                initList(true);
+                employeesListViewController.initList(true);
 
                 success = true;
             }
@@ -211,7 +213,7 @@ public class ObjectsListViewController {
 
     private boolean terminateEmployeesJobOnObject(DTOObjectEmpAddress dtoObjectEmpAddress) {
         Integer objectEmployeesId = dtoObjectEmpAddress.getId();
-        LocalDate yesterdaysDate = LocalDate.now().minusDays(1);
+        LocalDate yesterdaysDate = dateView.minusDays(1);
 
         if (dtoObjectEmpAddress.getStartDate().isAfter(yesterdaysDate)) {
             showStartDateError(dtoObjectEmpAddress.getStartDate(), yesterdaysDate);
@@ -256,4 +258,7 @@ public class ObjectsListViewController {
         this.windowObjectsTrackingController = windowObjectsTrackingController;
     }
 
+    public void setDateView(LocalDate dateView) {
+        this.dateView = dateView;
+    }
 }

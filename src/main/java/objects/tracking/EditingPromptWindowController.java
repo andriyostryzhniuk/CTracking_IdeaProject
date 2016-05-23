@@ -16,8 +16,6 @@ import objects.tracking.dto.DTOObjects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import java.time.LocalDate;
-import java.time.ZoneId;
-import java.util.Date;
 import static objects.tracking.ODBC_PubsBD.*;
 
 public class EditingPromptWindowController {
@@ -163,7 +161,7 @@ public class EditingPromptWindowController {
         windowObjectsTrackingController.initTableView(windowObjectsTrackingController.getDtoObjectEmployeesList(),
                 objectLabel.getText());
         if (! windowObjectsTrackingController.getEmployeesListViewController().isAllEmployees()) {
-            windowObjectsTrackingController.getEmployeesListViewController().initList();
+            windowObjectsTrackingController.getEmployeesListViewController().initList(true);
         }
         close();
     }

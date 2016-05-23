@@ -9,3 +9,7 @@
  #combo-box-menu-item {
      -fx-pref-width: 200;
  }
+
+ .combo-box .arrow-button {
+     -fx-padding: 0 9 0 10;
+ }

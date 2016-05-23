@@ -12,7 +12,7 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import objects.tracking.dto.DTOEmployees;
 import overridden.elements.combo.box.AutoCompleteComboBoxListener;
-
+import java.time.LocalDate;
 import static objects.tracking.ODBC_PubsBD.*;
 
 public class EmployeesListViewController {
@@ -28,6 +28,7 @@ public class EmployeesListViewController {
 
     private boolean isAllEmployees;
     private String employeesSkill = null;
+    private LocalDate dateView = LocalDate.now();
 
     @FXML
     public void initialize(){
@@ -36,18 +37,18 @@ public class EmployeesListViewController {
         comboBoxSearch.setMaxWidth(Double.MAX_VALUE);
     }
 
-    public void initList(){
+    public void initList(boolean isNeedSelectItems){
         Integer selectedRowIndex = listView.getSelectionModel().getSelectedIndex();
         employeesListViewDataList.clear();
         listView.getItems().clear();
         employeesNamesList.clear();
 
         if (! isAllEmployees && employeesSkill == null) {
-            employeesListViewDataList.addAll(selectFreeEmployees());
+            employeesListViewDataList.addAll(selectFreeEmployees(dateView));
         } else if (isAllEmployees && employeesSkill == null) {
             employeesListViewDataList.addAll(selectAllEmployees());
         } else if (! isAllEmployees && employeesSkill != null) {
-            employeesListViewDataList.addAll(selectFreeEmployeesSkills(employeesSkill));
+            employeesListViewDataList.addAll(selectFreeEmployeesSkills(dateView, employeesSkill));
         }   else if (isAllEmployees && employeesSkill != null) {
             employeesListViewDataList.addAll(selectAllEmployeesSkills(employeesSkill));
         }
@@ -59,9 +60,11 @@ public class EmployeesListViewController {
             employeesNamesList.add(item.getFullName());
         });
 
-        listView.getSelectionModel().select(selectedRowIndex);
-        listView.getFocusModel().focus(selectedRowIndex);
-        listView.scrollTo(selectedRowIndex);
+        if (isNeedSelectItems) {
+            listView.getSelectionModel().select(selectedRowIndex);
+            listView.getFocusModel().focus(selectedRowIndex);
+            listView.scrollTo(selectedRowIndex);
+        }
         new AutoCompleteComboBoxListener<>(comboBoxSearch, comboBoxListener);
     }
 
@@ -144,5 +147,9 @@ public class EmployeesListViewController {
 
     public void setEmployeesSkill(String employeesSkill) {
         this.employeesSkill = employeesSkill;
+    }
+
+    public void setDateView(LocalDate dateView) {
+        this.dateView = dateView;
     }
 }

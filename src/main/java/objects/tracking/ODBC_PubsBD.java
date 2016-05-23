@@ -19,19 +19,20 @@ public class ODBC_PubsBD {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ODBC_PubsBD.class);
 
-    public static List<DTOEmployees> selectFreeEmployees() {
+    public static List<DTOEmployees> selectFreeEmployees(LocalDate dateView) {
         List<DTOEmployees> dtoEmployeesList = getJdbcTemplate().query("select employees.id, " +
                 "concat( employees.surname, ' ', left (employees.name, 1), '. ', " +
                 "   left (employees.middleName, 1), '.' ) as fullName " +
                 "from employees left join ( " +
                 "   select employees_id " +
                 "   from object_employees " +
-                "   where (startDate <= curdate() and finishDate is null) or " +
-                "   curdate() between startDate and finishDate) who_is_on_object " +
+                "   where (startDate <= ? and finishDate is null) or " +
+                "   ? between startDate and finishDate) who_is_on_object " +
                 "   on employees.id = who_is_on_object.employees_id " +
                 "where who_is_on_object.employees_id is null and " +
                 "employees.lastDay is null " +
-                "order by employees.surname asc", BeanPropertyRowMapper.newInstance(DTOEmployees.class));
+                "order by employees.surname asc",
+                BeanPropertyRowMapper.newInstance(DTOEmployees.class), dateView, dateView);
 
         dtoEmployeesList.forEach(item -> item.setSkills(selectEmployeesSkills(item.getId())));
 
@@ -50,22 +51,23 @@ public class ODBC_PubsBD {
         return dtoEmployeesList;
     }
 
-    public static List<DTOEmployees> selectFreeEmployeesSkills(String skill) {
+    public static List<DTOEmployees> selectFreeEmployeesSkills(LocalDate dateView, String skill) {
         List<DTOEmployees> dtoEmployeesList = getJdbcTemplate().query("select employees.id, " +
                 "concat( employees.surname, ' ', left (employees.name, 1), '. ', " +
                 "   left (employees.middleName, 1), '.' ) as fullName " +
                 "from skills_employees, skills, employees left join ( " +
                 "   select employees_id " +
                 "   from object_employees " +
-                "   where (startDate <= curdate() and finishDate is null) or " +
-                "   curdate() between startDate and finishDate) who_is_on_object " +
+                "   where (startDate ? and finishDate is null) or " +
+                "   ? between startDate and finishDate) who_is_on_object " +
                 "   on employees.id = who_is_on_object.employees_id " +
                 "where who_is_on_object.employees_id is null and " +
                 "employees.lastDay is null and " +
                 "employees.id = skills_employees.employees_id and " +
                 "skills_employees.skills_id = skills.id and " +
                 "skills.skill = ? " +
-                "order by employees.surname asc", BeanPropertyRowMapper.newInstance(DTOEmployees.class), skill);
+                "order by employees.surname asc",
+                BeanPropertyRowMapper.newInstance(DTOEmployees.class), dateView, dateView, skill);
 
         dtoEmployeesList.forEach(item -> item.setSkills(selectEmployeesSkills(item.getId())));
 
@@ -95,13 +97,13 @@ public class ODBC_PubsBD {
                 employeeId);
     }
 
-    public static List<DTOObjects> selectObjects() {
+    public static List<DTOObjects> selectObjects(LocalDate dateView) {
         List<DTOObjects> dtoObjectsList = getJdbcTemplate().query("select id, address " +
                 "from object " +
-                "where startDate <= curdate() and " +
-                "(finishDate >= curdate() or " +
+                "where startDate <= ? and " +
+                "(finishDate >= ? or " +
                 "finishDate is null) " +
-                "order by address asc", BeanPropertyRowMapper.newInstance(DTOObjects.class));
+                "order by address asc", BeanPropertyRowMapper.newInstance(DTOObjects.class), dateView, dateView);
 
         dtoObjectsList.forEach(item -> {
             item.setObjectEmployeesList(selectObjectEmployeesList(item.getId()));
@@ -170,32 +172,32 @@ public class ODBC_PubsBD {
                 new Object []{objectEmployeesId}, LocalDate.class);
     }
 
-    public static LocalDate selectLastObjEmpFinishDate(Integer employeesId, LocalDate curDate) {
+    public static LocalDate selectLastObjEmpFinishDate(Integer employeesId, LocalDate dateView) {
         return getJdbcTemplate().queryForObject("select max(finishDate) " +
                         "from object_employees " +
                         "where employees_id = ? and " +
                         "finishDate < ?",
-                new Object []{employeesId, curDate}, LocalDate.class);
+                new Object []{employeesId, dateView}, LocalDate.class);
     }
 
-    public static LocalDate selectNextObjEmpStartDate(Integer employeesId, LocalDate curDate) {
+    public static LocalDate selectNextObjEmpStartDate(Integer employeesId, LocalDate dateView) {
         return getJdbcTemplate().queryForObject("select min(startDate) " +
                         "from object_employees " +
                         "where employees_id = ? and " +
                         "startDate > ?",
-                new Object []{employeesId, curDate}, LocalDate.class);
+                new Object []{employeesId, dateView}, LocalDate.class);
     }
 
-    public static DTOObjectEmpAddress selectIfEmployeeIsOnObject(Integer employeeId) {
+    public static DTOObjectEmpAddress selectIfEmployeeIsOnObject(Integer employeeId, LocalDate dateView) {
         List<DTOObjectEmpAddress> dtoObjectEmpAddressesList = getJdbcTemplate().query("select object_employees.id, " +
                 "object_employees.startDate, object_employees.finishDate, object.address " +
                 "from object_employees, object " +
                 "where object_employees.employees_id = ? and " +
-                "object_employees.startDate <= curdate() and ( " +
-                "object_employees.finishDate >= curdate() or " +
+                "object_employees.startDate <= ? and ( " +
+                "object_employees.finishDate >= ? or " +
                 "object_employees.finishDate is null) and " +
                 "object_employees.object_id = object.id", BeanPropertyRowMapper.newInstance(DTOObjectEmpAddress.class),
-                employeeId);
+                employeeId, dateView, dateView);
 
         if (dtoObjectEmpAddressesList.size() == 0) {
             return null;

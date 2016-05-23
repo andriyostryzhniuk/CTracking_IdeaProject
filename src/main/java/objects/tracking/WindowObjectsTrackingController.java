@@ -25,6 +25,7 @@ import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import objects.tracking.dto.DTOObjectEmployees;
 import java.io.IOException;
+import java.time.LocalDate;
 import java.util.List;
 import static objects.tracking.ContextMenu.initContextMenu;
 import static objects.tracking.ODBC_PubsBD.*;
@@ -39,6 +40,8 @@ public class WindowObjectsTrackingController<T extends DTOObjectEmployees> {
     public StackPane stackPane;
     public Label objectLabel;
     public GridPane skillsGridPane;
+    public DatePicker datePicker;
+    private LocalDate oldDatePickerValue;
     private ComboBox skillsComboBox;
     private ComboBox comboBoxListener = new ComboBox();
 //    public TextArea notesTextArea;
@@ -56,6 +59,8 @@ public class WindowObjectsTrackingController<T extends DTOObjectEmployees> {
 
     @FXML
     public void initialize(){
+        initDatePicker();
+
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/objects.tracking/EmployeesListView.fxml"));
         try {
             gridPane.add(fxmlLoader.load(), 1, 0);
@@ -83,10 +88,10 @@ public class WindowObjectsTrackingController<T extends DTOObjectEmployees> {
 
     private void initSkillsControls(){
         skillsComboBox = initSkillsComboBox();
-        skillsGridPane.add(skillsComboBox, 0, 0);
+        skillsGridPane.add(skillsComboBox, 0, 1);
         Button rejectDateButton = initRejectDateButton();
-        skillsGridPane.add(rejectDateButton, 0, 0);
-        skillsGridPane.setMargin(rejectDateButton, new Insets(2, 2, 2, 152));
+        skillsGridPane.add(rejectDateButton, 0, 1);
+        skillsGridPane.setMargin(rejectDateButton, new Insets(0, 2, 1, 149));
     }
 
     private void setTableViewParameters(){
@@ -106,10 +111,10 @@ public class WindowObjectsTrackingController<T extends DTOObjectEmployees> {
         contentTypeChoiceBox.valueProperty().addListener((ChangeListener<String>) (observableValue, oldValue, newValue) -> {
             if (newValue.equals(contentTypeChoiceBox.getItems().get(0))) {
                 employeesListViewController.setAllEmployees(false);
-                employeesListViewController.initList();
+                employeesListViewController.initList(false);
             } else {
                 employeesListViewController.setAllEmployees(true);
-                employeesListViewController.initList();
+                employeesListViewController.initList(false);
             }
         });
 
@@ -166,9 +171,9 @@ public class WindowObjectsTrackingController<T extends DTOObjectEmployees> {
 
     public void removeRecord(T item) {
         deleteFromObjectEmployees(item.getId());
-        objectsListViewController.initList();
+        objectsListViewController.initList(true);
         if (!employeesListViewController.isAllEmployees()) {
-            employeesListViewController.initList();
+            employeesListViewController.initList(true);
         }
     }
 
@@ -202,7 +207,7 @@ public class WindowObjectsTrackingController<T extends DTOObjectEmployees> {
             if (newValue != null) {
                 comboBox.getStyleClass().remove("warning");
                 employeesListViewController.setEmployeesSkill(newValue.toString());
-                employeesListViewController.initList();
+                employeesListViewController.initList(false);
                 comboBoxListener.setValue(null);
             }
         });
@@ -215,13 +220,30 @@ public class WindowObjectsTrackingController<T extends DTOObjectEmployees> {
         Image image = new Image(getClass().getResourceAsStream("/icons/reject_icon.png"));
         button.getStylesheets().add(getClass().getResource("/objects.tracking/RejectButtonStyle.css").toExternalForm());
         button.setGraphic(new ImageView(image));
-        button.setTooltip(new Tooltip("Відмінити дату"));
+        button.setTooltip(new Tooltip("Відмінити пошук"));
         button.setOnAction(event -> {
             skillsComboBox.setValue(null);
             employeesListViewController.setEmployeesSkill(null);
-            employeesListViewController.initList();
+            employeesListViewController.initList(false);
         });
         return button;
+    }
+
+    private void initDatePicker(){
+        datePicker.setTooltip(new Tooltip("Дата перегляду"));
+        datePicker.setValue(LocalDate.now());
+        oldDatePickerValue = datePicker.getValue();
+
+        datePicker.valueProperty().addListener(observable -> {
+            LocalDate newValue = datePicker.getValue();
+            if (oldDatePickerValue.compareTo(newValue) != 0) {
+                oldDatePickerValue = newValue;
+                employeesListViewController.setDateView(newValue);
+                employeesListViewController.initList(false);
+                objectsListViewController.setDateView(newValue);
+                objectsListViewController.initList(false);
+            }
+        });
     }
 
     public List<T> getDtoObjectEmployeesList() {
