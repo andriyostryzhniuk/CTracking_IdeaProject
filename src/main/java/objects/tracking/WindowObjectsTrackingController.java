@@ -41,6 +41,7 @@ public class WindowObjectsTrackingController<T extends DTOObjectEmployees> {
     public Label objectLabel;
     public GridPane skillsGridPane;
     public DatePicker datePicker;
+    public Button todayButton;
     private LocalDate oldDatePickerValue;
     private ComboBox skillsComboBox;
     private ComboBox comboBoxListener = new ComboBox();
@@ -61,6 +62,7 @@ public class WindowObjectsTrackingController<T extends DTOObjectEmployees> {
     @FXML
     public void initialize(){
         initDatePicker();
+        initTodayButton();
 
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/objects.tracking/EmployeesListView.fxml"));
         try {
@@ -248,6 +250,14 @@ public class WindowObjectsTrackingController<T extends DTOObjectEmployees> {
                 objectsListViewController.initList(false);
             }
         });
+    }
+
+    private void initTodayButton(){
+        Image image = new Image(getClass().getResourceAsStream("/icons/today_icon.png"));
+        todayButton.getStylesheets().add(getClass().getResource("/objects.tracking/RejectButtonStyle.css").toExternalForm());
+        todayButton.setGraphic(new ImageView(image));
+        todayButton.setTooltip(new Tooltip("Сьогоднішня дата"));
+        todayButton.setOnAction(event -> datePicker.setValue(LocalDate.now()));
     }
 
     public List<T> getDtoObjectEmployeesList() {

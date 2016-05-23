@@ -58,7 +58,7 @@ public class ODBC_PubsBD {
                 "from skills_employees, skills, employees left join ( " +
                 "   select employees_id " +
                 "   from object_employees " +
-                "   where (startDate ? and finishDate is null) or " +
+                "   where (startDate <= ? and finishDate is null) or " +
                 "   ? between startDate and finishDate) who_is_on_object " +
                 "   on employees.id = who_is_on_object.employees_id " +
                 "where who_is_on_object.employees_id is null and " +
