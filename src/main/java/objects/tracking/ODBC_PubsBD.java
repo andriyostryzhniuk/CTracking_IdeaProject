@@ -121,7 +121,7 @@ public class ODBC_PubsBD {
                 BeanPropertyRowMapper.newInstance(DTOObjectEmployees.class), objectId);
     }
 
-    public static void insertIntoObjectEmployees(DTOObjectEmployees dtoObjectEmployees){
+    public static void insertIntoObjectEmployees(DTOObjectEmployees dtoObjectEmployees) {
         getNamedParameterJdbcTemplate().update("INSERT INTO object_employees " +
                         "(id, object_id, employees_id, startDate, finishDate) " +
                         "VALUES (:id, :objectId, :employeeId, :startDate, :finishDate)",
@@ -134,11 +134,11 @@ public class ODBC_PubsBD {
     }
 
     public static String selectEmployeesFullName(Integer employeeId) {
-        List<String> stringList = getJdbcTemplate().query("select concat(surname, ' ', left (name, 1), '. ', " +
-                "left (middleName, 1), '.' ) as fullName " +
-                "from employees " +
-                "where id = ?", (RowMapper) (resultSet, i) -> resultSet.getString(1), employeeId);
-        return stringList.get(0);
+        return getJdbcTemplate().queryForObject("select concat(surname, ' ', left (name, 1), '. ', " +
+                        "left (middleName, 1), '.' ) as fullName " +
+                        "from employees " +
+                        "where id = ?",
+                new Object []{employeeId}, String.class);
     }
 
     public static DTOObjects selectObject(Integer objectId) {
@@ -157,51 +157,38 @@ public class ODBC_PubsBD {
     }
 
     public static LocalDate selectMinWorkDate(Integer objectEmployeesId) {
-        List<LocalDate> dateList = getJdbcTemplate().query("select min(date) " +
-                "from worktracking " +
-                "where object_employees_id = ?", (RowMapper) (resultSet, i) -> resultSet.getObject(1, LocalDate.class),
-                objectEmployeesId);
-        if (dateList.get(0) != null) {
-            return dateList.get(0);
-        }
-        return null;
+        return getJdbcTemplate().queryForObject("select min(date) " +
+                        "from worktracking " +
+                        "where object_employees_id = ?",
+                new Object []{objectEmployeesId}, LocalDate.class);
     }
 
     public static LocalDate selectMaxWorkDate(Integer objectEmployeesId) {
-        LocalDate dateList = getJdbcTemplate().queryForObject("select max(date) " +
+        return getJdbcTemplate().queryForObject("select max(date) " +
                 "from worktracking " +
                 "where object_employees_id = ?",
                 new Object []{objectEmployeesId}, LocalDate.class);
-        return dateList;
     }
 
     public static LocalDate selectLastObjEmpFinishDate(Integer employeesId, LocalDate curDate) {
-        List<LocalDate> dateList = getJdbcTemplate().query("select max(finishDate) " +
+        return getJdbcTemplate().queryForObject("select max(finishDate) " +
                         "from object_employees " +
                         "where employees_id = ? and " +
-                        "finishDate < ?", (RowMapper) (resultSet, i) -> resultSet.getObject(1, LocalDate.class),
-                employeesId, curDate);
-        if (dateList.get(0) != null) {
-            return dateList.get(0);
-        }
-        return null;
+                        "finishDate < ?",
+                new Object []{employeesId, curDate}, LocalDate.class);
     }
 
     public static LocalDate selectNextObjEmpStartDate(Integer employeesId, LocalDate curDate) {
-        List<LocalDate> dateList = getJdbcTemplate().query("select max(startDate) " +
+        return getJdbcTemplate().queryForObject("select min(startDate) " +
                         "from object_employees " +
                         "where employees_id = ? and " +
-                        "startDate > ? ", (RowMapper) (resultSet, i) -> resultSet.getObject(1, LocalDate.class),
-                employeesId, curDate);
-        if (dateList.get(0) != null) {
-            return dateList.get(0);
-        }
-        return null;
+                        "startDate > ?",
+                new Object []{employeesId, curDate}, LocalDate.class);
     }
 
     public static DTOObjectEmpAddress selectIfEmployeeIsOnObject(Integer employeeId) {
-        List<DTOObjectEmpAddress> dtoObjectEmpAddressesList = getJdbcTemplate().query("select object.address, " +
-                "object_employees.id as objectEmployeesId " +
+        List<DTOObjectEmpAddress> dtoObjectEmpAddressesList = getJdbcTemplate().query("select object_employees.id, " +
+                "object_employees.startDate, object_employees.finishDate, object.address " +
                 "from object_employees, object " +
                 "where object_employees.employees_id = ? and " +
                 "object_employees.startDate <= curdate() and ( " +

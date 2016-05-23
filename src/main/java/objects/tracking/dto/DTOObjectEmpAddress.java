@@ -1,16 +1,17 @@
 package objects.tracking.dto;
 
-public class DTOObjectEmpAddress {
+import java.time.LocalDate;
+
+public class DTOObjectEmpAddress extends DTOObjectEmployees {
 
     private String address;
-    private Integer objectEmployeesId;
 
     public DTOObjectEmpAddress() {
     }
 
-    public DTOObjectEmpAddress(String address, Integer objectEmployeesId) {
+    public DTOObjectEmpAddress(Integer id, LocalDate startDate, LocalDate finishDate, String address) {
+        super(id, startDate, finishDate);
         this.address = address;
-        this.objectEmployeesId = objectEmployeesId;
     }
 
     public String getAddress() {
@@ -21,11 +22,4 @@ public class DTOObjectEmpAddress {
         this.address = address;
     }
 
-    public Integer getObjectEmployeesId() {
-        return objectEmployeesId;
-    }
-
-    public void setObjectEmployeesId(Integer objectEmployeesId) {
-        this.objectEmployeesId = objectEmployeesId;
-    }
 }

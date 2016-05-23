@@ -151,12 +151,10 @@ public class EditingPromptWindowController {
     }
 
     public void save(ActionEvent actionEvent) {
-        dtoObjectEmployees.setStartDate(Date.from(startDatePicker.getValue().
-                atStartOfDay(ZoneId.systemDefault()).toInstant()));
+        dtoObjectEmployees.setStartDate(startDatePicker.getValue());
         dtoObjectEmployees.initFormatStartDate();
         if (finishDatePicker.getValue() != null) {
-            dtoObjectEmployees.setFinishDate(Date.from(finishDatePicker.getValue().
-                    atStartOfDay(ZoneId.systemDefault()).toInstant()));
+            dtoObjectEmployees.setFinishDate(finishDatePicker.getValue());
         } else {
             dtoObjectEmployees.setFinishDate(null);
         }
@@ -190,12 +188,10 @@ public class EditingPromptWindowController {
     private void setControlsValues(){
         employeeLabel.setText(dtoObjectEmployees.getFullName());
 
-        startDatePicker.setValue(dtoObjectEmployees.getStartDate().
-                toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+        startDatePicker.setValue(dtoObjectEmployees.getStartDate());
 
         if (dtoObjectEmployees.getFinishDate() != null) {
-            finishDatePicker.setValue(dtoObjectEmployees.getFinishDate().
-                    toInstant().atZone(ZoneId.systemDefault()).toLocalDate());
+            finishDatePicker.setValue(dtoObjectEmployees.getFinishDate());
         }
 
         dtoObjects = selectObject(dtoObjectEmployees.getObjectId());

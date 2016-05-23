@@ -220,7 +220,6 @@ public class WindowObjectsTrackingController<T extends DTOObjectEmployees> {
             skillsComboBox.setValue(null);
             employeesListViewController.setEmployeesSkill(null);
             employeesListViewController.initList();
-            System.out.println("button pressed");
         });
         return button;
     }

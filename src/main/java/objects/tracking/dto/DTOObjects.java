@@ -25,11 +25,6 @@ public class DTOObjects extends DtoObject {
         this.finishDate = finishDate;
     }
 
-    public DTOObjects(int id, String address, LocalDate startDate) {
-        super(id, address);
-        this.startDate = startDate;
-    }
-
     public List<DTOObjectEmployees> getObjectEmployeesList() {
         return objectEmployeesList;
     }

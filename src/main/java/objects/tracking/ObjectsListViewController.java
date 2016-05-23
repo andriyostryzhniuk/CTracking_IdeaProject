@@ -15,7 +15,6 @@ import objects.tracking.dto.DTOObjectEmployees;
 import overridden.elements.combo.box.AutoCompleteComboBoxListener;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
-import java.util.Date;
 import java.util.Optional;
 
 import static objects.tracking.ODBC_PubsBD.*;
@@ -158,19 +157,24 @@ public class ObjectsListViewController {
             if (db.hasString()) {
                 Integer objectId = Integer.parseInt(pane.getId());
                 Integer employeeId = Integer.parseInt(db.getString());
+                LocalDate startDate = LocalDate.now();
+                LocalDate finishDate = null;
 
+                LocalDate nextObjEmpStartDate;
                 DTOObjectEmpAddress dtoObjectEmpAddress;
                 if ((dtoObjectEmpAddress = selectIfEmployeeIsOnObject(employeeId)) != null) {
                     if (showDeletingConfirmation(dtoObjectEmpAddress.getAddress())) {
-                        if (! terminateEmployeesJobOnObject(dtoObjectEmpAddress.getObjectEmployeesId())) {
+                        if (! terminateEmployeesJobOnObject(dtoObjectEmpAddress)) {
                             return;
                         }
                     } else {
                         return;
                     }
+                } else if ((nextObjEmpStartDate = selectNextObjEmpStartDate(employeeId, startDate)) != null) {
+                    finishDate = nextObjEmpStartDate.minusDays(1);
                 }
 
-                insertIntoObjectEmployees(new DTOObjectEmployees(null, objectId, employeeId, new Date(), null));
+                insertIntoObjectEmployees(new DTOObjectEmployees(null, objectId, employeeId, startDate, finishDate));
 
                 initList();
                 employeesListViewController.initList();
@@ -205,23 +209,42 @@ public class ObjectsListViewController {
         }
     }
 
-    private boolean terminateEmployeesJobOnObject(Integer objectEmployeesId) {
-        LocalDate maxWorkDate;
-        if ((maxWorkDate = selectMaxWorkDate(objectEmployeesId)) != null && maxWorkDate.compareTo(LocalDate.now()) >= 0) {
-            showDeletingError(LocalDate.now().minusDays(1));
+    private boolean terminateEmployeesJobOnObject(DTOObjectEmpAddress dtoObjectEmpAddress) {
+        Integer objectEmployeesId = dtoObjectEmpAddress.getId();
+        LocalDate yesterdaysDate = LocalDate.now().minusDays(1);
+
+        if (dtoObjectEmpAddress.getStartDate().isAfter(yesterdaysDate)) {
+            showStartDateError(dtoObjectEmpAddress.getStartDate(), yesterdaysDate);
             return false;
         }
-        updateFinishDate(objectEmployeesId, LocalDate.now().minusDays(1));
+
+        LocalDate maxWorkDate;
+        if ((maxWorkDate = selectMaxWorkDate(objectEmployeesId)) != null && maxWorkDate.isAfter(yesterdaysDate)) {
+            showMaxWorkDateError(yesterdaysDate);
+            return false;
+        }
+        updateFinishDate(objectEmployeesId, yesterdaysDate);
         return true;
     }
 
-    private void showDeletingError(LocalDate localDate){
+    private void showMaxWorkDateError(LocalDate localDate){
         Alert alert = new Alert(Alert.AlertType.ERROR);
         alert.setTitle("Помилка");
         alert.setHeaderText(null);
         alert.setContentText("Неможливо закрити виконання роботи за датою "
                 + localDate.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")) +
                 "\nоскільки за даною датою уже є відпрацьовані години.");
+        alert.showAndWait();
+    }
+
+    private void showStartDateError(LocalDate startDate, LocalDate finishDate){
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Помилка");
+        alert.setHeaderText(null);
+        alert.setContentText("Неможливо закрити виконання роботи за датою "
+                + finishDate.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")) +
+                ",\nменшою ніж дата початку роботи "
+                + startDate.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")) + ".");
         alert.showAndWait();
     }
 

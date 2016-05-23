@@ -1,9 +1,7 @@
 package objects.tracking.dto;
 
-import java.text.DateFormat;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import static objects.tracking.ODBC_PubsBD.selectEmployeesFullName;
 
 public class DTOObjectEmployees {
@@ -11,17 +9,18 @@ public class DTOObjectEmployees {
     private Integer id;
     private Integer objectId;
     private Integer employeeId;
-    private Date startDate;
-    private Date finishDate;
+    private LocalDate startDate;
+    private LocalDate finishDate;
     private String fullName;
-    private DateFormat dateFormat;
+    private String pattern = "dd.MM.yyyy";
     private String formatStartDate;
     private String formatFinishDate;
 
     public DTOObjectEmployees() {
     }
 
-    public DTOObjectEmployees(Integer id, Integer objectId, Integer employeeId, Date startDate, Date finishDate) {
+    public DTOObjectEmployees(Integer id, Integer objectId, Integer employeeId,
+                              LocalDate startDate, LocalDate finishDate) {
         this.id = id;
         this.objectId = objectId;
         this.employeeId = employeeId;
@@ -29,14 +28,20 @@ public class DTOObjectEmployees {
         this.finishDate = finishDate;
     }
 
-    public DTOObjectEmployees(Integer id, Integer objectId, Integer employeeId, Date startDate, Date finishDate,
-                              String fullName) {
+    public DTOObjectEmployees(Integer id, Integer objectId, Integer employeeId,
+                              LocalDate startDate, LocalDate finishDate, String fullName) {
         this.id = id;
         this.objectId = objectId;
         this.employeeId = employeeId;
         this.startDate = startDate;
         this.finishDate = finishDate;
         this.fullName = fullName;
+    }
+
+    public DTOObjectEmployees(Integer id, LocalDate startDate, LocalDate finishDate) {
+        this.id = id;
+        this.startDate = startDate;
+        this.finishDate = finishDate;
     }
 
     public Integer getId() {
@@ -63,19 +68,19 @@ public class DTOObjectEmployees {
         this.employeeId = employeeId;
     }
 
-    public Date getStartDate() {
+    public LocalDate getStartDate() {
         return startDate;
     }
 
-    public void setStartDate(Date startDate) {
+    public void setStartDate(LocalDate startDate) {
         this.startDate = startDate;
     }
 
-    public Date getFinishDate() {
+    public LocalDate getFinishDate() {
         return finishDate;
     }
 
-    public void setFinishDate(Date finishDate) {
+    public void setFinishDate(LocalDate finishDate) {
         this.finishDate = finishDate;
     }
 
@@ -102,7 +107,7 @@ public class DTOObjectEmployees {
     }
 
     public void initFormatStartDate(){
-        formatStartDate = getDateFormat().format(startDate);
+        formatStartDate = startDate.format(DateTimeFormatter.ofPattern(pattern));
     }
 
     public String getFormatFinishDate() {
@@ -118,16 +123,9 @@ public class DTOObjectEmployees {
 
     public void initFormatFinishDate(){
         if (finishDate != null) {
-            formatFinishDate = getDateFormat().format(finishDate);
+            formatFinishDate = finishDate.format(DateTimeFormatter.ofPattern(pattern));
         } else {
             formatFinishDate = "-";
         }
-    }
-
-    public DateFormat getDateFormat() {
-        if (dateFormat == null) {
-            dateFormat = new SimpleDateFormat("dd.MM.yyyy");
-        }
-        return dateFormat;
     }
 }
