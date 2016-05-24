@@ -31,7 +31,7 @@ public class WindowStockTrackingController {
 
     @FXML
     public void initialize() {
-        notesTextArea.getStylesheets().add(getClass().getResource("/stock.tracking/TextAreaStyle.css").toExternalForm());
+        notesTextArea.getStylesheets().add(getClass().getResource("/styles/TextAreaStyle.css").toExternalForm());
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/stock.tracking/StockListView.fxml"));
         try {
             gridPane.add(fxmlLoader.load(), 1, 0);

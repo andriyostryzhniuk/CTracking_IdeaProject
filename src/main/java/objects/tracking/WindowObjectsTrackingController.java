@@ -35,7 +35,6 @@ public class WindowObjectsTrackingController<T extends DTOObjectEmployees> {
     public BorderPane rootBorderPane;
     public GridPane gridPane;
     public GridPane leftSideGridPane;
-    public GridPane rightSideGridPane;
     public ChoiceBox contentTypeChoiceBox;
     public StackPane stackPane;
     public Label objectLabel;
@@ -45,7 +44,11 @@ public class WindowObjectsTrackingController<T extends DTOObjectEmployees> {
     private LocalDate oldDatePickerValue;
     private ComboBox skillsComboBox;
     private ComboBox comboBoxListener = new ComboBox();
-//    public TextArea notesTextArea;
+    public TextArea employeesNameTextArea;
+    public Label skillsLabel;
+    public TextArea skillsTextArea;
+    public Label notesLabel;
+    public TextArea notesTextArea;
 
     private EmployeesListViewController employeesListViewController;
     private ObjectsListViewController objectsListViewController;
@@ -83,6 +86,7 @@ public class WindowObjectsTrackingController<T extends DTOObjectEmployees> {
 
         objectsListViewController.setEmployeesListViewController(employeesListViewController);
         objectsListViewController.setWindowObjectsTrackingController(this);
+        employeesListViewController.setWindowObjectsTrackingController(this);
 
         setTableViewParameters();
         initSkillsControls();
@@ -138,6 +142,16 @@ public class WindowObjectsTrackingController<T extends DTOObjectEmployees> {
 
     private void fillTableView(){
         tableView.getTableView().getColumns().addAll(employeeNameCol, startDateNameCol, finishDateNameCol);
+
+        tableView.getTableView().getSelectionModel().selectedItemProperty().addListener(event -> {
+            T selectedItem;
+            if ((selectedItem = tableView.getTableView().getSelectionModel().getSelectedItem()) != null) {
+                clearEmployeesAboutInfo();
+                initEmployeesAboutInfo(selectedItem.getEmployeeId());
+            } else {
+                clearEmployeesAboutInfo();
+            }
+        });
     }
 
     public void initTableView(List<T> dtoObjectEmployeesList, String objectName){
@@ -260,6 +274,34 @@ public class WindowObjectsTrackingController<T extends DTOObjectEmployees> {
         todayButton.setOnAction(event -> datePicker.setValue(LocalDate.now()));
     }
 
+    public void initEmployeesAboutInfo(Integer employeeId){
+        List<String> skillsList = selectEmployeesSkills(employeeId);
+        String notes = selectEmployeesNotes(employeeId);
+        employeesNameTextArea.setText(selectEmployeesName(employeeId));
+
+        if (! skillsList.isEmpty() && skillsList!= null) {
+            skillsLabel.setVisible(true);
+            String textAreaText = new String();
+            for (String item : skillsList) {
+                textAreaText = textAreaText + item + "\n";
+            }
+            skillsTextArea.setText(textAreaText);
+        }
+
+        if (notes != null && ! notes.isEmpty()) {
+            notesLabel.setVisible(true);
+            notesTextArea.setText(notes);
+        }
+    }
+
+    public void clearEmployeesAboutInfo(){
+        employeesNameTextArea.clear();
+        skillsLabel.setVisible(false);
+        skillsTextArea.clear();
+        notesLabel.setVisible(false);
+        notesTextArea.clear();
+    }
+
     public List<T> getDtoObjectEmployeesList() {
         return dtoObjectEmployeesList;
     }
@@ -271,4 +313,5 @@ public class WindowObjectsTrackingController<T extends DTOObjectEmployees> {
     public void setSuccessSave(boolean successSave) {
         this.successSave = successSave;
     }
+
 }

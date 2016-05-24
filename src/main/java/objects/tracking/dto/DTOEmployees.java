@@ -6,8 +6,6 @@ import java.util.List;
 
 public class DTOEmployees extends DtoEmployees {
 
-    private List<String> skills;
-
     public DTOEmployees() {
     }
 
@@ -15,11 +13,4 @@ public class DTOEmployees extends DtoEmployees {
         super(id, fullName);
     }
 
-    public List<String> getSkills() {
-        return skills;
-    }
-
-    public void setSkills(List<String> skills) {
-        this.skills = skills;
-    }
 }

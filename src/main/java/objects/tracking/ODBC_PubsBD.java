@@ -20,9 +20,9 @@ public class ODBC_PubsBD {
     private static final Logger LOGGER = LoggerFactory.getLogger(ODBC_PubsBD.class);
 
     public static List<DTOEmployees> selectFreeEmployees(LocalDate dateView) {
-        List<DTOEmployees> dtoEmployeesList = getJdbcTemplate().query("select employees.id, " +
+        return getJdbcTemplate().query("select employees.id, " +
                 "concat( employees.surname, ' ', left (employees.name, 1), '. ', " +
-                "   left (employees.middleName, 1), '.' ) as fullName " +
+                "   left (employees.middleName, 1), '.' ) as fullName, notes " +
                 "from employees left join ( " +
                 "   select employees_id " +
                 "   from object_employees " +
@@ -33,28 +33,20 @@ public class ODBC_PubsBD {
                 "employees.lastDay is null " +
                 "order by employees.surname asc",
                 BeanPropertyRowMapper.newInstance(DTOEmployees.class), dateView, dateView);
-
-        dtoEmployeesList.forEach(item -> item.setSkills(selectEmployeesSkills(item.getId())));
-
-        return dtoEmployeesList;
     }
 
     public static List<DTOEmployees> selectAllEmployees() {
-        List<DTOEmployees> dtoEmployeesList = getJdbcTemplate().query("select id, " +
-                "concat(surname, ' ', left (name, 1), '. ', left (middleName, 1), '.' ) as fullName " +
+        return getJdbcTemplate().query("select id, " +
+                "concat(surname, ' ', left (name, 1), '. ', left (middleName, 1), '.' ) as fullName, notes " +
                 "from employees " +
                 "where lastDay is null " +
                 "order by surname asc", BeanPropertyRowMapper.newInstance(DTOEmployees.class));
-
-        dtoEmployeesList.forEach(item -> item.setSkills(selectEmployeesSkills(item.getId())));
-
-        return dtoEmployeesList;
     }
 
     public static List<DTOEmployees> selectFreeEmployeesSkills(LocalDate dateView, String skill) {
-        List<DTOEmployees> dtoEmployeesList = getJdbcTemplate().query("select employees.id, " +
+        return getJdbcTemplate().query("select employees.id, " +
                 "concat( employees.surname, ' ', left (employees.name, 1), '. ', " +
-                "   left (employees.middleName, 1), '.' ) as fullName " +
+                "   left (employees.middleName, 1), '.' ) as fullName, notes " +
                 "from skills_employees, skills, employees left join ( " +
                 "   select employees_id " +
                 "   from object_employees " +
@@ -68,25 +60,17 @@ public class ODBC_PubsBD {
                 "skills.skill = ? " +
                 "order by employees.surname asc",
                 BeanPropertyRowMapper.newInstance(DTOEmployees.class), dateView, dateView, skill);
-
-        dtoEmployeesList.forEach(item -> item.setSkills(selectEmployeesSkills(item.getId())));
-
-        return dtoEmployeesList;
     }
 
     public static List<DTOEmployees> selectAllEmployeesSkills(String skill) {
-        List<DTOEmployees> dtoEmployeesList = getJdbcTemplate().query("select employees.id, " +
-                "concat(surname, ' ', left (name, 1), '. ', left (middleName, 1), '.' ) as fullName " +
+        return getJdbcTemplate().query("select employees.id, " +
+                "concat(surname, ' ', left (name, 1), '. ', left (middleName, 1), '.' ) as fullName, notes " +
                 "from employees, skills_employees, skills " +
                 "where skills.skill = ? and " +
                 "skills.id = skills_employees.skills_id and " +
                 "skills_employees.employees_id = employees.id and " +
                 "employees.lastDay is null " +
                 "order by surname asc", BeanPropertyRowMapper.newInstance(DTOEmployees.class), skill);
-
-        dtoEmployeesList.forEach(item -> item.setSkills(selectEmployeesSkills(item.getId())));
-
-        return dtoEmployeesList;
     }
 
     public static List<String> selectEmployeesSkills(Integer employeeId){
@@ -95,6 +79,20 @@ public class ODBC_PubsBD {
                 "where skills_employees.employees_id = ? and " +
                 "skills_employees.skills_id = skills.id", (RowMapper) (resultSet, i) -> resultSet.getString(1),
                 employeeId);
+    }
+
+    public static String selectEmployeesNotes(Integer employeeId) {
+        return getJdbcTemplate().queryForObject("select notes " +
+                        "from employees " +
+                        "where id = ?",
+                new Object []{employeeId}, String.class);
+    }
+
+    public static String selectEmployeesName(Integer employeeId) {
+        return getJdbcTemplate().queryForObject("select concat(surname, ' ', name, ' ', middleName) as name " +
+                        "from employees " +
+                        "where id = ?",
+                new Object []{employeeId}, String.class);
     }
 
     public static List<DTOObjects> selectObjects(LocalDate dateView) {

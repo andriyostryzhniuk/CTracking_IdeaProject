@@ -13,12 +13,16 @@ import javafx.scene.layout.Pane;
 import objects.tracking.dto.DTOEmployees;
 import overridden.elements.combo.box.AutoCompleteComboBoxListener;
 import java.time.LocalDate;
+import java.util.List;
+
 import static objects.tracking.ODBC_PubsBD.*;
 
 public class EmployeesListViewController {
 
     public GridPane rootGridPane;
     public ListView<Pane> listView;
+
+    private WindowObjectsTrackingController windowObjectsTrackingController;
 
     private ComboBox comboBoxSearch = new ComboBox();
     private ComboBox comboBoxListener = new ComboBox();
@@ -35,6 +39,16 @@ public class EmployeesListViewController {
         initComboBoxSearch();
         rootGridPane.add(comboBoxSearch, 0, 0);
         comboBoxSearch.setMaxWidth(Double.MAX_VALUE);
+
+        listView.getSelectionModel().selectedItemProperty().addListener(event -> {
+            Pane selectedItem;
+            if ((selectedItem = listView.getSelectionModel().getSelectedItem()) != null) {
+                windowObjectsTrackingController.clearEmployeesAboutInfo();
+                windowObjectsTrackingController.initEmployeesAboutInfo(Integer.parseInt(selectedItem.getId()));
+            } else {
+                windowObjectsTrackingController.clearEmployeesAboutInfo();
+            }
+        });
     }
 
     public void initList(boolean isNeedSelectItems){
@@ -102,7 +116,7 @@ public class EmployeesListViewController {
         });
     }
 
-    public void searchInListView() {
+    private void searchInListView() {
         Object comboBoxListenerValue = comboBoxListener.getValue();
         Integer employeeID = null;
         for (DTOEmployees item : employeesListViewDataList) {
@@ -151,5 +165,9 @@ public class EmployeesListViewController {
 
     public void setDateView(LocalDate dateView) {
         this.dateView = dateView;
+    }
+
+    public void setWindowObjectsTrackingController(WindowObjectsTrackingController windowObjectsTrackingController) {
+        this.windowObjectsTrackingController = windowObjectsTrackingController;
     }
 }

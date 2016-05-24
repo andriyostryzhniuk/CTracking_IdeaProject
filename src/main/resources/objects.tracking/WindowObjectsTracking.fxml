@@ -26,9 +26,9 @@
                         <ColumnConstraints hgrow="SOMETIMES"/>
                     </columnConstraints>
                     <rowConstraints>
-                        <RowConstraints maxHeight="200.0" minHeight="200.0" prefHeight="200.0" vgrow="SOMETIMES"/>
+                        <RowConstraints maxHeight="150.0" minHeight="150.0" prefHeight="150.0" vgrow="SOMETIMES"/>
                         <RowConstraints minHeight="5.0" vgrow="SOMETIMES"/>
-                        <RowConstraints maxHeight="220.0" minHeight="220.0" prefHeight="220.0" vgrow="SOMETIMES"/>
+                        <RowConstraints minHeight="220.0" prefHeight="220.0" vgrow="SOMETIMES"/>
                     </rowConstraints>
                     <children>
                         <GridPane alignment="TOP_CENTER" GridPane.hgrow="SOMETIMES" GridPane.vgrow="SOMETIMES">
@@ -71,11 +71,48 @@
                             </children>
                         </GridPane>
                     </children>
-                    <!--<children>-->
-                    <!--<TextArea fx:id="notesTextArea" editable="false" focusTraversable="false" prefColumnCount="0"-->
-                    <!--prefRowCount="0" wrapText="true" GridPane.hgrow="SOMETIMES" GridPane.rowIndex="2"-->
-                    <!--GridPane.vgrow="SOMETIMES"/>-->
-                    <!--</children>-->
+                    <children>
+                        <GridPane GridPane.rowIndex="2">
+                            <columnConstraints>
+                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+                            </columnConstraints>
+                            <rowConstraints>
+                                <RowConstraints maxHeight="50.0" minHeight="50.0" prefHeight="50.0" vgrow="SOMETIMES"/>
+                                <RowConstraints maxHeight="20.0" minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES"/>
+                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                                <RowConstraints maxHeight="20.0" minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES"/>
+                                <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
+                            </rowConstraints>
+                            <children>
+                                <TextArea fx:id="notesTextArea" editable="false" focusTraversable="false"
+                                          prefColumnCount="0" prefRowCount="0"
+                                          stylesheets="@../styles/TextAreaStyle.css" wrapText="true"
+                                          GridPane.rowIndex="4"/>
+                                <Label fx:id="skillsLabel" text="Спеціальність:" visible="false" GridPane.rowIndex="1">
+                                    <GridPane.margin>
+                                        <Insets left="8.0"/>
+                                    </GridPane.margin>
+                                </Label>
+                                <TextArea fx:id="skillsTextArea" editable="false" focusTraversable="false"
+                                          stylesheets="@../styles/TextAreaStyle.css" wrapText="true"
+                                          GridPane.rowIndex="2"/>
+                                <TextArea fx:id="employeesNameTextArea" editable="false" focusTraversable="false"
+                                          stylesheets="@../styles/TextAreaStyle.css" wrapText="true">
+                                    <GridPane.margin>
+                                        <Insets bottom="10.0"/>
+                                    </GridPane.margin>
+                                </TextArea>
+                                <Label fx:id="notesLabel" text="Нотатки:" visible="false" GridPane.rowIndex="3">
+                                    <padding>
+                                        <Insets left="8.0"/>
+                                    </padding>
+                                </Label>
+                            </children>
+                            <GridPane.margin>
+                                <Insets left="2.0" right="20.0"/>
+                            </GridPane.margin>
+                        </GridPane>
+                    </children>
                 </GridPane>
                 <GridPane GridPane.columnIndex="5">
                     <columnConstraints>
