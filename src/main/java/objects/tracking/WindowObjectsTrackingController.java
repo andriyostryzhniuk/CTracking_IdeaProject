@@ -108,7 +108,17 @@ public class WindowObjectsTrackingController<T extends DTOObjectEmployees> {
         stackPane.getChildren().add(tableView);
         tableView.getTableView().getStylesheets().add(getClass().getResource("/styles/TableViewStyle.css").toExternalForm());
         initContextMenu(tableView.getTableView(), this);
-        tableView.getTableView().setPlaceholder(new Label("Немає жодного працівника"));
+        tableView.getTableView().setPlaceholder(new Label("На даному об'єкті немає жодного працівника"));
+
+        tableView.getTableView().getSelectionModel().selectedItemProperty().addListener(event -> {
+            T selectedItem;
+            if ((selectedItem = tableView.getTableView().getSelectionModel().getSelectedItem()) != null) {
+                clearEmployeesAboutInfo();
+                initEmployeesAboutInfo(selectedItem.getEmployeeId());
+            } else {
+                clearEmployeesAboutInfo();
+            }
+        });
     }
 
     private void initContentTypeChoiceBox(){
@@ -142,16 +152,6 @@ public class WindowObjectsTrackingController<T extends DTOObjectEmployees> {
 
     private void fillTableView(){
         tableView.getTableView().getColumns().addAll(employeeNameCol, startDateNameCol, finishDateNameCol);
-
-        tableView.getTableView().getSelectionModel().selectedItemProperty().addListener(event -> {
-            T selectedItem;
-            if ((selectedItem = tableView.getTableView().getSelectionModel().getSelectedItem()) != null) {
-                clearEmployeesAboutInfo();
-                initEmployeesAboutInfo(selectedItem.getEmployeeId());
-            } else {
-                clearEmployeesAboutInfo();
-            }
-        });
     }
 
     public void initTableView(List<T> dtoObjectEmployeesList, String objectName){

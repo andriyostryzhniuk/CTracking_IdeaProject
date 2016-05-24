@@ -96,18 +96,12 @@ public class ODBC_PubsBD {
     }
 
     public static List<DTOObjects> selectObjects(LocalDate dateView) {
-        List<DTOObjects> dtoObjectsList = getJdbcTemplate().query("select id, address " +
+        return getJdbcTemplate().query("select id, address " +
                 "from object " +
                 "where startDate <= ? and " +
                 "(finishDate >= ? or " +
                 "finishDate is null) " +
                 "order by address asc", BeanPropertyRowMapper.newInstance(DTOObjects.class), dateView, dateView);
-
-        dtoObjectsList.forEach(item -> {
-            item.setObjectEmployeesList(selectObjectEmployeesList(item.getId()));
-        });
-
-        return dtoObjectsList;
     }
 
     public static List<DTOObjectEmployees> selectObjectEmployeesList(Integer objectId){
@@ -119,6 +113,13 @@ public class ODBC_PubsBD {
                 "object_employees.employees_id = employees.id " +
                 "order by startDate desc",
                 BeanPropertyRowMapper.newInstance(DTOObjectEmployees.class), objectId);
+    }
+
+    public static String selectObjectAddress(Integer objectId) {
+        return getJdbcTemplate().queryForObject("select address " +
+                        "from object " +
+                        "where id = ?",
+                new Object []{objectId}, String.class);
     }
 
     public static void insertIntoObjectEmployees(DTOObjectEmployees dtoObjectEmployees) {

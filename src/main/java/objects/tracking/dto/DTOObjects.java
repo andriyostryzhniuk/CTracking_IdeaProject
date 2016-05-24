@@ -8,7 +8,6 @@ import java.util.List;
 
 public class DTOObjects extends DtoObject {
 
-    private List<DTOObjectEmployees> objectEmployeesList;
     private LocalDate startDate;
     private LocalDate finishDate;
 
@@ -23,14 +22,6 @@ public class DTOObjects extends DtoObject {
         super(id, address);
         this.startDate = startDate;
         this.finishDate = finishDate;
-    }
-
-    public List<DTOObjectEmployees> getObjectEmployeesList() {
-        return objectEmployeesList;
-    }
-
-    public void setObjectEmployeesList(List<DTOObjectEmployees> objectEmployeesList) {
-        this.objectEmployeesList = objectEmployeesList;
     }
 
     public LocalDate getStartDate() {

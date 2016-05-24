@@ -40,6 +40,15 @@ public class ObjectsListViewController {
         rootGridPane.add(comboBoxSearch, 0, 0);
         comboBoxSearch.setMaxWidth(Double.MAX_VALUE);
         initList(false);
+
+        listView.getSelectionModel().selectedItemProperty().addListener(event -> {
+            Pane selectedItem;
+            if ((selectedItem = listView.getSelectionModel().getSelectedItem()) != null) {
+                selectedObjectId = Integer.parseInt(selectedItem.getId());
+                windowObjectsTrackingController.initTableView(
+                        selectObjectEmployeesList(selectedObjectId), selectObjectAddress(selectedObjectId));
+            }
+        });
     }
 
     public void initList(boolean isNeedSelectItems){
@@ -52,14 +61,11 @@ public class ObjectsListViewController {
         objectsListViewDataList.forEach(item -> {
             item.initPaneContainer();
             setTargetDragAndDrop(item.getPaneContainer());
-            item.getPaneContainer().setOnMouseClicked(event -> {
-                selectedObjectId = item.getId();
-                windowObjectsTrackingController.initTableView(item.getObjectEmployeesList(), item.getAddress());
-            });
             listView.getItems().add(item.getPaneContainer());
             objectsNamesList.add(item.getAddress());
             if (selectedObjectId != null && item.getId() == selectedObjectId ) {
-                windowObjectsTrackingController.initTableView(item.getObjectEmployeesList(), item.getAddress());
+                windowObjectsTrackingController.initTableView(
+                        selectObjectEmployeesList(selectedObjectId), selectObjectAddress(selectedObjectId));
             }
         });
 
