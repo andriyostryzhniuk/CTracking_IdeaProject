@@ -55,7 +55,8 @@ public class StockListViewController {
         initOnSelectionAction();
     }
 
-    public void initListView() {
+    public void initListView(boolean isNeedSelectItems) {
+        Integer selectedRowIndex = listView.getSelectionModel().getSelectedIndex();
         stockNameList.clear();
         stockListViewDataList.clear();
         listView.getItems().clear();
@@ -79,7 +80,7 @@ public class StockListViewController {
                     if (mouseEvent.getButton().equals(MouseButton.PRIMARY)) {
                         if (mouseEvent.getClickCount() == 2) {
                             setContentType(item.getName());
-                            initListView();
+                            initListView(false);
                         }
                     }
                 });
@@ -114,6 +115,13 @@ public class StockListViewController {
                 stockNameList.add(item.getName());
             });
         }
+
+        if (isNeedSelectItems) {
+            listView.getSelectionModel().select(selectedRowIndex);
+            listView.getFocusModel().focus(selectedRowIndex);
+            listView.scrollTo(selectedRowIndex);
+        }
+
         comboBoxSearch.setItems(stockNameList);
         new AutoCompleteComboBoxListener<>(comboBoxSearch, comboBoxListener);
     }
@@ -235,7 +243,7 @@ public class StockListViewController {
             if (! contentType.equals("Категорії")) {
                 setContentType("Категорії");
                 windowStockTrackingController.getContentChoiceBox().setValue("Категорії");
-                initListView();
+                initListView(false);
             }
         });
         button.setTooltip(new Tooltip("Повернутись до категорій"));

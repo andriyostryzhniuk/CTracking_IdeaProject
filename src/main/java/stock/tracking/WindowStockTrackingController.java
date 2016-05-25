@@ -18,9 +18,8 @@ import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Collection;
 
-import static stock.tracking.ODBC_PubsBDForLiable.selectEmployeesName;
-import static stock.tracking.ODBC_PubsBDForLiable.selectObjectAddress;
-import static stock.tracking.ODBC_PubsBDForLiable.selectStockTracking;
+import static stock.tracking.ContextMenu.initContextMenu;
+import static stock.tracking.ODBC_PubsBDForLiable.*;
 
 public class WindowStockTrackingController<T extends DTOStockTracking> {
 
@@ -74,7 +73,7 @@ public class WindowStockTrackingController<T extends DTOStockTracking> {
         liableListViewController.setStockListViewController(stockListViewController);
         stockListViewController.setWindowStockTrackingController(this);
         liableListViewController.setWindowStockTrackingController(this);
-        stockListViewController.initListView();
+        stockListViewController.initListView(false);
         liableListViewController.initListView(false);
 
     }
@@ -96,7 +95,7 @@ public class WindowStockTrackingController<T extends DTOStockTracking> {
 
         contentChoiceBox.valueProperty().addListener((ChangeListener<String>) (observableValue, oldValue, newValue) -> {
             stockListViewController.setContentType(contentChoiceBox.getValue().toString());
-            stockListViewController.initListView();
+            stockListViewController.initListView(false);
         });
     }
 
@@ -115,7 +114,7 @@ public class WindowStockTrackingController<T extends DTOStockTracking> {
                 stockListViewController.setContentType("Категорії");
             }
             stockListViewController.setStockType(newValue.toString());
-            stockListViewController.initListView();
+            stockListViewController.initListView(false);
         });
     }
 
@@ -128,7 +127,7 @@ public class WindowStockTrackingController<T extends DTOStockTracking> {
 
         repositoryChoiceBox.valueProperty().addListener((ChangeListener<String>) (observableValue, oldValue, newValue) -> {
             stockListViewController.setRepository(newValue.toString());
-            stockListViewController.initListView();
+            stockListViewController.initListView(false);
         });
     }
 
@@ -139,7 +138,7 @@ public class WindowStockTrackingController<T extends DTOStockTracking> {
         onlyAvailableStockCheckBox.selectedProperty().addListener(observable -> {
             if (stockListViewController.getContentType().equals("Категорії")) {
                 stockListViewController.setOnlyAvailableStock(onlyAvailableStockCheckBox.isSelected());
-                stockListViewController.initListView();
+                stockListViewController.initListView(true);
             }
         });
     }
@@ -167,7 +166,7 @@ public class WindowStockTrackingController<T extends DTOStockTracking> {
         fillTableView();
         stackPane.getChildren().add(tableView);
         tableView.getTableView().getStylesheets().add(getClass().getResource("/styles/TableViewStyle.css").toExternalForm());
-//        initContextMenu(tableView.getTableView(), this);
+        initContextMenu(tableView.getTableView(), this);
         tableView.getTableView().setPlaceholder(new Label("Не закріплено жодного інвентаря"));
 
 //        tableView.getTableView().getSelectionModel().selectedItemProperty().addListener(event -> {
@@ -217,6 +216,13 @@ public class WindowStockTrackingController<T extends DTOStockTracking> {
         employeesNameLabel.setText(null);
     }
 
+    public void removeRecord(T item) {
+        deleteFromStockTracking(item.getId());
+        liableListViewController.initListView(true);
+        stockListViewController.initListView(true);
+
+    }
+
     public ChoiceBox getContentChoiceBox() {
         return contentChoiceBox;
     }
@@ -233,4 +239,7 @@ public class WindowStockTrackingController<T extends DTOStockTracking> {
         return liableTypeChoiceBox;
     }
 
+    public void editRecord(T item) {
+
+    }
 }

@@ -143,9 +143,9 @@ public class ODBC_PubsBD {
                 new BeanPropertySqlParameterSource(dtoObjectEmployees));
     }
 
-    public static void deleteFromObjectEmployees(Integer recordsIdList) {
+    public static void deleteFromObjectEmployees(Integer recordId) {
         getJdbcTemplate().update("DELETE FROM object_employees " +
-                "WHERE id = ?", recordsIdList);
+                "WHERE id = ?", recordId);
     }
 
     public static String selectEmployeesFullName(Integer employeeId) {

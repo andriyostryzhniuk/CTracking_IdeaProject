@@ -210,7 +210,7 @@ public class LiableListViewController {
                     stockDataList.clear();
                 }
 
-                stockListViewController.initListView();
+                stockListViewController.initListView(true);
                 initListView(true);
                 success = true;
             }

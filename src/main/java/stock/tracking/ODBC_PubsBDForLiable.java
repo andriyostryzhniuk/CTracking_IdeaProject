@@ -116,4 +116,9 @@ public class ODBC_PubsBDForLiable {
                 new Object []{objectId}, String.class);
     }
 
+    public static void deleteFromStockTracking(Integer recordId) {
+        getJdbcTemplate().update("DELETE FROM stockTracking " +
+                "WHERE id = ?", recordId);
+    }
+
 }
