@@ -1,0 +1,140 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.text.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.*?>
+<?import java.lang.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<Group fx:id="rootGroup" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+       fx:controller="stock.tracking.EditingPromptWindowController">
+    <children>
+        <Rectangle arcHeight="15.0" arcWidth="15.0" fill="#0000008c" height="235.0" stroke="#ffffffe5"
+                   strokeType="INSIDE" strokeWidth="1.5" width="500.0"/>
+        <GridPane alignment="CENTER" prefHeight="235.0" prefWidth="500.0">
+            <columnConstraints>
+                <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints valignment="BOTTOM" vgrow="SOMETIMES"/>
+            </rowConstraints>
+            <children>
+                <GridPane maxHeight="202.0" prefHeight="300.0" prefWidth="400.0">
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES"/>
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints maxHeight="95.0" minHeight="95.0" prefHeight="95.0" vgrow="SOMETIMES"/>
+                        <RowConstraints maxHeight="140.0" minHeight="140.0" prefHeight="140.0" vgrow="SOMETIMES"/>
+                    </rowConstraints>
+                    <children>
+                        <GridPane>
+                            <columnConstraints>
+                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="240.0" minWidth="240.0"
+                                                   prefWidth="240.0"/>
+                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="20.0" minWidth="20.0" prefWidth="20.0"/>
+                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="240.0" minWidth="190.0"
+                                                   prefWidth="240.0"/>
+                            </columnConstraints>
+                            <rowConstraints>
+                                <RowConstraints maxHeight="20.0" minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES"/>
+                                <RowConstraints maxHeight="20.0" minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES"/>
+                                <RowConstraints maxHeight="25.0" minHeight="25.0" prefHeight="25.0" vgrow="SOMETIMES"/>
+                                <RowConstraints maxHeight="20.0" minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES"/>
+                            </rowConstraints>
+                            <children>
+                                <Label fx:id="stockNameLabel" textFill="WHITE" GridPane.rowIndex="1">
+                                    <GridPane.margin>
+                                        <Insets left="10.0" right="5.0"/>
+                                    </GridPane.margin>
+                                </Label>
+                                <Label fx:id="stockCategoryLabel" textFill="WHITE">
+                                    <GridPane.margin>
+                                        <Insets left="10.0"/>
+                                    </GridPane.margin>
+                                </Label>
+                                <Label text="Відповідальний:" textFill="WHITE" GridPane.columnIndex="2"/>
+                                <Label fx:id="employeeLabel" textFill="WHITE" GridPane.columnIndex="2"
+                                       GridPane.rowIndex="1">
+                                    <GridPane.margin>
+                                        <Insets right="10.0"/>
+                                    </GridPane.margin>
+                                </Label>
+                                <Label text="Об'єкт:" textFill="WHITE" GridPane.columnIndex="2" GridPane.rowIndex="2">
+                                    <GridPane.margin>
+                                        <Insets top="5.0"/>
+                                    </GridPane.margin>
+                                </Label>
+                                <Label fx:id="objectLabel" textFill="WHITE" GridPane.columnIndex="2"
+                                       GridPane.rowIndex="3">
+                                    <GridPane.margin>
+                                        <Insets right="10.0"/>
+                                    </GridPane.margin>
+                                </Label>
+                            </children>
+                            <GridPane.margin>
+                                <Insets top="10.0"/>
+                            </GridPane.margin>
+                        </GridPane>
+                    </children>
+                </GridPane>
+                <GridPane maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity" minWidth="-Infinity">
+                    <children>
+                        <GridPane GridPane.columnIndex="2" GridPane.rowIndex="2">
+                            <children>
+                                <Button fx:id="cancelButton" maxHeight="25.0" maxWidth="72.0" minHeight="25.0"
+                                        minWidth="72.0" mnemonicParsing="false" onAction="#escape" prefHeight="25.0"
+                                        prefWidth="72.0" text="Скасувати" GridPane.columnIndex="2">
+                                    <GridPane.margin>
+                                        <Insets bottom="10.0"/>
+                                    </GridPane.margin>
+                                </Button>
+                                <Button fx:id="saveButton" maxHeight="25.0" maxWidth="72.0" minHeight="25.0"
+                                        minWidth="72.0" mnemonicParsing="false" onAction="#save" prefHeight="25.0"
+                                        prefWidth="72.0" text="Зберегти" GridPane.columnIndex="1">
+                                    <GridPane.margin>
+                                        <Insets bottom="10.0" right="5.0"/>
+                                    </GridPane.margin>
+                                </Button>
+                            </children>
+                            <columnConstraints>
+                                <ColumnConstraints hgrow="SOMETIMES"/>
+                                <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="77.0" minWidth="77.0"
+                                                   prefWidth="77.0"/>
+                                <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="72.0" minWidth="72.0"
+                                                   prefWidth="72.0"/>
+                            </columnConstraints>
+                            <rowConstraints>
+                                <RowConstraints valignment="BOTTOM" vgrow="SOMETIMES"/>
+                            </rowConstraints>
+                        </GridPane>
+                        <DatePicker fx:id="startDatePicker" editable="false" promptText="Не визначено"
+                                    GridPane.rowIndex="1"/>
+                        <DatePicker fx:id="finishDatePicker" editable="false" promptText="Не визначено"
+                                    GridPane.columnIndex="2" GridPane.rowIndex="1"/>
+                        <Label text="Дата видачі:" textFill="WHITE"/>
+                        <Label text="Дата повернення:" textFill="WHITE" GridPane.columnIndex="2"/>
+                        <Button fx:id="rejectDateButton" mnemonicParsing="false" GridPane.columnIndex="2"
+                                GridPane.rowIndex="1">
+                            <GridPane.margin>
+                                <Insets left="110.0"/>
+                            </GridPane.margin>
+                        </Button>
+                    </children>
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="160.0" minWidth="160.0" prefWidth="160.0"/>
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="140.0" minWidth="140.0" prefWidth="140.0"/>
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="160.0" minWidth="160.0" prefWidth="160.0"/>
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints minHeight="40.0" prefHeight="40.0" valignment="BOTTOM" vgrow="SOMETIMES"/>
+                        <RowConstraints minHeight="40.0" prefHeight="40.0" vgrow="SOMETIMES"/>
+                        <RowConstraints maxHeight="60.0" minHeight="60.0" prefHeight="60.0" vgrow="SOMETIMES"/>
+                    </rowConstraints>
+                </GridPane>
+            </children>
+        </GridPane>
+    </children>
+</Group>

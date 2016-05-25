@@ -1,5 +1,6 @@
 package stock.tracking;
 
+import objects.tracking.dto.DTOObjects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -59,8 +60,9 @@ public class ODBC_PubsBDForLiable {
     public static List<DTOStockTracking> selectStockTracking(Integer objectId, Integer employeeId, LocalDate viewDate) {
         if (objectId == null) {
             return getJdbcTemplate().query("SELECT stocktracking.id, stocktracking.stock_id AS stockId, " +
-                    "ifnull(stock.name, stockCategory.name) AS stockName, stocktracking.employees_id AS employeesId, " +
-                    "stocktracking.object_id AS objectId, givingDate, returnDate " +
+                    "ifnull(stock.name, stockCategory.name) AS stockName, stockCategory.name AS stockCategory, " +
+                    "stocktracking.employees_id AS employeesId, stocktracking.object_id AS objectId, " +
+                    "givingDate, returnDate " +
                             "FROM stock, stocktracking, stockcategory " +
                             "WHERE stocktracking.object_id IS NULL AND " +
                             "stocktracking.employees_id = ? AND " +
@@ -73,8 +75,9 @@ public class ODBC_PubsBDForLiable {
                     BeanPropertyRowMapper.newInstance(DTOStockTracking.class), employeeId, viewDate, viewDate);
         } else if (employeeId == null) {
             return getJdbcTemplate().query("SELECT stocktracking.id, stocktracking.stock_id AS stockId, " +
-                    "ifnull(stock.name, stockCategory.name) AS stockName, stocktracking.employees_id AS employeesId, " +
-                    "stocktracking.object_id AS objectId, givingDate, returnDate " +
+                    "ifnull(stock.name, stockCategory.name) AS stockName, stockCategory.name AS stockCategory, " +
+                    "stocktracking.employees_id AS employeesId, stocktracking.object_id AS objectId, " +
+                    "givingDate, returnDate " +
                             "FROM stock, stocktracking, stockcategory " +
                             "WHERE stocktracking.object_id = ? AND " +
                             "stocktracking.employees_id IS NULL AND " +
@@ -87,8 +90,9 @@ public class ODBC_PubsBDForLiable {
                     BeanPropertyRowMapper.newInstance(DTOStockTracking.class), objectId, viewDate, viewDate);
         } else {
             return getJdbcTemplate().query("SELECT stocktracking.id, stocktracking.stock_id AS stockId, " +
-                    "ifnull(stock.name, stockCategory.name) AS stockName, stocktracking.employees_id AS employeesId, " +
-                    "stocktracking.object_id AS objectId, givingDate, returnDate " +
+                    "ifnull(stock.name, stockCategory.name) AS stockName, stockCategory.name AS stockCategory, " +
+                    "stocktracking.employees_id AS employeesId, stocktracking.object_id AS objectId, " +
+                    "givingDate, returnDate " +
                             "FROM stock, stocktracking, stockcategory " +
                             "WHERE stocktracking.object_id = ? AND " +
                             "stocktracking.employees_id = ? AND " +
@@ -119,6 +123,13 @@ public class ODBC_PubsBDForLiable {
     public static void deleteFromStockTracking(Integer recordId) {
         getJdbcTemplate().update("DELETE FROM stockTracking " +
                 "WHERE id = ?", recordId);
+    }
+
+    public static DTOObjects selectObject(Integer objectId) {
+        List<DTOObjects> stringList = getJdbcTemplate().query("select id, address, startDate, finishDate " +
+                "from object " +
+                "where id = ?", BeanPropertyRowMapper.newInstance(DTOObjects.class), objectId);
+        return stringList.get(0);
     }
 
 }

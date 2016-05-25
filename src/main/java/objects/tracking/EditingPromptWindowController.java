@@ -47,7 +47,7 @@ public class EditingPromptWindowController {
 
     private void initRejectDateButton(){
         Image image = new Image(getClass().getResourceAsStream("/icons/reject_icon.png"));
-        rejectDateButton.getStylesheets().add(getClass().getResource("/objects.tracking/RejectButtonStyle.css").toExternalForm());
+        rejectDateButton.getStylesheets().add(getClass().getResource("/styles/RejectButtonStyle.css").toExternalForm());
         rejectDateButton.setGraphic(new ImageView(image));
         rejectDateButton.setTooltip(new Tooltip("Відмінити дату"));
         rejectDateButton.setOnAction(event -> finishDatePicker.setValue(null));

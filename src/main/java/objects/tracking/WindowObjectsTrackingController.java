@@ -257,7 +257,7 @@ public class WindowObjectsTrackingController<T extends DTOObjectEmployees> {
     private Button initRejectDateButton(){
         Button button = new Button();
         Image image = new Image(getClass().getResourceAsStream("/icons/reject_icon.png"));
-        button.getStylesheets().add(getClass().getResource("/objects.tracking/RejectButtonStyle.css").toExternalForm());
+        button.getStylesheets().add(getClass().getResource("/styles/RejectButtonStyle.css").toExternalForm());
         button.setGraphic(new ImageView(image));
         button.setTooltip(new Tooltip("Відмінити пошук"));
         button.setOnAction(event -> {
@@ -287,7 +287,7 @@ public class WindowObjectsTrackingController<T extends DTOObjectEmployees> {
 
     private void initTodayButton(){
         Image image = new Image(getClass().getResourceAsStream("/icons/today_icon.png"));
-        todayButton.getStylesheets().add(getClass().getResource("/objects.tracking/RejectButtonStyle.css").toExternalForm());
+        todayButton.getStylesheets().add(getClass().getResource("/styles/RejectButtonStyle.css").toExternalForm());
         todayButton.setGraphic(new ImageView(image));
         todayButton.setTooltip(new Tooltip("Сьогоднішня дата"));
         todayButton.setOnAction(event -> datePicker.setValue(LocalDate.now()));

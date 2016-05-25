@@ -8,6 +8,7 @@ public class DTOStockTracking {
     private Integer id;
     private Integer stockId;
     private String stockName;
+    private String stockCategory;
     private Integer employeesId;
     private Integer objectId;
     private LocalDate givingDate;
@@ -19,11 +20,12 @@ public class DTOStockTracking {
     public DTOStockTracking() {
     }
 
-    public DTOStockTracking(Integer id, Integer stockId, String stockName, Integer employeesId, Integer objectId,
-                            LocalDate givingDate, LocalDate returnDate) {
+    public DTOStockTracking(Integer id, Integer stockId, String stockName, String stockCategory, Integer employeesId,
+                            Integer objectId, LocalDate givingDate, LocalDate returnDate) {
         this.id = id;
         this.stockId = stockId;
         this.stockName = stockName;
+        this.stockCategory = stockCategory;
         this.employeesId = employeesId;
         this.objectId = objectId;
         this.givingDate = givingDate;
@@ -62,6 +64,14 @@ public class DTOStockTracking {
 
     public void setStockName(String stockName) {
         this.stockName = stockName;
+    }
+
+    public String getStockCategory() {
+        return stockCategory;
+    }
+
+    public void setStockCategory(String stockCategory) {
+        this.stockCategory = stockCategory;
     }
 
     public Integer getEmployeesId() {

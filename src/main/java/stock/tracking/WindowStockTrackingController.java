@@ -3,6 +3,8 @@ package stock.tracking;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.beans.value.ChangeListener;
@@ -10,6 +12,10 @@ import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import overridden.elements.table.view.CustomTableColumn;
 import overridden.elements.table.view.TableViewHolder;
 import stock.tracking.dto.DTOStockTracking;
@@ -38,6 +44,7 @@ public class WindowStockTrackingController<T extends DTOStockTracking> {
 
     public StockListViewController stockListViewController;
     public LiableListViewController liableListViewController;
+    private boolean successSave;
 
     public Label objectNameLabel;
     public Label employeesNameLabel;
@@ -239,7 +246,32 @@ public class WindowStockTrackingController<T extends DTOStockTracking> {
         return liableTypeChoiceBox;
     }
 
-    public void editRecord(T item) {
+    public boolean editRecord(T item, boolean toUpdate) {
+        Stage primaryStage = new Stage();
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/stock.tracking/EditingPromptWindow.fxml"));
+        Parent root = null;
+        try {
+            root = fxmlLoader.load();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
+        EditingPromptWindowController editingPromptWindowController = fxmlLoader.getController();
+        editingPromptWindowController.setToUpdate(toUpdate);
+        editingPromptWindowController.setDtoStockTracking(item);
+        editingPromptWindowController.setWindowStockTrackingController(this);
+
+        primaryStage.initStyle(StageStyle.TRANSPARENT);
+        primaryStage.setScene(new Scene(root, 500, 235, Color.rgb(0, 0, 0, 0)));
+        editingPromptWindowController.initShortcuts();
+        primaryStage.initModality(Modality.WINDOW_MODAL);
+        primaryStage.initOwner(rootBorderPane.getScene().getWindow());
+        primaryStage.showAndWait();
+
+        return successSave;
+    }
+
+    public void setSuccessSave(boolean successSave) {
+        this.successSave = successSave;
     }
 }
