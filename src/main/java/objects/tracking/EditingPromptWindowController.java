@@ -165,8 +165,7 @@ public class EditingPromptWindowController {
             insertIntoObjectEmployees(dtoObjectEmployees);
         }
 
-        windowObjectsTrackingController.initTableView(windowObjectsTrackingController.getDtoObjectEmployeesList(),
-                objectLabel.getText());
+        windowObjectsTrackingController.initTableView(dtoObjects.getId());
         if (! windowObjectsTrackingController.getEmployeesListViewController().isAllEmployees()) {
             windowObjectsTrackingController.getEmployeesListViewController().initList(true);
         }

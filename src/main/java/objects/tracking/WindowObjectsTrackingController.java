@@ -26,6 +26,7 @@ import javafx.stage.StageStyle;
 import objects.tracking.dto.DTOObjectEmployees;
 import java.io.IOException;
 import java.time.LocalDate;
+import java.util.Collection;
 import java.util.List;
 import static objects.tracking.ContextMenu.initContextMenu;
 import static objects.tracking.ODBC_PubsBD.*;
@@ -41,6 +42,7 @@ public class WindowObjectsTrackingController<T extends DTOObjectEmployees> {
     public GridPane skillsGridPane;
     public DatePicker datePicker;
     public Button todayButton;
+    public CheckBox viewOnlyActualCheckBox;
     private LocalDate oldDatePickerValue;
     private ComboBox skillsComboBox;
     private ComboBox comboBoxListener = new ComboBox();
@@ -53,9 +55,9 @@ public class WindowObjectsTrackingController<T extends DTOObjectEmployees> {
     private EmployeesListViewController employeesListViewController;
     private ObjectsListViewController objectsListViewController;
     private boolean successSave;
+    private Integer selectedObjectId;
 
     private ObservableList<T> tableViewDataList = FXCollections.observableArrayList();
-    private List<T> dtoObjectEmployeesList;
 
     private TableViewHolder<T> tableView = new TableViewHolder<>();
     public CustomTableColumn<T, String> employeeNameCol = new CustomTableColumn<>("Працівники");
@@ -64,6 +66,7 @@ public class WindowObjectsTrackingController<T extends DTOObjectEmployees> {
 
     @FXML
     public void initialize(){
+        viewOnlyActualCheckBox.setSelected(true);
         initDatePicker();
         initTodayButton();
 
@@ -90,7 +93,16 @@ public class WindowObjectsTrackingController<T extends DTOObjectEmployees> {
 
         setTableViewParameters();
         initSkillsControls();
+        initOnlyActualCheckBox();
 
+    }
+
+    private void initOnlyActualCheckBox(){
+        viewOnlyActualCheckBox.selectedProperty().addListener(observable -> {
+            if (selectedObjectId != null) {
+                initTableView(selectedObjectId);
+            }
+        });
     }
 
     private void initSkillsControls(){
@@ -154,13 +166,20 @@ public class WindowObjectsTrackingController<T extends DTOObjectEmployees> {
         tableView.getTableView().getColumns().addAll(employeeNameCol, startDateNameCol, finishDateNameCol);
     }
 
-    public void initTableView(List<T> dtoObjectEmployeesList, String objectName){
-        this.dtoObjectEmployeesList = dtoObjectEmployeesList;
-        objectLabel.setText(objectName);
+    public void initTableView(Integer objectId){
+        this.selectedObjectId = objectId;
+        objectLabel.setText(selectObjectAddress(objectId));
         tableViewDataList.clear();
         tableView.getTableView().getItems().clear();
 
-        tableViewDataList.addAll(dtoObjectEmployeesList);
+        if (viewOnlyActualCheckBox.isSelected()) {
+            tableViewDataList.addAll((Collection<? extends T>)
+                    FXCollections.observableArrayList(
+                            selectOnlyActualObjectEmployeesList(objectId, datePicker.getValue())));
+        } else {
+            tableViewDataList.addAll((Collection<? extends T>)
+                    FXCollections.observableArrayList(selectObjectEmployeesList(objectId)));
+        }
         tableView.getTableView().setItems(tableViewDataList);
     }
 
@@ -300,10 +319,6 @@ public class WindowObjectsTrackingController<T extends DTOObjectEmployees> {
         skillsTextArea.clear();
         notesLabel.setVisible(false);
         notesTextArea.clear();
-    }
-
-    public List<T> getDtoObjectEmployeesList() {
-        return dtoObjectEmployeesList;
     }
 
     public EmployeesListViewController getEmployeesListViewController() {

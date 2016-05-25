@@ -45,8 +45,7 @@ public class ObjectsListViewController {
             Pane selectedItem;
             if ((selectedItem = listView.getSelectionModel().getSelectedItem()) != null) {
                 selectedObjectId = Integer.parseInt(selectedItem.getId());
-                windowObjectsTrackingController.initTableView(
-                        selectObjectEmployeesList(selectedObjectId), selectObjectAddress(selectedObjectId));
+                windowObjectsTrackingController.initTableView(selectedObjectId);
             }
         });
     }
@@ -64,8 +63,7 @@ public class ObjectsListViewController {
             listView.getItems().add(item.getPaneContainer());
             objectsNamesList.add(item.getAddress());
             if (selectedObjectId != null && item.getId() == selectedObjectId ) {
-                windowObjectsTrackingController.initTableView(
-                        selectObjectEmployeesList(selectedObjectId), selectObjectAddress(selectedObjectId));
+                windowObjectsTrackingController.initTableView(selectedObjectId);
             }
         });
 

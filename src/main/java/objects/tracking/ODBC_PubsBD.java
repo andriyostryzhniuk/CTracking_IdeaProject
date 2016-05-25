@@ -115,6 +115,20 @@ public class ODBC_PubsBD {
                 BeanPropertyRowMapper.newInstance(DTOObjectEmployees.class), objectId);
     }
 
+    public static List<DTOObjectEmployees> selectOnlyActualObjectEmployeesList(Integer objectId, LocalDate dateView){
+        return getJdbcTemplate().query("SELECT object_employees.id, object_id AS objectId, " +
+                        "   employees_id AS employeeId, startDate, finishDate, concat( employees.surname, ' ', " +
+                        "   LEFT (employees.name, 1), '. ', LEFT (employees.middleName, 1), '.' ) AS fullName " +
+                        "FROM object_employees, employees " +
+                        "WHERE object_id = ? AND " +
+                        "object_employees.startDate <= ? AND (" +
+                        "object_employees.finishDate IS NULL OR " +
+                        "object_employees.finishDate >= ?) AND " +
+                        "object_employees.employees_id = employees.id " +
+                        "ORDER BY startDate DESC",
+                BeanPropertyRowMapper.newInstance(DTOObjectEmployees.class), objectId, dateView, dateView);
+    }
+
     public static String selectObjectAddress(Integer objectId) {
         return getJdbcTemplate().queryForObject("select address " +
                         "from object " +
