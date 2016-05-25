@@ -1,33 +1,53 @@
 package stock.tracking;
 
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 import javafx.fxml.FXMLLoader;
-import javafx.geometry.Pos;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.BorderPane;
 import javafx.beans.value.ChangeListener;
-import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.geometry.Insets;
 import javafx.scene.control.*;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.StackPane;
+import overridden.elements.table.view.CustomTableColumn;
+import overridden.elements.table.view.TableViewHolder;
+import stock.tracking.dto.DTOStockTracking;
+
 import java.io.IOException;
-import java.util.ArrayList;
-import java.util.List;
+import java.time.LocalDate;
+import java.util.Collection;
 
-import stock.tracking.dto.DtoResult;
+import static stock.tracking.ODBC_PubsBDForLiable.selectEmployeesName;
+import static stock.tracking.ODBC_PubsBDForLiable.selectObjectAddress;
+import static stock.tracking.ODBC_PubsBDForLiable.selectStockTracking;
 
-public class WindowStockTrackingController {
+public class WindowStockTrackingController<T extends DTOStockTracking> {
 
     public BorderPane rootBorderPane;
-    public GridPane leftSideGridPane;
-    public GridPane rightSideGridPane;
-    public TextArea notesTextArea;
     public GridPane gridPane;
+    public GridPane rightSideGridPane;
+    public StackPane stackPane;
+
+    public ChoiceBox contentChoiceBox;
+    public ChoiceBox stockTypeChoiceBox;
+    public ChoiceBox repositoryChoiceBox;
+    public CheckBox onlyAvailableStockCheckBox;
+    public ChoiceBox liableTypeChoiceBox;
+
+    public TextArea notesTextArea;
 
     public StockListViewController stockListViewController;
     public LiableListViewController liableListViewController;
-    public GrantedStockListViewController grantedStockListViewController;
 
-    public List<DtoResult> resultList = new ArrayList<>();
+    public Label objectNameLabel;
+    public Label employeesNameLabel;
+    private ObservableList<T> tableViewDataList = FXCollections.observableArrayList();
+
+    private TableViewHolder<T> tableView = new TableViewHolder<>();
+    public CustomTableColumn<T, String> stockNameCol = new CustomTableColumn<>("Інвентар");
+    public CustomTableColumn<T, String> givingDateCol = new CustomTableColumn<>("Видано");
+    public CustomTableColumn<T, String> returnDateCol = new CustomTableColumn<>("Повернено");
 
     @FXML
     public void initialize() {
@@ -36,7 +56,6 @@ public class WindowStockTrackingController {
         try {
             gridPane.add(fxmlLoader.load(), 1, 0);
             stockListViewController = fxmlLoader.getController();
-            stockListViewController.setNotesTextArea(notesTextArea);
         } catch (IOException exception) {
             throw new RuntimeException(exception);
         }
@@ -50,165 +69,168 @@ public class WindowStockTrackingController {
         }
 
         initLeftSideGritPane();
-        initRightSideGridPane();
-
-        fxmlLoader = new FXMLLoader(getClass().getResource("/stock.tracking/GrantedStockListView.fxml"));
-        try {
-            rightSideGridPane.add(fxmlLoader.load(), 0, 1);
-            grantedStockListViewController = fxmlLoader.getController();
-            liableListViewController.setGrantedStockListViewController(grantedStockListViewController);
-        } catch (IOException exception) {
-            throw new RuntimeException(exception);
-        }
+        setTableViewParameters();
 
         liableListViewController.setStockListViewController(stockListViewController);
-        liableListViewController.setResultList(resultList);
-        stockListViewController.initListView(stockListViewController.stockTypeChoiceBox.getValue().toString());
-        liableListViewController.initListView();
+        stockListViewController.setWindowStockTrackingController(this);
+        liableListViewController.setWindowStockTrackingController(this);
+        stockListViewController.initListView();
+        liableListViewController.initListView(false);
 
     }
 
     public void initLeftSideGritPane() {
-        leftSideGridPane.add(initStockGroupBox(), 0, 0);
+        initContentChoiceBox();
+        initStockTypeChoiceBox();
+        initRepositoryChoiceBox();
+        initOnlyAvailableStockCheckBox();
+        initLiableTypeChoiceBox();
     }
 
-    public void initRightSideGridPane(){
-        ChoiceBox liableTypeChoiceBox = initLiableTypeChoiceBox();
-        liableListViewController.setLiableTypeChoiceBox(liableTypeChoiceBox);
-        rightSideGridPane.add(liableTypeChoiceBox, 0, 0);
-    }
+    public void initContentChoiceBox(){
+        contentChoiceBox.setTooltip(new Tooltip("Вибрати перегляд"));
 
-    public GridPane initStockGroupBox(){
-        ChoiceBox repositoryChoiceBox = initRepositoryChoiceBox();
-        stockListViewController.setRepositoryChoiceBox(repositoryChoiceBox);
+        contentChoiceBox.getItems().addAll("Категорії", "Весь інвентар");
+        contentChoiceBox.setValue(contentChoiceBox.getItems().get(0));
+        stockListViewController.setContentType(contentChoiceBox.getValue().toString());
 
-        ChoiceBox contentChoiceBox = initContentChoiceBox();
-        stockListViewController.setContentChoiceBox(contentChoiceBox);
-
-        ChoiceBox stockTypeChoiceBox = initStockTypeChoiceBox();
-        stockListViewController.setStockTypeChoiceBox(stockTypeChoiceBox);
-
-        CheckBox showDisableStockCheckBox = initShowDisableStockCheckBox();
-        stockListViewController.setShowDisableStockCheckBox(showDisableStockCheckBox);
-
-        GridPane stockControlsGritPane = new GridPane();
-        stockControlsGritPane.add(contentChoiceBox, 0, 0);
-        stockControlsGritPane.setMargin(contentChoiceBox, new Insets(0, 0, 8, 0));
-        stockControlsGritPane.add(stockTypeChoiceBox, 0, 1);
-        stockControlsGritPane.setMargin(stockTypeChoiceBox, new Insets(8, 0, 8, 0));
-        stockControlsGritPane.add(repositoryChoiceBox, 0, 2);
-        stockControlsGritPane.setMargin(repositoryChoiceBox, new Insets(8, 0, 8, 0));
-        stockControlsGritPane.add(showDisableStockCheckBox, 0, 3);
-        stockControlsGritPane.setMargin(showDisableStockCheckBox, new Insets(8, 0, 5, 0));
-
-        stockControlsGritPane.setAlignment(Pos.TOP_CENTER);
-
-//        GroupBox groupBox = new GroupBox(stockControlsGritPane, "Склад", -70);
-//        groupBox.setMaxWidth(350);
-//        groupBox.getStylesheets().add(getClass().getResource("/overridden.elements/GroupBoxStyle.css").toExternalForm());
-
-        return stockControlsGritPane;
-    }
-
-    public ChoiceBox initContentChoiceBox(){
-        ChoiceBox choiceBox = new ChoiceBox();
-        choiceBox.setTooltip(new Tooltip("Вибрати перегляд"));
-        choiceBox.getStylesheets().add(getClass().getResource("/styles/ChoiceBoxStyle.css").toExternalForm());
-
-        choiceBox.getItems().addAll("Категорії", "Весь інвентар");
-        choiceBox.setValue(choiceBox.getItems().get(0));
-        stockListViewController.setListViewDateParameter(choiceBox.getValue().toString());
-
-        choiceBox.valueProperty().addListener((ChangeListener<String>) (observableValue, oldValue, newValue) -> {
-//                change detected
-            stockListViewController.contentChoiceBox.setValue(choiceBox.getValue());
-            stockListViewController.setListViewDateParameter(choiceBox.getValue().toString());
-            stockListViewController.initListView(stockListViewController.stockTypeChoiceBox.getValue().toString());
+        contentChoiceBox.valueProperty().addListener((ChangeListener<String>) (observableValue, oldValue, newValue) -> {
+            stockListViewController.setContentType(contentChoiceBox.getValue().toString());
+            stockListViewController.initListView();
         });
-
-        return choiceBox;
     }
 
-    public ChoiceBox initStockTypeChoiceBox() {
-        ChoiceBox choiceBox = new ChoiceBox();
-        choiceBox.setTooltip(new Tooltip("Вибрати тип інвентаря\n(Вартісний/Розхідний)"));
-        choiceBox.getItems().addAll("Вартісні", "Розхідні");
-        choiceBox.getStylesheets().add(getClass().getResource("/styles/ChoiceBoxStyle.css").toExternalForm());
-        choiceBox.valueProperty().addListener((ChangeListener<String>) (observableValue, oldValue, newValue) -> {
+    public void initStockTypeChoiceBox() {
+        stockTypeChoiceBox.setTooltip(new Tooltip("Вибрати тип інвентаря\n(Вартісний/Розхідний)"));
+        stockTypeChoiceBox.getItems().addAll("Вартісні", "Розхідні");
+
+        stockTypeChoiceBox.setValue(stockTypeChoiceBox.getItems().get(0));
+        stockListViewController.setStockType(stockTypeChoiceBox.getValue().toString());
+
+        stockTypeChoiceBox.valueProperty().addListener((ChangeListener<String>) (observableValue, oldValue, newValue) -> {
 //                change detected
-            stockListViewController.stockTypeChoiceBox.setValue(choiceBox.getValue());
-            if (! stockListViewController.getListViewDateParameter().equals("Категорії") &&
-                    ! stockListViewController.getListViewDateParameter().equals("Весь інвентар")) {
-                stockListViewController.getContentChoiceBox().setValue("Категорії");
-                stockListViewController.setListViewDateParameter("Категорії");
+            stockListViewController.setStockType(stockTypeChoiceBox.getValue().toString());
+            if (! stockListViewController.getContentType().equals("Категорії") &&
+                    ! stockListViewController.getContentType().equals("Весь інвентар")) {
+                stockListViewController.setContentType("Категорії");
             }
-            stockListViewController.initListView(choiceBox.getValue().toString());
+            stockListViewController.setStockType(newValue.toString());
+            stockListViewController.initListView();
         });
-        choiceBox.setValue(choiceBox.getItems().get(0));
-        return choiceBox;
     }
 
-    public ChoiceBox initRepositoryChoiceBox(){
-        ChoiceBox choiceBox = new ChoiceBox();
-        choiceBox.getStylesheets().add(getClass().getResource("/styles/ChoiceBoxStyle.css").toExternalForm());
-        choiceBox.setTooltip(new Tooltip("Вибрати склад"));
+    public void initRepositoryChoiceBox(){
+        repositoryChoiceBox.setTooltip(new Tooltip("Вибрати склад"));
 
-        choiceBox.setItems(ODBC_PubsBDForStock.selectRepositoryName());
-        choiceBox.setValue(choiceBox.getItems().get(0));
+        repositoryChoiceBox.setItems(ODBC_PubsBDForStock.selectRepositoryName());
+        repositoryChoiceBox.setValue(repositoryChoiceBox.getItems().get(0));
+        stockListViewController.setRepository(repositoryChoiceBox.getValue().toString());
 
-        choiceBox.valueProperty().addListener((ChangeListener<String>) (observableValue, oldValue, newValue) -> {
-//                change detected
-            stockListViewController.initListView(stockListViewController.stockTypeChoiceBox.getValue().toString());
+        repositoryChoiceBox.valueProperty().addListener((ChangeListener<String>) (observableValue, oldValue, newValue) -> {
+            stockListViewController.setRepository(newValue.toString());
+            stockListViewController.initListView();
         });
-
-        return choiceBox;
     }
 
-    public CheckBox initShowDisableStockCheckBox(){
-        CheckBox checkBox = new CheckBox("Недоступні категорії");
-        checkBox.setTooltip(new Tooltip("Показувати категорії в яких на даний момент" +
+    public void initOnlyAvailableStockCheckBox(){
+        onlyAvailableStockCheckBox.setTooltip(new Tooltip("Показувати категорії в яких на даний момент" +
                 "\nнемає жодного доступного інвентаря"));
-        checkBox.setSelected(false);
-        checkBox.setOnAction((ActionEvent event) -> {
-
-            if (stockListViewController.getListViewDateParameter().equals("Категорії")) {
-                stockListViewController.initListView(stockListViewController.stockTypeChoiceBox.getValue().toString());
+        onlyAvailableStockCheckBox.setSelected(true);
+        onlyAvailableStockCheckBox.selectedProperty().addListener(observable -> {
+            if (stockListViewController.getContentType().equals("Категорії")) {
+                stockListViewController.setOnlyAvailableStock(onlyAvailableStockCheckBox.isSelected());
+                stockListViewController.initListView();
             }
         });
-        return checkBox;
     }
 
-    public ChoiceBox initLiableTypeChoiceBox(){
-        ChoiceBox choiceBox = new ChoiceBox();
-        choiceBox.getStylesheets().add(getClass().getResource("/styles/ChoiceBoxStyle.css").toExternalForm());
-        choiceBox.setTooltip(new Tooltip("Вибрати перегляд"));
+    public void initLiableTypeChoiceBox(){
+        liableTypeChoiceBox.setTooltip(new Tooltip("Вибрати перегляд"));
 
-        choiceBox.getItems().addAll("Об'єкти", "Всі працівники");
-        choiceBox.setValue(choiceBox.getItems().get(0));
-        liableListViewController.setListViewDateParameter(choiceBox.getValue().toString());
+        liableTypeChoiceBox.getItems().addAll("Об'єкти", "Працівники");
+        liableTypeChoiceBox.setValue(liableTypeChoiceBox.getItems().get(0));
+        liableListViewController.setLiableType(liableTypeChoiceBox.getValue().toString());
 
-        choiceBox.valueProperty().addListener((ChangeListener<String>) (observableValue, oldValue, newValue) -> {
-//                change detected
-            liableListViewController.liableTypeChoiceBox.setValue(choiceBox.getValue());
-            liableListViewController.setListViewDateParameter(choiceBox.getValue().toString());
-            liableListViewController.initListView();
+        liableTypeChoiceBox.valueProperty().addListener((ChangeListener<String>) (observableValue, oldValue, newValue) -> {
+            liableListViewController.setLiableType(liableTypeChoiceBox.getValue().toString());
+            liableListViewController.initListView(false);
         });
-        choiceBox.setMinWidth(237);
-        choiceBox.setMaxWidth(237);
-
-        return choiceBox;
     }
 
-    public void saveToDB() {
-        resultList.forEach(item -> {
-            ODBC_PubsBDForLiable.insertIntoWorkTracking(item.getStockId(), item.getEmployeesId(), item.getObjectId());
-        });
+    public void aboutStockInfoClear(){
+        notesTextArea.clear();
+    }
 
-        resultList.clear();
-        stockListViewController.setResultList(resultList);
-        liableListViewController.setResultList(resultList);
-        liableListViewController.initListView();
-        stockListViewController.initListView(stockListViewController.stockTypeChoiceBox.getValue().toString());
+    private void setTableViewParameters(){
+        fillCols();
+        setColsDateProperties();
+        fillTableView();
+        stackPane.getChildren().add(tableView);
+        tableView.getTableView().getStylesheets().add(getClass().getResource("/styles/TableViewStyle.css").toExternalForm());
+//        initContextMenu(tableView.getTableView(), this);
+        tableView.getTableView().setPlaceholder(new Label("Не закріплено жодного інвентаря"));
+
+//        tableView.getTableView().getSelectionModel().selectedItemProperty().addListener(event -> {
+//            T selectedItem;
+//            if ((selectedItem = tableView.getTableView().getSelectionModel().getSelectedItem()) != null) {
+//
+//            } else {
+//
+//            }
+//        });
+    }
+
+    private void fillCols() {
+        stockNameCol.setCellValueFactory(new PropertyValueFactory("stockName"));
+        givingDateCol.setCellValueFactory(new PropertyValueFactory("formatGivingDate"));
+        returnDateCol.setCellValueFactory(new PropertyValueFactory("formatReturnDate"));
+    }
+
+    private void setColsDateProperties() {
+        stockNameCol.setPercentWidth(118); stockNameCol.setMinWidth(118);
+        givingDateCol.setPercentWidth(65); givingDateCol.setMinWidth(65);
+        returnDateCol.setPercentWidth(65); returnDateCol.setMinWidth(65);
+    }
+
+    private void fillTableView(){
+        tableView.getTableView().getColumns().addAll(stockNameCol, givingDateCol, returnDateCol);
+    }
+
+    public void initTableView(Integer objectId, Integer employeeId){
+        clearTableView();
+        if (objectId != null) {
+            objectNameLabel.setText(selectObjectAddress(objectId));
+        }
+        if (employeeId != null) {
+            employeesNameLabel.setText(selectEmployeesName(employeeId));
+        }
+        tableViewDataList.addAll((Collection<? extends T>)
+                FXCollections.observableArrayList(selectStockTracking(objectId, employeeId, LocalDate.now())));
+
+        tableView.getTableView().setItems(tableViewDataList);
+    }
+
+    public void clearTableView(){
+        tableViewDataList.clear();
+        tableView.getTableView().getItems().clear();
+        objectNameLabel.setText(null);
+        employeesNameLabel.setText(null);
+    }
+
+    public ChoiceBox getContentChoiceBox() {
+        return contentChoiceBox;
+    }
+
+    public CheckBox getOnlyAvailableStockCheckBox() {
+        return onlyAvailableStockCheckBox;
+    }
+
+    public TextArea getNotesTextArea() {
+        return notesTextArea;
+    }
+
+    public ChoiceBox getLiableTypeChoiceBox() {
+        return liableTypeChoiceBox;
     }
 
 }

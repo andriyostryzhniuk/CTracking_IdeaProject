@@ -64,7 +64,7 @@ public class DtoStock extends DtoStockListView {
     }
 
     public void initStockPaneContainer(){
-        paneContainer.setId("0:"+Integer.toString(id));
+        paneContainer.setId(Integer.toString(id));
         paneContainer.setStyle("-fx-background-color: rgba(105, 105, 105, .5);");
         Label label = new Label(name);
         paneContainer.getChildren().add(label);
@@ -76,11 +76,5 @@ public class DtoStock extends DtoStockListView {
     public int getNumberOfStock() {
         return 0;
     }
-
-    @Override
-    public void initCategoryPaneContainer(int numberOfStockGranted) {
-
-    }
-
 
 }

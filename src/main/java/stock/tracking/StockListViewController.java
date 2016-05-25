@@ -14,11 +14,9 @@ import javafx.scene.input.*;
 import javafx.scene.layout.*;
 import javafx.util.Callback;
 import overridden.elements.combo.box.AutoCompleteComboBoxListener;
-import stock.tracking.dto.DtoResult;
-import stock.tracking.dto.DtoStock;
 import stock.tracking.dto.DtoStockListView;
-import java.util.ArrayList;
-import java.util.List;
+
+import static stock.tracking.ODBC_PubsBDForStock.selectStocksNotes;
 
 public class StockListViewController {
     public GridPane rootGridPane;
@@ -28,21 +26,19 @@ public class StockListViewController {
     public Pane headerPane;
     public Label headerLabel;
 
-    public ChoiceBox contentChoiceBox = new ChoiceBox();
-    public ChoiceBox stockTypeChoiceBox = new ChoiceBox();
+    private WindowStockTrackingController windowStockTrackingController;
+
+    private String contentType;
+    private String stockType;
+    private String repository;
+    private boolean onlyAvailableStock = true;
+
     public ComboBox comboBoxSearch = new ComboBox();
     public ComboBox comboBoxListener = new ComboBox();
-    public ChoiceBox repositoryChoiceBox = new ChoiceBox();
-    public CheckBox showDisableStockCheckBox = new CheckBox();
     public Button levelUpButton;
-    public TextArea notesTextArea;
-    private String listViewDateParameter;
 
     public ObservableList<DtoStockListView> stockListViewDataList = FXCollections.observableArrayList();
-    public ObservableList<DtoStock> stockDataList = FXCollections.observableArrayList();
     public ObservableList<String> stockNameList = FXCollections.observableArrayList();
-
-    private List<DtoResult> resultList = new ArrayList<>();
 
     @FXML
     public void initialize() {
@@ -55,78 +51,84 @@ public class StockListViewController {
         levelUpButton = initLevelUpButton();
         headerGridPane.add(levelUpButton, 0, 0);
         headerGridPane.setMargin(levelUpButton, new Insets(0, 10, 0, 10));
+
+        initOnSelectionAction();
     }
 
-    public void initListView(String stockType) {
+    public void initListView() {
         stockNameList.clear();
         stockListViewDataList.clear();
         listView.getItems().clear();
-        showDisableStockCheckBox.setDisable(true);
-        notesTextArea.clear();
+        windowStockTrackingController.getOnlyAvailableStockCheckBox().setDisable(true);
 
-        if (listViewDateParameter.equals("Категорії")) {
-            showDisableStockCheckBox.setDisable(false);
+        if (contentType.equals("Категорії")) {
+            windowStockTrackingController.getOnlyAvailableStockCheckBox().setDisable(false);
             levelUpButton.setDisable(true);
-            if (repositoryChoiceBox.getValue().equals("Всі склади")) {
-                stockListViewDataList.addAll(ODBC_PubsBDForStock.selectStockCategory(stockType, showDisableStockCheckBox.isSelected()));
+            if (repository.equals("Всі склади")) {
+                stockListViewDataList.addAll(ODBC_PubsBDForStock.selectStockCategory(stockType, onlyAvailableStock));
             } else {
                 stockListViewDataList.addAll(ODBC_PubsBDForStock.
-                        selectStockCategoryInRepository(stockType, repositoryChoiceBox.getValue().toString(),
-                                showDisableStockCheckBox.isSelected()));
+                        selectStockCategoryInRepository(stockType, repository, onlyAvailableStock));
             }
 
             stockListViewDataList.forEach(item -> {
-//            count of stock available in each category
-                int numberOfStockGranted = countStockOfCategory(item.getId());
-                item.initCategoryPaneContainer(numberOfStockGranted);
+                item.initStockPaneContainer();
 
                 setSourceDragAndDrop(item.getPaneContainer());
                 item.getPaneContainer().setOnMouseClicked(mouseEvent -> {
                     if (mouseEvent.getButton().equals(MouseButton.PRIMARY)) {
                         if (mouseEvent.getClickCount() == 2) {
-                            setListViewDateParameter(item.getName());
-                            initListView(stockTypeChoiceBox.getValue().toString());
+                            setContentType(item.getName());
+                            initListView();
                         }
                     }
                 });
                 listView.getItems().add(item.getPaneContainer());
                 stockNameList.add(item.getName());
             });
-        } else if (listViewDateParameter.equals("Весь інвентар")) {
+        } else if (contentType.equals("Весь інвентар")) {
             levelUpButton.setDisable(false);
-            if (repositoryChoiceBox.getValue().equals("Всі склади")) {
+            if (repository.equals("Всі склади")) {
                 stockListViewDataList.addAll(ODBC_PubsBDForStock.selectAllStockOfType(stockType));
             } else {
-                stockListViewDataList.addAll(ODBC_PubsBDForStock.
-                        selectAllStockOfTypeInRepository(stockType, repositoryChoiceBox.getValue().toString()));
+                stockListViewDataList.addAll(ODBC_PubsBDForStock.selectAllStockOfTypeInRepository(stockType, repository));
             }
             stockListViewDataList.forEach(item -> {
-                item.getPaneContainer().setOnMouseClicked(mouseEvent -> notesTextArea.setText(item.getNotes()));
                 item.initStockPaneContainer();
                 setSourceDragAndDrop(item.getPaneContainer());
-                checkDisable(item.getPaneContainer());
                 listView.getItems().add(item.getPaneContainer());
                 stockNameList.add(item.getName());
             });
         } else {
             levelUpButton.setDisable(false);
-            if (repositoryChoiceBox.getValue().equals("Всі склади")) {
-                stockListViewDataList.addAll(ODBC_PubsBDForStock.selectStockOfCategory(listViewDateParameter));
+            if (repository.equals("Всі склади")) {
+                stockListViewDataList.addAll(ODBC_PubsBDForStock.selectStockOfCategory(contentType));
             } else {
                 stockListViewDataList.addAll(ODBC_PubsBDForStock.
-                        selectStockOfCategoryInRepository(listViewDateParameter, repositoryChoiceBox.getValue().toString()));
+                        selectStockOfCategoryInRepository(contentType, repository));
             }
             stockListViewDataList.forEach(item -> {
-                item.getPaneContainer().setOnMouseClicked(mouseEvent -> notesTextArea.setText(item.getNotes()));
                 item.initStockPaneContainer();
                 setSourceDragAndDrop(item.getPaneContainer());
-                checkDisable(item.getPaneContainer());
                 listView.getItems().add(item.getPaneContainer());
                 stockNameList.add(item.getName());
             });
         }
         comboBoxSearch.setItems(stockNameList);
         new AutoCompleteComboBoxListener<>(comboBoxSearch, comboBoxListener);
+    }
+
+    private void initOnSelectionAction(){
+        listView.getSelectionModel().selectedItemProperty().addListener(event -> {
+            Pane selectedItem;
+            if (! contentType.equals("Категорії") &&
+                    (selectedItem = listView.getSelectionModel().getSelectedItem()) != null) {
+                Integer stockId = Integer.parseInt(selectedItem.getId());
+                windowStockTrackingController.getNotesTextArea().setText(selectStocksNotes(stockId));
+            } else {
+                windowStockTrackingController.aboutStockInfoClear();
+            }
+        });
     }
 
     private void setSourceDragAndDrop(Pane pane) {
@@ -152,63 +154,6 @@ public class StockListViewController {
 //                    System.out.println(resultList);
 //                }
             event.consume();
-        });
-    }
-
-    public void checkDisable(Pane pane) {
-        int paneId = Integer.parseInt(pane.getId().substring(2));
-        resultList.forEach(item -> {
-            if (item.getStockId() == paneId) {
-                pane.setDisable(true);
-            }
-        });
-    }
-
-    public void setDisableDroppedSource(int stockId) {
-        listView.getItems().forEach(item -> {
-            if (Integer.parseInt(item.getId().substring(2)) == stockId) {
-                item.setDisable(true);
-            }
-        });
-    }
-
-    public void setAvailableDroppedSource(int stockId) {
-        listView.getItems().forEach(item -> {
-            if (Integer.parseInt(item.getId().substring(2)) == stockId) {
-                item.setDisable(false);
-            }
-        });
-    }
-
-    public int countStockOfCategory(int stockCategoryId) {
-        stockDataList.clear();
-        int numberOfStockGranted = 0;
-        if (!resultList.isEmpty()) {
-            if (repositoryChoiceBox.getValue().equals("Всі склади")) {
-                stockDataList.addAll(ODBC_PubsBDForStock.selectStockOfCategoryWithId(stockCategoryId));
-            } else {
-                stockDataList.addAll(ODBC_PubsBDForStock.
-                        selectStockOfCategoryWithIdInRepository(stockCategoryId,
-                                repositoryChoiceBox.getValue().toString()));
-            }
-
-            for (DtoStock dtoStock : stockDataList) {
-                for(DtoResult item : resultList) {
-                    if (item.getStockId() == dtoStock.getId()) {
-                        numberOfStockGranted++;
-                    }
-                }
-            }
-            stockDataList.clear();
-        }
-        return numberOfStockGranted;
-    }
-
-    public void setTextOfAvailableStock (int stockCategoryId){
-        stockListViewDataList.stream().filter(item -> item.getId() == stockCategoryId).forEach(item -> {
-            Label numberOfStockLabel = (Label) item.getPaneContainer().getChildren().get(1);
-            numberOfStockLabel.setText("Кількість: " +
-                    Integer.toString(item.getNumberOfStock() - countStockOfCategory(stockCategoryId)));
         });
     }
 
@@ -287,10 +232,10 @@ public class StockListViewController {
         button.setPrefWidth(10);
         button.setMaxWidth(10);
         button.setOnAction((ActionEvent event) -> {
-            if (!listViewDateParameter.equals("Категорії")) {
-                setListViewDateParameter("Категорії");
-                contentChoiceBox.setValue("Категорії");
-                initListView(stockTypeChoiceBox.getValue().toString());
+            if (! contentType.equals("Категорії")) {
+                setContentType("Категорії");
+                windowStockTrackingController.getContentChoiceBox().setValue("Категорії");
+                initListView();
             }
         });
         button.setTooltip(new Tooltip("Повернутись до категорій"));
@@ -312,42 +257,33 @@ public class StockListViewController {
         headerLabel.setVisible(true);
     }
 
-    public void setResultList(List<DtoResult> resultList) {
-        this.resultList = resultList;
+    public String getContentType() {
+        return contentType;
     }
 
-    public void setStockTypeChoiceBox(ChoiceBox stockTypeChoiceBox) {
-        this.stockTypeChoiceBox = stockTypeChoiceBox;
+    public void setContentType(String contentType) {
+        this.contentType = contentType;
+        setTextToHeaderLabel(contentType);
     }
 
-    public void setRepositoryChoiceBox(ChoiceBox repositoryChoiceBox) {
-        this.repositoryChoiceBox = repositoryChoiceBox;
+    public void setWindowStockTrackingController(WindowStockTrackingController windowStockTrackingController) {
+        this.windowStockTrackingController = windowStockTrackingController;
     }
 
-    public void setShowDisableStockCheckBox(CheckBox showDisableStockCheckBox) {
-        this.showDisableStockCheckBox = showDisableStockCheckBox;
+    public void setStockType(String stockType) {
+        this.stockType = stockType;
     }
 
-    public ChoiceBox getContentChoiceBox() {
-        return contentChoiceBox;
+    public String getRepository() {
+        return repository;
     }
 
-    public void setContentChoiceBox(ChoiceBox contentChoiceBox) {
-        this.contentChoiceBox = contentChoiceBox;
+    public void setRepository(String repository) {
+        this.repository = repository;
     }
 
-    public String getListViewDateParameter() {
-        return listViewDateParameter;
+    public void setOnlyAvailableStock(boolean onlyAvailableStock) {
+        this.onlyAvailableStock = onlyAvailableStock;
     }
-
-    public void setListViewDateParameter(String listViewDateParameter) {
-        this.listViewDateParameter = listViewDateParameter;
-        setTextToHeaderLabel(listViewDateParameter);
-    }
-
-    public void setNotesTextArea(TextArea notesTextArea) {
-        this.notesTextArea = notesTextArea;
-    }
-
 
 }

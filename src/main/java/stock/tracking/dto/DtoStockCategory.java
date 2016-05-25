@@ -53,15 +53,15 @@ public class DtoStockCategory extends DtoStockListView {
         this.paneContainer = paneContainer;
     }
 
-    public void initCategoryPaneContainer(int numberOfStockGranted){
-        paneContainer.setId("1:"+Integer.toString(id));
+    public void initStockPaneContainer(){
+        paneContainer.setId(Integer.toString(id));
         paneContainer.setStyle("-fx-background-color: rgba(105, 105, 105, .5);");
         Label label = new Label(name);
         paneContainer.getChildren().add(label);
         label.setLayoutX(5);
         label.setLayoutY(3);
 
-        Label numberOfStockLabel = new Label("Кількість: " + Integer.toString(numberOfStock - numberOfStockGranted));
+        Label numberOfStockLabel = new Label("Кількість: " + Integer.toString(numberOfStock));
         paneContainer.getChildren().add(numberOfStockLabel);
         numberOfStockLabel.setLayoutX(210);
         numberOfStockLabel.setLayoutY(30);
@@ -72,8 +72,4 @@ public class DtoStockCategory extends DtoStockListView {
         return null;
     }
 
-    @Override
-    public void initStockPaneContainer() {
-
-    }
 }

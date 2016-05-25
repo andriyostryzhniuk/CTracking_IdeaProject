@@ -101,7 +101,7 @@ public class ODBC_PubsBDForStock {
                 "group by stockCategory.id " +
                 "order by stockCategory.name asc;", BeanPropertyRowMapper.newInstance(DtoStockCategory.class), stockType);
 
-        if (showDisableStock) {
+        if (! showDisableStock) {
             dtoStockCategoryList.addAll(getJdbcTemplate().query("select stockcategory.id as id, stockcategory.name as name, " +
                     "ifnull(numberOfAvailableStockCategory.count, 0) as numberOfStock " +
                     "from stockcategory left join " +
@@ -145,7 +145,7 @@ public class ODBC_PubsBDForStock {
                 "order by stockCategory.name asc;", BeanPropertyRowMapper.newInstance(DtoStockCategory.class),
                 repositoryName, stockType);
 
-        if (showDisableStock) {
+        if (! showDisableStock) {
             dtoStockCategoryList.addAll(getJdbcTemplate().query("select stockcategory.id as id, stockcategory.name as name, " +
                     "ifnull(numberOfAvailableStockCategory.count, 0) as numberOfStock " +
                     "from stockcategory left join " +
@@ -227,6 +227,13 @@ public class ODBC_PubsBDForStock {
             repositoryNameList.add(rs.getString(1));
         }
         return repositoryNameList;
+    }
+
+    public static String selectStocksNotes(Integer stockId) {
+        return getJdbcTemplate().queryForObject("select notes " +
+                        "from stock " +
+                        "where id = ?",
+                new Object []{stockId}, String.class);
     }
 
 }

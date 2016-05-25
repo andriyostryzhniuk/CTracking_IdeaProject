@@ -61,8 +61,8 @@ public class WindowObjectsTrackingController<T extends DTOObjectEmployees> {
 
     private TableViewHolder<T> tableView = new TableViewHolder<>();
     public CustomTableColumn<T, String> employeeNameCol = new CustomTableColumn<>("Працівники");
-    public CustomTableColumn<T, String> startDateNameCol = new CustomTableColumn<>("Початок");
-    public CustomTableColumn<T, String> finishDateNameCol = new CustomTableColumn<>("Закінчення");
+    public CustomTableColumn<T, String> startDateCol = new CustomTableColumn<>("Початок");
+    public CustomTableColumn<T, String> finishDateCol = new CustomTableColumn<>("Закінчення");
 
     @FXML
     public void initialize(){
@@ -152,18 +152,18 @@ public class WindowObjectsTrackingController<T extends DTOObjectEmployees> {
 
     private void fillCols() {
         employeeNameCol.setCellValueFactory(new PropertyValueFactory("fullName"));
-        startDateNameCol.setCellValueFactory(new PropertyValueFactory("formatStartDate"));
-        finishDateNameCol.setCellValueFactory(new PropertyValueFactory("formatFinishDate"));
+        startDateCol.setCellValueFactory(new PropertyValueFactory("formatStartDate"));
+        finishDateCol.setCellValueFactory(new PropertyValueFactory("formatFinishDate"));
     }
 
     private void setColsDateProperties() {
         employeeNameCol.setPercentWidth(118); employeeNameCol.setMinWidth(118);
-        startDateNameCol.setPercentWidth(65); startDateNameCol.setMinWidth(65);
-        finishDateNameCol.setPercentWidth(65); finishDateNameCol.setMinWidth(65);
+        startDateCol.setPercentWidth(65); startDateCol.setMinWidth(65);
+        finishDateCol.setPercentWidth(65); finishDateCol.setMinWidth(65);
     }
 
     private void fillTableView(){
-        tableView.getTableView().getColumns().addAll(employeeNameCol, startDateNameCol, finishDateNameCol);
+        tableView.getTableView().getColumns().addAll(employeeNameCol, startDateCol, finishDateCol);
     }
 
     public void initTableView(Integer objectId){

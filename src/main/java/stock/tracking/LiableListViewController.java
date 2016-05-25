@@ -3,7 +3,6 @@ package stock.tracking;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.geometry.Insets;
 import javafx.scene.control.*;
@@ -14,12 +13,11 @@ import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 import javafx.scene.layout.StackPane;
 import overridden.elements.combo.box.AutoCompleteComboBoxListener;
+import stock.tracking.dto.DTOStockTracking;
 import stock.tracking.dto.DtoLiableListView;
-import stock.tracking.dto.DtoResult;
 import stock.tracking.dto.DtoStock;
-import java.util.ArrayList;
-import java.util.LinkedList;
-import java.util.List;
+
+import java.time.LocalDate;
 
 public class LiableListViewController {
 
@@ -30,21 +28,18 @@ public class LiableListViewController {
     public Pane headerPane;
     public Label headerLabel;
 
-    public ChoiceBox liableTypeChoiceBox = new ChoiceBox();
     public ComboBox comboBoxSearch = new ComboBox();
     public ComboBox comboBoxListener = new ComboBox();
     private Integer objectId;
     public Button levelUpButton;
-    private String listViewDateParameter;
+    private String liableType;
 
     public ObservableList<DtoLiableListView> liableListViewDataList = FXCollections.observableArrayList();
     public ObservableList<String> liableNamesList = FXCollections.observableArrayList();
     public ObservableList<DtoStock> stockDataList = FXCollections.observableArrayList();
     public StockListViewController stockListViewController;
 
-    private List<DtoResult> resultList = new ArrayList<>();
-
-    private GrantedStockListViewController grantedStockListViewController;
+    private WindowStockTrackingController windowStockTrackingController;
 
     @FXML
     public void initialize() {
@@ -58,23 +53,25 @@ public class LiableListViewController {
         headerGridPane.add(levelUpButton, 0, 0);
         headerGridPane.setMargin(levelUpButton, new Insets(0, 10, 0, 10));
 
+        initOnSelectionAction();
+
     }
 
-    public void initListView() {
+    public void initListView(boolean isNeedSelectItems) {
+        Integer selectedRowIndex = listView.getSelectionModel().getSelectedIndex();
         liableListViewDataList.clear();
         liableNamesList.clear();
         listView.getItems().clear();
-        grantedStockListViewController.clearListView();
 
-        if (listViewDateParameter.equals("Об'єкти")) {
+        if (liableType.equals("Об'єкти")) {
             levelUpButton.setDisable(true);
-            liableListViewDataList.addAll(ODBC_PubsBDForLiable.selectObjects());
-        } else if (listViewDateParameter.equals("Всі працівники")) {
+            liableListViewDataList.addAll(ODBC_PubsBDForLiable.selectObjects(LocalDate.now()));
+        } else if (liableType.equals("Працівники")) {
             levelUpButton.setDisable(true);
             liableListViewDataList.addAll(ODBC_PubsBDForLiable.selectAllEmployees());
         } else {
             levelUpButton.setDisable(false);
-            liableListViewDataList.addAll(ODBC_PubsBDForLiable.selectEmployeesOnObject(objectId));
+            liableListViewDataList.addAll(ODBC_PubsBDForLiable.selectEmployeesOnObject(objectId, LocalDate.now()));
         }
 
         liableListViewDataList.forEach(item -> {
@@ -82,214 +79,146 @@ public class LiableListViewController {
             liableNamesList.add(item.getString());
             setTargetDragAndDrop(item.getPaneContainer());
             listView.getItems().add(item.getPaneContainer());
-            setTextNumberOfStock(Integer.parseInt(item.getPaneContainer().getId()));
 
-            if (listViewDateParameter.equals("Об'єкти")) {
+            if (liableType.equals("Об'єкти")) {
                 item.getPaneContainer().setOnMouseClicked((MouseEvent event) -> {
                     if (event.getButton().equals(MouseButton.PRIMARY)) {
                         if (event.getClickCount() == 2) {
-                            setListViewDateParameter(item.getString());
+                            setLiableType(item.getString());
                             objectId = item.getId();
-                            initListView();
-                        } else {
-                            initGrantedList(item.getId(), item.getPaneContainer());
+                            initListView(false);
                         }
-                    }
-                });
-            } else {
-                item.getPaneContainer().setOnMouseClicked((MouseEvent event) -> {
-                    if (event.getButton().equals(MouseButton.PRIMARY)) {
-                        initGrantedList(item.getId(), item.getPaneContainer());
                     }
                 });
             }
         });
+
+        if (isNeedSelectItems) {
+            listView.getSelectionModel().select(selectedRowIndex);
+            listView.getFocusModel().focus(selectedRowIndex);
+            listView.scrollTo(selectedRowIndex);
+        }
+
         comboBoxSearch.setItems(liableNamesList);
         new AutoCompleteComboBoxListener<>(comboBoxSearch, comboBoxListener);
     }
 
-    public void setTargetDragAndDrop(Pane pane) {
-        pane.setOnDragOver(new EventHandler<DragEvent>() {
-            public void handle(DragEvent event) {
-//                System.out.println("target.setOnDragOver");
-        /* data is dragged over the target */
-        /* accept it only if it is not dragged from the same node
-         * and if it has a string data */
-                if (event.getGestureSource() != pane &&
-                        event.getDragboard().hasString()) {
-            /* allow for both copying and moving, whatever user chooses */
-                    event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
+    private void initOnSelectionAction(){
+        listView.getSelectionModel().selectedItemProperty().addListener(event -> {
+            Pane selectedItem;
+            if ((selectedItem = listView.getSelectionModel().getSelectedItem()) != null) {
+                if (liableType.equals("Об'єкти")) {
+                    Integer objectId = Integer.parseInt(selectedItem.getId());
+                    windowStockTrackingController.initTableView(objectId, null);
+                } else if (liableType.equals("Працівники")) {
+                    Integer employeeId = Integer.parseInt(selectedItem.getId());
+                    windowStockTrackingController.initTableView(null, employeeId);
+                } else {
+                    Integer employeeId = Integer.parseInt(selectedItem.getId());
+                    windowStockTrackingController.initTableView(objectId, employeeId);
                 }
-
-                event.consume();
-            }
-        });
-
-        pane.setOnDragEntered(new EventHandler<DragEvent>() {
-            public void handle(DragEvent event) {
-//                System.out.println("target.setOnDragEntered");
-    /* the drag-and-drop gesture entered the target */
-    /* show to the user that it is an actual gesture target */
-                if (event.getGestureSource() != pane &&
-                        event.getDragboard().hasString()) {
-                    pane.setStyle("-fx-background-color: rgba(105, 105, 105, .8)");
-                }
-
-                event.consume();
-            }
-        });
-
-        pane.setOnDragExited(new EventHandler<DragEvent>() {
-            public void handle(DragEvent event) {
-//                System.out.println("target.setOnDragExited");
-        /* mouse moved away, remove the graphical cues */
-                pane.setStyle("-fx-background-color: rgba(105, 105, 105, .5)");
-                event.consume();
-            }
-        });
-
-        pane.setOnDragDropped(new EventHandler<DragEvent>() {
-            public void handle(DragEvent event) {
-//                System.out.println("target.setOnDragDropped");
-        /* data dropped */
-        /* if there is a string data on dragboard, read it and use it */
-                Dragboard db = event.getDragboard();
-                boolean success = false;
-                if (db.hasString()) {
-                    Integer intPaneId = Integer.parseInt(pane.getId());
-                    if (Integer.parseInt(db.getString().substring(0, 1)) == 0) {
-                        int stockId = Integer.parseInt(db.getString().substring(2));
-                        if (listViewDateParameter.equals("Об'єкти")) {
-                            resultList.add(new DtoResult(stockId, null, intPaneId));
-                        } else if (listViewDateParameter.equals("Всі працівники")) {
-                            resultList.add(new DtoResult(stockId, intPaneId, null));
-                        } else {
-                            resultList.add(new DtoResult(stockId, intPaneId, objectId));
-                        }
-                        stockListViewController.setResultList(resultList);
-                        stockListViewController.setDisableDroppedSource(stockId);
-                        setTextNumberOfStock(intPaneId);
-                    } else {
-
-                        int stockCategoryId = Integer.parseInt(db.getString().substring(2));
-
-                        if (stockListViewController.repositoryChoiceBox.getValue().equals("Всі склади")) {
-                            stockDataList.addAll(ODBC_PubsBDForStock.selectStockOfCategoryWithId(stockCategoryId));
-                        } else {
-                            stockDataList.addAll(ODBC_PubsBDForStock.
-                                    selectStockOfCategoryWithIdInRepository(stockCategoryId,
-                                            stockListViewController.repositoryChoiceBox.getValue().toString()));
-                        }
-
-                        int numberOfStockGranted = 0;
-                        if (!resultList.isEmpty()) {
-                            for (DtoStock dtoStock : stockDataList) {
-                                for (DtoResult item : resultList) {
-                                    if (item.getStockId() == dtoStock.getId()) {
-                                        numberOfStockGranted++;
-                                    }
-                                }
-                            }
-                        }
-                        int numberOfAvailableStock = stockDataList.size() - numberOfStockGranted;
-
-                        Label liableNameLabel = (Label) pane.getChildren().get(0);
-                        String liableName = liableNameLabel.getText();
-                        PromptNumberStockToGrant promptNumberStockToGrant;
-                        if (listViewDateParameter.equals("Об'єкти")) {
-                            promptNumberStockToGrant = new PromptNumberStockToGrant(stockCategoryId, null, liableName);
-                        } else if (listViewDateParameter.equals("Всі працівники")) {
-                            promptNumberStockToGrant = new PromptNumberStockToGrant(stockCategoryId, liableName, null);
-                        } else {
-                            promptNumberStockToGrant = new PromptNumberStockToGrant(stockCategoryId, liableName, listViewDateParameter);
-                        }
-                        int numberOfStockToGrant =
-                                promptNumberStockToGrant.showPrompt(pane.getScene().getWindow(), numberOfAvailableStock);
-                        if (numberOfStockToGrant != 0) {
-                            int i = 0;
-                            for (DtoStock item : stockDataList) {
-                                if (!resultList.isEmpty()) {
-                                    boolean stockItemIsInResultList = false;
-                                    for (DtoResult resultListItem : resultList) {
-                                        if (resultListItem.getStockId() == item.getId()) {
-                                            stockItemIsInResultList = true;
-                                            break;
-                                        }
-                                    }
-                                    if (stockItemIsInResultList == false) {
-                                        if (listViewDateParameter.equals("Об'єкти")) {
-                                            resultList.add(new DtoResult(item.getId(), null, intPaneId));
-                                        } else if (listViewDateParameter.equals("Всі працівники")) {
-                                            resultList.add(new DtoResult(item.getId(), intPaneId, null));
-                                        } else {
-                                            resultList.add(new DtoResult(item.getId(), intPaneId, objectId));
-                                        }
-                                        i++;
-                                    }
-                                } else {
-                                    if (listViewDateParameter.equals("Об'єкти")) {
-                                        resultList.add(new DtoResult(item.getId(), null, intPaneId));
-                                    } else if (listViewDateParameter.equals("Всі працівники")) {
-                                        resultList.add(new DtoResult(item.getId(), intPaneId, null));
-                                    } else {
-                                        resultList.add(new DtoResult(item.getId(), intPaneId, objectId));
-                                    }
-                                    i++;
-                                }
-                                if (i == numberOfStockToGrant) {
-                                    break;
-                                }
-                            }
-                            stockListViewController.setResultList(resultList);
-                            stockListViewController.setTextOfAvailableStock(stockCategoryId);
-                            setTextNumberOfStock(intPaneId);
-                        }
-                        stockDataList.clear();
-                    }
-                    if (grantedStockListViewController.getLiableId() == intPaneId) {
-                        initGrantedList(intPaneId, pane);
-                    }
-                    success = true;
-                }
-        /* let the source know whether the string was successfully
-         * transferred and used */
-                event.setDropCompleted(success);
-
-                event.consume();
+            } else {
+                windowStockTrackingController.clearTableView();
             }
         });
     }
 
-    public void setTextNumberOfStock(int liableId) {
-        int i = 0;
-        if (listViewDateParameter.equals("Об'єкти")) {
-            for (DtoResult item : resultList) {
-                if (item.getObjectId() != null && item.getObjectId() == liableId && item.getEmployeesId() == null) {
-                    i++;
-                }
+    public void setTargetDragAndDrop(Pane pane) {
+        pane.setOnDragOver(event -> {
+            if (event.getGestureSource() != pane && event.getDragboard().hasString()) {
+                event.acceptTransferModes(TransferMode.COPY_OR_MOVE);
             }
-        } else if (listViewDateParameter.equals("Всі працівники")){
-            for (DtoResult item : resultList) {
-                if (item.getEmployeesId() != null && item.getObjectId() == null && item.getEmployeesId() == liableId) {
-                    i++;
-                }
+            event.consume();
+        });
+
+        pane.setOnDragEntered(event -> {
+            if (event.getGestureSource() != pane && event.getDragboard().hasString()) {
+                pane.setStyle("-fx-background-color: rgba(105, 105, 105, .8)");
             }
-        } else {
-            for (DtoResult item : resultList) {
-                if (item.getEmployeesId() != null && item.getObjectId() != null &&
-                        item.getEmployeesId() == liableId && item.getObjectId() == objectId) {
-                    i++;
+
+            event.consume();
+        });
+
+        pane.setOnDragExited(event -> {
+            pane.setStyle("-fx-background-color: rgba(105, 105, 105, .5)");
+            event.consume();
+        });
+
+        pane.setOnDragDropped(event -> {
+            Dragboard db = event.getDragboard();
+            boolean success = false;
+            if (db.hasString()) {
+                Integer intPaneId = Integer.parseInt(pane.getId());
+                if (!stockListViewController.getContentType().equals("Категорії")) {
+                    DTOStockTracking dtoStockTracking;
+                    int stockId = Integer.parseInt(db.getString());
+                    if (liableType.equals("Об'єкти")) {
+                        dtoStockTracking = new DTOStockTracking(null, stockId, null, intPaneId, LocalDate.now(), null);
+                    } else if (liableType.equals("Працівники")) {
+                        dtoStockTracking = new DTOStockTracking(null, stockId, intPaneId, null, LocalDate.now(), null);
+                    } else {
+                        dtoStockTracking = new DTOStockTracking(null, stockId, intPaneId, objectId, LocalDate.now(), null);
+                    }
+                    ODBC_PubsBDForLiable.insertIntoWorkTracking(dtoStockTracking);
+                } else {
+
+                    int stockCategoryId = Integer.parseInt(db.getString());
+
+                    if (stockListViewController.getRepository().equals("Всі склади")) {
+                        stockDataList.addAll(ODBC_PubsBDForStock.selectStockOfCategoryWithId(stockCategoryId));
+                    } else {
+                        stockDataList.addAll(ODBC_PubsBDForStock.
+                                selectStockOfCategoryWithIdInRepository(stockCategoryId,
+                                        stockListViewController.getRepository()));
+                    }
+
+                    Label liableNameLabel = (Label) pane.getChildren().get(0);
+                    String liableName = liableNameLabel.getText();
+                    PromptNumberStockToGrant promptNumberStockToGrant;
+                    if (liableType.equals("Об'єкти")) {
+                        promptNumberStockToGrant = new PromptNumberStockToGrant(stockCategoryId, null, liableName);
+                    } else if (liableType.equals("Працівники")) {
+                        promptNumberStockToGrant = new PromptNumberStockToGrant(stockCategoryId, liableName, null);
+                    } else {
+                        promptNumberStockToGrant = new PromptNumberStockToGrant(stockCategoryId, liableName, liableType);
+                    }
+
+                    int numberOfStockToGrant =
+                            promptNumberStockToGrant.showPrompt(pane.getScene().getWindow(), stockDataList.size());
+
+                    if (numberOfStockToGrant != 0) {
+                        DTOStockTracking dtoStockTracking;
+                        int i = 0;
+                        for (DtoStock item : stockDataList) {
+                            if (liableType.equals("Об'єкти")) {
+                                dtoStockTracking =
+                                        new DTOStockTracking(null, item.getId(), null, intPaneId, LocalDate.now(), null);
+                            } else if (liableType.equals("Працівники")) {
+                                dtoStockTracking =
+                                        new DTOStockTracking(null, item.getId(), intPaneId, null, LocalDate.now(), null);
+                            } else {
+                                dtoStockTracking =
+                                        new DTOStockTracking(null, item.getId(), intPaneId, objectId, LocalDate.now(), null);
+                            }
+                            ODBC_PubsBDForLiable.insertIntoWorkTracking(dtoStockTracking);
+                            i++;
+                            if (i == numberOfStockToGrant) {
+                                break;
+                            }
+                        }
+                    }
+                    stockDataList.clear();
                 }
+
+                stockListViewController.initListView();
+                initListView(true);
+                success = true;
             }
-        }
-        if (i != 0) {
-            for (Pane pane : listView.getItems()) {
-                if (Integer.parseInt(pane.getId()) == liableId) {
-                    Label label = (Label) pane.getChildren().get(1);
-                    label.setText("Кількість: " + i);
-                }
-            }
-        }
+
+            event.setDropCompleted(success);
+
+            event.consume();
+        });
     }
 
     public void initLiableComboBoxSearch() {
@@ -358,9 +287,9 @@ public class LiableListViewController {
         button.setPrefWidth(10);
         button.setMaxWidth(10);
         button.setOnAction((ActionEvent event) -> {
-            liableTypeChoiceBox.setValue("Об'єкти");
-            setListViewDateParameter("Об'єкти");
-            initListView();
+            windowStockTrackingController.getLiableTypeChoiceBox().setValue("Об'єкти");
+            setLiableType("Об'єкти");
+            initListView(false);
         });
         Tooltip.install(button, new Tooltip("Повернутись до об'єктів"));
         return button;
@@ -381,56 +310,16 @@ public class LiableListViewController {
         headerLabel.setVisible(true);
     }
 
-    public void initGrantedList(Integer liableId, Pane pane){
-        LinkedList<Integer> stockIdList = new LinkedList<>();
-        if (listViewDateParameter.equals("Об'єкти")){
-            resultList.forEach(item -> {
-                if (item.getObjectId() == liableId && item.getEmployeesId() == null) {
-                    stockIdList.add(item.getStockId());
-                }
-            });
-        } else if (listViewDateParameter.equals("Всі працівники")){
-            resultList.forEach(item -> {
-                if (item.getEmployeesId() == liableId && item.getObjectId() == null) {
-                    stockIdList.add(item.getStockId());
-                }
-            });
-        } else  {
-            resultList.forEach(item -> {
-                if (item.getEmployeesId() == liableId && item.getObjectId() == objectId) {
-                    stockIdList.add(item.getStockId());
-                }
-            });
-        }
-        grantedStockListViewController.setLiableId(liableId);
-        grantedStockListViewController.setLiablePane(pane);
-        grantedStockListViewController.setListViewDateParameter(listViewDateParameter);
-        grantedStockListViewController.setObjectId(objectId);
-        grantedStockListViewController.setStockIdList(stockIdList);
-        grantedStockListViewController.initListView();
-    }
-
-    public void setResultList(List<DtoResult> resultList) {
-        this.resultList = resultList;
-        grantedStockListViewController.setResultList(resultList);
-        grantedStockListViewController.setStockListViewController(stockListViewController);
-    }
-
     public void setStockListViewController(StockListViewController stockListViewController) {
         this.stockListViewController = stockListViewController;
     }
 
-    public void setLiableTypeChoiceBox(ChoiceBox liableTypeChoiceBox) {
-        this.liableTypeChoiceBox = liableTypeChoiceBox;
+    public void setLiableType(String liableType) {
+        this.liableType = liableType;
+        setTextToHeaderLabel(liableType);
     }
 
-    public void setListViewDateParameter(String listViewDateParameter) {
-        this.listViewDateParameter = listViewDateParameter;
-        setTextToHeaderLabel(listViewDateParameter);
+    public void setWindowStockTrackingController(WindowStockTrackingController windowStockTrackingController) {
+        this.windowStockTrackingController = windowStockTrackingController;
     }
-
-    public void setGrantedStockListViewController(GrantedStockListViewController grantedStockListViewController) {
-        this.grantedStockListViewController = grantedStockListViewController;
-    }
-
 }
