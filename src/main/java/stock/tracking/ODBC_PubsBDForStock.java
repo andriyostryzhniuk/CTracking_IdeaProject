@@ -217,30 +217,36 @@ public class ODBC_PubsBDForStock {
         }
     }
 
-    public static List<DtoStock> selectStockOfCategoryWithId (int stockCategoryId) {
+    public static List<DtoStock> selectStockOfCategoryWithId (int stockCategoryId, LocalDate dateView) {
         return getJdbcTemplate().query("select stock.id, " +
                 "ifnull(stock.name, stockCategory.name) as name, stockCategory.name as stockCategory, stock.notes " +
                 "from stockCategory, stock left join " +
-                "   (select distinct stocktracking.stock_id " +
-                "   from stocktracking " +
-                "   where stocktracking.returnDate is null or " +
-                "   stocktracking.returnDate > curdate()) usingStock " +
+                        "   (select distinct stocktracking.stock_id " +
+                        "   from stocktracking " +
+                        "   where stocktracking.givingDate >= ? OR ( " +
+                        "   stocktracking.givingDate <= ? AND ( " +
+                        "   stocktracking.returnDate is null or " +
+                        "   stocktracking.returnDate >= ?))) usingStock " +
                 "   on stock.id = usingStock.stock_id " +
                 "where usingStock.stock_id is null and " +
                 "stock.status = 'доступно' and " +
                 "stock.stockCategory_id = stockCategory.id and " +
                 "stockCategory.id = ? " +
-                "order by stock.name asc", BeanPropertyRowMapper.newInstance(DtoStock.class), stockCategoryId);
+                "order by stock.name asc",
+                BeanPropertyRowMapper.newInstance(DtoStock.class), dateView, dateView, dateView, stockCategoryId);
     }
 
-    public static List<DtoStock> selectStockOfCategoryWithIdInRepository (int stockCategoryId, String repositoryName) {
+    public static List<DtoStock> selectStockOfCategoryWithIdInRepository (
+            int stockCategoryId, String repositoryName, LocalDate dateView) {
         return getJdbcTemplate().query("select stock.id, " +
                 "ifnull(stock.name, stockCategory.name) as name, stockCategory.name as stockCategory, stock.notes " +
                 "from repository, stockCategory, stock left join " +
-                "   (select distinct stocktracking.stock_id " +
-                "   from stocktracking " +
-                "   where stocktracking.returnDate is null or " +
-                "   stocktracking.returnDate > curdate()) usingStock " +
+                        "   (select distinct stocktracking.stock_id " +
+                        "   from stocktracking " +
+                        "   where stocktracking.givingDate >= ? OR () " +
+                        "   stocktracking.givingDate <= ? AND ( " +
+                        "   stocktracking.returnDate is null or " +
+                        "   stocktracking.returnDate >= ?))) usingStock " +
                 "   on stock.id = usingStock.stock_id " +
                 "where usingStock.stock_id is null and " +
                 "stock.repository_id = repository.id and " +
@@ -248,7 +254,8 @@ public class ODBC_PubsBDForStock {
                 "stock.status = 'доступно' and " +
                 "stock.stockCategory_id = stockCategory.id and " +
                 "stockCategory.id = ? " +
-                "order by stock.name asc", BeanPropertyRowMapper.newInstance(DtoStock.class),
+                "order by stock.name asc",
+                BeanPropertyRowMapper.newInstance(DtoStock.class), dateView, dateView, dateView,
                 repositoryName, stockCategoryId);
     }
 
@@ -263,7 +270,7 @@ public class ODBC_PubsBDForStock {
         return stockCategoryName;
     }
 
-    public static List<String> selectRepositoryName() {
+    public static List<String> selectRepositoryNames() {
         List<String> repositoryNameList = getJdbcTemplate().query("select repository.name " +
                 "from repository " +
                 "order by repository.name asc", (RowMapper) (resultSet, i) -> resultSet.getString(1));

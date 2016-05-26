@@ -25,7 +25,7 @@ public class ODBC_PubsBDForLiable {
                 "order by employees.surname asc;", BeanPropertyRowMapper.newInstance(DtoEmployees.class));
     }
 
-    public static List<DtoEmployees> selectEmployeesOnObject(Integer objectId, LocalDate viewDate) {
+    public static List<DtoEmployees> selectEmployeesOnObject(Integer objectId, LocalDate dateView) {
         return getJdbcTemplate().query("select employees.id, " +
                 "concat( employees.surname, ' ', left (employees.name, 1), '. ', " +
                 "   left (employees.middleName, 1), '.' ) as fullName " +
@@ -37,27 +37,40 @@ public class ODBC_PubsBDForLiable {
                 "object_employees.finishDate is null) and " +
                 "object_employees.employees_id = employees.id " +
                 "order by employees.surname asc",
-                BeanPropertyRowMapper.newInstance(DtoEmployees.class), objectId, viewDate, viewDate);
+                BeanPropertyRowMapper.newInstance(DtoEmployees.class), objectId, dateView, dateView);
     }
 
-    public static void insertIntoWorkTracking(DTOStockTracking dtoStockTracking){
+    public static void insertIntoStockTracking(DTOStockTracking dtoStockTracking){
         getNamedParameterJdbcTemplate().update("INSERT INTO stocktracking " +
                 "(id, stock_id, employees_id, object_id, givingDate, returnDate) " +
                 "VALUES (:id, :stockId, :employeesId, :objectId, :givingDate, :returnDate)",
                 new BeanPropertySqlParameterSource(dtoStockTracking));
     }
 
-    public static List<DtoObject> selectObjects(LocalDate viewDate){
+    public static void updateStockTracking(DTOStockTracking dtoStockTracking){
+        getNamedParameterJdbcTemplate().update("UPDATE stocktracking " +
+                        "SET givingDate = :givingDate, " +
+                        "returnDate = :returnDate " +
+                        "WHERE id = :id",
+                new BeanPropertySqlParameterSource(dtoStockTracking));
+    }
+
+    public static void deleteFromStockTracking(Integer recordId) {
+        getJdbcTemplate().update("DELETE FROM stockTracking " +
+                "WHERE id = ?", recordId);
+    }
+
+    public static List<DtoObject> selectObjects(LocalDate dateView){
         return getJdbcTemplate().query("select id, address " +
                 "from object " +
                 "where startDate <= ? and " +
                 "(finishDate >= ? or " +
                 "finishDate is null) " +
                 "order by address asc",
-                BeanPropertyRowMapper.newInstance(DtoObject.class), viewDate, viewDate);
+                BeanPropertyRowMapper.newInstance(DtoObject.class), dateView, dateView);
     }
 
-    public static List<DTOStockTracking> selectStockTracking(Integer objectId, Integer employeeId, LocalDate viewDate) {
+    public static List<DTOStockTracking> selectStockTracking(Integer objectId, Integer employeeId, LocalDate dateView) {
         if (objectId == null) {
             return getJdbcTemplate().query("SELECT stocktracking.id, stocktracking.stock_id AS stockId, " +
                     "ifnull(stock.name, stockCategory.name) AS stockName, stockCategory.name AS stockCategory, " +
@@ -72,7 +85,7 @@ public class ODBC_PubsBDForLiable {
                             "stocktracking.stock_id = stock.id AND " +
                             "stock.stockCategory_id = stockCategory.id " +
                             "ORDER BY givingDate DESC",
-                    BeanPropertyRowMapper.newInstance(DTOStockTracking.class), employeeId, viewDate, viewDate);
+                    BeanPropertyRowMapper.newInstance(DTOStockTracking.class), employeeId, dateView, dateView);
         } else if (employeeId == null) {
             return getJdbcTemplate().query("SELECT stocktracking.id, stocktracking.stock_id AS stockId, " +
                     "ifnull(stock.name, stockCategory.name) AS stockName, stockCategory.name AS stockCategory, " +
@@ -87,7 +100,7 @@ public class ODBC_PubsBDForLiable {
                             "stocktracking.stock_id = stock.id AND " +
                             "stock.stockCategory_id = stockCategory.id " +
                             "ORDER BY givingDate DESC",
-                    BeanPropertyRowMapper.newInstance(DTOStockTracking.class), objectId, viewDate, viewDate);
+                    BeanPropertyRowMapper.newInstance(DTOStockTracking.class), objectId, dateView, dateView);
         } else {
             return getJdbcTemplate().query("SELECT stocktracking.id, stocktracking.stock_id AS stockId, " +
                     "ifnull(stock.name, stockCategory.name) AS stockName, stockCategory.name AS stockCategory, " +
@@ -102,7 +115,7 @@ public class ODBC_PubsBDForLiable {
                             "stocktracking.stock_id = stock.id AND " +
                             "stock.stockCategory_id = stockCategory.id " +
                             "ORDER BY givingDate DESC",
-                    BeanPropertyRowMapper.newInstance(DTOStockTracking.class), objectId, employeeId, viewDate, viewDate);
+                    BeanPropertyRowMapper.newInstance(DTOStockTracking.class), objectId, employeeId, dateView, dateView);
         }
     }
 
@@ -120,16 +133,35 @@ public class ODBC_PubsBDForLiable {
                 new Object []{objectId}, String.class);
     }
 
-    public static void deleteFromStockTracking(Integer recordId) {
-        getJdbcTemplate().update("DELETE FROM stockTracking " +
-                "WHERE id = ?", recordId);
-    }
-
     public static DTOObjects selectObject(Integer objectId) {
-        List<DTOObjects> stringList = getJdbcTemplate().query("select id, address, startDate, finishDate " +
+        List<DTOObjects> dtoObjectsList = getJdbcTemplate().query("select id, address, startDate, finishDate " +
                 "from object " +
                 "where id = ?", BeanPropertyRowMapper.newInstance(DTOObjects.class), objectId);
-        return stringList.get(0);
+        return dtoObjectsList.get(0);
+    }
+
+    public static DTOEmployeesFullInfo selectEmployeesFullInfo(Integer employeeId) {
+        List<DTOEmployeesFullInfo> dtoEmployeesFullInfo = getJdbcTemplate().query(
+                "select id, concat(surname, ' ', name, ' ', middleName) as fullName, firstDay as firstDate " +
+                        "from employees " +
+                        "where id = ?", BeanPropertyRowMapper.newInstance(DTOEmployeesFullInfo.class), employeeId);
+        return dtoEmployeesFullInfo.get(0);
+    }
+
+    public static LocalDate selectLastStockUsingDate(Integer stockId, LocalDate dateView) {
+        return getJdbcTemplate().queryForObject("select max(returnDate) " +
+                        "from stockTracking " +
+                        "where stock_id = ? and " +
+                        "returnDate < ?",
+                new Object []{stockId, dateView}, LocalDate.class);
+    }
+
+    public static LocalDate selectNextStockUsingDate(Integer stockId, LocalDate dateView) {
+        return getJdbcTemplate().queryForObject("select min(givingDate) " +
+                        "from stockTracking " +
+                        "where stock_id = ? and " +
+                        "givingDate > ?",
+                new Object []{stockId, dateView}, LocalDate.class);
     }
 
 }

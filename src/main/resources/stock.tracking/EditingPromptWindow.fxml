@@ -56,7 +56,7 @@
                                     </GridPane.margin>
                                 </Label>
                                 <Label text="Відповідальний:" textFill="WHITE" GridPane.columnIndex="2"/>
-                                <Label fx:id="employeeLabel" textFill="WHITE" GridPane.columnIndex="2"
+                                <Label fx:id="employeeLabel" text="-" textFill="WHITE" GridPane.columnIndex="2"
                                        GridPane.rowIndex="1">
                                     <GridPane.margin>
                                         <Insets right="10.0"/>
@@ -67,7 +67,7 @@
                                         <Insets top="5.0"/>
                                     </GridPane.margin>
                                 </Label>
-                                <Label fx:id="objectLabel" textFill="WHITE" GridPane.columnIndex="2"
+                                <Label fx:id="objectLabel" text="-" textFill="WHITE" GridPane.columnIndex="2"
                                        GridPane.rowIndex="3">
                                     <GridPane.margin>
                                         <Insets right="10.0"/>

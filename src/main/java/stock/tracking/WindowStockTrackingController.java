@@ -6,6 +6,8 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.layout.BorderPane;
 import javafx.beans.value.ChangeListener;
 import javafx.fxml.FXML;
@@ -29,6 +31,9 @@ import static stock.tracking.ODBC_PubsBDForLiable.*;
 
 public class WindowStockTrackingController<T extends DTOStockTracking> {
 
+    public DatePicker datePicker;
+    public Button todayButton;
+    private LocalDate oldDatePickerValue;
     public BorderPane rootBorderPane;
     public GridPane gridPane;
     public GridPane rightSideGridPane;
@@ -86,6 +91,7 @@ public class WindowStockTrackingController<T extends DTOStockTracking> {
     }
 
     public void initLeftSideGritPane() {
+        initDatePicker();
         initContentChoiceBox();
         initStockTypeChoiceBox();
         initRepositoryChoiceBox();
@@ -128,7 +134,7 @@ public class WindowStockTrackingController<T extends DTOStockTracking> {
     public void initRepositoryChoiceBox(){
         repositoryChoiceBox.setTooltip(new Tooltip("Вибрати склад"));
 
-        repositoryChoiceBox.setItems(FXCollections.observableArrayList(ODBC_PubsBDForStock.selectRepositoryName()));
+        repositoryChoiceBox.setItems(FXCollections.observableArrayList(ODBC_PubsBDForStock.selectRepositoryNames()));
         repositoryChoiceBox.setValue(repositoryChoiceBox.getItems().get(0));
         stockListViewController.setRepository(repositoryChoiceBox.getValue().toString());
 
@@ -208,7 +214,7 @@ public class WindowStockTrackingController<T extends DTOStockTracking> {
             employeesNameLabel.setText(selectEmployeesName(employeeId));
         }
         tableViewDataList.addAll((Collection<? extends T>)
-                FXCollections.observableArrayList(selectStockTracking(objectId, employeeId, LocalDate.now())));
+                FXCollections.observableArrayList(selectStockTracking(objectId, employeeId, datePicker.getValue())));
 
         tableView.getTableView().setItems(tableViewDataList);
     }
@@ -225,22 +231,6 @@ public class WindowStockTrackingController<T extends DTOStockTracking> {
         liableListViewController.initListView(true);
         stockListViewController.initListView(true);
 
-    }
-
-    public ChoiceBox getContentChoiceBox() {
-        return contentChoiceBox;
-    }
-
-    public CheckBox getOnlyAvailableStockCheckBox() {
-        return onlyAvailableStockCheckBox;
-    }
-
-    public TextArea getNotesTextArea() {
-        return notesTextArea;
-    }
-
-    public ChoiceBox getLiableTypeChoiceBox() {
-        return liableTypeChoiceBox;
     }
 
     public boolean editRecord(T item, boolean toUpdate) {
@@ -268,7 +258,53 @@ public class WindowStockTrackingController<T extends DTOStockTracking> {
         return successSave;
     }
 
+    private void initDatePicker(){
+        datePicker.setTooltip(new Tooltip("Дата перегляду"));
+        datePicker.setValue(LocalDate.now());
+        oldDatePickerValue = datePicker.getValue();
+        initTodayButton();
+
+        datePicker.valueProperty().addListener(observable -> {
+            LocalDate newValue = datePicker.getValue();
+            if (oldDatePickerValue.compareTo(newValue) != 0) {
+                oldDatePickerValue = newValue;
+                stockListViewController.setDateView(newValue);
+                stockListViewController.initListView(false);
+                liableListViewController.setDateView(newValue);
+                liableListViewController.initListView(false);
+            }
+        });
+    }
+
+    private void initTodayButton() {
+        Image image = new Image(getClass().getResourceAsStream("/icons/today_icon.png"));
+        todayButton.getStylesheets().add(getClass().getResource("/styles/RejectButtonStyle.css").toExternalForm());
+        todayButton.setGraphic(new ImageView(image));
+        todayButton.setTooltip(new Tooltip("Сьогоднішня дата"));
+        todayButton.setOnAction(event -> datePicker.setValue(LocalDate.now()));
+    }
+
+    public ChoiceBox getContentChoiceBox() {
+        return contentChoiceBox;
+    }
+
+    public CheckBox getOnlyAvailableStockCheckBox() {
+        return onlyAvailableStockCheckBox;
+    }
+
+    public TextArea getNotesTextArea() {
+        return notesTextArea;
+    }
+
+    public ChoiceBox getLiableTypeChoiceBox() {
+        return liableTypeChoiceBox;
+    }
+
     public void setSuccessSave(boolean successSave) {
         this.successSave = successSave;
+    }
+
+    public StockListViewController getStockListViewController() {
+        return stockListViewController;
     }
 }

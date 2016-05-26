@@ -34,6 +34,7 @@ public class StockListViewController {
     private String stockType;
     private String repository;
     private boolean onlyAvailableStock = true;
+    private LocalDate dateView = LocalDate.now();
 
     public ComboBox comboBoxSearch = new ComboBox();
     public ComboBox comboBoxListener = new ComboBox();
@@ -68,10 +69,10 @@ public class StockListViewController {
             levelUpButton.setDisable(true);
             if (repository.equals("Всі склади")) {
                 stockListViewDataList.addAll(ODBC_PubsBDForStock.selectStockCategory(
-                        stockType, onlyAvailableStock, LocalDate.now()));
+                        stockType, onlyAvailableStock, dateView));
             } else {
                 stockListViewDataList.addAll(ODBC_PubsBDForStock.
-                        selectStockCategoryInRepository(stockType, repository, onlyAvailableStock, LocalDate.now()));
+                        selectStockCategoryInRepository(stockType, repository, onlyAvailableStock, dateView));
             }
 
             stockListViewDataList.forEach(item -> {
@@ -93,10 +94,10 @@ public class StockListViewController {
             levelUpButton.setDisable(false);
             if (repository.equals("Всі склади")) {
                 stockListViewDataList.addAll(
-                        ODBC_PubsBDForStock.selectAllStockOfType(stockType, LocalDate.now(), onlyAvailableStock));
+                        ODBC_PubsBDForStock.selectAllStockOfType(stockType, dateView, onlyAvailableStock));
             } else {
                 stockListViewDataList.addAll(ODBC_PubsBDForStock.
-                        selectAllStockOfTypeInRepository(stockType, repository, LocalDate.now(), onlyAvailableStock));
+                        selectAllStockOfTypeInRepository(stockType, repository, dateView, onlyAvailableStock));
             }
             stockListViewDataList.forEach(item -> {
                 item.initStockPaneContainer();
@@ -108,10 +109,10 @@ public class StockListViewController {
             levelUpButton.setDisable(false);
             if (repository.equals("Всі склади")) {
                 stockListViewDataList.addAll(ODBC_PubsBDForStock.
-                        selectStockOfCategory(contentType, stockType, LocalDate.now(), onlyAvailableStock));
+                        selectStockOfCategory(contentType, stockType, dateView, onlyAvailableStock));
             } else {
                 stockListViewDataList.addAll(ODBC_PubsBDForStock.selectStockOfCategoryInRepository(
-                        contentType, repository, stockType, LocalDate.now(), onlyAvailableStock));
+                        contentType, repository, stockType, dateView, onlyAvailableStock));
             }
             stockListViewDataList.forEach(item -> {
                 item.initStockPaneContainer();
@@ -231,7 +232,7 @@ public class StockListViewController {
         if (stockID != null) {
             int i = 0;
             for (Pane pane : listView.getItems()) {
-                if (Integer.parseInt(pane.getId().substring(2)) == stockID) {
+                if (Integer.parseInt(pane.getId()) == stockID) {
                     listView.getSelectionModel().select(i);
                     listView.getFocusModel().focus(i);
                     listView.scrollTo(i);
@@ -303,4 +304,7 @@ public class StockListViewController {
         this.onlyAvailableStock = onlyAvailableStock;
     }
 
+    public void setDateView(LocalDate dateView) {
+        this.dateView = dateView;
+    }
 }

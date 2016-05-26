@@ -68,7 +68,6 @@ public class WindowObjectsTrackingController<T extends DTOObjectEmployees> {
     public void initialize(){
         viewOnlyActualCheckBox.setSelected(true);
         initDatePicker();
-        initTodayButton();
 
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/objects.tracking/EmployeesListView.fxml"));
         try {
@@ -272,6 +271,7 @@ public class WindowObjectsTrackingController<T extends DTOObjectEmployees> {
         datePicker.setTooltip(new Tooltip("Дата перегляду"));
         datePicker.setValue(LocalDate.now());
         oldDatePickerValue = datePicker.getValue();
+        initTodayButton();
 
         datePicker.valueProperty().addListener(observable -> {
             LocalDate newValue = datePicker.getValue();

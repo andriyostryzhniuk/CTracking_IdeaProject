@@ -100,18 +100,14 @@ public class PromptNumberStockToGrant {
         numberSpinner.setValue(1);
         numberSpinner.setMinValue(0);
         numberSpinner.setMaxValue(maxValue);
-        numberSpinner.valueProperty().addListener(new ChangeListener<Number>() {
-            @Override
-            public void changed(ObservableValue observableValue, Number oldValue, Number newValue) {
-//                change detected
-                isException = false;
-                try {
-                    if (newValue.intValue() < 1) {
-                        isException = true;
-                    }
-                } catch (NullPointerException e) {
+        numberSpinner.valueProperty().addListener((observableValue, oldValue, newValue) -> {
+            isException = false;
+            try {
+                if (newValue.intValue() < 1) {
                     isException = true;
                 }
+            } catch (NullPointerException e) {
+                isException = true;
             }
         });
         return numberSpinner;

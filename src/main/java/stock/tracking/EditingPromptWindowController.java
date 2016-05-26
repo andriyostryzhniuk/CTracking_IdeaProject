@@ -14,11 +14,11 @@ import javafx.util.Callback;
 import objects.tracking.dto.DTOObjects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import stock.tracking.dto.DTOEmployeesFullInfo;
 import stock.tracking.dto.DTOStockTracking;
 import java.time.LocalDate;
 
-import static stock.tracking.ODBC_PubsBDForLiable.selectEmployeesName;
-import static stock.tracking.ODBC_PubsBDForLiable.selectObject;
+import static stock.tracking.ODBC_PubsBDForLiable.*;
 
 public class EditingPromptWindowController {
 
@@ -26,6 +26,7 @@ public class EditingPromptWindowController {
 
     private boolean toUpdate;
     private DTOStockTracking dtoStockTracking;
+    private DTOEmployeesFullInfo dtoEmployeesFullInfo;
     private DTOObjects dtoObjects;
 
     public Group rootGroup;
@@ -43,7 +44,7 @@ public class EditingPromptWindowController {
 
     @FXML
     public void initialize(){
-//        startDatePicker.setOnMouseEntered(event -> setStartDatePickerValidation());
+        startDatePicker.setOnMouseEntered(event -> setStartDatePickerValidation());
 //        finishDatePicker.setOnMouseEntered(event -> setFinishDatePickerValidation());
         initRejectDateButton();
     }
@@ -56,32 +57,27 @@ public class EditingPromptWindowController {
         rejectDateButton.setOnAction(event -> finishDatePicker.setValue(null));
     }
 
-//    public void setStartDatePickerValidation(){
-//        LocalDate minStartDate = determineMinStartDate();
-//        LocalDate maxStartDate = determineMaxStartDate();
-//
-//        Callback<DatePicker, DateCell> dayCellFactory = new Callback<DatePicker, DateCell>() {
-//            public DateCell call(final DatePicker datePicker) {
-//                return new DateCell() {
-//                    @Override
-//                    public void updateItem(LocalDate item, boolean empty) {
-//                        super.updateItem(item, empty);
-//                        // Show Weekends in blue color
-////                        DayOfWeek day = DayOfWeek.from(item);
-////                        if (day == DayOfWeek.SATURDAY || day == DayOfWeek.SUNDAY) {
-////                            this.setTextFill(Color.BLUE);
-////                        }
-//                        if (item.isBefore(minStartDate) || (maxStartDate != null && item.isAfter(maxStartDate))) {
-//                            this.setDisable(true);
-//                        }
-//                    }
-//                };
-//            }
-//        };
+    public void setStartDatePickerValidation(){
+        LocalDate minStartDate = determineMinStartDate();
+        LocalDate maxStartDate = determineMaxStartDate();
 
-//        startDatePicker.setDayCellFactory(dayCellFactory);
-//    }
-//
+        Callback<DatePicker, DateCell> dayCellFactory = new Callback<DatePicker, DateCell>() {
+            public DateCell call(final DatePicker datePicker) {
+                return new DateCell() {
+                    @Override
+                    public void updateItem(LocalDate item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (item.isBefore(minStartDate) || (maxStartDate != null && item.isAfter(maxStartDate))) {
+                            this.setDisable(true);
+                        }
+                    }
+                };
+            }
+        };
+
+        startDatePicker.setDayCellFactory(dayCellFactory);
+    }
+
 //    public void setFinishDatePickerValidation(){
 //        LocalDate minFinishDate = determineMinFinishDate();
 //        LocalDate maxFinishDate = determineMaxFinishDate();
@@ -104,29 +100,36 @@ public class EditingPromptWindowController {
 //        finishDatePicker.setDayCellFactory(dayCellFactory);
 //    }
 
-//    private LocalDate determineMinStartDate(){
-//        LocalDate minStartDate = dtoObjects.getStartDate();
-//        LocalDate lastObjEmpFinishDate =
-//                selectLastObjEmpFinishDate(dtoStockTracking.getEmployeeId(), startDatePicker.getValue());
-//        if (lastObjEmpFinishDate != null && lastObjEmpFinishDate.compareTo(minStartDate) >= 0) {
-//            minStartDate = lastObjEmpFinishDate.plusDays(1);
-//        }
-//        return minStartDate;
-//    }
-//
-//    private LocalDate determineMaxStartDate(){
-//        LocalDate maxStartDate = null;
-//        if (finishDatePicker.getValue() != null) {
-//            maxStartDate = finishDatePicker.getValue();
-//        }
-//        LocalDate minWorkDate = selectMinWorkDate(dtoStockTracking.getId());
-//        if (maxStartDate != null && minWorkDate != null && minWorkDate.isBefore(maxStartDate)) {
-//            maxStartDate = minWorkDate;
-//        } else if (maxStartDate == null && minWorkDate != null) {
-//            maxStartDate = minWorkDate;
-//        }
-//        return maxStartDate;
-//    }
+    private LocalDate determineMinStartDate(){
+        LocalDate minGivingDate;
+        if (dtoObjects != null) {
+            minGivingDate = dtoObjects.getStartDate();
+        } else {
+            minGivingDate = dtoEmployeesFullInfo.getFirstDate();
+        }
+
+        LocalDate lastStockUsingDate =
+                selectLastStockUsingDate(dtoStockTracking.getStockId(), startDatePicker.getValue());
+        if (lastStockUsingDate != null && lastStockUsingDate.compareTo(minGivingDate) >= 0) {
+            minGivingDate = lastStockUsingDate.plusDays(1);
+        }
+
+        return minGivingDate;
+    }
+
+    private LocalDate determineMaxStartDate(){
+        LocalDate maxGivingDate = null;
+        if (finishDatePicker.getValue() != null) {
+            maxGivingDate = finishDatePicker.getValue();
+        }
+        LocalDate nextStockUsingDate = selectNextStockUsingDate(dtoStockTracking.getStockId(), startDatePicker.getValue());
+        if (maxGivingDate != null && nextStockUsingDate != null && nextStockUsingDate.isBefore(maxGivingDate)) {
+            maxGivingDate = nextStockUsingDate;
+        } else if (maxGivingDate == null && nextStockUsingDate != null) {
+            maxGivingDate = nextStockUsingDate;
+        }
+        return maxGivingDate;
+    }
 
 //    private LocalDate determineMinFinishDate(){
 //        LocalDate minFinishDate = determineMinStartDate();
@@ -154,24 +157,20 @@ public class EditingPromptWindowController {
     }
 
     public void save(ActionEvent actionEvent) {
-//        dtoStockTracking.setStartDate(startDatePicker.getValue());
-//        dtoStockTracking.initFormatStartDate();
-//        if (finishDatePicker.getValue() != null) {
-//            dtoStockTracking.setFinishDate(finishDatePicker.getValue());
-//        } else {
-//            dtoStockTracking.setFinishDate(null);
-//        }
-//        dtoStockTracking.initFormatFinishDate();
+        dtoStockTracking.setGivingDate(startDatePicker.getValue());
+        dtoStockTracking.setReturnDate(finishDatePicker.getValue());
+
 //        if (toUpdate) {
 //            updateObjectEmployees(dtoStockTracking);
 //        } else {
 //            insertIntoObjectEmployees(dtoStockTracking);
 //        }
-//
-//        windowStockTrackingController.initTableView(dtoObjects.getId());
-//        if (! windowStockTrackingController.getEmployeesListViewController().isAllEmployees()) {
-//            windowStockTrackingController.getEmployeesListViewController().initList(true);
-//        }
+
+        updateStockTracking(dtoStockTracking);
+
+        windowStockTrackingController.initTableView(dtoStockTracking.getObjectId(), dtoStockTracking.getEmployeesId());
+        windowStockTrackingController.getStockListViewController().initListView(true);
+
         close(true);
     }
 
@@ -195,16 +194,21 @@ public class EditingPromptWindowController {
     private void setControlsValues(){
         stockNameLabel.setText(dtoStockTracking.getStockName());
         stockCategoryLabel.setText(dtoStockTracking.getStockCategory());
-        employeeLabel.setText(selectEmployeesName(dtoStockTracking.getEmployeesId()));
-
         startDatePicker.setValue(dtoStockTracking.getGivingDate());
 
         if (dtoStockTracking.getReturnDate() != null) {
             finishDatePicker.setValue(dtoStockTracking.getReturnDate());
         }
 
-        dtoObjects = selectObject(dtoStockTracking.getObjectId());
-        objectLabel.setText(dtoObjects.getAddress());
+        if (dtoStockTracking.getEmployeesId() != null) {
+            dtoEmployeesFullInfo = selectEmployeesFullInfo(dtoStockTracking.getEmployeesId());
+            employeeLabel.setText(dtoEmployeesFullInfo.getFullName());
+        }
+
+        if (dtoStockTracking.getObjectId() != null) {
+            dtoObjects = selectObject(dtoStockTracking.getObjectId());
+            objectLabel.setText(dtoObjects.getAddress());
+        }
     }
 
     public void setWindowStockTrackingController(WindowStockTrackingController windowStockTrackingController) {

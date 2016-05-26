@@ -16,7 +16,6 @@ import overridden.elements.combo.box.AutoCompleteComboBoxListener;
 import stock.tracking.dto.DTOStockTracking;
 import stock.tracking.dto.DtoLiableListView;
 import stock.tracking.dto.DtoStock;
-
 import java.time.LocalDate;
 
 public class LiableListViewController {
@@ -33,6 +32,7 @@ public class LiableListViewController {
     private Integer objectId;
     public Button levelUpButton;
     private String liableType;
+    private LocalDate dateView = LocalDate.now();
 
     public ObservableList<DtoLiableListView> liableListViewDataList = FXCollections.observableArrayList();
     public ObservableList<String> liableNamesList = FXCollections.observableArrayList();
@@ -65,13 +65,13 @@ public class LiableListViewController {
 
         if (liableType.equals("Об'єкти")) {
             levelUpButton.setDisable(true);
-            liableListViewDataList.addAll(ODBC_PubsBDForLiable.selectObjects(LocalDate.now()));
+            liableListViewDataList.addAll(ODBC_PubsBDForLiable.selectObjects(dateView));
         } else if (liableType.equals("Працівники")) {
             levelUpButton.setDisable(true);
             liableListViewDataList.addAll(ODBC_PubsBDForLiable.selectAllEmployees());
         } else {
             levelUpButton.setDisable(false);
-            liableListViewDataList.addAll(ODBC_PubsBDForLiable.selectEmployeesOnObject(objectId, LocalDate.now()));
+            liableListViewDataList.addAll(ODBC_PubsBDForLiable.selectEmployeesOnObject(objectId, dateView));
         }
 
         liableListViewDataList.forEach(item -> {
@@ -159,17 +159,17 @@ public class LiableListViewController {
                     } else {
                         dtoStockTracking = new DTOStockTracking(null, stockId, intPaneId, objectId, LocalDate.now(), null);
                     }
-                    ODBC_PubsBDForLiable.insertIntoWorkTracking(dtoStockTracking);
+                    ODBC_PubsBDForLiable.insertIntoStockTracking(dtoStockTracking);
                 } else {
 
                     int stockCategoryId = Integer.parseInt(db.getString());
 
                     if (stockListViewController.getRepository().equals("Всі склади")) {
-                        stockDataList.addAll(ODBC_PubsBDForStock.selectStockOfCategoryWithId(stockCategoryId));
+                        stockDataList.addAll(ODBC_PubsBDForStock.selectStockOfCategoryWithId(stockCategoryId, dateView));
                     } else {
                         stockDataList.addAll(ODBC_PubsBDForStock.
                                 selectStockOfCategoryWithIdInRepository(stockCategoryId,
-                                        stockListViewController.getRepository()));
+                                        stockListViewController.getRepository(), dateView));
                     }
 
                     Label liableNameLabel = (Label) pane.getChildren().get(0);
@@ -192,15 +192,15 @@ public class LiableListViewController {
                         for (DtoStock item : stockDataList) {
                             if (liableType.equals("Об'єкти")) {
                                 dtoStockTracking =
-                                        new DTOStockTracking(null, item.getId(), null, intPaneId, LocalDate.now(), null);
+                                        new DTOStockTracking(null, item.getId(), null, intPaneId, dateView, null);
                             } else if (liableType.equals("Працівники")) {
                                 dtoStockTracking =
-                                        new DTOStockTracking(null, item.getId(), intPaneId, null, LocalDate.now(), null);
+                                        new DTOStockTracking(null, item.getId(), intPaneId, null, dateView, null);
                             } else {
                                 dtoStockTracking =
-                                        new DTOStockTracking(null, item.getId(), intPaneId, objectId, LocalDate.now(), null);
+                                        new DTOStockTracking(null, item.getId(), intPaneId, objectId, dateView, null);
                             }
-                            ODBC_PubsBDForLiable.insertIntoWorkTracking(dtoStockTracking);
+                            ODBC_PubsBDForLiable.insertIntoStockTracking(dtoStockTracking);
                             i++;
                             if (i == numberOfStockToGrant) {
                                 break;
@@ -321,5 +321,9 @@ public class LiableListViewController {
 
     public void setWindowStockTrackingController(WindowStockTrackingController windowStockTrackingController) {
         this.windowStockTrackingController = windowStockTrackingController;
+    }
+
+    public void setDateView(LocalDate dateView) {
+        this.dateView = dateView;
     }
 }

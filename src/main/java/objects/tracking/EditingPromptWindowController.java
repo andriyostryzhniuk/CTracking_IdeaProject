@@ -152,13 +152,8 @@ public class EditingPromptWindowController {
 
     public void save(ActionEvent actionEvent) {
         dtoObjectEmployees.setStartDate(startDatePicker.getValue());
-        dtoObjectEmployees.initFormatStartDate();
-        if (finishDatePicker.getValue() != null) {
-            dtoObjectEmployees.setFinishDate(finishDatePicker.getValue());
-        } else {
-            dtoObjectEmployees.setFinishDate(null);
-        }
-        dtoObjectEmployees.initFormatFinishDate();
+        dtoObjectEmployees.setFinishDate(finishDatePicker.getValue());
+
         if (toUpdate) {
             updateObjectEmployees(dtoObjectEmployees);
         } else {
