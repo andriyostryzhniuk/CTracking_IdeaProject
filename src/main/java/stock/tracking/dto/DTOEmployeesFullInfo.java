@@ -7,14 +7,16 @@ public class DTOEmployeesFullInfo {
     private Integer id;
     private String fullName;
     private LocalDate firstDate;
+    private LocalDate lastDate;
 
     public DTOEmployeesFullInfo() {
     }
 
-    public DTOEmployeesFullInfo(Integer id, String fullName, LocalDate firstDate) {
+    public DTOEmployeesFullInfo(Integer id, String fullName, LocalDate firstDate, LocalDate lastDate) {
         this.id = id;
         this.fullName = fullName;
         this.firstDate = firstDate;
+        this.lastDate = lastDate;
     }
 
     public Integer getId() {
@@ -39,5 +41,13 @@ public class DTOEmployeesFullInfo {
 
     public void setFirstDate(LocalDate firstDate) {
         this.firstDate = firstDate;
+    }
+
+    public LocalDate getLastDate() {
+        return lastDate;
+    }
+
+    public void setLastDate(LocalDate lastDate) {
+        this.lastDate = lastDate;
     }
 }

@@ -173,7 +173,7 @@ public class WindowStockTrackingController<T extends DTOStockTracking> {
     private void setTableViewParameters(){
         fillCols();
         setColsDateProperties();
-        fillTableView();
+        tableView.getTableView().getColumns().addAll(stockNameCol, givingDateCol, returnDateCol);
         stackPane.getChildren().add(tableView);
         tableView.getTableView().getStylesheets().add(getClass().getResource("/styles/TableViewStyle.css").toExternalForm());
         initContextMenu(tableView.getTableView(), this);
@@ -199,10 +199,6 @@ public class WindowStockTrackingController<T extends DTOStockTracking> {
         stockNameCol.setPercentWidth(118); stockNameCol.setMinWidth(118);
         givingDateCol.setPercentWidth(65); givingDateCol.setMinWidth(65);
         returnDateCol.setPercentWidth(65); returnDateCol.setMinWidth(65);
-    }
-
-    private void fillTableView(){
-        tableView.getTableView().getColumns().addAll(stockNameCol, givingDateCol, returnDateCol);
     }
 
     public void initTableView(Integer objectId, Integer employeeId){

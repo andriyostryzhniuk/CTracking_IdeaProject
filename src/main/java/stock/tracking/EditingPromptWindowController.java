@@ -34,8 +34,8 @@ public class EditingPromptWindowController {
     public Label stockNameLabel;
     public Label employeeLabel;
     public Label objectLabel;
-    public DatePicker startDatePicker;
-    public DatePicker finishDatePicker;
+    public DatePicker givingDatePicker;
+    public DatePicker returningDatePicker;
     public Button cancelButton;
     public Button saveButton;
     public Button rejectDateButton;
@@ -44,8 +44,8 @@ public class EditingPromptWindowController {
 
     @FXML
     public void initialize(){
-        startDatePicker.setOnMouseEntered(event -> setStartDatePickerValidation());
-//        finishDatePicker.setOnMouseEntered(event -> setFinishDatePickerValidation());
+        givingDatePicker.setOnMouseEntered(event -> setGivingDatePickerValidation());
+        returningDatePicker.setOnMouseEntered(event -> setReturningDatePickerValidation());
         initRejectDateButton();
     }
 
@@ -54,12 +54,12 @@ public class EditingPromptWindowController {
         rejectDateButton.getStylesheets().add(getClass().getResource("/styles/RejectButtonStyle.css").toExternalForm());
         rejectDateButton.setGraphic(new ImageView(image));
         rejectDateButton.setTooltip(new Tooltip("Відмінити дату"));
-        rejectDateButton.setOnAction(event -> finishDatePicker.setValue(null));
+        rejectDateButton.setOnAction(event -> returningDatePicker.setValue(null));
     }
 
-    public void setStartDatePickerValidation(){
-        LocalDate minStartDate = determineMinStartDate();
-        LocalDate maxStartDate = determineMaxStartDate();
+    public void setGivingDatePickerValidation(){
+        LocalDate minGivingDate = determineMinGivingDate();
+        LocalDate maxGivingDate = determineMaxGivingDate();
 
         Callback<DatePicker, DateCell> dayCellFactory = new Callback<DatePicker, DateCell>() {
             public DateCell call(final DatePicker datePicker) {
@@ -67,7 +67,7 @@ public class EditingPromptWindowController {
                     @Override
                     public void updateItem(LocalDate item, boolean empty) {
                         super.updateItem(item, empty);
-                        if (item.isBefore(minStartDate) || (maxStartDate != null && item.isAfter(maxStartDate))) {
+                        if (item.isBefore(minGivingDate) || (maxGivingDate != null && item.isAfter(maxGivingDate))) {
                             this.setDisable(true);
                         }
                     }
@@ -75,32 +75,32 @@ public class EditingPromptWindowController {
             }
         };
 
-        startDatePicker.setDayCellFactory(dayCellFactory);
+        givingDatePicker.setDayCellFactory(dayCellFactory);
     }
 
-//    public void setFinishDatePickerValidation(){
-//        LocalDate minFinishDate = determineMinFinishDate();
-//        LocalDate maxFinishDate = determineMaxFinishDate();
-//        Callback<DatePicker, DateCell> dayCellFactory = new Callback<DatePicker, DateCell>() {
-//            public DateCell call(final DatePicker datePicker) {
-//                return new DateCell() {
-//                    @Override
-//                    public void updateItem(LocalDate item, boolean empty)
-//                    {
-//                        super.updateItem(item, empty);
-//                        if (item.isBefore(minFinishDate) ||
-//                                (maxFinishDate != null && item.compareTo(maxFinishDate) >= 0)) {
-//                            this.setDisable(true);
-//                        }
-//                    }
-//                };
-//            }
-//        };
-//
-//        finishDatePicker.setDayCellFactory(dayCellFactory);
-//    }
+    public void setReturningDatePickerValidation(){
+        LocalDate minReturningDate = determineMinReturningDate();
+        LocalDate maxReturningDate = determineMaxReturningDate();
+        Callback<DatePicker, DateCell> dayCellFactory = new Callback<DatePicker, DateCell>() {
+            public DateCell call(final DatePicker datePicker) {
+                return new DateCell() {
+                    @Override
+                    public void updateItem(LocalDate item, boolean empty)
+                    {
+                        super.updateItem(item, empty);
+                        if (item.isBefore(minReturningDate) ||
+                                (maxReturningDate != null && item.compareTo(maxReturningDate) >= 0)) {
+                            this.setDisable(true);
+                        }
+                    }
+                };
+            }
+        };
 
-    private LocalDate determineMinStartDate(){
+        returningDatePicker.setDayCellFactory(dayCellFactory);
+    }
+
+    private LocalDate determineMinGivingDate(){
         LocalDate minGivingDate;
         if (dtoObjects != null) {
             minGivingDate = dtoObjects.getStartDate();
@@ -109,7 +109,7 @@ public class EditingPromptWindowController {
         }
 
         LocalDate lastStockUsingDate =
-                selectLastStockUsingDate(dtoStockTracking.getStockId(), startDatePicker.getValue());
+                selectLastStockUsingDate(dtoStockTracking.getStockId(), givingDatePicker.getValue());
         if (lastStockUsingDate != null && lastStockUsingDate.compareTo(minGivingDate) >= 0) {
             minGivingDate = lastStockUsingDate.plusDays(1);
         }
@@ -117,48 +117,59 @@ public class EditingPromptWindowController {
         return minGivingDate;
     }
 
-    private LocalDate determineMaxStartDate(){
-        LocalDate maxGivingDate = null;
-        if (finishDatePicker.getValue() != null) {
-            maxGivingDate = finishDatePicker.getValue();
+    private LocalDate determineMaxGivingDate(){
+        LocalDate maxGivingDate;
+        if (returningDatePicker.getValue() != null) {
+            maxGivingDate = returningDatePicker.getValue();
+        } else if (dtoObjects != null) {
+            maxGivingDate = dtoObjects.getFinishDate();
+        } else {
+            maxGivingDate = dtoEmployeesFullInfo.getLastDate();
         }
-        LocalDate nextStockUsingDate = selectNextStockUsingDate(dtoStockTracking.getStockId(), startDatePicker.getValue());
+
+        LocalDate nextStockUsingDate =
+                selectNextStockUsingDate(dtoStockTracking.getStockId(), dtoStockTracking.getGivingDate());
         if (maxGivingDate != null && nextStockUsingDate != null && nextStockUsingDate.isBefore(maxGivingDate)) {
-            maxGivingDate = nextStockUsingDate;
+            maxGivingDate = nextStockUsingDate.minusDays(1);
         } else if (maxGivingDate == null && nextStockUsingDate != null) {
-            maxGivingDate = nextStockUsingDate;
+            maxGivingDate = nextStockUsingDate.minusDays(1);
         }
         return maxGivingDate;
     }
 
-//    private LocalDate determineMinFinishDate(){
-//        LocalDate minFinishDate = determineMinStartDate();
-//        if (startDatePicker != null) {
-//            minFinishDate = startDatePicker.getValue();
-//        }
-//        LocalDate maxWorkDate = selectMaxWorkDate(dtoStockTracking.getId());
-//        if (maxWorkDate != null && minFinishDate.isBefore(maxWorkDate)) {
-//            minFinishDate = maxWorkDate;
-//        }
-//        return minFinishDate;
-//    }
-//
-//    private LocalDate determineMaxFinishDate(){
-//        LocalDate nextObjEmpStartDate =
-//                selectNextObjEmpStartDate(dtoStockTracking.getEmployeeId(), startDatePicker.getValue());
-//        if (nextObjEmpStartDate == null) {
-//            return null;
-//        }
-//        return nextObjEmpStartDate;
-//    }
+    private LocalDate determineMinReturningDate(){
+        LocalDate minReturningDate = determineMinGivingDate();
+        if (givingDatePicker != null) {
+            minReturningDate = givingDatePicker.getValue();
+        }
+        return minReturningDate;
+    }
+
+    private LocalDate determineMaxReturningDate(){
+        LocalDate maxReturningDate;
+        if (dtoObjects != null) {
+            maxReturningDate = dtoObjects.getFinishDate();
+        } else {
+            maxReturningDate = dtoEmployeesFullInfo.getLastDate();
+        }
+
+        LocalDate nextStockUsingDate =
+                selectNextStockUsingDate(dtoStockTracking.getStockId(), dtoStockTracking.getGivingDate());
+        if (maxReturningDate != null && nextStockUsingDate != null && nextStockUsingDate.isBefore(maxReturningDate)) {
+            maxReturningDate = nextStockUsingDate;
+        } else if (maxReturningDate == null && nextStockUsingDate != null) {
+            maxReturningDate = nextStockUsingDate;
+        }
+        return maxReturningDate;
+    }
 
     public void escape(ActionEvent actionEvent) {
         close(false);
     }
 
     public void save(ActionEvent actionEvent) {
-        dtoStockTracking.setGivingDate(startDatePicker.getValue());
-        dtoStockTracking.setReturnDate(finishDatePicker.getValue());
+        dtoStockTracking.setGivingDate(givingDatePicker.getValue());
+        dtoStockTracking.setReturnDate(returningDatePicker.getValue());
 
 //        if (toUpdate) {
 //            updateObjectEmployees(dtoStockTracking);
@@ -194,10 +205,10 @@ public class EditingPromptWindowController {
     private void setControlsValues(){
         stockNameLabel.setText(dtoStockTracking.getStockName());
         stockCategoryLabel.setText(dtoStockTracking.getStockCategory());
-        startDatePicker.setValue(dtoStockTracking.getGivingDate());
+        givingDatePicker.setValue(dtoStockTracking.getGivingDate());
 
         if (dtoStockTracking.getReturnDate() != null) {
-            finishDatePicker.setValue(dtoStockTracking.getReturnDate());
+            returningDatePicker.setValue(dtoStockTracking.getReturnDate());
         }
 
         if (dtoStockTracking.getEmployeesId() != null) {

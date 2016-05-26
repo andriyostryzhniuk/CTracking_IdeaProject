@@ -141,8 +141,8 @@ public class ODBC_PubsBDForLiable {
     }
 
     public static DTOEmployeesFullInfo selectEmployeesFullInfo(Integer employeeId) {
-        List<DTOEmployeesFullInfo> dtoEmployeesFullInfo = getJdbcTemplate().query(
-                "select id, concat(surname, ' ', name, ' ', middleName) as fullName, firstDay as firstDate " +
+        List<DTOEmployeesFullInfo> dtoEmployeesFullInfo = getJdbcTemplate().query("select id, " +
+                "concat(surname, ' ', name, ' ', middleName) as fullName, firstDay as firstDate, lastDay as lastDate " +
                         "from employees " +
                         "where id = ?", BeanPropertyRowMapper.newInstance(DTOEmployeesFullInfo.class), employeeId);
         return dtoEmployeesFullInfo.get(0);

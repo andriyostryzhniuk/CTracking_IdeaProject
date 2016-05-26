@@ -115,7 +115,7 @@ public class WindowObjectsTrackingController<T extends DTOObjectEmployees> {
     private void setTableViewParameters(){
         fillCols();
         setColsDateProperties();
-        fillTableView();
+        tableView.getTableView().getColumns().addAll(employeeNameCol, startDateCol, finishDateCol);
         stackPane.getChildren().add(tableView);
         tableView.getTableView().getStylesheets().add(getClass().getResource("/styles/TableViewStyle.css").toExternalForm());
         initContextMenu(tableView.getTableView(), this);
@@ -159,10 +159,6 @@ public class WindowObjectsTrackingController<T extends DTOObjectEmployees> {
         employeeNameCol.setPercentWidth(118); employeeNameCol.setMinWidth(118);
         startDateCol.setPercentWidth(65); startDateCol.setMinWidth(65);
         finishDateCol.setPercentWidth(65); finishDateCol.setMinWidth(65);
-    }
-
-    private void fillTableView(){
-        tableView.getTableView().getColumns().addAll(employeeNameCol, startDateCol, finishDateCol);
     }
 
     public void initTableView(Integer objectId){

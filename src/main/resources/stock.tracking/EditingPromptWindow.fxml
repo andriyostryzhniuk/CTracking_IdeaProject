@@ -110,9 +110,9 @@
                                 <RowConstraints valignment="BOTTOM" vgrow="SOMETIMES"/>
                             </rowConstraints>
                         </GridPane>
-                        <DatePicker fx:id="startDatePicker" editable="false" promptText="Не визначено"
+                        <DatePicker fx:id="givingDatePicker" editable="false" promptText="Не визначено"
                                     GridPane.rowIndex="1"/>
-                        <DatePicker fx:id="finishDatePicker" editable="false" promptText="Не визначено"
+                        <DatePicker fx:id="returningDatePicker" editable="false" promptText="Не визначено"
                                     GridPane.columnIndex="2" GridPane.rowIndex="1"/>
                         <Label text="Дата видачі:" textFill="WHITE"/>
                         <Label text="Дата повернення:" textFill="WHITE" GridPane.columnIndex="2"/>

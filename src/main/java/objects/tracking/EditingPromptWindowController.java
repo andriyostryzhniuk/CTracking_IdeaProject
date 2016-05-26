@@ -139,10 +139,7 @@ public class EditingPromptWindowController {
 
     private LocalDate determineMaxFinishDate(){
         LocalDate nextObjEmpStartDate =
-                selectNextObjEmpStartDate(dtoObjectEmployees.getEmployeeId(), startDatePicker.getValue());
-        if (nextObjEmpStartDate == null) {
-            return null;
-        }
+                selectNextObjEmpStartDate(dtoObjectEmployees.getEmployeeId(), dtoObjectEmployees.getStartDate());
         return nextObjEmpStartDate;
     }
 
