@@ -17,6 +17,10 @@ import stock.tracking.dto.DTOStockTracking;
 import stock.tracking.dto.DtoLiableListView;
 import stock.tracking.dto.DtoStock;
 import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.util.Optional;
+
+import static stock.tracking.ODBC_PubsBDForLiable.*;
 
 public class LiableListViewController {
 
@@ -150,16 +154,37 @@ public class LiableListViewController {
             if (db.hasString()) {
                 Integer intPaneId = Integer.parseInt(pane.getId());
                 if (!stockListViewController.getContentType().equals("Категорії")) {
+
                     DTOStockTracking dtoStockTracking;
                     int stockId = Integer.parseInt(db.getString());
                     if (liableType.equals("Об'єкти")) {
-                        dtoStockTracking = new DTOStockTracking(null, stockId, null, intPaneId, LocalDate.now(), null);
+                        LocalDate returningDate = selectObjectFinishDate(intPaneId);
+                        dtoStockTracking = new DTOStockTracking(null, stockId, null, intPaneId, dateView, returningDate);
                     } else if (liableType.equals("Працівники")) {
-                        dtoStockTracking = new DTOStockTracking(null, stockId, intPaneId, null, LocalDate.now(), null);
+                        dtoStockTracking = new DTOStockTracking(null, stockId, intPaneId, null, dateView, null);
                     } else {
-                        dtoStockTracking = new DTOStockTracking(null, stockId, intPaneId, objectId, LocalDate.now(), null);
+                        LocalDate returningDate = selectObjectFinishDate(objectId);
+                        dtoStockTracking = new DTOStockTracking(null, stockId, intPaneId, objectId, dateView, returningDate);
                     }
-                    ODBC_PubsBDForLiable.insertIntoStockTracking(dtoStockTracking);
+
+                    LocalDate nextStockUsingDate;
+                    DTOStockTracking simultaneousStockTracking;
+                    if ((simultaneousStockTracking = selectIfStockIsDisable(stockId, dateView)) != null) {
+                        if (showDeletingConfirmation(simultaneousStockTracking)) {
+                            if (! closeStockTracking(simultaneousStockTracking)) {
+                                return;
+                            }
+                        } else {
+                            return;
+                        }
+                    } else if ((nextStockUsingDate = selectNextStockUsingDate(stockId, dateView)) != null) {
+                        dtoStockTracking.setReturnDate(nextStockUsingDate.minusDays(1));
+                    }
+
+                    if (! windowStockTrackingController.editRecord(dtoStockTracking, false)) {
+                        return;
+                    }
+
                 } else {
 
                     int stockCategoryId = Integer.parseInt(db.getString());
@@ -191,14 +216,16 @@ public class LiableListViewController {
                         int i = 0;
                         for (DtoStock item : stockDataList) {
                             if (liableType.equals("Об'єкти")) {
+                                LocalDate returningDate = selectObjectFinishDate(intPaneId);
                                 dtoStockTracking =
-                                        new DTOStockTracking(null, item.getId(), null, intPaneId, dateView, null);
+                                        new DTOStockTracking(null, item.getId(), null, intPaneId, dateView, returningDate);
                             } else if (liableType.equals("Працівники")) {
                                 dtoStockTracking =
                                         new DTOStockTracking(null, item.getId(), intPaneId, null, dateView, null);
                             } else {
+                                LocalDate returningDate = selectObjectFinishDate(objectId);
                                 dtoStockTracking =
-                                        new DTOStockTracking(null, item.getId(), intPaneId, objectId, dateView, null);
+                                        new DTOStockTracking(null, item.getId(), intPaneId, objectId, dateView, returningDate);
                             }
                             ODBC_PubsBDForLiable.insertIntoStockTracking(dtoStockTracking);
                             i++;
@@ -219,6 +246,60 @@ public class LiableListViewController {
 
             event.consume();
         });
+    }
+
+    private boolean showDeletingConfirmation(DTOStockTracking dtoStockTracking){
+        String objectsName = "";
+        if (dtoStockTracking.getObjectId() != null) {
+            objectsName = "на об'єкті " + selectObjectAddress(dtoStockTracking.getObjectId()) + " ";
+        }
+        String employeesName = "";
+        if (dtoStockTracking.getEmployeesId() != null) {
+            employeesName = "за працівником " + selectEmployeesShortName(dtoStockTracking.getEmployeesId());
+        }
+
+        Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle("Попередження");
+        alert.setHeaderText(null);
+        alert.setContentText("Даний інвентар уже закріплений\n" + objectsName + employeesName + "\nПередати його?");
+
+        ButtonType okButton = new ButtonType("ОК");
+        ButtonType cancelButton = new ButtonType("Скасувати");
+
+        alert.getButtonTypes().clear();
+        alert.getButtonTypes().setAll(okButton, cancelButton);
+
+        Optional<ButtonType> result = alert.showAndWait();
+
+        if (result.get() == okButton) {
+            return true;
+        } else {
+            return false;
+        }
+    }
+
+    private boolean closeStockTracking (DTOStockTracking dtoStockTracking) {
+        LocalDate yesterdaysDate = dateView.minusDays(1);
+
+        if (dtoStockTracking.getGivingDate().isAfter(yesterdaysDate)) {
+            showStartDateError(dtoStockTracking.getGivingDate(), yesterdaysDate);
+            return false;
+        }
+
+        dtoStockTracking.setReturnDate(yesterdaysDate);
+        updateStockTracking(dtoStockTracking);
+        return true;
+    }
+
+    private void showStartDateError(LocalDate givingDate, LocalDate returningDate) {
+        Alert alert = new Alert(Alert.AlertType.ERROR);
+        alert.setTitle("Помилка");
+        alert.setHeaderText(null);
+        alert.setContentText("Неможливо вилучити інвентар за датою "
+                + returningDate.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")) +
+                ",\nменшою ніж дата отримання "
+                + givingDate.format(DateTimeFormatter.ofPattern("dd.MM.yyyy")) + ".");
+        alert.showAndWait();
     }
 
     public void initLiableComboBoxSearch() {

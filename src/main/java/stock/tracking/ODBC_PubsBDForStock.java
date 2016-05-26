@@ -285,4 +285,14 @@ public class ODBC_PubsBDForStock {
                 new Object []{stockId}, String.class);
     }
 
+    public static DtoStock selectStockName(Integer stockId) {
+        List<DtoStock> dtoStocksList = getJdbcTemplate().query(
+                "select ifnull(stock.name, stockCategory.name) as name, stockCategory.name as stockCategory " +
+                        "from stock, stockCategory " +
+                        "where stock.id = ? AND " +
+                        "stock.stockCategory_id = stockCategory.id ",
+                BeanPropertyRowMapper.newInstance(DtoStock.class), stockId);
+        return dtoStocksList.get(0);
+    }
+
 }

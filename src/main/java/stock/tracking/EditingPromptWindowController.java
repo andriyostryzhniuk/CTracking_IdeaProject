@@ -16,9 +16,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import stock.tracking.dto.DTOEmployeesFullInfo;
 import stock.tracking.dto.DTOStockTracking;
+import stock.tracking.dto.DtoStock;
+
 import java.time.LocalDate;
 
 import static stock.tracking.ODBC_PubsBDForLiable.*;
+import static stock.tracking.ODBC_PubsBDForStock.selectStockName;
 
 public class EditingPromptWindowController {
 
@@ -171,13 +174,11 @@ public class EditingPromptWindowController {
         dtoStockTracking.setGivingDate(givingDatePicker.getValue());
         dtoStockTracking.setReturnDate(returningDatePicker.getValue());
 
-//        if (toUpdate) {
-//            updateObjectEmployees(dtoStockTracking);
-//        } else {
-//            insertIntoObjectEmployees(dtoStockTracking);
-//        }
-
-        updateStockTracking(dtoStockTracking);
+        if (toUpdate) {
+            updateStockTracking(dtoStockTracking);
+        } else {
+            insertIntoStockTracking(dtoStockTracking);
+        }
 
         windowStockTrackingController.initTableView(dtoStockTracking.getObjectId(), dtoStockTracking.getEmployeesId());
         windowStockTrackingController.getStockListViewController().initListView(true);
@@ -203,8 +204,9 @@ public class EditingPromptWindowController {
     }
 
     private void setControlsValues(){
-        stockNameLabel.setText(dtoStockTracking.getStockName());
-        stockCategoryLabel.setText(dtoStockTracking.getStockCategory());
+        DtoStock dtoStock = selectStockName(dtoStockTracking.getStockId());
+        stockNameLabel.setText(dtoStock.getName());
+        stockCategoryLabel.setText(dtoStock.getStockCategory());
         givingDatePicker.setValue(dtoStockTracking.getGivingDate());
 
         if (dtoStockTracking.getReturnDate() != null) {

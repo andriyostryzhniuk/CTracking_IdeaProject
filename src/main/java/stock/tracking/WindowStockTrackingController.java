@@ -207,7 +207,7 @@ public class WindowStockTrackingController<T extends DTOStockTracking> {
             objectNameLabel.setText(selectObjectAddress(objectId));
         }
         if (employeeId != null) {
-            employeesNameLabel.setText(selectEmployeesName(employeeId));
+            employeesNameLabel.setText(selectEmployeesFullName(employeeId));
         }
         tableViewDataList.addAll((Collection<? extends T>)
                 FXCollections.observableArrayList(selectStockTracking(objectId, employeeId, datePicker.getValue())));

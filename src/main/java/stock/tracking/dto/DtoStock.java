@@ -23,6 +23,11 @@ public class DtoStock extends DtoStockListView {
         this.notes = notes;
     }
 
+    public DtoStock(String name, String stockCategory) {
+        this.name = name;
+        this.stockCategory = stockCategory;
+    }
+
     public int getId() {
         return id;
     }

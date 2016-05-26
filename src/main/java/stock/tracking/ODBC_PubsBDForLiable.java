@@ -119,8 +119,17 @@ public class ODBC_PubsBDForLiable {
         }
     }
 
-    public static String selectEmployeesName(Integer employeeId) {
+    public static String selectEmployeesFullName(Integer employeeId) {
         return getJdbcTemplate().queryForObject("select concat(surname, ' ', name, ' ', middleName) as name " +
+                        "from employees " +
+                        "where id = ?",
+                new Object []{employeeId}, String.class);
+    }
+
+    public static String selectEmployeesShortName(Integer employeeId) {
+        return getJdbcTemplate().queryForObject(
+                        "select concat( employees.surname, ' ', left (employees.name, 1), '. ', " +
+                        "   left (employees.middleName, 1), '.' ) as shortName " +
                         "from employees " +
                         "where id = ?",
                 new Object []{employeeId}, String.class);
@@ -162,6 +171,34 @@ public class ODBC_PubsBDForLiable {
                         "where stock_id = ? and " +
                         "givingDate > ?",
                 new Object []{stockId, dateView}, LocalDate.class);
+    }
+
+    public static LocalDate selectObjectFinishDate(Integer objectId) {
+        return getJdbcTemplate().queryForObject("select finishDate " +
+                        "from object " +
+                        "where id = ? ",
+                new Object []{objectId}, LocalDate.class);
+    }
+
+    public static DTOStockTracking selectIfStockIsDisable(Integer stockId, LocalDate dateView) {
+        List<DTOStockTracking> dtoStockTrackingList = getJdbcTemplate().query("SELECT stocktracking.id, " +
+                "stocktracking.stock_id AS stockId, ifnull(stock.name, stockCategory.name) AS stockName, " +
+                "stockCategory.name AS stockCategory, stocktracking.employees_id AS employeesId, " +
+                "stocktracking.object_id AS objectId, givingDate, returnDate " +
+                "FROM stock, stockCategory, stocktracking " +
+                "WHERE stock.id = ? AND " +
+                "stock.id = stocktracking.stock_id AND " +
+                "stocktracking.givingDate <= ? AND ( " +
+                "stocktracking.returnDate IS NULL OR " +
+                "stocktracking.returnDate >= ?) AND " +
+                "stock.stockCategory_id = stockCategory.id",
+                BeanPropertyRowMapper.newInstance(DTOStockTracking.class), stockId, dateView, dateView);
+
+        if (dtoStockTrackingList.size() == 0) {
+            return null;
+        } else {
+            return dtoStockTrackingList.get(0);
+        }
     }
 
 }
