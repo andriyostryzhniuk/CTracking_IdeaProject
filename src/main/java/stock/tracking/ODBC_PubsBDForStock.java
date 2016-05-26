@@ -260,14 +260,10 @@ public class ODBC_PubsBDForStock {
     }
 
     public static String selectStockCategoryNameWithId (int stockCategoryId) {
-        SqlRowSet rs = getJdbcTemplate().queryForRowSet("select stockCategory.name " +
-                "from stockCategory " +
-                "where stockCategory.id = ?", stockCategoryId );
-        String stockCategoryName = new String();
-        while (rs.next()) {
-            stockCategoryName = rs.getString(1);
-        }
-        return stockCategoryName;
+        return getJdbcTemplate().queryForObject("select stockCategory.name " +
+                        "from stockCategory " +
+                        "where stockCategory.id = ?",
+                new Object []{stockCategoryId}, String.class);
     }
 
     public static List<String> selectRepositoryNames() {
