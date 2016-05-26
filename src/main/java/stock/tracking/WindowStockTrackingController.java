@@ -128,7 +128,7 @@ public class WindowStockTrackingController<T extends DTOStockTracking> {
     public void initRepositoryChoiceBox(){
         repositoryChoiceBox.setTooltip(new Tooltip("Вибрати склад"));
 
-        repositoryChoiceBox.setItems(ODBC_PubsBDForStock.selectRepositoryName());
+        repositoryChoiceBox.setItems(FXCollections.observableArrayList(ODBC_PubsBDForStock.selectRepositoryName()));
         repositoryChoiceBox.setValue(repositoryChoiceBox.getItems().get(0));
         stockListViewController.setRepository(repositoryChoiceBox.getValue().toString());
 
@@ -139,14 +139,11 @@ public class WindowStockTrackingController<T extends DTOStockTracking> {
     }
 
     public void initOnlyAvailableStockCheckBox(){
-        onlyAvailableStockCheckBox.setTooltip(new Tooltip("Показувати категорії в яких на даний момент" +
-                "\nнемає жодного доступного інвентаря"));
+        onlyAvailableStockCheckBox.setTooltip(new Tooltip("Показувати тільки вільний на даний момент інвентар"));
         onlyAvailableStockCheckBox.setSelected(true);
         onlyAvailableStockCheckBox.selectedProperty().addListener(observable -> {
-            if (stockListViewController.getContentType().equals("Категорії")) {
-                stockListViewController.setOnlyAvailableStock(onlyAvailableStockCheckBox.isSelected());
-                stockListViewController.initListView(true);
-            }
+            stockListViewController.setOnlyAvailableStock(onlyAvailableStockCheckBox.isSelected());
+            stockListViewController.initListView(false);
         });
     }
 

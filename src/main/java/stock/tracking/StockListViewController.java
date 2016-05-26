@@ -16,6 +16,8 @@ import javafx.util.Callback;
 import overridden.elements.combo.box.AutoCompleteComboBoxListener;
 import stock.tracking.dto.DtoStockListView;
 
+import java.time.LocalDate;
+
 import static stock.tracking.ODBC_PubsBDForStock.selectStocksNotes;
 
 public class StockListViewController {
@@ -60,16 +62,16 @@ public class StockListViewController {
         stockNameList.clear();
         stockListViewDataList.clear();
         listView.getItems().clear();
-        windowStockTrackingController.getOnlyAvailableStockCheckBox().setDisable(true);
+        windowStockTrackingController.getOnlyAvailableStockCheckBox().setDisable(getCheckBoxDisableStatus());
 
         if (contentType.equals("Категорії")) {
-            windowStockTrackingController.getOnlyAvailableStockCheckBox().setDisable(false);
             levelUpButton.setDisable(true);
             if (repository.equals("Всі склади")) {
-                stockListViewDataList.addAll(ODBC_PubsBDForStock.selectStockCategory(stockType, onlyAvailableStock));
+                stockListViewDataList.addAll(ODBC_PubsBDForStock.selectStockCategory(
+                        stockType, onlyAvailableStock, LocalDate.now()));
             } else {
                 stockListViewDataList.addAll(ODBC_PubsBDForStock.
-                        selectStockCategoryInRepository(stockType, repository, onlyAvailableStock));
+                        selectStockCategoryInRepository(stockType, repository, onlyAvailableStock, LocalDate.now()));
             }
 
             stockListViewDataList.forEach(item -> {
@@ -90,9 +92,11 @@ public class StockListViewController {
         } else if (contentType.equals("Весь інвентар")) {
             levelUpButton.setDisable(false);
             if (repository.equals("Всі склади")) {
-                stockListViewDataList.addAll(ODBC_PubsBDForStock.selectAllStockOfType(stockType));
+                stockListViewDataList.addAll(
+                        ODBC_PubsBDForStock.selectAllStockOfType(stockType, LocalDate.now(), onlyAvailableStock));
             } else {
-                stockListViewDataList.addAll(ODBC_PubsBDForStock.selectAllStockOfTypeInRepository(stockType, repository));
+                stockListViewDataList.addAll(ODBC_PubsBDForStock.
+                        selectAllStockOfTypeInRepository(stockType, repository, LocalDate.now(), onlyAvailableStock));
             }
             stockListViewDataList.forEach(item -> {
                 item.initStockPaneContainer();
@@ -103,10 +107,11 @@ public class StockListViewController {
         } else {
             levelUpButton.setDisable(false);
             if (repository.equals("Всі склади")) {
-                stockListViewDataList.addAll(ODBC_PubsBDForStock.selectStockOfCategory(contentType));
-            } else {
                 stockListViewDataList.addAll(ODBC_PubsBDForStock.
-                        selectStockOfCategoryInRepository(contentType, repository));
+                        selectStockOfCategory(contentType, stockType, LocalDate.now(), onlyAvailableStock));
+            } else {
+                stockListViewDataList.addAll(ODBC_PubsBDForStock.selectStockOfCategoryInRepository(
+                        contentType, repository, stockType, LocalDate.now(), onlyAvailableStock));
             }
             stockListViewDataList.forEach(item -> {
                 item.initStockPaneContainer();
@@ -124,6 +129,10 @@ public class StockListViewController {
 
         comboBoxSearch.setItems(stockNameList);
         new AutoCompleteComboBoxListener<>(comboBoxSearch, comboBoxListener);
+    }
+
+    private boolean getCheckBoxDisableStatus(){
+        return stockType.equals("Розхідні") ? true : false;
     }
 
     private void initOnSelectionAction(){

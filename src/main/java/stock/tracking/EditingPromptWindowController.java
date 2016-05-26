@@ -78,7 +78,7 @@ public class EditingPromptWindowController {
 //                };
 //            }
 //        };
-//
+
 //        startDatePicker.setDayCellFactory(dayCellFactory);
 //    }
 //
@@ -103,7 +103,7 @@ public class EditingPromptWindowController {
 //
 //        finishDatePicker.setDayCellFactory(dayCellFactory);
 //    }
-//
+
 //    private LocalDate determineMinStartDate(){
 //        LocalDate minStartDate = dtoObjects.getStartDate();
 //        LocalDate lastObjEmpFinishDate =
@@ -127,7 +127,7 @@ public class EditingPromptWindowController {
 //        }
 //        return maxStartDate;
 //    }
-//
+
 //    private LocalDate determineMinFinishDate(){
 //        LocalDate minFinishDate = determineMinStartDate();
 //        if (startDatePicker != null) {
