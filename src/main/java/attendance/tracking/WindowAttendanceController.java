@@ -1,17 +1,13 @@
-package employees.attendance.table;
+package attendance.tracking;
 
+import attendance.tracking.dto.DtoObject;
 import overridden.elements.combo.box.AutoCompleteComboBoxListener;
-import employees.attendance.table.dto.DtoEmployeesFullName;
-import employees.attendance.table.dto.DtoObject;
+import attendance.tracking.dto.DtoEmployeesFullName;
 import javafx.application.Platform;
-import javafx.beans.InvalidationListener;
-import javafx.beans.Observable;
 import javafx.beans.value.ChangeListener;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
-import javafx.event.EventHandler;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
@@ -24,7 +20,6 @@ import javafx.util.Callback;
 import overridden.elements.date.picker.DatePicker;
 
 import java.io.IOException;
-import java.sql.*;
 import java.text.DateFormat;
 import java.text.SimpleDateFormat;
 import java.util.*;
@@ -45,6 +40,9 @@ public class WindowAttendanceController<T extends DtoEmployeesFullName> {
     private GridPane topGridPane = new GridPane();
     public ComboBox comboBoxListener = new ComboBox();
 
+    private ComboBox comboBoxSearch = new ComboBox();
+    private ComboBox comboBoxSearchListener = new ComboBox();
+
     private ObservableMap<String, DtoObject> objectMap = FXCollections.observableHashMap();
 
     @FXML
@@ -60,11 +58,18 @@ public class WindowAttendanceController<T extends DtoEmployeesFullName> {
         comboBox = initComboBox();
         topGridPane.add(comboBox, 2, 0);
 
+        Label searchingLabel = new Label("Пошук:");
+        topGridPane.add(searchingLabel, 3, 0);
+        topGridPane.setMargin(searchingLabel, new Insets(0, 10, 0, 150));
+
+        initComboBoxSearch();
+        topGridPane.add(comboBoxSearch, 4, 0);
+
         rootBorderPane.setTop(topGridPane);
         rootBorderPane.setAlignment(topGridPane, Pos.TOP_LEFT);
         rootBorderPane.setMargin(topGridPane, new Insets(0.0, 0.0, 20.0, 0.0));
 
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/employees.attendance.table/TableView.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/attendance/tracking/TableView.fxml"));
         try {
             rootBorderPane.setCenter(fxmlLoader.load());
             tableViewController = fxmlLoader.getController();
@@ -117,7 +122,7 @@ public class WindowAttendanceController<T extends DtoEmployeesFullName> {
                 if (comboBox.getItems().size() == 1) {
                     Label notificationLabel = new Label("Не знайдено жодного об'єкта за даний період");
                     notificationLabel.setStyle("-fx-text-fill: red;");
-                    topGridPane.add(notificationLabel, 3, 0);
+                    topGridPane.add(notificationLabel, 5, 0);
                     topGridPane.setMargin(notificationLabel, new Insets(0, 0, 0, 30));
                     Timer timer = new Timer();
                     timer.scheduleAtFixedRate(new TimerTask() {
@@ -139,7 +144,7 @@ public class WindowAttendanceController<T extends DtoEmployeesFullName> {
 
                         Label notificationLabel = new Label("На вибраному об'єкті не проводилось робіт за даний період");
                         notificationLabel.setStyle("-fx-text-fill: red;");
-                        topGridPane.add(notificationLabel, 3, 0);
+                        topGridPane.add(notificationLabel, 5, 0);
                         topGridPane.setMargin(notificationLabel, new Insets(0, 0, 0, 30));
                         Timer timer = new Timer();
                         timer.scheduleAtFixedRate(new TimerTask() {
@@ -165,7 +170,7 @@ public class WindowAttendanceController<T extends DtoEmployeesFullName> {
         ComboBox comboBox = new ComboBox();
         Tooltip.install(comboBox, new Tooltip("Вибрати об'єкт"));
 
-        comboBox.getStylesheets().add(getClass().getResource("/employees.attendance.table/ComboBoxStyle.css").toExternalForm());
+        comboBox.getStylesheets().add(getClass().getResource("/attendance/tracking/ComboBoxStyle.css").toExternalForm());
 
         comboBoxListener.setValue("Всі об'єкти");
 
@@ -267,6 +272,8 @@ public class WindowAttendanceController<T extends DtoEmployeesFullName> {
             previousYear = datePicker.selectedDateProperty().get().getYear();
             previousDate = datePicker.selectedDateProperty().get();
         }
+
+        setItemsToComboBoxSearch();
     }
 
     public void updateDateInTableHeader (Calendar calendar) {
@@ -363,5 +370,63 @@ public class WindowAttendanceController<T extends DtoEmployeesFullName> {
         }
         comboBox.getStyleClass().remove("warning");
         new AutoCompleteComboBoxListener<>(comboBox, comboBoxListener);
+    }
+
+    public void initComboBoxSearch() {
+        comboBoxSearch.setMinWidth(200);
+        comboBoxSearch.setMaxWidth(200);
+        comboBoxSearch.getStylesheets().add(getClass().getResource("/styles/ComboBoxSearchStyle.css").toExternalForm());
+        comboBoxSearch.setTooltip(new Tooltip("Пошук"));
+        comboBoxSearch.setPromptText("Пошук");
+
+//        setItemsToComboBoxSearch();
+
+        comboBoxSearch.setCellFactory(listCell -> {
+            final ListCell<String> cell = new ListCell<String>() { {
+                    super.setOnMousePressed((MouseEvent event) -> {
+                        comboBoxSearchListener.setValue(comboBoxSearch.getValue());
+                    });
+                }
+
+                @Override
+                public void updateItem(String item, boolean empty) {
+                    super.updateItem(item, empty);
+                    setText(item);
+                }
+            };
+            return cell;
+        });
+
+        comboBoxSearchListener.valueProperty().addListener((observableValue, oldValue, newValue) -> {
+            if (newValue != null) {
+                comboBoxSearch.getStyleClass().remove("warning");
+                searchInTableView();
+                comboBoxSearchListener.setValue(null);
+            }
+        });
+    }
+
+    public void searchInTableView() {
+        Object comboBoxListenerValue = comboBoxSearchListener.getValue();
+
+        int i = 0;
+        for (DtoEmployeesFullName item : (Collection<? extends T>) tableViewController.getTableView().getItems()) {
+            if (item.getFullName().equals(comboBoxListenerValue)) {
+                tableViewController.getTableView().getSelectionModel().select(i);
+                tableViewController.getTableView().getFocusModel().focus(i);
+                tableViewController.getTableView().scrollTo(i);
+            }
+            i++;
+        }
+    }
+
+    private void setItemsToComboBoxSearch(){
+        ObservableList<String> employeesNamesList = FXCollections.observableArrayList();
+        ObservableList<DtoEmployeesFullName> dtoEmployeesFullNameList = tableViewController.getEmployeesFullNameList();
+
+        dtoEmployeesFullNameList.forEach(item -> employeesNamesList.add(item.getFullName()));
+
+        comboBoxSearch.setItems(employeesNamesList);
+        new AutoCompleteComboBoxListener<>(comboBoxSearch, comboBoxSearchListener);
     }
 }

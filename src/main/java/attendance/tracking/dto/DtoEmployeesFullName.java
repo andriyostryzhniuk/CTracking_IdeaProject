@@ -1,4 +1,4 @@
-package employees.attendance.table.dto;
+package attendance.tracking.dto;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;

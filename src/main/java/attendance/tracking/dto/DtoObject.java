@@ -1,4 +1,4 @@
-package employees.attendance.table.dto;
+package attendance.tracking.dto;
 
 import java.sql.Date;
 

@@ -1,5 +1,6 @@
-package employees.attendance.table;
+package attendance.tracking;
 
+import attendance.tracking.dto.DtoEmployeesFullName;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.ObservableMap;
@@ -12,7 +13,6 @@ import javafx.geometry.VPos;
 import javafx.scene.Cursor;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
-import employees.attendance.table.dto.DtoEmployeesFullName;
 import javafx.scene.layout.*;
 import overridden.elements.table.view.CustomTableColumn;
 import overridden.elements.table.view.TableViewHolder;
@@ -86,7 +86,7 @@ public class TableViewController<T extends DtoEmployeesFullName> {
         fillColsDateList();
 
         tableView.getTableView().setFixedCellSize(40.0);
-        tableView.getTableView().getStylesheets().add(getClass().getResource("/employees.attendance.table/TableViewStyle.css").toExternalForm());
+        tableView.getTableView().getStylesheets().add(getClass().getResource("/attendance/tracking/TableViewStyle.css").toExternalForm());
         tableView.getTableView().setPlaceholder(new Label("Немає жодного працівника на даному об'єкті"));
 
         colName.setPercentWidth(150.0);
@@ -175,7 +175,7 @@ public class TableViewController<T extends DtoEmployeesFullName> {
 
                 CheckBox checkBox = new CheckBox();
                 checkBox.prefWidthProperty().bind(tableView.getTableView().getColumns().get(1).widthProperty().multiply(1));
-                checkBox.getStylesheets().add(getClass().getResource("/employees.attendance.table/CheckBoxStyle.css").toExternalForm());
+                checkBox.getStylesheets().add(getClass().getResource("/attendance/tracking/CheckBoxStyle.css").toExternalForm());
                 checkBox.setCursor(Cursor.HAND);
                 if (tableView.getTableView().getColumns().get(j).getStyleClass().indexOf("disable") != -1) {
                     checkBox.setDisable(true);

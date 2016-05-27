@@ -8,6 +8,6 @@
 
 
 <StackPane fx:id="rootStackPane" prefWidth="1390.0" xmlns="http://javafx.com/javafx/8"
-           xmlns:fx="http://javafx.com/fxml/1" fx:controller="employees.attendance.table.TableViewController">
+           xmlns:fx="http://javafx.com/fxml/1" fx:controller="attendance.tracking.TableViewController">
 
 </StackPane>

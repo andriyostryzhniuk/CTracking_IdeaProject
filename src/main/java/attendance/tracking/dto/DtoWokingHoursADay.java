@@ -1,4 +1,4 @@
-package employees.attendance.table.dto;
+package attendance.tracking.dto;
 
 /**
  * Created by Andriy on 03/14/2016.

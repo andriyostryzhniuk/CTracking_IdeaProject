@@ -1,12 +1,12 @@
-package employees.attendance.table;
+package attendance.tracking;
 
-import employees.attendance.table.dto.DtoObject;
-import employees.attendance.table.dto.DtoWokingHoursADay;
+import attendance.tracking.dto.DtoObject;
+import attendance.tracking.dto.DtoWokingHoursADay;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.MapSqlParameterSource;
-import employees.attendance.table.dto.DtoEmployeesFullName;
+import attendance.tracking.dto.DtoEmployeesFullName;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 
 import java.util.List;

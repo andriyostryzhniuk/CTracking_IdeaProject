@@ -7,6 +7,6 @@
 <?import javafx.scene.layout.*?>
 
 <BorderPane fx:id="rootBorderPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
-            fx:controller="employees.attendance.table.WindowAttendanceController">
+            fx:controller="attendance.tracking.WindowAttendanceController">
 
     </BorderPane>

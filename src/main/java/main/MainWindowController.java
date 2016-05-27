@@ -1,6 +1,7 @@
 package main;
 
-import employees.attendance.table.WindowAttendanceController;
+import attendance.tracking.WindowAttendanceController;
+import employees.WindowEmployeesController;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
@@ -21,11 +22,12 @@ public class MainWindowController {
     private WindowAttendanceController windowAttendanceController;
     private WindowStockTrackingController windowStockTrackingController;
     private WindowObjectsTrackingController windowObjectsTrackingController;
+    private WindowEmployeesController windowEmployeesController;
 
     public void initEmployeesWorkTracking(ActionEvent actionEvent) throws IOException {
         if (windowAttendanceController == null) {
             removeMainGridPaneChildren();
-            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/employees.attendance.table/WindowAttendance.fxml"));
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/attendance/tracking/WindowAttendance.fxml"));
             try {
                 mainGridPane.add(fxmlLoader.load(), 1, 1);
                 windowAttendanceController = fxmlLoader.getController();
@@ -57,6 +59,20 @@ public class MainWindowController {
             try {
                 mainGridPane.add(fxmlLoader.load(), 1, 1);
                 windowObjectsTrackingController = fxmlLoader.getController();
+            } catch (IOException exception) {
+                throw new UncheckedIOException(exception);
+            }
+            mainGridPane.add(initButtonContainer(initButtonClose()), 1, 2);
+        }
+    }
+
+    public void initEmployeesWindow(ActionEvent actionEvent) {
+        if (windowEmployeesController == null) {
+            removeMainGridPaneChildren();
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/employees/WindowEmployees.fxml"));
+            try {
+                mainGridPane.add(fxmlLoader.load(), 1, 1);
+                windowEmployeesController = fxmlLoader.getController();
             } catch (IOException exception) {
                 throw new UncheckedIOException(exception);
             }
@@ -110,6 +126,7 @@ public class MainWindowController {
         windowAttendanceController = null;
         windowStockTrackingController = null;
         windowObjectsTrackingController = null;
+        windowEmployeesController = null;
     }
 
 }
