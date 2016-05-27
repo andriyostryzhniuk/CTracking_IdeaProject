@@ -15,10 +15,7 @@ import javafx.scene.layout.*;
 import javafx.util.Callback;
 import overridden.elements.combo.box.AutoCompleteComboBoxListener;
 import stock.tracking.dto.DtoStockListView;
-
 import java.time.LocalDate;
-
-import static stock.tracking.ODBC_PubsBDForStock.selectStocksNotes;
 
 public class StockListViewController {
     public GridPane rootGridPane;
@@ -142,9 +139,10 @@ public class StockListViewController {
             if (! contentType.equals("Категорії") &&
                     (selectedItem = listView.getSelectionModel().getSelectedItem()) != null) {
                 Integer stockId = Integer.parseInt(selectedItem.getId());
-                windowStockTrackingController.getNotesTextArea().setText(selectStocksNotes(stockId));
+                windowStockTrackingController.clearStockAboutInfo();
+                windowStockTrackingController.initStockAboutInfo(stockId);
             } else {
-                windowStockTrackingController.aboutStockInfoClear();
+                windowStockTrackingController.clearStockAboutInfo();
             }
         });
     }

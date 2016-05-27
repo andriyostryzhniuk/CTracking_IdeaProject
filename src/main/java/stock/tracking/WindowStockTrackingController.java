@@ -21,30 +21,37 @@ import javafx.stage.StageStyle;
 import overridden.elements.table.view.CustomTableColumn;
 import overridden.elements.table.view.TableViewHolder;
 import stock.tracking.dto.DTOStockTracking;
-
+import stock.tracking.dto.DtoStock;
 import java.io.IOException;
 import java.time.LocalDate;
 import java.util.Collection;
-
 import static stock.tracking.ContextMenu.initContextMenu;
 import static stock.tracking.ODBC_PubsBDForLiable.*;
+import static stock.tracking.ODBC_PubsBDForStock.selectStock;
 
 public class WindowStockTrackingController<T extends DTOStockTracking> {
+
+    public GridPane gridPane;
+    public StackPane stackPane;
 
     public DatePicker datePicker;
     public Button todayButton;
     private LocalDate oldDatePickerValue;
     public BorderPane rootBorderPane;
-    public GridPane gridPane;
-    public GridPane rightSideGridPane;
-    public StackPane stackPane;
-
     public ChoiceBox contentChoiceBox;
     public ChoiceBox stockTypeChoiceBox;
     public ChoiceBox repositoryChoiceBox;
     public CheckBox onlyAvailableStockCheckBox;
     public ChoiceBox liableTypeChoiceBox;
 
+    public TextArea stockNameTextArea;
+    public Label stockCategoryLabel;
+    public TextArea stockCategoryTextArea;
+    public Label repositoryNameLabel;
+    public TextArea repositoryNameTextArea;
+    public Label priceLabel;
+    public Label priceValueLabel;
+    public Label notesLabel;
     public TextArea notesTextArea;
 
     public StockListViewController stockListViewController;
@@ -166,10 +173,6 @@ public class WindowStockTrackingController<T extends DTOStockTracking> {
         });
     }
 
-    public void aboutStockInfoClear(){
-        notesTextArea.clear();
-    }
-
     private void setTableViewParameters(){
         fillCols();
         setColsDateProperties();
@@ -179,14 +182,16 @@ public class WindowStockTrackingController<T extends DTOStockTracking> {
         initContextMenu(tableView.getTableView(), this);
         tableView.getTableView().setPlaceholder(new Label("Не закріплено жодного інвентаря"));
 
-//        tableView.getTableView().getSelectionModel().selectedItemProperty().addListener(event -> {
-//            T selectedItem;
-//            if ((selectedItem = tableView.getTableView().getSelectionModel().getSelectedItem()) != null) {
-//
-//            } else {
-//
-//            }
-//        });
+        tableView.getTableView().getSelectionModel().selectedItemProperty().addListener(event -> {
+            T selectedItem;
+            if ((selectedItem = tableView.getTableView().getSelectionModel().getSelectedItem()) != null) {
+                Integer stockId = selectedItem.getStockId();
+                clearStockAboutInfo();
+                initStockAboutInfo(stockId);
+            } else {
+                clearStockAboutInfo();
+            }
+        });
     }
 
     private void fillCols() {
@@ -280,16 +285,45 @@ public class WindowStockTrackingController<T extends DTOStockTracking> {
         todayButton.setOnAction(event -> datePicker.setValue(LocalDate.now()));
     }
 
+    public void initStockAboutInfo(Integer stockId){
+        DtoStock dtoStock = selectStock(stockId);
+
+        stockNameTextArea.setText(dtoStock.getName());
+        stockCategoryLabel.setVisible(true);
+        stockCategoryTextArea.setText(dtoStock.getStockCategory());
+        if (dtoStock.getRepositoryName() != null) {
+            repositoryNameLabel.setVisible(true);
+            repositoryNameTextArea.setText(dtoStock.getRepositoryName());
+        }
+        if (dtoStock.getPrice() != null) {
+            priceLabel.setVisible(true);
+            priceValueLabel.setText(dtoStock.getPrice().toString());
+            priceValueLabel.setVisible(true);
+        }
+        if (dtoStock.getNotes() != null) {
+            notesLabel.setVisible(true);
+            notesTextArea.setText(dtoStock.getNotes());
+        }
+    }
+
+    public void clearStockAboutInfo(){
+        stockNameTextArea.clear();
+        stockCategoryLabel.setVisible(false);
+        stockCategoryTextArea.clear();
+        repositoryNameLabel.setVisible(false);
+        repositoryNameTextArea.clear();
+        priceLabel.setVisible(false);
+        priceValueLabel.setText(null);
+        notesLabel.setVisible(false);
+        notesTextArea.clear();
+    }
+
     public ChoiceBox getContentChoiceBox() {
         return contentChoiceBox;
     }
 
     public CheckBox getOnlyAvailableStockCheckBox() {
         return onlyAvailableStockCheckBox;
-    }
-
-    public TextArea getNotesTextArea() {
-        return notesTextArea;
     }
 
     public ChoiceBox getLiableTypeChoiceBox() {

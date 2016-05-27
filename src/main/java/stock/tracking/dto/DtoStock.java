@@ -2,15 +2,15 @@ package stock.tracking.dto;
 
 import javafx.scene.control.Label;
 import javafx.scene.layout.Pane;
+import java.math.BigDecimal;
 
-/**
- * Created by Andriy on 03/23/2016.
- */
 public class DtoStock extends DtoStockListView {
     private int id;
     private String name;
     private String stockCategory;
+    private BigDecimal price;
     private String notes;
+    private String repositoryName;
     private Pane paneContainer = new Pane();
 
     public DtoStock() {
@@ -26,6 +26,15 @@ public class DtoStock extends DtoStockListView {
     public DtoStock(String name, String stockCategory) {
         this.name = name;
         this.stockCategory = stockCategory;
+    }
+
+    public DtoStock(int id, String name, String stockCategory, BigDecimal price, String notes, String repositoryName) {
+        this.id = id;
+        this.name = name;
+        this.stockCategory = stockCategory;
+        this.price = price;
+        this.notes = notes;
+        this.repositoryName = repositoryName;
     }
 
     public int getId() {
@@ -75,6 +84,22 @@ public class DtoStock extends DtoStockListView {
         paneContainer.getChildren().add(label);
         label.setLayoutX(5);
         label.setLayoutY(3);
+    }
+
+    public BigDecimal getPrice() {
+        return price;
+    }
+
+    public void setPrice(BigDecimal price) {
+        this.price = price;
+    }
+
+    public String getRepositoryName() {
+        return repositoryName;
+    }
+
+    public void setRepositoryName(String repositoryName) {
+        this.repositoryName = repositoryName;
     }
 
     @Override

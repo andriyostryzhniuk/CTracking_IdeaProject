@@ -4,7 +4,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.RowMapper;
-import org.springframework.jdbc.support.rowset.SqlRowSet;
 import stock.tracking.dto.*;
 import java.time.LocalDate;
 import java.util.List;
@@ -274,19 +273,24 @@ public class ODBC_PubsBDForStock {
         return repositoryNameList;
     }
 
-    public static String selectStocksNotes(Integer stockId) {
-        return getJdbcTemplate().queryForObject("select notes " +
-                        "from stock " +
-                        "where id = ?",
-                new Object []{stockId}, String.class);
-    }
-
     public static DtoStock selectStockName(Integer stockId) {
         List<DtoStock> dtoStocksList = getJdbcTemplate().query(
                 "select ifnull(stock.name, stockCategory.name) as name, stockCategory.name as stockCategory " +
                         "from stock, stockCategory " +
                         "where stock.id = ? AND " +
                         "stock.stockCategory_id = stockCategory.id ",
+                BeanPropertyRowMapper.newInstance(DtoStock.class), stockId);
+        return dtoStocksList.get(0);
+    }
+
+    public static DtoStock selectStock(Integer stockId) {
+        List<DtoStock> dtoStocksList = getJdbcTemplate().query(
+                "SELECT stock.id, ifnull(stock.name, stockCategory.name) AS name, stockCategory.name AS stockCategory, " +
+                        "stock.price, stock.notes, repository.name AS repositoryName " +
+                        "FROM stock, stockCategory, repository " +
+                        "WHERE stock.id = ? AND " +
+                        "stock.stockCategory_id = stockCategory.id AND " +
+                        "stock.repository_id = repository.id",
                 BeanPropertyRowMapper.newInstance(DtoStock.class), stockId);
         return dtoStocksList.get(0);
     }

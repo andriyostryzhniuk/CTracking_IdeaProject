@@ -26,9 +26,9 @@
                         <ColumnConstraints hgrow="SOMETIMES"/>
                     </columnConstraints>
                     <rowConstraints>
-                        <RowConstraints maxHeight="150.0" minHeight="150.0" prefHeight="150.0" vgrow="SOMETIMES"/>
+                        <RowConstraints maxHeight="240.0" minHeight="240.0" prefHeight="240.0" vgrow="SOMETIMES"/>
                         <RowConstraints minHeight="5.0" vgrow="SOMETIMES"/>
-                        <RowConstraints minHeight="220.0" prefHeight="220.0" vgrow="SOMETIMES"/>
+                        <RowConstraints minHeight="290.0" prefHeight="290.0" vgrow="SOMETIMES"/>
                     </rowConstraints>
                     <children>
                         <GridPane alignment="TOP_CENTER" GridPane.hgrow="SOMETIMES" GridPane.vgrow="SOMETIMES">
@@ -94,7 +94,11 @@
                                 <TextArea fx:id="notesTextArea" editable="false" focusTraversable="false"
                                           prefColumnCount="0" prefRowCount="0"
                                           stylesheets="@../styles/TextAreaStyle.css" wrapText="true"
-                                          GridPane.rowIndex="4"/>
+                                          GridPane.rowIndex="4">
+                                    <GridPane.margin>
+                                        <Insets/>
+                                    </GridPane.margin>
+                                </TextArea>
                                 <Label fx:id="skillsLabel" text="Спеціальність:" visible="false" GridPane.rowIndex="1">
                                     <GridPane.margin>
                                         <Insets left="8.0"/>
@@ -102,7 +106,11 @@
                                 </Label>
                                 <TextArea fx:id="skillsTextArea" editable="false" focusTraversable="false"
                                           stylesheets="@../styles/TextAreaStyle.css" wrapText="true"
-                                          GridPane.rowIndex="2"/>
+                                          GridPane.rowIndex="2">
+                                    <GridPane.margin>
+                                        <Insets bottom="10.0"/>
+                                    </GridPane.margin>
+                                </TextArea>
                                 <TextArea fx:id="employeesNameTextArea" editable="false" focusTraversable="false"
                                           stylesheets="@../styles/TextAreaStyle.css" wrapText="true">
                                     <GridPane.margin>
