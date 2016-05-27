@@ -14,6 +14,7 @@ public class DTOEmployees {
     private LocalDate lastDate;
     private String notes;
     private Integer workingHours;
+    private String imagesURL;
     private List<String> skillsList;
     private List<String> telephonesList;
     private String fullName;
@@ -34,7 +35,7 @@ public class DTOEmployees {
     }
 
     public DTOEmployees(Integer id, String name, String surname, String middleName, LocalDate birthDate,
-                        LocalDate firstDate, LocalDate lastDate, String notes, Integer workingHours) {
+                        LocalDate firstDate, LocalDate lastDate, String notes, Integer workingHours, String imagesURL) {
         this.id = id;
         this.name = name;
         this.surname = surname;
@@ -44,6 +45,7 @@ public class DTOEmployees {
         this.lastDate = lastDate;
         this.notes = notes;
         this.workingHours = workingHours;
+        this.imagesURL = imagesURL;
     }
 
     public Integer getId() {
@@ -116,6 +118,14 @@ public class DTOEmployees {
 
     public void setWorkingHours(Integer workingHours) {
         this.workingHours = workingHours;
+    }
+
+    public String getImagesURL() {
+        return imagesURL;
+    }
+
+    public void setImagesURL(String imagesURL) {
+        this.imagesURL = imagesURL;
     }
 
     public List<String> getSkillsList() {

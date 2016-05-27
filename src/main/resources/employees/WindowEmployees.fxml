@@ -12,7 +12,7 @@
             <ColumnConstraints hgrow="SOMETIMES" maxWidth="50.0" minWidth="10.0" prefWidth="20.0" />
                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="300" minWidth="300.0" prefWidth="300.0" />
                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="70.0" minWidth="50.0" prefWidth="50.0" />
-                <ColumnConstraints hgrow="SOMETIMES" minWidth="770.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="830.0" />
             </columnConstraints>
             <rowConstraints>
                 <RowConstraints minHeight="535.0" vgrow="SOMETIMES" />
@@ -47,6 +47,7 @@
                   </GridPane>
                </children>
             </GridPane>
+            <StackPane fx:id="stackPane" GridPane.columnIndex="3" />
          </children>
         </GridPane>
     </center>

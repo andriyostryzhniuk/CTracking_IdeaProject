@@ -10,6 +10,7 @@ import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
+import javafx.scene.layout.StackPane;
 import overridden.elements.combo.box.AutoCompleteComboBoxListener;
 
 import java.io.IOException;
@@ -20,6 +21,7 @@ import static employees.ODBC_PubsBD.selectEmployeesList;
 public class WindowEmployeesController {
 
     public GridPane gridPane;
+    public StackPane stackPane;
     public ListView<DTOEmployees> listView;
     public GridPane listViewGridPane;
 
@@ -29,7 +31,6 @@ public class WindowEmployeesController {
     private ObservableList<DTOEmployees> employeesListViewDataList = FXCollections.observableArrayList();
     private ObservableList<String> employeesNamesList = FXCollections.observableArrayList();
 
-    private Node nodeInfoEmployees;
     private InfoEmployeesController infoEmployeesController;
 
     @FXML
@@ -137,17 +138,17 @@ public class WindowEmployeesController {
         removeGridPaneChildren();
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/employees/InfoEmployees.fxml"));
         try {
-            nodeInfoEmployees = fxmlLoader.load();
-            gridPane.add(nodeInfoEmployees, 3, 0);
+            stackPane.getChildren().add(fxmlLoader.load());
             infoEmployeesController = fxmlLoader.getController();
+            infoEmployeesController.setDtoEmployees(dtoEmployees);
+            infoEmployeesController.initWindow();
         } catch (IOException exception) {
             throw new UncheckedIOException(exception);
         }
     }
 
     private void removeGridPaneChildren() {
-        gridPane.getChildren().remove(nodeInfoEmployees);
-        nodeInfoEmployees = null;
+        stackPane.getChildren().clear();
         infoEmployeesController = null;
     }
 
