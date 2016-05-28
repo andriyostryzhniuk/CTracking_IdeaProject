@@ -33,7 +33,7 @@ abstract class DatePane extends GridPane {
             }
         });
 
-        // Every time the calendar changed, rebuild the pane and update the content.
+        // Every time the calendar changed, rebuild the photosPane and update the content.
         calendarView.calendarProperty().addListener(new InvalidationListener() {
             @Override
             public void invalidated(Observable observable) {
@@ -53,7 +53,7 @@ abstract class DatePane extends GridPane {
     protected CalendarView calendarView;
 
     /**
-     * This is the date, this pane operates on.
+     * This is the date, this photosPane operates on.
      *
      * @param date The date.
      */
@@ -77,7 +77,7 @@ abstract class DatePane extends GridPane {
     protected StringProperty title = new SimpleStringProperty();
 
     /**
-     * The title property which is defined by the pane.
+     * The title property which is defined by the photosPane.
      *
      * @return The property.
      */

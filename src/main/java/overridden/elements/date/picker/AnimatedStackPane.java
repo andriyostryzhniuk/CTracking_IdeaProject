@@ -93,18 +93,18 @@ final class AnimatedStackPane extends StackPane {
         animatePane.setDate(oldDate);
 
         // Set the clip, so that the translate transition stays within the clip.
-        // Use the bounds from one pane.
+        // Use the bounds from one photosPane.
         setClip(new Rectangle(animatePane.getBoundsInLocal().getWidth(), animatePane.getBoundsInLocal().getHeight()));
 
-        // Move the old pane away from 0. (I added 1px, so that both panes overlap, which makes it look a little smoother).
+        // Move the old photosPane away from 0. (I added 1px, so that both panes overlap, which makes it look a little smoother).
         transition1.setFromX(-direction * 1);
         // and either to right or to left.
         transition1.setToX(getLayoutBounds().getWidth() * direction + -direction * 1);
 
-        // Move new pane from left or right
+        // Move new photosPane from left or right
         transition2.setFromX(-getBoundsInParent().getWidth() * direction);
 
-        // Move the new pane to 0
+        // Move the new photosPane to 0
         transition2.setToX(0);
 
         slideTransition = new ParallelTransition();
@@ -115,7 +115,7 @@ final class AnimatedStackPane extends StackPane {
         slideTransition.setOnFinished(new EventHandler<ActionEvent>() {
             @Override
             public void handle(ActionEvent actionEvent) {
-                // When we are finished, set the animate pane to invisible and remove the clip.
+                // When we are finished, set the animate photosPane to invisible and remove the clip.
                 animatePane.setVisible(false);
                 // If the calendar gets resized, we don't have any clip.
                 setClip(null);

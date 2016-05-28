@@ -58,6 +58,7 @@ CREATE TABLE `employees` (
   `lastDay` date DEFAULT NULL,
   `notes` varchar(100) DEFAULT NULL,
   `workingHours` int(11) NOT NULL,
+  `imagesURL` varchar(10) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
@@ -69,7 +70,7 @@ CREATE TABLE `employees` (
 
 LOCK TABLES `employees` WRITE;
 /*!40000 ALTER TABLE `employees` DISABLE KEYS */;
-INSERT INTO `employees` VALUES (1,'Юрій','Працьовитий','Іванович','1971-02-05','2012-07-23',NULL,NULL,9),(2,'Богдан','Кукурудза','Петрович','1980-05-12','2013-03-27',NULL,NULL,9),(3,'Іван','Сусанін','Осипович','1981-09-11','2012-11-01','2014-12-25',NULL,9),(4,'Назарій','Яремчук','Назарович','1967-10-17','2011-01-14',NULL,NULL,9),(5,'Аліна','Савченко','Богданівна','1992-09-13','2013-04-10',NULL,'Файно співає',8),(6,'Петро','Карась','Олексійович','1983-07-19','2011-07-25',NULL,NULL,12),(7,'Євген','Кошовий','Вікторович','1973-08-27','2011-02-01',NULL,NULL,24),(8,'Михайло','Бурак','Романович','1990-03-16','2012-06-29',NULL,NULL,7),(9,'Остап','Бульба','Тарасович','1987-01-12','2013-10-18',NULL,'Баран, нічо не вміє',9),(10,'Ксюха','Петрівна','Альбертівна','1993-08-13','2012-08-30',NULL,NULL,9),(11,'Лілія','Поліщук','Миколаївна','1096-08-16','2014-10-28',NULL,NULL,9),(12,'Яна','Кайдашева','Гаврилівна','1993-05-26','2012-04-12',NULL,'Вічно спізнюється',9),(13,'Ярина','Білодід','Артемівна','1987-10-09','2013-06-19','2015-01-17',NULL,8),(14,'Галина','Афанасенко','Олегівна','1995-03-21','2013-12-30',NULL,NULL,9),(15,'Вікторія','Воєвідка','Василівна','1990-01-01','2012-08-24',NULL,NULL,9),(16,'Мар\'яна','Мишка','Богданівна','1997-06-04','2015-02-03',NULL,NULL,10),(17,'Ігор','Бублик','Андрійович','1969-11-27','2012-05-18','2016-02-25',NULL,9),(18,'Фіона','Шрек','Драконівна','1994-07-10','2013-04-20',NULL,NULL,5),(19,'Буратіно','Бос','Карлович','1989-03-16','2014-08-18',NULL,NULL,2);
+INSERT INTO `employees` VALUES (1,'Юрій','Працьовитий','Іванович','1971-02-05','2012-07-23',NULL,NULL,9,NULL),(2,'Богдан','Кукурудза','Петрович','1980-05-12','2013-03-27',NULL,NULL,9,NULL),(3,'Іван','Сусанін','Осипович','1981-09-11','2012-11-01','2014-12-25',NULL,9,NULL),(4,'Назарій','Яремчук','Назарович','1967-10-17','2011-01-14',NULL,NULL,9,NULL),(5,'Аліна','Савченко','Богданівна','1992-09-13','2013-04-10',NULL,'Файно співає',8,NULL),(6,'Петро','Карась','Олексійович','1983-07-19','2011-07-25',NULL,NULL,12,NULL),(7,'Євген','Кошовий','Вікторович','1973-08-27','2011-02-01',NULL,NULL,24,NULL),(8,'Михайло','Бурак','Романович','1990-03-16','2012-06-29',NULL,NULL,7,NULL),(9,'Остап','Бульба','Тарасович','1987-01-12','2013-10-18',NULL,'Баран, нічо не вміє',9,NULL),(10,'Ксюха','Петрівна','Альбертівна','1993-08-13','2012-08-30',NULL,NULL,9,NULL),(11,'Лілія','Поліщук','Миколаївна','1096-08-16','2014-10-28',NULL,NULL,9,NULL),(12,'Яна','Кайдашева','Гаврилівна','1993-05-26','2012-04-12',NULL,'Вічно спізнюється',9,NULL),(13,'Ярина','Білодід','Артемівна','1987-10-09','2013-06-19','2015-01-17',NULL,8,NULL),(14,'Галина','Афанасенко','Олегівна','1995-03-21','2013-12-30',NULL,NULL,9,'14.png'),(15,'Вікторія','Воєвідка','Василівна','1990-01-01','2012-08-24',NULL,NULL,9,NULL),(16,'Мар\'яна','Мишка','Богданівна','1997-06-04','2015-02-03',NULL,NULL,10,NULL),(17,'Ігор','Бублик','Андрійович','1969-11-27','2012-05-18','2016-02-25',NULL,9,NULL),(18,'Фіона','Шрек','Драконівна','1994-07-10','2013-04-20',NULL,NULL,5,NULL),(19,'Буратіно','Бос','Карлович','1989-03-16','2014-08-18',NULL,NULL,2,NULL);
 /*!40000 ALTER TABLE `employees` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -120,7 +121,7 @@ CREATE TABLE `object` (
   UNIQUE KEY `id_UNIQUE` (`id`),
   KEY `fk_object_customers1_idx` (`customers_id`),
   CONSTRAINT `fk_object_customers1` FOREIGN KEY (`customers_id`) REFERENCES `customers` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -129,7 +130,7 @@ CREATE TABLE `object` (
 
 LOCK TABLES `object` WRITE;
 /*!40000 ALTER TABLE `object` DISABLE KEYS */;
-INSERT INTO `object` VALUES (1,'м. Івано-Франківськ, вул. Мельника, 24','2015-09-07','2015-10-21',1,70000.00,'теестовий текст нотататки про об\'єкт'),(2,'м. Івано-Франківськ, вул. Сахарова, 247','2015-12-19',NULL,2,100000.00,NULL),(3,'м. Івано-Франківськ, вул. Цалевича, 45','2016-01-18',NULL,1,35000.00,'нема що написати, але мушу щось написати, тому щось написав');
+INSERT INTO `object` VALUES (1,'м. Івано-Франківськ, вул. Мельника, 24','2015-09-07','2015-10-21',1,70000.00,'теестовий текст нотататки про об\'єкт'),(2,'м. Івано-Франківськ, вул. Сахарова, 247','2015-12-19',NULL,2,100000.00,NULL),(3,'м. Івано-Франківськ, вул. Цалевича, 45','2016-01-18',NULL,1,35000.00,'нема що написати, але мушу щось написати, тому щось написав'),(4,'м. Івано-Франківськ','2015-04-21','2017-04-21',2,35000.00,NULL);
 /*!40000 ALTER TABLE `object` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -152,7 +153,7 @@ CREATE TABLE `object_employees` (
   KEY `fk_object_employees_object1_idx` (`object_id`),
   CONSTRAINT `fk_object_employees_employees1` FOREIGN KEY (`employees_id`) REFERENCES `employees` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_object_employees_object1` FOREIGN KEY (`object_id`) REFERENCES `object` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=111 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -161,7 +162,7 @@ CREATE TABLE `object_employees` (
 
 LOCK TABLES `object_employees` WRITE;
 /*!40000 ALTER TABLE `object_employees` DISABLE KEYS */;
-INSERT INTO `object_employees` VALUES (1,1,1,'2015-09-07','2015-10-21'),(2,1,2,'2015-09-07','2015-10-10'),(3,1,4,'2015-09-24','2015-10-07'),(4,1,7,'2015-09-13','2015-09-23'),(5,1,9,'2015-09-07','2015-10-21'),(6,1,7,'2015-10-10','2015-10-19'),(7,1,11,'2015-09-07','2015-10-15'),(8,1,8,'2015-09-07','2015-10-21'),(9,1,10,'2015-09-07','2015-10-21'),(10,2,1,'2015-11-19',NULL),(11,2,2,'2015-12-24','2016-01-06'),(12,2,4,'2015-12-20','2015-12-28'),(13,2,5,'2015-12-21','2016-01-06'),(14,2,12,'2016-01-09',NULL),(15,2,14,'2015-12-19','2015-12-29'),(16,2,15,'2015-12-25','2016-01-17'),(17,2,16,'2015-11-19','2016-01-17'),(18,2,18,'2016-01-04',NULL),(19,2,19,'2015-12-19',NULL),(20,2,5,'2016-01-20',NULL),(21,3,6,'2016-01-18','2016-01-19'),(22,3,7,'2016-01-18','2016-01-20'),(23,3,5,'2016-01-19','2016-01-19'),(24,3,15,'2016-01-18',NULL),(25,3,9,'2016-01-18',NULL),(26,3,14,'2016-01-18',NULL),(27,3,19,'2016-01-18',NULL),(28,3,11,'2016-01-18',NULL),(29,2,4,'2015-12-29','2016-01-06');
+INSERT INTO `object_employees` VALUES (1,1,1,'2015-09-07','2015-10-21'),(2,1,2,'2015-09-07','2015-10-10'),(3,1,4,'2015-09-24','2015-10-07'),(4,1,7,'2015-09-13','2015-09-23'),(5,1,9,'2015-09-07','2015-10-21'),(6,1,7,'2015-10-10','2015-10-19'),(7,1,11,'2015-09-07','2015-10-15'),(8,1,8,'2015-09-07','2015-10-21'),(9,1,10,'2015-09-07','2015-10-21'),(10,2,1,'2015-12-19',NULL),(11,2,2,'2015-12-24','2016-01-06'),(12,2,4,'2015-12-20','2015-12-28'),(13,2,5,'2015-12-21','2016-01-06'),(14,2,12,'2016-01-09',NULL),(15,2,14,'2015-12-19','2015-12-29'),(16,2,15,'2015-12-25','2016-01-17'),(17,2,16,'2015-12-19','2016-01-17'),(19,2,19,'2015-12-19','2016-01-17'),(21,3,6,'2016-01-18','2016-01-19'),(22,3,7,'2016-01-18','2016-01-20'),(24,3,15,'2016-01-18',NULL),(25,3,9,'2016-01-18',NULL),(26,3,14,'2016-01-18',NULL),(27,3,19,'2016-01-18',NULL),(28,3,11,'2016-01-18',NULL),(29,2,4,'2015-12-29','2016-01-06'),(92,3,5,'2016-05-28',NULL),(95,2,5,'2016-05-22','2016-05-24');
 /*!40000 ALTER TABLE `object_employees` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -255,18 +256,18 @@ DROP TABLE IF EXISTS `stock`;
 CREATE TABLE `stock` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(45) DEFAULT NULL,
-  `stockType_id` int(11) NOT NULL,
+  `stockCategory_id` int(11) NOT NULL,
   `price` decimal(10,2) DEFAULT NULL,
   `status` enum('доступно','списано','в ремонті') DEFAULT 'доступно',
-  `notes` varchar(100) DEFAULT NULL,
+  `notes` varchar(400) DEFAULT NULL,
   `repository_id` int(11) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`),
-  KEY `fk_stock_stockType2_idx` (`stockType_id`),
+  KEY `fk_stock_stockType2_idx` (`stockCategory_id`),
   KEY `fk_stock_repository1_idx` (`repository_id`),
   CONSTRAINT `fk_stock_repository1` FOREIGN KEY (`repository_id`) REFERENCES `repository` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `fk_stock_stockType2` FOREIGN KEY (`stockType_id`) REFERENCES `stocktype` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=33 DEFAULT CHARSET=utf8;
+  CONSTRAINT `fk_stock_stockType2` FOREIGN KEY (`stockCategory_id`) REFERENCES `stockcategory` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -275,8 +276,34 @@ CREATE TABLE `stock` (
 
 LOCK TABLES `stock` WRITE;
 /*!40000 ALTER TABLE `stock` DISABLE KEYS */;
-INSERT INTO `stock` VALUES (1,NULL,1,5.00,'доступно',NULL,2),(2,NULL,1,5.00,'доступно',NULL,2),(3,NULL,1,5.00,'доступно',NULL,2),(4,NULL,1,5.00,'доступно',NULL,2),(5,NULL,1,5.00,'доступно',NULL,2),(6,NULL,1,5.00,'доступно',NULL,2),(7,NULL,1,5.00,'доступно',NULL,2),(8,NULL,1,5.00,'доступно',NULL,2),(9,NULL,1,5.00,'доступно',NULL,2),(10,NULL,1,5.00,'доступно',NULL,2),(11,'Kende ММА-250',2,23400.00,'доступно',NULL,1),(12,'Патон ВДІ-200E DC MMA',2,4199.00,'в ремонті','щось зломано',NULL),(13,'Bosch Professional GBH 2-24DF',3,3999.00,'доступно','Якісь нотатки',1),(14,'Forte PLRH 3216 RV',3,2085.00,'доступно',NULL,1),(15,'Tylon 30м',4,35.50,'доступно',NULL,2),(16,'Tylon 30м',4,35.50,'списано',NULL,1),(17,'10м',4,24.00,'доступно',NULL,2),(18,'15м',4,31.00,'доступно',NULL,2),(19,'InterTool HT-0022',5,36.00,'доступно','Рамоподібний',1),(20,'FAVORIT 12-009',5,58.00,'доступно',NULL,1),(21,'Bosch GWS 850 CE',6,1758.00,'списано',NULL,1),(22,'Makita GA9020',6,3095.00,'доступно',NULL,1),(23,'500м',7,30.00,'списано',NULL,1),(24,'500м',7,30.00,'списано',NULL,2),(25,'500м',7,30.00,'списано',NULL,2),(26,'500м',7,30.00,'списано',NULL,2),(27,'500м',7,30.00,'доступно',NULL,2),(28,'INTERTOOL MT-1270',8,161.00,'доступно',NULL,1),(29,'INTERTOOL MT-1270',8,161.00,'доступно',NULL,1),(30,'Monolith РЦ 2,0 мм 1 кг',9,61.00,'списано',NULL,1),(31,'Monolith РЦ 2,0 мм 1 кг',9,61.00,'списано',NULL,1),(32,'Monolith РЦ 2,0 мм 1 кг',9,61.00,'доступно',NULL,2);
+INSERT INTO `stock` VALUES (1,NULL,1,5.00,'доступно',NULL,2),(2,NULL,1,5.00,'доступно',NULL,2),(3,NULL,1,5.00,'доступно',NULL,2),(4,NULL,1,5.00,'доступно',NULL,2),(5,NULL,1,5.00,'доступно',NULL,2),(6,NULL,1,5.00,'доступно',NULL,2),(7,NULL,1,5.00,'доступно',NULL,2),(8,NULL,1,5.00,'доступно',NULL,2),(9,NULL,1,5.00,'доступно',NULL,2),(10,NULL,1,5.00,'доступно',NULL,2),(11,'Kende ММА-250',2,23400.00,'доступно',NULL,1),(12,'Патон ВДІ-200E DC MMA',2,4199.00,'в ремонті','щось зломано',NULL),(13,'Bosch Professional GBH 2-24DF',3,3999.00,'доступно','The setFocusTraversable(false) disables the focus traversing (by TAB and SHIFT+TAB) for that node. \nThe setFocusTraversable(false) disables the focus traversing (by TAB and SHIFT+TAB) for that node. \nThe setFocusTraversable(false) disables the focus traversing (by TAB and SHIFT+TAB) for that node. \nThe setFocusTraversable(false) disables the focus traversing (by TAB and SHIFT+TAB) for that node. (',1),(14,'Forte PLRH 3216 RV',3,2085.00,'доступно',NULL,1),(15,'Tylon 30м',4,35.50,'доступно',NULL,2),(16,'Tylon 30м',4,35.50,'списано',NULL,1),(17,'10м',4,24.00,'доступно',NULL,2),(18,'15м',4,31.00,'доступно',NULL,2),(19,'InterTool HT-0022',5,36.00,'доступно','Рамоподібний',1),(20,'FAVORIT 12-009',5,58.00,'доступно',NULL,1),(21,'Bosch GWS 850 CE',6,1758.00,'списано',NULL,1),(22,'Makita GA9020',6,3095.00,'доступно',NULL,1),(23,'500м',7,30.00,'списано',NULL,1),(24,'500м',7,30.00,'списано',NULL,2),(25,'500м',7,30.00,'списано',NULL,2),(26,'500м',7,30.00,'списано',NULL,2),(27,'500м',7,30.00,'доступно',NULL,2),(28,'INTERTOOL MT-1270',8,161.00,'доступно',NULL,1),(29,'INTERTOOL MT-1270',8,161.00,'доступно',NULL,1),(30,'Monolith РЦ 2,0 мм 1 кг',9,61.00,'списано',NULL,1),(31,'Monolith РЦ 2,0 мм 1 кг',9,61.00,'списано',NULL,1),(32,'Monolith РЦ 2,0 мм 1 кг',9,61.00,'доступно',NULL,2),(33,'pro 100',8,200.00,'доступно',NULL,2);
 /*!40000 ALTER TABLE `stock` ENABLE KEYS */;
+UNLOCK TABLES;
+
+--
+-- Table structure for table `stockcategory`
+--
+
+DROP TABLE IF EXISTS `stockcategory`;
+/*!40101 SET @saved_cs_client     = @@character_set_client */;
+/*!40101 SET character_set_client = utf8 */;
+CREATE TABLE `stockcategory` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `name` varchar(45) NOT NULL,
+  `type` enum('Вартісні','Розхідні') DEFAULT NULL,
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id_UNIQUE` (`id`)
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
+/*!40101 SET character_set_client = @saved_cs_client */;
+
+--
+-- Dumping data for table `stockcategory`
+--
+
+LOCK TABLES `stockcategory` WRITE;
+/*!40000 ALTER TABLE `stockcategory` DISABLE KEYS */;
+INSERT INTO `stockcategory` VALUES (1,'Рукавиці','Розхідні'),(2,'Зварювальні апарати','Вартісні'),(3,'Перфератори','Вартісні'),(4,'Вимірювальні рулетки','Вартісні'),(5,'Пістолети для силікону','Вартісні'),(6,'Шліфувальні машинки','Вартісні'),(7,'Скотч','Розхідні'),(8,'Ватерпаси','Вартісні'),(9,'Електроди','Розхідні'),(10,'Кісточки','Розхідні');
+/*!40000 ALTER TABLE `stockcategory` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -301,7 +328,7 @@ CREATE TABLE `stocktracking` (
   CONSTRAINT `fk_stockAccountability_employees1` FOREIGN KEY (`employees_id`) REFERENCES `employees` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_stockAccountability_object1` FOREIGN KEY (`object_id`) REFERENCES `object` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_stockAccountability_stock1` FOREIGN KEY (`stock_id`) REFERENCES `stock` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=82 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -310,33 +337,32 @@ CREATE TABLE `stocktracking` (
 
 LOCK TABLES `stocktracking` WRITE;
 /*!40000 ALTER TABLE `stocktracking` DISABLE KEYS */;
-INSERT INTO `stocktracking` VALUES (1,11,1,NULL,'2015-10-12','2016-01-19'),(2,11,8,NULL,'2016-01-20',NULL),(3,12,11,NULL,'2016-01-20',NULL),(4,14,9,NULL,'2016-01-20',NULL),(5,22,5,NULL,'2016-01-20',NULL),(6,1,1,1,'2015-09-07',NULL),(7,2,2,1,'2015-09-07',NULL),(8,3,4,1,'2015-09-24',NULL),(9,21,7,1,'2015-09-16','2015-09-20'),(10,30,8,1,'2015-09-07',NULL),(11,4,4,2,'2015-12-20',NULL),(12,5,5,2,'2015-12-21',NULL),(13,6,12,2,'2016-01-09',NULL),(14,30,1,2,'2015-12-27',NULL),(15,29,15,2,'2016-01-05','2016-01-17'),(16,23,18,2,'2016-01-19',NULL),(17,14,2,2,'2015-12-24','2016-01-03'),(18,15,9,3,'2016-01-18',NULL),(19,15,14,3,'2016-01-18',NULL),(20,19,5,3,'2016-01-19','2016-01-19'),(21,22,11,3,'2016-01-18','2016-01-20');
+INSERT INTO `stocktracking` VALUES (1,11,1,NULL,'2015-10-12','2016-01-19'),(2,11,8,NULL,'2016-01-20',NULL),(3,12,11,NULL,'2016-01-20',NULL),(4,14,9,NULL,'2016-01-20',NULL),(5,22,5,NULL,'2016-01-20',NULL),(6,1,1,1,'2015-09-07',NULL),(7,2,2,1,'2015-09-07',NULL),(8,3,4,1,'2015-09-24',NULL),(9,21,7,1,'2015-09-16','2015-09-20'),(10,30,8,1,'2015-09-07',NULL),(11,4,4,2,'2015-12-20',NULL),(12,5,5,2,'2015-12-21',NULL),(14,30,1,2,'2015-12-27',NULL),(15,29,15,2,'2016-01-05','2016-01-17'),(16,23,18,2,'2016-01-19',NULL),(17,14,2,2,'2015-12-24','2016-01-03'),(18,15,9,3,'2016-01-18',NULL),(19,15,14,3,'2016-01-18',NULL),(20,19,5,3,'2016-01-19','2016-01-19'),(21,22,11,3,'2016-01-18','2016-01-20'),(44,7,12,2,'2016-01-09',NULL),(68,28,NULL,2,'2016-05-24','2016-05-25');
 /*!40000 ALTER TABLE `stocktracking` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
--- Table structure for table `stocktype`
+-- Table structure for table `table_days_of_month`
 --
 
-DROP TABLE IF EXISTS `stocktype`;
+DROP TABLE IF EXISTS `table_days_of_month`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
-CREATE TABLE `stocktype` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `name` varchar(45) NOT NULL,
-  PRIMARY KEY (`id`),
-  UNIQUE KEY `id_UNIQUE` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
+CREATE TABLE `table_days_of_month` (
+  `date` date NOT NULL,
+  PRIMARY KEY (`date`),
+  UNIQUE KEY `date_UNIQUE` (`date`)
+) ENGINE=MyISAM DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
--- Dumping data for table `stocktype`
+-- Dumping data for table `table_days_of_month`
 --
 
-LOCK TABLES `stocktype` WRITE;
-/*!40000 ALTER TABLE `stocktype` DISABLE KEYS */;
-INSERT INTO `stocktype` VALUES (1,'Рукавиці'),(2,'Зварювальні апарати'),(3,'Перфератори'),(4,'Вимірювальні рулетки'),(5,'Пістолети для силікону'),(6,'Шліфувальні машинки'),(7,'Скотч'),(8,'Ватерпаси'),(9,'Електроди');
-/*!40000 ALTER TABLE `stocktype` ENABLE KEYS */;
+LOCK TABLES `table_days_of_month` WRITE;
+/*!40000 ALTER TABLE `table_days_of_month` DISABLE KEYS */;
+INSERT INTO `table_days_of_month` VALUES ('2016-05-01'),('2016-05-02'),('2016-05-03'),('2016-05-04'),('2016-05-05'),('2016-05-06'),('2016-05-07'),('2016-05-08'),('2016-05-09'),('2016-05-10'),('2016-05-11'),('2016-05-12'),('2016-05-13'),('2016-05-14'),('2016-05-15'),('2016-05-16'),('2016-05-17'),('2016-05-18'),('2016-05-19'),('2016-05-20'),('2016-05-21'),('2016-05-22'),('2016-05-23'),('2016-05-24'),('2016-05-25'),('2016-05-26'),('2016-05-27'),('2016-05-28'),('2016-05-29'),('2016-05-30'),('2016-05-31');
+/*!40000 ALTER TABLE `table_days_of_month` ENABLE KEYS */;
 UNLOCK TABLES;
 
 --
@@ -413,7 +439,7 @@ CREATE TABLE `worktracking` (
   UNIQUE KEY `id_UNIQUE` (`id`),
   KEY `fk_attendance_object_employees1_idx` (`object_employees_id`),
   CONSTRAINT `fk_attendance_object_employees1` FOREIGN KEY (`object_employees_id`) REFERENCES `object_employees` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=49 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -422,7 +448,7 @@ CREATE TABLE `worktracking` (
 
 LOCK TABLES `worktracking` WRITE;
 /*!40000 ALTER TABLE `worktracking` DISABLE KEYS */;
-INSERT INTO `worktracking` VALUES (1,23,'2016-01-19',8),(2,24,'2016-01-18',9),(3,24,'2016-01-20',10),(4,26,'2016-01-18',9),(5,26,'2016-01-19',8),(6,26,'2016-01-20',9),(7,27,'2016-01-20',9);
+INSERT INTO `worktracking` VALUES (2,24,'2016-01-18',8),(3,24,'2016-01-20',10),(4,26,'2016-01-18',9),(5,26,'2016-01-19',8),(6,26,'2016-01-20',9),(7,27,'2016-01-20',9),(11,26,'2016-03-01',9),(14,22,'2016-01-18',8),(29,5,'2015-09-08',9),(30,5,'2015-09-14',9),(31,8,'2015-09-09',7),(32,8,'2015-09-11',7),(34,25,'2016-03-12',9),(35,24,'2016-03-12',7),(36,26,'2016-03-02',8),(47,95,'2016-05-23',8),(48,95,'2016-05-24',8);
 /*!40000 ALTER TABLE `worktracking` ENABLE KEYS */;
 UNLOCK TABLES;
 /*!40103 SET TIME_ZONE=@OLD_TIME_ZONE */;
@@ -435,4 +461,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-02-17 20:22:06
+-- Dump completed on 2016-05-28  0:15:22

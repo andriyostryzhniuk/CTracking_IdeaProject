@@ -15,7 +15,7 @@ import java.util.Calendar;
 
 
 /**
- * This is the main stack pane, which holds the three views ({@link YearView}, {@link DecadesView}.
+ * This is the main stack photosPane, which holds the three views ({@link YearView}, {@link DecadesView}.
  * It is responsible for showing and hiding them.
  *
  */
@@ -81,7 +81,7 @@ final class MainStackPane extends StackPane {
     }
 
     /**
-     * Shows or hides the pane with an animation.
+     * Shows or hides the photosPane with an animation.
      *
      * @param stackPane The StackPane, which is shown or hidden.
      * @param show      True, when shown, false when hidden.

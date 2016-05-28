@@ -1,0 +1,12 @@
+.button {
+    -fx-text-fill: white;
+    -fx-background-color: transparent;
+}
+
+.button:hover {
+    -fx-background-color: rgba(90, 93, 95, 0.5);
+}
+
+.button:armed {
+    -fx-background-color: rgba(90, 93, 95, 0.5);
+}

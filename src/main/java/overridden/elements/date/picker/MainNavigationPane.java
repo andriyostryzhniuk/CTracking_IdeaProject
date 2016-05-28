@@ -13,7 +13,7 @@ import javafx.scene.layout.Region;
 import java.util.Calendar;
 
 /**
- * The main navigation pane.
+ * The main navigation photosPane.
  */
 final class MainNavigationPane extends HBox {
 

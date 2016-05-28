@@ -17,10 +17,10 @@
       <GridPane>
         <columnConstraints>
           <ColumnConstraints hgrow="SOMETIMES" maxWidth="410.0" minWidth="10.0" prefWidth="340.0" />
-          <ColumnConstraints hgrow="SOMETIMES" maxWidth="511.0" minWidth="10.0" prefWidth="490.0" />
+          <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="490.0" />
         </columnConstraints>
         <rowConstraints>
-          <RowConstraints maxHeight="242.0" minHeight="200.0" prefHeight="219.0" vgrow="SOMETIMES" />
+          <RowConstraints maxHeight="219.0" minHeight="219.0" prefHeight="219.0" vgrow="SOMETIMES" />
           <RowConstraints maxHeight="330.0" minHeight="10.0" prefHeight="316.0" vgrow="SOMETIMES" />
         </rowConstraints>
          <children>
@@ -65,16 +65,40 @@
             </GridPane>
             <GridPane GridPane.columnIndex="1">
               <columnConstraints>
-                <ColumnConstraints hgrow="SOMETIMES" maxWidth="347.0" minWidth="10.0" prefWidth="319.0" />
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="319.0" />
                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="151.0" minWidth="151.0" prefWidth="151.0" />
               </columnConstraints>
               <rowConstraints>
-                <RowConstraints maxHeight="188.0" minHeight="188.0" prefHeight="188.0" vgrow="SOMETIMES" />
-                <RowConstraints maxHeight="95.0" minHeight="10.0" prefHeight="21.0" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="188.0" minHeight="188.0" prefHeight="188.0" valignment="CENTER" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="31.0" minHeight="31.0" prefHeight="31.0" vgrow="SOMETIMES" />
               </rowConstraints>
                <children>
-                  <ImageView fx:id="imageView" fitHeight="188.0" fitWidth="151.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1" />
-                  <Button fx:id="addingPhotoButton" mnemonicParsing="false" onAction="#addPhoto" text="Додати фото" GridPane.columnIndex="1" GridPane.rowIndex="1" />
+                  <ImageView fx:id="imageView" fitHeight="188.0" fitWidth="151.0" pickOnBounds="true" preserveRatio="true" GridPane.columnIndex="1">
+                     <image>
+                        <Image url="@../icons/no-photo.png" />
+                     </image></ImageView>
+                  <Pane fx:id="photosPane" GridPane.columnIndex="1">
+                     <children>
+                        <GridPane alignment="CENTER" prefHeight="188.0" prefWidth="151.0">
+                          <columnConstraints>
+                            <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" />
+                          </columnConstraints>
+                          <rowConstraints>
+                            <RowConstraints valignment="CENTER" vgrow="SOMETIMES" />
+                          </rowConstraints>
+                           <children>
+                              <GridPane fx:id="photosButtonsGridPane" alignment="CENTER" visible="false">
+                                <columnConstraints>
+                                  <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" />
+                                </columnConstraints>
+                                <rowConstraints>
+                                  <RowConstraints fillHeight="false" vgrow="NEVER" />
+                                    <RowConstraints fillHeight="false" vgrow="NEVER" />
+                                </rowConstraints>
+                              </GridPane>
+                           </children>
+                        </GridPane>
+                     </children></Pane>
                </children>
             </GridPane>
          </children>
