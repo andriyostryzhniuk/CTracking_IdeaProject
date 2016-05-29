@@ -1,23 +1,38 @@
 package employees;
 
 import employees.dto.DTOEmployees;
+import employees.dto.DTOSkills;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
-import javafx.scene.control.Alert;
-import javafx.scene.control.Button;
-import javafx.scene.control.Tooltip;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
 import javafx.stage.FileChooser;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+import javafx.util.Callback;
 import org.apache.commons.io.FilenameUtils;
+import overridden.elements.number.spinner.NumberSpinner;
 import subsidiary.classes.AlertWindow;
-
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
+import java.time.LocalDate;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
-import static employees.ODBC_PubsBD.updateImagesURL;
+import static employees.ODBC_PubsBD.*;
 
 public class InfoEmployeesController {
 
@@ -26,15 +41,43 @@ public class InfoEmployeesController {
     private final FileChooser fileChooser = new FileChooser();
     public GridPane photosButtonsGridPane;
     public Pane photosPane;
+
+    public TextField surnameTextField;
+    public TextField nameTextField;
+    public TextField middleNameTextField;
+    public VBox workingHoursVBox;
+    private NumberSpinner workingHoursNumberSpinner = new NumberSpinner();
+    public DatePicker birthDateDatePicker;
+    public Button rejectBirthDateButton;
+    public DatePicker firstDateDatePicker;
+    public Label lastDateLabel;
+    public DatePicker lastDateDatePicker;
+    public Button rejectLastDateButton;
+    public TextArea notesTextArea;
+
+    public ListView<DTOSkills> skillsListView;
+    public Label surnameExceptionLabel;
+    public Label nameExceptionLabel;
+    public Label middleNameExceptionLabel;
+    public Label workingHoursExceptionLabel;
+
     private DTOEmployees dtoEmployees;
+    private WindowEmployeesController windowEmployeesController;
+    private ObservableList<DTOSkills> skillsList = FXCollections.observableArrayList();
 
     public void initWindow(){
         setPhotoHoverAction();
+        initNumberSpinner();
+        initRejectBirthDateButton();
+        initRejectLastDateButton();
         if (dtoEmployees.getImagesURL() != null) {
             loadPhoto();
         } else {
             photosButtonsGridPane.add(getAddingPhotoButton(), 0, 0);
         }
+        initSkillsListView();
+        setControlsListeners();
+        initSaveButton();
     }
 
     private void setPhotoHoverAction(){
@@ -99,6 +142,10 @@ public class InfoEmployeesController {
     }
 
     private void removeButton(){
+        AlertWindow alertWindow = new AlertWindow(Alert.AlertType.WARNING);
+        if (! alertWindow.showDeletingWarning()) {
+            return;
+        }
         File file = new File(getPhotosPath()+"\\"+dtoEmployees.getImagesURL());
         dtoEmployees.setImagesURL(null);
         updateImagesURL(dtoEmployees.getId(), dtoEmployees.getImagesURL());
@@ -106,6 +153,77 @@ public class InfoEmployeesController {
         photosButtonsGridPane.getChildren().clear();
         photosButtonsGridPane.add(getAddingPhotoButton(), 0, 0);
         file.delete();
+    }
+
+    private void setDateToControls(){
+        surnameTextField.setText(dtoEmployees.getSurname());
+        nameTextField.setText(dtoEmployees.getName());
+        middleNameTextField.setText(dtoEmployees.getMiddleName());
+        workingHoursNumberSpinner.setValue(dtoEmployees.getWorkingHours());
+        if (dtoEmployees.getBirthDate() != null) {
+            birthDateDatePicker.setValue(dtoEmployees.getBirthDate());
+        }
+        firstDateDatePicker.setValue(dtoEmployees.getFirstDate());
+        if (dtoEmployees.getLastDate() != null) {
+            lastDateDatePicker.setValue(dtoEmployees.getLastDate());
+        }
+        skillsList.addAll(selectEmployeesSkills(dtoEmployees.getId()));
+    }
+
+    private void initRejectBirthDateButton(){
+        Image image = new Image(getClass().getResourceAsStream("/icons/reject_icon.png"));
+        rejectBirthDateButton.getStylesheets().add(getClass().getResource("/styles/RejectButtonStyle.css").toExternalForm());
+        rejectBirthDateButton.setGraphic(new ImageView(image));
+        rejectBirthDateButton.setTooltip(new Tooltip("Відмінити дату"));
+        rejectBirthDateButton.setOnAction(event -> birthDateDatePicker.setValue(null));
+    }
+
+    private void initRejectLastDateButton(){
+        Image image = new Image(getClass().getResourceAsStream("/icons/reject_icon.png"));
+        rejectLastDateButton.getStylesheets().add(getClass().getResource("/styles/RejectButtonStyle.css").toExternalForm());
+        rejectLastDateButton.setGraphic(new ImageView(image));
+        rejectLastDateButton.setTooltip(new Tooltip("Прийняти"));
+        rejectLastDateButton.setOnAction(event -> {
+            lastDateDatePicker.setValue(null);
+        });
+    }
+
+    private void initSkillsListView(){
+        skillsListView.setItems(skillsList);
+
+        MenuItem addItem = new MenuItem("Додати");
+        addItem.setOnAction((ActionEvent event) -> {
+            showAddingSkillsWindow();
+        });
+        MenuItem removeItem = new MenuItem("Видалити");
+        removeItem.setOnAction((ActionEvent event) -> {
+//            removeRecord();
+        });
+        final javafx.scene.control.ContextMenu cellMenu = new javafx.scene.control.ContextMenu();
+        cellMenu.getItems().addAll(addItem, removeItem);
+
+        skillsListView.setContextMenu(cellMenu);
+    }
+
+    private void showAddingSkillsWindow() {
+        Stage primaryStage = new Stage();
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/employees/AddingEmployeesSkill.fxml"));
+        Parent root = null;
+        try {
+            root = fxmlLoader.load();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        AddingEmployeesSkillController addingEmployeesSkillController = fxmlLoader.getController();
+        addingEmployeesSkillController.setHasAddedSkillsList(skillsList);
+        addingEmployeesSkillController.initListView();
+
+        primaryStage.initStyle(StageStyle.TRANSPARENT);
+        primaryStage.setScene(new Scene(root, 500, 500, Color.rgb(0, 0, 0, 0)));
+        primaryStage.initModality(Modality.WINDOW_MODAL);
+        primaryStage.initOwner(skillsListView.getScene().getWindow());
+        primaryStage.showAndWait();
     }
 
     private Button getAddingPhotoButton(){
@@ -149,14 +267,247 @@ public class InfoEmployeesController {
         return path;
     }
 
-    public void setDtoEmployees(DTOEmployees dtoEmployees) {
-        this.dtoEmployees = dtoEmployees;
+    private void initNumberSpinner(){
+        workingHoursNumberSpinner.setMinWidth(80);
+        workingHoursNumberSpinner.setPrefWidth(80);
+        workingHoursNumberSpinner.setMaxWidth(80);
+        workingHoursNumberSpinner.setMinValue(1);
+        workingHoursNumberSpinner.setMaxValue(24);
+        workingHoursVBox.getChildren().add(workingHoursNumberSpinner);
+
+    }
+
+    private void setControlsListeners(){
+        setTextFieldsListener(surnameTextField, surnameExceptionLabel);
+        setTextFieldsListener(nameTextField, nameExceptionLabel);
+        setTextFieldsListener(middleNameTextField, middleNameExceptionLabel);
+        setIntegerListener(workingHoursNumberSpinner, workingHoursExceptionLabel);
+        addTextAreaLimiter(notesTextArea, 200);
+        birthDateDatePicker.setOnMouseEntered(event -> setBirthDateDatePickerValidation());
+        firstDateDatePicker.setOnMouseEntered(event -> setFirstDateDatePickerValidation());
+        lastDateDatePicker.setOnMouseEntered(event -> setLastDateDatePickerValidation());
+    }
+
+    public void initSaveButton(){
+        windowEmployeesController.getSaveButton().setVisible(true);
+        windowEmployeesController.getSaveButton().setOnAction(event -> {
+            if (dtoEmployees.getId() != null) {
+                update();
+            }
+        });
+    }
+
+    private void update(){
+        if (isEmpty(surnameTextField) ||
+                ! textFieldMatcherFind(surnameTextField, Pattern.compile("[^а-яА-ЯіІїЇєЄ\\s-]"))){
+            return;
+        }
+
+        if (isEmpty(nameTextField) ||
+                ! textFieldMatcherFind(nameTextField, Pattern.compile("[^а-яА-ЯіІїЇєЄ\\s-]"))){
+            return;
+        }
+
+        if (isEmpty(middleNameTextField) ||
+                ! textFieldMatcherFind(middleNameTextField, Pattern.compile("[^а-яА-ЯіІїЇєЄ\\s-]"))){
+            return;
+        }
+
+        if (! checkWorkingHoursValidation(workingHoursNumberSpinner, workingHoursExceptionLabel)) {
+            return;
+        }
+
+        updateEmployees(new DTOEmployees(dtoEmployees.getId(), nameTextField.getText(), surnameTextField.getText(),
+                middleNameTextField.getText(), birthDateDatePicker.getValue(), firstDateDatePicker.getValue(),
+                lastDateDatePicker.getValue(), notesTextArea.getText(), workingHoursNumberSpinner.getValue().intValue(),
+                dtoEmployees.getImagesURL()));
+
+        windowEmployeesController.initListView();
+
+    }
+
+    private void setTextFieldsListener(TextField textField, Label exceptionLabel) {
+        textField.getStylesheets().add(getClass().getResource("/styles/TextFieldStyle.css").toExternalForm());
+        Pattern pattern = Pattern.compile("[^а-яА-ЯіІїЇєЄ\\s-]");
+        textField.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            textFieldMatcherFind(textField, pattern);
+            exceptionLabel.setVisible(false);
+        });
+
+        textField.setOnMouseClicked((MouseEvent event) -> {
+            if (textField.getStyleClass().contains("warning")) {
+                textField.getStyleClass().remove("warning");
+                exceptionLabel.setVisible(true);
+            }
+        });
+
+        textField.textProperty().addListener((observable, oldValue, newValue) -> {
+            Matcher matcher = pattern.matcher(newValue);
+            if (matcher.find()) {
+                exceptionLabel.setVisible(true);
+            } else {
+                exceptionLabel.setVisible(false);
+            }
+        });
+    }
+
+    private void setIntegerListener(TextField textField, Label exceptionLabel){
+        textField.textProperty().addListener((observable, oldValue, newValue) -> {
+            checkWorkingHoursValidation(textField, exceptionLabel);
+        });
+    }
+
+    private boolean checkWorkingHoursValidation(TextField textField, Label exceptionLabel){
+        Integer hours;
+        if (textField.getText() == null || textField.getText().isEmpty()) {
+            exceptionLabel.setVisible(true);
+            return false;
+        }
+        try {
+            hours = Integer.parseInt(textField.getText());
+        } catch (NumberFormatException e) {
+            exceptionLabel.setVisible(true);
+            return false;
+        }
+        if (hours > 24 || hours < 1) {
+            exceptionLabel.setVisible(true);
+            return false;
+        }
+        exceptionLabel.setVisible(false);
+        return true;
+    }
+
+    private boolean textFieldMatcherFind(TextField textField, Pattern pattern){
+        boolean right = true;
+        textField.setText(textField.getText().trim());
+        Matcher matcher = pattern.matcher(textField.getText());
+        if (matcher.find()) {
+            right = false;
+            if (!textField.getStyleClass().contains("warning")) {
+                textField.getStyleClass().add("warning");
+            }
+        }
+        return right;
+    }
+
+    private boolean isEmpty(TextField textField){
+        boolean isEmpty = false;
+        if (textField.getText().isEmpty()) {
+            isEmpty = true;
+            if (!textField.getStyleClass().contains("warning")) {
+                textField.getStyleClass().add("warning");
+            }
+        }
+        return isEmpty;
+    }
+
+    private void addTextAreaLimiter(final TextArea textArea, final int maxLength) {
+        textArea.textProperty().addListener((ov, oldValue, newValue) -> {
+            if (textArea.getText().length() > maxLength) {
+                String text = textArea.getText().substring(0, maxLength);
+                textArea.setText(text);
+            }
+        });
     }
 
     private void alterAddingError(){
         String contentText = "Зображення повинне відповідати формату *png, або *jpg.";
         AlertWindow alertWindow = new AlertWindow(Alert.AlertType.ERROR, null, contentText);
         alertWindow.showError();
+    }
+
+    private void setBirthDateDatePickerValidation() {
+        LocalDate maxBirthDate = firstDateDatePicker.getValue().minusYears(16);
+        Callback<DatePicker, DateCell> dayCellFactory = new Callback<DatePicker, DateCell>() {
+            public DateCell call(final DatePicker datePicker) {
+                return new DateCell() {
+                    @Override
+                    public void updateItem(LocalDate item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if (item.isAfter(maxBirthDate)) {
+                            this.setDisable(true);
+                        }
+                    }
+                };
+            }
+        };
+        birthDateDatePicker.setDayCellFactory(dayCellFactory);
+    }
+
+    private void setFirstDateDatePickerValidation() {
+        LocalDate minFirstDate = null;
+        if (birthDateDatePicker.getValue() != null) {
+            minFirstDate = birthDateDatePicker.getValue().plusYears(16);
+        }
+
+        LocalDate maxFirstDate = lastDateDatePicker.getValue();
+        LocalDate minObjEmpDate;
+        if ((minObjEmpDate = selectMinObjEmpDate(dtoEmployees.getId())) != null) {
+            maxFirstDate = minObjEmpDate;
+        }
+        LocalDate minEmpStockDate;
+        if ((minEmpStockDate = selectMinEmpStockDate(dtoEmployees.getId())) != null) {
+            if (maxFirstDate == null || minEmpStockDate.isBefore(maxFirstDate)) {
+                maxFirstDate = minEmpStockDate;
+            }
+        }
+
+        LocalDate finalMinFirstDate = minFirstDate;
+        LocalDate finalMaxFirstDate = maxFirstDate;
+        Callback<DatePicker, DateCell> dayCellFactory = new Callback<DatePicker, DateCell>() {
+            public DateCell call(final DatePicker datePicker) {
+                return new DateCell() {
+                    @Override
+                    public void updateItem(LocalDate item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if ((finalMinFirstDate != null && item.isBefore(finalMinFirstDate)) ||
+                                (finalMaxFirstDate != null && item.isAfter(finalMaxFirstDate))) {
+                            this.setDisable(true);
+                        }
+                    }
+                };
+            }
+        };
+        firstDateDatePicker.setDayCellFactory(dayCellFactory);
+    }
+
+    private void setLastDateDatePickerValidation() {
+        LocalDate minLastDate = firstDateDatePicker.getValue();
+        LocalDate maxObjEmpDate;
+        if ((maxObjEmpDate = selectMaxObjEmpDate(dtoEmployees.getId())) != null) {
+            minLastDate = maxObjEmpDate;
+        }
+        LocalDate maxEmpStockDate;
+        if ((maxEmpStockDate = selectMaxEmpStockDate(dtoEmployees.getId())) != null) {
+            if (minLastDate == null || maxEmpStockDate.isAfter(minLastDate)) {
+                minLastDate = maxEmpStockDate;
+            }
+        }
+
+        LocalDate finalMinLastDate = minLastDate;
+        Callback<DatePicker, DateCell> dayCellFactory = new Callback<DatePicker, DateCell>() {
+            public DateCell call(final DatePicker datePicker) {
+                return new DateCell() {
+                    @Override
+                    public void updateItem(LocalDate item, boolean empty) {
+                        super.updateItem(item, empty);
+                        if ((item.isBefore(finalMinLastDate))) {
+                            this.setDisable(true);
+                        }
+                    }
+                };
+            }
+        };
+        lastDateDatePicker.setDayCellFactory(dayCellFactory);
+    }
+
+    public void setDtoEmployees(DTOEmployees dtoEmployees) {
+        this.dtoEmployees = dtoEmployees;
+        setDateToControls();
+    }
+
+    public void setWindowEmployeesController(WindowEmployeesController windowEmployeesController) {
+        this.windowEmployeesController = windowEmployeesController;
     }
 
 }

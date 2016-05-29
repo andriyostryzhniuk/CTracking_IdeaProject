@@ -76,7 +76,10 @@ public class MainWindowController {
             } catch (IOException exception) {
                 throw new UncheckedIOException(exception);
             }
-            mainGridPane.add(initButtonContainer(initButtonClose()), 1, 2);
+            Button saveButton = initButton("Зберегти");
+            saveButton.setVisible(false);
+            windowEmployeesController.setSaveButton(saveButton);
+            mainGridPane.add(initButtonContainer(saveButton, initButtonClose()), 1, 2);
         }
     }
 

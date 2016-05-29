@@ -1,5 +1,6 @@
 package employees.dto;
 
+import java.io.Serializable;
 import java.time.LocalDate;
 import java.util.List;
 
@@ -15,7 +16,7 @@ public class DTOEmployees {
     private String notes;
     private Integer workingHours;
     private String imagesURL;
-    private List<String> skillsList;
+    private List<DTOSkills> skillsList;
     private List<String> telephonesList;
     private String fullName;
 
@@ -23,7 +24,7 @@ public class DTOEmployees {
     }
 
     public DTOEmployees(Integer id, String name, String surname, String middleName, LocalDate birthDate,
-                        LocalDate firstDate, String notes, Integer workingHours) {
+                        LocalDate firstDate, String notes, Integer workingHours, String imagesURL) {
         this.id = id;
         this.name = name;
         this.surname = surname;
@@ -32,6 +33,7 @@ public class DTOEmployees {
         this.firstDate = firstDate;
         this.notes = notes;
         this.workingHours = workingHours;
+        this.imagesURL = imagesURL;
     }
 
     public DTOEmployees(Integer id, String name, String surname, String middleName, LocalDate birthDate,
@@ -128,11 +130,11 @@ public class DTOEmployees {
         this.imagesURL = imagesURL;
     }
 
-    public List<String> getSkillsList() {
+    public List<DTOSkills> getSkillsList() {
         return skillsList;
     }
 
-    public void setSkillsList(List<String> skillsList) {
+    public void setSkillsList(List<DTOSkills> skillsList) {
         this.skillsList = skillsList;
     }
 

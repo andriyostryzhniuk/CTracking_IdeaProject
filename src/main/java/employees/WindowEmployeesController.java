@@ -5,7 +5,6 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
-import javafx.scene.Node;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
@@ -24,6 +23,8 @@ public class WindowEmployeesController {
     public StackPane stackPane;
     public ListView<DTOEmployees> listView;
     public GridPane listViewGridPane;
+
+    private Button saveButton;
 
     private ComboBox comboBoxSearch = new ComboBox();
     private ComboBox comboBoxListener = new ComboBox();
@@ -140,6 +141,7 @@ public class WindowEmployeesController {
         try {
             stackPane.getChildren().add(fxmlLoader.load());
             infoEmployeesController = fxmlLoader.getController();
+            infoEmployeesController.setWindowEmployeesController(this);
             infoEmployeesController.setDtoEmployees(dtoEmployees);
             infoEmployeesController.initWindow();
         } catch (IOException exception) {
@@ -148,8 +150,17 @@ public class WindowEmployeesController {
     }
 
     private void removeGridPaneChildren() {
+        saveButton.setVisible(false);
         stackPane.getChildren().clear();
         infoEmployeesController = null;
+    }
+
+    public Button getSaveButton() {
+        return saveButton;
+    }
+
+    public void setSaveButton(Button saveButton) {
+        this.saveButton = saveButton;
     }
 
 }
