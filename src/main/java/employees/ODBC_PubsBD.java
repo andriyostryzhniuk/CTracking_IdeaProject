@@ -54,12 +54,6 @@ public class ODBC_PubsBD {
                 BeanPropertyRowMapper.newInstance(DTOSkills.class), employeesId);
     }
 
-    public static void updateImagesURL (Integer employeesId, String imagesURL) {
-        getJdbcTemplate().update("UPDATE employees " +
-                "SET imagesURL = ? " +
-                "WHERE id = ?", imagesURL, employeesId);
-    }
-
     public static List<DTOSkills> selectSkillsList() {
         return getJdbcTemplate().query("SELECT id AS skillsId, skill FROM skills",
                 BeanPropertyRowMapper.newInstance(DTOSkills.class));

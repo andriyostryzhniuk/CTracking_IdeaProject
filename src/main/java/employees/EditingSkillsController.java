@@ -77,6 +77,10 @@ public class EditingSkillsController {
             } else {
                 exceptionLabel.setVisible(false);
             }
+            if (textField.getText().length() > 45) {
+                String text = textField.getText().substring(0, 45);
+                textField.setText(text);
+            }
         });
     }
 

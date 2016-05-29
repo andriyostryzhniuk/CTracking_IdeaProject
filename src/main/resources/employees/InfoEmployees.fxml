@@ -154,7 +154,7 @@
                       <RowConstraints vgrow="SOMETIMES" />
                     </rowConstraints>
                      <children>
-                        <Pane style="-fx-background-color: rgba(65, 105, 225, .5);">
+                        <Pane fx:id="headerPanel" style="-fx-background-color: rgba(65, 105, 225, .5);">
                            <children>
                               <Label layoutX="112.0" layoutY="4.0" text="Спеціальність" />
                            </children>

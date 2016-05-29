@@ -25,6 +25,8 @@ import javafx.util.Callback;
 import org.apache.commons.io.FilenameUtils;
 import overridden.elements.number.spinner.NumberSpinner;
 import subsidiary.classes.AlertWindow;
+import subsidiary.classes.EditPanel;
+
 import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
@@ -48,6 +50,7 @@ public class InfoEmployeesController {
     public TextField nameTextField;
     public TextField middleNameTextField;
     public VBox workingHoursVBox;
+    public Pane headerPanel;
     private NumberSpinner workingHoursNumberSpinner = new NumberSpinner();
     public DatePicker birthDateDatePicker;
     public Button rejectBirthDateButton;
@@ -69,6 +72,8 @@ public class InfoEmployeesController {
 
     private List<DTOSkills> skillsListToAdding = new LinkedList<>();
     private List<DTOSkills> skillsListToRemoving = new LinkedList<>();
+    private File photoFile;
+    private String newPhotosPath;
 
     public void initWindow(){
         setPhotoHoverAction();
@@ -76,7 +81,7 @@ public class InfoEmployeesController {
         initRejectBirthDateButton();
         initRejectLastDateButton();
         if (dtoEmployees.getImagesURL() != null) {
-            loadPhoto();
+            loadPhoto(getPhotosPath()+"\\"+dtoEmployees.getImagesURL());
         } else {
             photosButtonsGridPane.add(getAddingPhotoButton(), 0, 0);
         }
@@ -105,20 +110,16 @@ public class InfoEmployeesController {
                 alterAddingError();
                 return;
             }
-            dtoEmployees.setImagesURL(dtoEmployees.getId().toString()+".png");
-            try {
-                java.nio.file.Files.copy(file.toPath(), Paths.get(getPhotosPath()+"\\"+dtoEmployees.getImagesURL()));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            updateImagesURL(dtoEmployees.getId(), dtoEmployees.getImagesURL());
-            loadPhoto();
+
+            newPhotosPath = dtoEmployees.getId().toString()+".png";
+            this.photoFile = file;
+            loadPhoto(photoFile.getPath());
         }
     }
 
-    private void loadPhoto(){
+    private void loadPhoto(String path){
         File file;
-        if ((file = new File(getPhotosPath()+"\\"+dtoEmployees.getImagesURL())) != null ) {
+        if ((file = new File(path)) != null ) {
             imageView.setImage(new Image(file.toURI().toString()));
 
             photosButtonsGridPane.getChildren().clear();
@@ -131,33 +132,17 @@ public class InfoEmployeesController {
         }
     }
 
-    private void changePhoto(){
-        File newFile;
-        if ((newFile = fileChooser.showOpenDialog(imageView.getScene().getWindow())) != null) {
-            dtoEmployees.setImagesURL(dtoEmployees.getId().toString()+".png");
-            new File(getPhotosPath()+"\\"+dtoEmployees.getImagesURL()).delete();
-            try {
-                java.nio.file.Files.copy(newFile.toPath(), Paths.get(getPhotosPath()+"\\"+dtoEmployees.getImagesURL()));
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-            updateImagesURL(dtoEmployees.getId(), dtoEmployees.getImagesURL());
-            imageView.setImage(new Image(newFile.toURI().toString()));
-        }
-    }
-
     private void removePhoto(){
         AlertWindow alertWindow = new AlertWindow(Alert.AlertType.WARNING);
         if (! alertWindow.showDeletingWarning()) {
             return;
         }
-        File file = new File(getPhotosPath()+"\\"+dtoEmployees.getImagesURL());
-        dtoEmployees.setImagesURL(null);
-        updateImagesURL(dtoEmployees.getId(), dtoEmployees.getImagesURL());
+
+        newPhotosPath = null;
+        this.photoFile = new File(getPhotosPath()+"\\"+dtoEmployees.getImagesURL());
         imageView.setImage(new Image(getClass().getResourceAsStream("/icons/no-photo.png")));
         photosButtonsGridPane.getChildren().clear();
         photosButtonsGridPane.add(getAddingPhotoButton(), 0, 0);
-        file.delete();
     }
 
     private void setDateToControls(){
@@ -196,6 +181,8 @@ public class InfoEmployeesController {
 
     private void initSkillsListView(){
         skillsListView.setItems(skillsList);
+        initAddSkillsButton();
+        initRemoveSkillsButton();
 
         MenuItem addItem = new MenuItem("Додати");
         addItem.setOnAction((ActionEvent event) -> showAddingSkillsWindow());
@@ -264,7 +251,7 @@ public class InfoEmployeesController {
         button.setTooltip(new Tooltip("Завантажити нове фото"));
         button.getStylesheets().add(getClass().getResource("/employees/PhotosButtonStyle.css").toExternalForm());
         button.setPrefWidth(140);
-        button.setOnAction(event -> changePhoto());
+        button.setOnAction(event -> addPhoto());
         return button;
     }
 
@@ -289,6 +276,20 @@ public class InfoEmployeesController {
             directory.mkdir();
         }
         return path;
+    }
+
+    private void savePhoto(){
+        if (newPhotosPath == null) {
+            photoFile.delete();
+        } else {
+            new File(getPhotosPath()+"\\"+ newPhotosPath).delete();
+            try {
+                java.nio.file.Files.copy(photoFile.toPath(), Paths.get(getPhotosPath()+"\\"+ newPhotosPath));
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+        dtoEmployees.setImagesURL(newPhotosPath);
     }
 
     private void initNumberSpinner(){
@@ -333,6 +334,10 @@ public class InfoEmployeesController {
 
             if (! checkWorkingHoursValidation(workingHoursNumberSpinner, workingHoursExceptionLabel)) {
                 return;
+            }
+
+            if (photoFile != null) {
+                savePhoto();
             }
 
             dtoEmployees = new DTOEmployees(dtoEmployees.getId(), nameTextField.getText(), surnameTextField.getText(),
@@ -380,6 +385,10 @@ public class InfoEmployeesController {
                 exceptionLabel.setVisible(true);
             } else {
                 exceptionLabel.setVisible(false);
+            }
+            if (textField.getText().length() > 45) {
+                String text = textField.getText().substring(0, 45);
+                textField.setText(text);
             }
         });
     }
@@ -443,6 +452,28 @@ public class InfoEmployeesController {
                 textArea.setText(text);
             }
         });
+    }
+
+    private void initAddSkillsButton(){
+        final EditPanel editPanel = new EditPanel();
+        Button addButton = editPanel.getAddButton();
+        addButton.getStylesheets().add(getClass().getResource("/employees/AddButtonStyle.css").toExternalForm());
+        addButton.setTooltip(new Tooltip("Додати спеціальність"));
+        addButton.setOnAction(event -> showAddingSkillsWindow());
+        headerPanel.getChildren().add(addButton);
+        addButton.setLayoutX(5);
+        addButton.setLayoutY(1);
+    }
+
+    private void initRemoveSkillsButton(){
+        final EditPanel editPanel = new EditPanel(skillsListView);
+        Button deleteButton = editPanel.getDeleteButton();
+        deleteButton.getStylesheets().add(getClass().getResource("/employees/AddButtonStyle.css").toExternalForm());
+        deleteButton.setTooltip(new Tooltip("Видалити спеціальність"));
+        deleteButton.setOnAction(event -> removeSkills());
+        headerPanel.getChildren().add(deleteButton);
+        deleteButton.setLayoutX(29);
+        deleteButton.setLayoutY(1);
     }
 
     private void alterAddingError(){
