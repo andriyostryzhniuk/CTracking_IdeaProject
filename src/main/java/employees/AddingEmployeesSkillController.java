@@ -5,24 +5,49 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
-import javafx.scene.control.ContextMenu;
-import javafx.scene.control.ListView;
-import javafx.scene.control.MenuItem;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
+import javafx.scene.control.*;
+import javafx.scene.paint.Color;
+import javafx.stage.Modality;
 import javafx.stage.Stage;
+import javafx.stage.StageStyle;
+import subsidiary.classes.AlertWindow;
+
+import java.io.IOException;
 import java.util.List;
 
+import static employees.ODBC_PubsBD.deleteFromSkills;
 import static employees.ODBC_PubsBD.selectSkillsList;
 
 public class AddingEmployeesSkillController<T extends DTOSkills> {
+
     public ListView<T> listView;
+    public Button addButton;
 
     private ObservableList<T> skillsDataList = FXCollections.observableArrayList();
+    private InfoEmployeesController infoEmployeesController;
 
     private List<T> hasAddedSkillsList;
 
     @FXML
     public void initialize(){
         initContextMenu();
+
+        listView.getSelectionModel().selectedItemProperty().addListener(event -> {
+            if ((listView.getSelectionModel().getSelectedItem()) != null) {
+                addButton.setDisable(false);
+                listView.getContextMenu().getItems().get(0).setDisable(false);
+                listView.getContextMenu().getItems().get(2).setDisable(false);
+                listView.getContextMenu().getItems().get(3).setDisable(false);
+            } else {
+                addButton.setDisable(true);
+                listView.getContextMenu().getItems().get(0).setDisable(true);
+                listView.getContextMenu().getItems().get(2).setDisable(true);
+                listView.getContextMenu().getItems().get(3).setDisable(true);
+            }
+        });
     }
 
     public void initListView(){
@@ -32,7 +57,7 @@ public class AddingEmployeesSkillController<T extends DTOSkills> {
         selectSkillsList().forEach(item -> {
             boolean hasAdded = false;
             for (DTOSkills dtoSkills : hasAddedSkillsList) {
-                if (dtoSkills.getId() == item.getId()) {
+                if (dtoSkills.getSkillsId() == item.getSkillsId()) {
                     hasAdded = true;
                     break;
                 }
@@ -45,38 +70,39 @@ public class AddingEmployeesSkillController<T extends DTOSkills> {
         listView.setItems(skillsDataList);
     }
 
-    public void add(ActionEvent actionEvent) {
-//        showEditingRecordWindow(null);
+    private void addSkill(){
+        T skill = listView.getSelectionModel().getSelectedItem();
+        hasAddedSkillsList.add(skill);
+        infoEmployeesController.getSkillsListToAdding().add(skill);
         close();
     }
 
-    public void closeAction(ActionEvent actionEvent) {
-//        menuTableView.initDishesTypeComboBoxItems();
-//        menuTableView.initTableView();
+    public void addButtonAction(ActionEvent actionEvent) {
+        addSkill();
+    }
+
+    public void closeButtonAction(ActionEvent actionEvent) {
         close();
     }
 
     private void initContextMenu() {
         MenuItem addItem = new MenuItem("Додати");
-        addItem.setOnAction((ActionEvent event) -> {
-//            showEditingRecordWindow(null);
-        });
+        addItem.setOnAction((ActionEvent event) -> addSkill());
+        addItem.setDisable(true);
 
         MenuItem createItem = new MenuItem("Створити нову спеціальність");
-        createItem.setOnAction((ActionEvent event) -> {
-//            showEditingRecordWindow(null);
-        });
+        createItem.setOnAction((ActionEvent event) -> showEditingSkillsWindow(null));
 
         MenuItem editItem = new MenuItem("Редагувати спеціальність");
         editItem.setOnAction((ActionEvent event) -> {
-//            DtoDishesType dtoDishesType = listView.getSelectionModel().getSelectedItem();
-//            showEditingRecordWindow(dtoDishesType);
+            showEditingSkillsWindow(listView.getSelectionModel().getSelectedItem());
         });
+        editItem.setDisable(true);
 
         MenuItem removeItem = new MenuItem("Видалити спеціальність");
-        removeItem.setOnAction((ActionEvent event) -> {
-//            removeRecord();
-        });
+        removeItem.setOnAction((ActionEvent event) -> removeSkill());
+
+        removeItem.setDisable(true);
         final ContextMenu cellMenu = new ContextMenu();
         cellMenu.getItems().addAll(addItem, createItem, editItem, removeItem);
 
@@ -88,51 +114,42 @@ public class AddingEmployeesSkillController<T extends DTOSkills> {
         stage.close();
     }
 
-//    private void showEditingRecordWindow(DtoDishesType dtoDishesType){
-//        Stage primaryStage = new Stage();
-//        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/menu.view/dishesType/PromptAddingWindow.fxml"));
-//        Parent root = null;
-//        try {
-//            root = fxmlLoader.load();
-//        } catch (IOException e) {
-//            e.printStackTrace();
-//        }
-//
-//        PromptAddingWindowController promptAddingWindowController = fxmlLoader.getController();
-//        promptAddingWindowController.setDishesTypeWindowController(this);
-//        promptAddingWindowController.setDtoDishesType(dtoDishesType);
-//
-//        primaryStage.initStyle(StageStyle.TRANSPARENT);
-//        primaryStage.setScene(new Scene(root, 300, 162, Color.rgb(0, 0, 0, 0)));
-//        primaryStage.initModality(Modality.WINDOW_MODAL);
-//        primaryStage.initOwner(listView.getScene().getWindow());
-//        primaryStage.showAndWait();
-//
-//    }
+    private void showEditingSkillsWindow(DTOSkills dtoSkills){
+        Stage primaryStage = new Stage();
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/employees/EditingSkills.fxml"));
+        Parent root = null;
+        try {
+            root = fxmlLoader.load();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
 
-//    public void removeRecord(){
-//        AlertWindow alertWindow = new AlertWindow(Alert.AlertType.WARNING);
-//        if (! alertWindow.showDeletingWarning()) {
-//            return;
-//        }
-//
-//        DtoDishesType dtoDishesType = listView.getSelectionModel().getSelectedItem();
-//        List<Object> objectList = new LinkedList<>();
-//        objectList.add(dtoDishesType.getId());
-//        Boolean isSuccessful = (Boolean) sendARequestToTheServer(ClientCommandTypes.DELETE_DISHES_TYPE, objectList).get(0);
-//        if (! isSuccessful) {
-//            alertWindow = new AlertWindow(Alert.AlertType.ERROR);
-//            alertWindow.showDeletingError();
-//        }
-//        initListView();
-//    }
+        EditingSkillsController editingSkillsController = fxmlLoader.getController();
+        editingSkillsController.setAddingEmployeesSkillController(this);
+        editingSkillsController.setDtoSkills(dtoSkills);
 
-//    public void setMenuTableView(MenuTableView menuTableView) {
-//        this.menuTableView = menuTableView;
-//    }
+        primaryStage.initStyle(StageStyle.TRANSPARENT);
+        primaryStage.setScene(new Scene(root, 300, 162, Color.rgb(0, 0, 0, 0)));
+        primaryStage.initModality(Modality.WINDOW_MODAL);
+        primaryStage.initOwner(listView.getScene().getWindow());
+        primaryStage.showAndWait();
 
+    }
+
+    public void removeSkill(){
+        AlertWindow alertWindow = new AlertWindow(Alert.AlertType.WARNING);
+        if (! alertWindow.showDeletingWarning()) {
+            return;
+        }
+        deleteFromSkills(listView.getSelectionModel().getSelectedItem());
+        initListView();
+    }
 
     public void setHasAddedSkillsList(List<T> hasAddedSkillsList) {
         this.hasAddedSkillsList = hasAddedSkillsList;
+    }
+
+    public void setInfoEmployeesController(InfoEmployeesController infoEmployeesController) {
+        this.infoEmployeesController = infoEmployeesController;
     }
 }

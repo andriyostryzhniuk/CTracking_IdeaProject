@@ -29,6 +29,8 @@ import java.io.File;
 import java.io.IOException;
 import java.nio.file.Paths;
 import java.time.LocalDate;
+import java.util.LinkedList;
+import java.util.List;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
@@ -64,6 +66,9 @@ public class InfoEmployeesController {
     private DTOEmployees dtoEmployees;
     private WindowEmployeesController windowEmployeesController;
     private ObservableList<DTOSkills> skillsList = FXCollections.observableArrayList();
+
+    private List<DTOSkills> skillsListToAdding = new LinkedList<>();
+    private List<DTOSkills> skillsListToRemoving = new LinkedList<>();
 
     public void initWindow(){
         setPhotoHoverAction();
@@ -141,7 +146,7 @@ public class InfoEmployeesController {
         }
     }
 
-    private void removeButton(){
+    private void removePhoto(){
         AlertWindow alertWindow = new AlertWindow(Alert.AlertType.WARNING);
         if (! alertWindow.showDeletingWarning()) {
             return;
@@ -167,6 +172,7 @@ public class InfoEmployeesController {
         if (dtoEmployees.getLastDate() != null) {
             lastDateDatePicker.setValue(dtoEmployees.getLastDate());
         }
+        notesTextArea.setText(dtoEmployees.getNotes());
         skillsList.addAll(selectEmployeesSkills(dtoEmployees.getId()));
     }
 
@@ -192,17 +198,34 @@ public class InfoEmployeesController {
         skillsListView.setItems(skillsList);
 
         MenuItem addItem = new MenuItem("Додати");
-        addItem.setOnAction((ActionEvent event) -> {
-            showAddingSkillsWindow();
-        });
+        addItem.setOnAction((ActionEvent event) -> showAddingSkillsWindow());
         MenuItem removeItem = new MenuItem("Видалити");
-        removeItem.setOnAction((ActionEvent event) -> {
-//            removeRecord();
+        skillsListView.getSelectionModel().selectedItemProperty().addListener(event -> {
+            if (skillsListView.getSelectionModel().getSelectedItem() == null) {
+                removeItem.setDisable(true);
+            } else {
+                removeItem.setDisable(false);
+            }
         });
+        removeItem.setOnAction((ActionEvent event) -> removeSkills());
+        removeItem.setDisable(true);
         final javafx.scene.control.ContextMenu cellMenu = new javafx.scene.control.ContextMenu();
         cellMenu.getItems().addAll(addItem, removeItem);
 
         skillsListView.setContextMenu(cellMenu);
+    }
+
+    private void removeSkills() {
+        DTOSkills skill;
+        if ((skill = skillsListView.getSelectionModel().getSelectedItem()) == null) {
+            return;
+        }
+        if (skill.getSkillsEmployeesId() != null) {
+            skillsListToRemoving.add(skill);
+        } else {
+            skillsListToAdding.remove(skill);
+        }
+        skillsList.remove(skill);
     }
 
     private void showAddingSkillsWindow() {
@@ -216,6 +239,7 @@ public class InfoEmployeesController {
         }
 
         AddingEmployeesSkillController addingEmployeesSkillController = fxmlLoader.getController();
+        addingEmployeesSkillController.setInfoEmployeesController(this);
         addingEmployeesSkillController.setHasAddedSkillsList(skillsList);
         addingEmployeesSkillController.initListView();
 
@@ -249,7 +273,7 @@ public class InfoEmployeesController {
         button.setTooltip(new Tooltip("Видалити фото"));
         button.getStylesheets().add(getClass().getResource("/employees/PhotosButtonStyle.css").toExternalForm());
         button.setPrefWidth(140);
-        button.setOnAction(event -> removeButton());
+        button.setOnAction(event -> removePhoto());
         return button;
     }
 
@@ -291,44 +315,53 @@ public class InfoEmployeesController {
     public void initSaveButton(){
         windowEmployeesController.getSaveButton().setVisible(true);
         windowEmployeesController.getSaveButton().setOnAction(event -> {
-            if (dtoEmployees.getId() != null) {
-                update();
+
+            if (isEmpty(surnameTextField) ||
+                    ! textFieldMatcherFind(surnameTextField, Pattern.compile("[^а-яА-ЯіІїЇєЄ'-]"))){
+                return;
             }
+
+            if (isEmpty(nameTextField) ||
+                    ! textFieldMatcherFind(nameTextField, Pattern.compile("[^а-яА-ЯіІїЇєЄ'-]"))){
+                return;
+            }
+
+            if (isEmpty(middleNameTextField) ||
+                    ! textFieldMatcherFind(middleNameTextField, Pattern.compile("[^а-яА-ЯіІїЇєЄ'-]"))){
+                return;
+            }
+
+            if (! checkWorkingHoursValidation(workingHoursNumberSpinner, workingHoursExceptionLabel)) {
+                return;
+            }
+
+            dtoEmployees = new DTOEmployees(dtoEmployees.getId(), nameTextField.getText(), surnameTextField.getText(),
+                    middleNameTextField.getText(), birthDateDatePicker.getValue(), firstDateDatePicker.getValue(),
+                    lastDateDatePicker.getValue(), notesTextArea.getText(),
+                    workingHoursNumberSpinner.getValue().intValue(), dtoEmployees.getImagesURL());
+
+            if (dtoEmployees.getId() != null) {
+                updateEmployees(dtoEmployees);
+            } else {
+                dtoEmployees.setId(insertIntoEmployees(dtoEmployees));
+            }
+
+            if (! skillsListToAdding.isEmpty()) {
+                skillsListToAdding.forEach(item -> item.setEmployeesId(dtoEmployees.getId()));
+                insertIntoSkillsEmployees(skillsListToAdding);
+            }
+
+            if (! skillsListToRemoving.isEmpty()) {
+                deleteFromSkillsEmployees(skillsListToRemoving);
+            }
+
+            windowEmployeesController.initListView(true);
         });
-    }
-
-    private void update(){
-        if (isEmpty(surnameTextField) ||
-                ! textFieldMatcherFind(surnameTextField, Pattern.compile("[^а-яА-ЯіІїЇєЄ\\s-]"))){
-            return;
-        }
-
-        if (isEmpty(nameTextField) ||
-                ! textFieldMatcherFind(nameTextField, Pattern.compile("[^а-яА-ЯіІїЇєЄ\\s-]"))){
-            return;
-        }
-
-        if (isEmpty(middleNameTextField) ||
-                ! textFieldMatcherFind(middleNameTextField, Pattern.compile("[^а-яА-ЯіІїЇєЄ\\s-]"))){
-            return;
-        }
-
-        if (! checkWorkingHoursValidation(workingHoursNumberSpinner, workingHoursExceptionLabel)) {
-            return;
-        }
-
-        updateEmployees(new DTOEmployees(dtoEmployees.getId(), nameTextField.getText(), surnameTextField.getText(),
-                middleNameTextField.getText(), birthDateDatePicker.getValue(), firstDateDatePicker.getValue(),
-                lastDateDatePicker.getValue(), notesTextArea.getText(), workingHoursNumberSpinner.getValue().intValue(),
-                dtoEmployees.getImagesURL()));
-
-        windowEmployeesController.initListView();
-
     }
 
     private void setTextFieldsListener(TextField textField, Label exceptionLabel) {
         textField.getStylesheets().add(getClass().getResource("/styles/TextFieldStyle.css").toExternalForm());
-        Pattern pattern = Pattern.compile("[^а-яА-ЯіІїЇєЄ\\s-]");
+        Pattern pattern = Pattern.compile("[^а-яА-ЯіІїЇєЄ'-]");
         textField.focusedProperty().addListener((observable, oldValue, newValue) -> {
             textFieldMatcherFind(textField, pattern);
             exceptionLabel.setVisible(false);
@@ -378,21 +411,23 @@ public class InfoEmployeesController {
     }
 
     private boolean textFieldMatcherFind(TextField textField, Pattern pattern){
-        boolean right = true;
+        if (textField.getText() == null) {
+            return false;
+        }
         textField.setText(textField.getText().trim());
         Matcher matcher = pattern.matcher(textField.getText());
         if (matcher.find()) {
-            right = false;
             if (!textField.getStyleClass().contains("warning")) {
                 textField.getStyleClass().add("warning");
             }
+            return false;
         }
-        return right;
+        return true;
     }
 
     private boolean isEmpty(TextField textField){
         boolean isEmpty = false;
-        if (textField.getText().isEmpty()) {
+        if (textField.getText() == null || textField.getText().isEmpty()) {
             isEmpty = true;
             if (!textField.getStyleClass().contains("warning")) {
                 textField.getStyleClass().add("warning");
@@ -508,6 +543,10 @@ public class InfoEmployeesController {
 
     public void setWindowEmployeesController(WindowEmployeesController windowEmployeesController) {
         this.windowEmployeesController = windowEmployeesController;
+    }
+
+    public List<DTOSkills> getSkillsListToAdding() {
+        return skillsListToAdding;
     }
 
 }

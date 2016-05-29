@@ -324,7 +324,7 @@ public class WindowAttendanceController<T extends DtoEmployeesFullName> {
                 }
 
 //                if (dayIncrement.get(Calendar.MONTH) != thisMonth) {
-//                    tableColumn.getStyleClass().add("disable");
+//                    tableColumn.getStyleClass().addButtonAction("disable");
 //                }
                 dayIncrement.add(Calendar.DAY_OF_MONTH, 1);
             }

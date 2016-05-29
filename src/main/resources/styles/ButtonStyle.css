@@ -1,0 +1,12 @@
+.button {
+    -fx-padding: 5, 5, 5, 5;
+    -fx-background-color: transparent;
+}
+
+.button:hover {
+    -fx-background-color: rgb(90,93,95);
+}
+
+.button:armed {
+    -fx-background-color: rgb(90,93,95);
+}

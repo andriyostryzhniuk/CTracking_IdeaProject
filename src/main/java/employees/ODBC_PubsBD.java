@@ -6,15 +6,35 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.SqlParameterSourceUtils;
+import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
+import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Map;
+
+import static main.DB_Connector.creteSimpleJdbcInsert;
 import static main.DB_Connector.getJdbcTemplate;
 import static main.DB_Connector.getNamedParameterJdbcTemplate;
 
 public class ODBC_PubsBD {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ODBC_PubsBD.class);
+
+    private static SimpleJdbcInsert simpleJdbcInsertForEmployees;
+
+    private static SimpleJdbcInsert getSimpleJdbcInsertForEmployees() {
+        if (simpleJdbcInsertForEmployees == null) {
+            simpleJdbcInsertForEmployees = creteSimpleJdbcInsert();
+            simpleJdbcInsertForEmployees
+                    .withTableName("employees")
+                    .usingGeneratedKeyColumns("id");
+        }
+        return simpleJdbcInsertForEmployees;
+    }
 
     public static List<DTOEmployees> selectEmployeesList() {
         return getJdbcTemplate().query("SELECT id, name, surname, middleName, birthDate, firstDay AS firstDate, " +
@@ -26,7 +46,8 @@ public class ODBC_PubsBD {
     }
 
     public static List<DTOSkills> selectEmployeesSkills(Integer employeesId){
-        return getJdbcTemplate().query("select skills.id, skills.skill " +
+        return getJdbcTemplate().query("select skills_employees.id AS skillsEmployeesId, skills.id AS skillsId, " +
+                "skills.skill " +
                         "from skills_employees, skills " +
                         "where skills_employees.employees_id = ? and " +
                         "skills_employees.skills_id = skills.id",
@@ -40,7 +61,7 @@ public class ODBC_PubsBD {
     }
 
     public static List<DTOSkills> selectSkillsList() {
-        return getJdbcTemplate().query("SELECT * FROM skills",
+        return getJdbcTemplate().query("SELECT id AS skillsId, skill FROM skills",
                 BeanPropertyRowMapper.newInstance(DTOSkills.class));
     }
 
@@ -86,4 +107,51 @@ public class ODBC_PubsBD {
                 "WHERE id = :id",
                 new BeanPropertySqlParameterSource(dtoEmployees));
     }
+
+    public static Integer insertIntoEmployees(DTOEmployees dtoEmployees){
+        Map<String, Object> parameters = new HashMap<>(9);
+        parameters.put("name", dtoEmployees.getName());
+        parameters.put("surname", dtoEmployees.getSurname());
+        parameters.put("middleName", dtoEmployees.getMiddleName());
+        parameters.put("birthDate", dtoEmployees.getBirthDate());
+        parameters.put("firstDay", dtoEmployees.getFirstDate());
+        parameters.put("lastDay", dtoEmployees.getLastDate());
+        parameters.put("notes", dtoEmployees.getNotes());
+        parameters.put("workingHours", dtoEmployees.getWorkingHours());
+        parameters.put("imagesURL", dtoEmployees.getImagesURL());
+        return getSimpleJdbcInsertForEmployees().executeAndReturnKey(parameters).intValue();
+    }
+
+    public static void insertIntoSkillsEmployees(List<DTOSkills> dtoSkillsList){
+        getNamedParameterJdbcTemplate().batchUpdate("INSERT INTO skills_employees (id, employees_id, skills_id) " +
+                        "VALUES (null, :employeesId, :skillsId)",
+                SqlParameterSourceUtils.createBatch(dtoSkillsList.toArray()));
+    }
+
+    public static void deleteFromSkillsEmployees(List<DTOSkills> dtoSkillsList){
+        getNamedParameterJdbcTemplate().batchUpdate("DELETE FROM skills_employees " +
+                        "WHERE id = :skillsEmployeesId",
+                SqlParameterSourceUtils.createBatch(dtoSkillsList.toArray()));
+    }
+
+    public static void insertIntoSkills(DTOSkills dtoSkills){
+        getNamedParameterJdbcTemplate().update("INSERT INTO skills " +
+                        "(id, skill) " +
+                        "VALUES (:skillsId, :skill)",
+                new BeanPropertySqlParameterSource(dtoSkills));
+    }
+
+    public static void updateSkills(DTOSkills dtoSkills) {
+        getNamedParameterJdbcTemplate().update("UPDATE skills " +
+                        "SET skill = :skill " +
+                        "WHERE id = :skillsId",
+                new BeanPropertySqlParameterSource(dtoSkills));
+    }
+
+    public static void deleteFromSkills(DTOSkills dtoSkills){
+        getNamedParameterJdbcTemplate().update("DELETE FROM skills " +
+                        "WHERE id = :skillsId",
+                new BeanPropertySqlParameterSource(dtoSkills));
+    }
+
 }
