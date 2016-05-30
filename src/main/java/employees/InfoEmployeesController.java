@@ -3,7 +3,6 @@ package employees;
 import employees.dto.DTOEmployees;
 import employees.dto.DTOSkills;
 import employees.dto.DTOTelephones;
-import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
@@ -33,6 +32,7 @@ import subsidiary.classes.EditPanel;
 
 import java.io.File;
 import java.io.IOException;
+import java.nio.file.NoSuchFileException;
 import java.nio.file.Paths;
 import java.time.LocalDate;
 import java.util.LinkedList;
@@ -65,6 +65,7 @@ public class InfoEmployeesController {
     public Button rejectLastDateButton;
     public TableView<DTOTelephones> telephonesTableView;
     public Button addTelephoneButton;
+    public Label telephonesExceptionLabel;
     public TextArea notesTextArea;
 
     public ListView<DTOSkills> skillsListView;
@@ -117,7 +118,7 @@ public class InfoEmployeesController {
         if ((file = fileChooser.showOpenDialog(imageView.getScene().getWindow())) != null) {
             String extension = FilenameUtils.getExtension(file.getName());
             if (! extension.equals("png") && ! extension.equals("jpg")) {
-                alterAddingError();
+                alterAddingPhotoError();
                 return;
             }
 
@@ -295,8 +296,14 @@ public class InfoEmployeesController {
             new File(getPhotosPath()+"\\"+ newPhotosPath).delete();
             try {
                 java.nio.file.Files.copy(photoFile.toPath(), Paths.get(getPhotosPath()+"\\"+ newPhotosPath));
+            } catch (NoSuchFileException n) {
+                n.printStackTrace();
+                alterLoadingPhotoError();
+                newPhotosPath = null;
             } catch (IOException e) {
                 e.printStackTrace();
+                alterLoadingPhotoError();
+                newPhotosPath = null;
             }
         }
         dtoEmployees.setImagesURL(newPhotosPath);
@@ -344,6 +351,12 @@ public class InfoEmployeesController {
 
             if (! checkWorkingHoursValidation(workingHoursNumberSpinner, workingHoursExceptionLabel)) {
                 return;
+            }
+
+            for (DTOTelephones item : telephonesList) {
+                if (! textFieldMatcherFind(item.getTextField(), Pattern.compile("[^\\d]"))) {
+                    return;
+                }
             }
 
             if (photoFile != null) {
@@ -534,7 +547,12 @@ public class InfoEmployeesController {
 
     private void setTelephonesTextFieldListener(DTOTelephones dtoTelephones){
         TextField textField = dtoTelephones.getTextField();
+        textField.getStylesheets().add(getClass().getResource("/styles/TextFieldStyle.css").toExternalForm());
+        Pattern pattern = Pattern.compile("[^\\d]");
+
         textField.focusedProperty().addListener((arg0, oldPropertyValue, newPropertyValue) -> {
+            textFieldMatcherFind(textField, pattern);
+            telephonesExceptionLabel.setVisible(false);
             if (! newPropertyValue) {
                 if (textField.getText() == null || textField.getText().isEmpty()) {
                     telephonesList.remove(dtoTelephones);
@@ -548,12 +566,36 @@ public class InfoEmployeesController {
                 if (dtoTelephones.getRecordId() != null) {
                     telephonesListToRemoving.add(dtoTelephones);
                 }
+            } else {
+                Matcher matcher = pattern.matcher(newValue);
+                if (matcher.find()) {
+                    telephonesExceptionLabel.setVisible(true);
+                } else {
+                    telephonesExceptionLabel.setVisible(false);
+                }
+                if (textField.getText().length() > 20) {
+                    String text = textField.getText().substring(0, 20);
+                    textField.setText(text);
+                }
+            }
+        });
+
+        textField.setOnMouseClicked((MouseEvent event) -> {
+            if (textField.getStyleClass().contains("warning")) {
+                textField.getStyleClass().remove("warning");
+                telephonesExceptionLabel.setVisible(true);
             }
         });
     }
 
-    private void alterAddingError(){
-        String contentText = "Зображення повинне відповідати формату *png, або *jpg.";
+    private void alterAddingPhotoError(){
+        String contentText = "Зображення повинне відповідати формату *.png, або *.jpg.";
+        AlertWindow alertWindow = new AlertWindow(Alert.AlertType.ERROR, null, contentText);
+        alertWindow.showError();
+    }
+
+    private void alterLoadingPhotoError(){
+        String contentText = "Не вдалось завантажити фото.\nМожливо фото було переміщено, або видалено.";
         AlertWindow alertWindow = new AlertWindow(Alert.AlertType.ERROR, null, contentText);
         alertWindow.showError();
     }

@@ -51,6 +51,7 @@ public class WindowEmployeesController {
 
     public void initListView(boolean isNeedSelectItems){
         Integer selectedRowIndex = listView.getSelectionModel().getSelectedIndex();
+        DTOEmployees selectedItem = listView.getSelectionModel().getSelectedItem();
         employeesListViewDataList.clear();
         listView.getItems().clear();
         employeesNamesList.clear();
@@ -63,10 +64,11 @@ public class WindowEmployeesController {
 
         listView.setItems(employeesListViewDataList);
 
-        if (isNeedSelectItems) {
+        if (isNeedSelectItems && selectedItem != null) {
             listView.getSelectionModel().select(selectedRowIndex);
             listView.getFocusModel().focus(selectedRowIndex);
             listView.scrollTo(selectedRowIndex);
+            initInfoEmployees(selectedItem);
         }
 
         new AutoCompleteComboBoxListener<>(comboBoxSearch, comboBoxListener);
