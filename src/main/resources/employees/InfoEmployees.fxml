@@ -214,20 +214,32 @@
                         </GridPane>
                         <GridPane GridPane.columnIndex="1" GridPane.rowIndex="1">
                            <children>
-                              <TextField GridPane.columnIndex="1" GridPane.rowIndex="1" />
-                              <TextField GridPane.columnIndex="1" GridPane.rowIndex="3" />
-                              <TextField GridPane.columnIndex="1" GridPane.rowIndex="2" />
-                              <Label text="Контактний телефон:" GridPane.columnIndex="1" />
+                              <GridPane GridPane.columnIndex="1">
+                                <columnConstraints>
+                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="37.0" />
+                                  <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="133.0" />
+                                </columnConstraints>
+                                <rowConstraints>
+                                  <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                                </rowConstraints>
+                                 <children>
+                                    <Label text="Контактний телефон:" GridPane.columnIndex="1" />
+                                    <Button fx:id="addTelephoneButton" mnemonicParsing="false" text="+" />
+                                 </children>
+                              </GridPane>
+                              <TableView fx:id="telephonesTableView" fixedCellSize="30.0" maxWidth="177.0" minWidth="177.0" prefWidth="177.0" stylesheets="@TelephonesTableViewStyle.css" GridPane.columnIndex="1" GridPane.rowIndex="1">
+                                <columns>
+                                  <TableColumn fx:id="colTelephone" maxWidth="175.0" minWidth="175.0" prefWidth="175.0" resizable="false" sortable="false" />
+                                </columns>
+                              </TableView>
                            </children>
                            <columnConstraints>
-                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="271.0" />
-                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="170.0" minWidth="170.0" prefWidth="170.0" />
+                              <ColumnConstraints hgrow="SOMETIMES" />
+                              <ColumnConstraints hgrow="SOMETIMES" maxWidth="177.0" minWidth="177.0" prefWidth="177.0" />
                            </columnConstraints>
                            <rowConstraints>
                               <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                              <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                              <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
-                              <RowConstraints maxHeight="30.0" minHeight="30.0" prefHeight="30.0" vgrow="SOMETIMES" />
+                              <RowConstraints maxHeight="92.0" minHeight="92.0" prefHeight="92.0" vgrow="SOMETIMES" />
                               <RowConstraints vgrow="SOMETIMES" />
                            </rowConstraints>
                         </GridPane>

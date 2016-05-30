@@ -4,6 +4,10 @@
 -- ------------------------------------------------------
 -- Server version	5.7.9-log
 
+drop database if exists construction;
+create database construction;
+use construction;
+
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
@@ -23,11 +27,11 @@ DROP TABLE IF EXISTS `customers`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `customers` (
-  `skillsId` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(50) NOT NULL,
   `notes` varchar(100) DEFAULT NULL,
-  PRIMARY KEY (`skillsId`),
-  UNIQUE KEY `id_UNIQUE` (`skillsId`)
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id_UNIQUE` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -49,7 +53,7 @@ DROP TABLE IF EXISTS `employees`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `employees` (
-  `skillsId` int(11) NOT NULL,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(45) NOT NULL,
   `surname` varchar(45) NOT NULL,
   `middleName` varchar(45) NOT NULL,
@@ -59,8 +63,8 @@ CREATE TABLE `employees` (
   `notes` varchar(200) DEFAULT NULL,
   `workingHours` int(11) NOT NULL,
   `imagesURL` varchar(10) DEFAULT NULL,
-  PRIMARY KEY (`skillsId`),
-  UNIQUE KEY `id_UNIQUE` (`skillsId`)
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id_UNIQUE` (`id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -70,7 +74,7 @@ CREATE TABLE `employees` (
 
 LOCK TABLES `employees` WRITE;
 /*!40000 ALTER TABLE `employees` DISABLE KEYS */;
-INSERT INTO `employees` VALUES (1,'Юрій','Працьовитий','Іванович','1971-02-05','2012-07-23',NULL,NULL,9,NULL),(2,'Богдан','Кукурудза','Петрович','1980-05-12','2013-03-27',NULL,NULL,9,NULL),(3,'Іван','Сусанін','Осипович','1981-09-11','2012-11-01','2014-12-25',NULL,9,NULL),(4,'Назарій','Яремчук','Назарович','1967-10-17','2011-01-14',NULL,NULL,9,NULL),(5,'Аліна','Савченко','Богданівна','1992-09-13','2013-04-10',NULL,'Файно співає',8,NULL),(6,'Петро','Карась','Олексійович','1983-07-19','2011-07-25',NULL,NULL,12,NULL),(7,'Євген','Кошовий','Вікторович','1973-08-27','2011-02-01',NULL,NULL,24,NULL),(8,'Михайло','Бурак','Романович','1990-03-16','2012-06-29',NULL,NULL,7,NULL),(9,'Остап','Бульба','Тарасович','1987-01-12','2013-10-18',NULL,'Баран, нічо не вміє',9,NULL),(10,'Ксюха','Петрівна','Альбертівна','1993-08-13','2012-08-30',NULL,NULL,9,NULL),(11,'Лілія','Поліщук','Миколаївна','1096-08-16','2014-10-28',NULL,NULL,9,NULL),(12,'Яна','Кайдашева','Гаврилівна','1993-05-26','2012-04-12',NULL,'Вічно спізнюється',9,NULL),(13,'Ярина','Білодід','Артемівна','1987-10-09','2013-06-19','2015-01-17',NULL,8,NULL),(14,'Галина','Афанасенко','Олегівна','1995-03-21','2013-12-30',NULL,NULL,9,'14.png'),(15,'Вікторія','Воєвідка','Василівна','1990-01-01','2012-08-24',NULL,NULL,9,NULL),(16,'Мар\'яна','Мишка','Богданівна','1997-06-04','2015-02-03',NULL,NULL,10,NULL),(17,'Ігор','Бублик','Андрійович','1969-11-27','2012-05-18','2016-02-25',NULL,9,NULL),(18,'Фіона','Шрек','Драконівна','1994-07-10','2013-04-20',NULL,NULL,5,NULL),(19,'Буратіно','Бос','Карлович','1989-03-16','2014-08-18',NULL,NULL,2,'19.png');
+INSERT INTO `employees` VALUES (1,'Юрій','Працьовитий','Іванович','1971-02-05','2012-07-23',NULL,NULL,9,NULL),(2,'Богдан','Кукурудза','Петрович','1980-05-12','2013-03-27',NULL,NULL,9,NULL),(3,'Іван','Сусанін','Осипович','1981-09-11','2012-11-01','2014-12-25',NULL,9,NULL),(4,'Назарій','Яремчук','Назарович','1967-10-17','2011-01-14',NULL,NULL,9,NULL),(5,'Аліна','Савченко','Богданівна','1992-09-13','2013-04-10',NULL,'Файно співає',8,NULL),(6,'Петро','Карась','Олексійович','1983-07-19','2011-07-25',NULL,NULL,12,NULL),(7,'Євген','Кошовий','Вікторович','1973-08-27','2011-02-01',NULL,NULL,24,NULL),(8,'Михайло','Бурак','Романович','1990-03-16','2012-06-29',NULL,NULL,7,NULL),(9,'Остап','Бульба','Тарасович','1987-01-12','2013-10-18',NULL,'Баран, нічо не вміє',9,NULL),(10,'Ксюха','Петрівна','Альбертівна','1993-08-13','2012-08-30',NULL,NULL,9,NULL),(11,'Лілія','Поліщук','Миколаївна','1096-08-16','2014-10-28',NULL,NULL,9,NULL),(12,'Яна','Кайдашева','Гаврилівна','1993-05-26','2012-04-12',NULL,'Вічно спізнюється',9,NULL),(13,'Ярина','Білодід','Артемівна','1987-10-09','2013-06-19','2015-01-17',NULL,8,NULL),(14,'Галина','Афанасенко','Олегівна','1995-03-21','2013-12-30',NULL,'',10,'14.png'),(15,'Вікторія','Воєвідка','Василівна','1990-01-01','2012-08-24',NULL,NULL,9,NULL),(16,'Мар\'яна','Мишка','Богданівна','1997-06-04','2015-02-03',NULL,NULL,10,NULL),(17,'Ігор','Бублик','Андрійович','1969-11-27','2012-05-18','2016-02-25',NULL,9,NULL),(18,'Фіона','Шрек','Драконівна','1994-07-10','2013-04-20',NULL,NULL,5,NULL),(19,'Буратіно','Бос','Карлович','1989-03-16','2014-08-18',NULL,'',2,'19.png');
 /*!40000 ALTER TABLE `employees` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -82,13 +86,13 @@ DROP TABLE IF EXISTS `emptelephone`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `emptelephone` (
-  `skillsId` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `employees_id` int(11) NOT NULL,
   `telephoneNumber` varchar(20) NOT NULL,
-  PRIMARY KEY (`skillsId`),
-  UNIQUE KEY `id_UNIQUE` (`skillsId`),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id_UNIQUE` (`id`),
   KEY `fk_E_Telephone_employees1_idx` (`employees_id`),
-  CONSTRAINT `fk_E_Telephone_employees1` FOREIGN KEY (`employees_id`) REFERENCES `employees` (`skillsId`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `fk_E_Telephone_employees1` FOREIGN KEY (`employees_id`) REFERENCES `employees` (`id`)   ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=25 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -110,17 +114,17 @@ DROP TABLE IF EXISTS `object`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `object` (
-  `skillsId` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `address` varchar(50) NOT NULL,
   `startDate` date NOT NULL,
   `finishDate` date DEFAULT NULL,
   `customers_id` int(11) NOT NULL,
   `estimatedCost` decimal(10,2) DEFAULT NULL,
   `notes` varchar(100) DEFAULT NULL,
-  PRIMARY KEY (`skillsId`),
-  UNIQUE KEY `id_UNIQUE` (`skillsId`),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id_UNIQUE` (`id`),
   KEY `fk_object_customers1_idx` (`customers_id`),
-  CONSTRAINT `fk_object_customers1` FOREIGN KEY (`customers_id`) REFERENCES `customers` (`skillsId`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `fk_object_customers1` FOREIGN KEY (`customers_id`) REFERENCES `customers` (`id`)   ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -142,18 +146,18 @@ DROP TABLE IF EXISTS `object_employees`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `object_employees` (
-  `skillsId` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `object_id` int(11) NOT NULL,
   `employees_id` int(11) NOT NULL,
   `startDate` date NOT NULL,
   `finishDate` date DEFAULT NULL,
-  PRIMARY KEY (`skillsId`),
-  UNIQUE KEY `id_UNIQUE` (`skillsId`),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id_UNIQUE` (`id`),
   KEY `fk_object_employees_employees1_idx` (`employees_id`),
   KEY `fk_object_employees_object1_idx` (`object_id`),
-  CONSTRAINT `fk_object_employees_employees1` FOREIGN KEY (`employees_id`) REFERENCES `employees` (`skillsId`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `fk_object_employees_object1` FOREIGN KEY (`object_id`) REFERENCES `object` (`skillsId`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=111 DEFAULT CHARSET=utf8;
+  CONSTRAINT `fk_object_employees_employees1` FOREIGN KEY (`employees_id`) REFERENCES `employees` (`id`)   ON UPDATE CASCADE,
+  CONSTRAINT `fk_object_employees_object1` FOREIGN KEY (`object_id`) REFERENCES `object` (`id`)   ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=112 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -174,10 +178,10 @@ DROP TABLE IF EXISTS `repository`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `repository` (
-  `skillsId` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(45) NOT NULL,
-  PRIMARY KEY (`skillsId`),
-  UNIQUE KEY `idrepository_UNIQUE` (`skillsId`)
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `idrepository_UNIQUE` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -199,10 +203,10 @@ DROP TABLE IF EXISTS `skills`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `skills` (
-  `skillsId` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `skill` varchar(45) NOT NULL,
-  PRIMARY KEY (`skillsId`),
-  UNIQUE KEY `id_UNIQUE` (`skillsId`)
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id_UNIQUE` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -224,15 +228,15 @@ DROP TABLE IF EXISTS `skills_employees`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `skills_employees` (
-  `skillsId` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `employees_id` int(11) NOT NULL,
   `skills_id` int(11) NOT NULL,
-  PRIMARY KEY (`skillsId`),
-  UNIQUE KEY `id_UNIQUE` (`skillsId`),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id_UNIQUE` (`id`),
   KEY `fk_skills_employees1_idx` (`employees_id`),
   KEY `fk_skills_skills1_idx` (`skills_id`),
-  CONSTRAINT `fk_skills_employees1` FOREIGN KEY (`employees_id`) REFERENCES `employees` (`skillsId`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `fk_skills_skills1` FOREIGN KEY (`skills_id`) REFERENCES `skills` (`skillsId`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `fk_skills_employees1` FOREIGN KEY (`employees_id`) REFERENCES `employees` (`id`)   ON UPDATE CASCADE,
+  CONSTRAINT `fk_skills_skills1` FOREIGN KEY (`skills_id`) REFERENCES `skills` (`id`)   ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -254,19 +258,19 @@ DROP TABLE IF EXISTS `stock`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `stock` (
-  `skillsId` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(45) DEFAULT NULL,
   `stockCategory_id` int(11) NOT NULL,
   `price` decimal(10,2) DEFAULT NULL,
   `status` enum('доступно','списано','в ремонті') DEFAULT 'доступно',
   `notes` varchar(400) DEFAULT NULL,
   `repository_id` int(11) DEFAULT NULL,
-  PRIMARY KEY (`skillsId`),
-  UNIQUE KEY `id_UNIQUE` (`skillsId`),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id_UNIQUE` (`id`),
   KEY `fk_stock_stockType2_idx` (`stockCategory_id`),
   KEY `fk_stock_repository1_idx` (`repository_id`),
-  CONSTRAINT `fk_stock_repository1` FOREIGN KEY (`repository_id`) REFERENCES `repository` (`skillsId`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `fk_stock_stockType2` FOREIGN KEY (`stockCategory_id`) REFERENCES `stockcategory` (`skillsId`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `fk_stock_repository1` FOREIGN KEY (`repository_id`) REFERENCES `repository` (`id`)   ON UPDATE CASCADE,
+  CONSTRAINT `fk_stock_stockType2` FOREIGN KEY (`stockCategory_id`) REFERENCES `stockcategory` (`id`)   ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=34 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -288,11 +292,11 @@ DROP TABLE IF EXISTS `stockcategory`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `stockcategory` (
-  `skillsId` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(45) NOT NULL,
   `type` enum('Вартісні','Розхідні') DEFAULT NULL,
-  PRIMARY KEY (`skillsId`),
-  UNIQUE KEY `id_UNIQUE` (`skillsId`)
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id_UNIQUE` (`id`)
 ) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -314,20 +318,20 @@ DROP TABLE IF EXISTS `stocktracking`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `stocktracking` (
-  `skillsId` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `stock_id` int(11) NOT NULL,
   `employees_id` int(11) DEFAULT NULL,
   `object_id` int(11) DEFAULT NULL,
   `givingDate` date DEFAULT NULL,
   `returnDate` date DEFAULT NULL,
-  PRIMARY KEY (`skillsId`),
-  UNIQUE KEY `id_UNIQUE` (`skillsId`),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id_UNIQUE` (`id`),
   KEY `fk_stockAccountability_stock1_idx` (`stock_id`),
   KEY `fk_stockAccountability_employees1_idx` (`employees_id`),
   KEY `fk_stockAccountability_object1_idx` (`object_id`),
-  CONSTRAINT `fk_stockAccountability_employees1` FOREIGN KEY (`employees_id`) REFERENCES `employees` (`skillsId`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `fk_stockAccountability_object1` FOREIGN KEY (`object_id`) REFERENCES `object` (`skillsId`) ON DELETE CASCADE ON UPDATE CASCADE,
-  CONSTRAINT `fk_stockAccountability_stock1` FOREIGN KEY (`stock_id`) REFERENCES `stock` (`skillsId`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `fk_stockAccountability_employees1` FOREIGN KEY (`employees_id`) REFERENCES `employees` (`id`)   ON UPDATE CASCADE,
+  CONSTRAINT `fk_stockAccountability_object1` FOREIGN KEY (`object_id`) REFERENCES `object` (`id`)   ON UPDATE CASCADE,
+  CONSTRAINT `fk_stockAccountability_stock1` FOREIGN KEY (`stock_id`) REFERENCES `stock` (`id`)   ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=82 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -373,15 +377,15 @@ DROP TABLE IF EXISTS `techinspection`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `techinspection` (
-  `skillsId` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `customers_id` int(11) NOT NULL,
   `name` varchar(45) NOT NULL,
   `surname` varchar(45) NOT NULL,
   `middleName` varchar(45) NOT NULL,
-  PRIMARY KEY (`skillsId`),
-  UNIQUE KEY `id_UNIQUE` (`skillsId`),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id_UNIQUE` (`id`),
   KEY `fk_techInspection_customers1_idx` (`customers_id`),
-  CONSTRAINT `fk_techInspection_customers1` FOREIGN KEY (`customers_id`) REFERENCES `customers` (`skillsId`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `fk_techInspection_customers1` FOREIGN KEY (`customers_id`) REFERENCES `customers` (`id`)   ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -403,13 +407,13 @@ DROP TABLE IF EXISTS `techtelephone`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `techtelephone` (
-  `skillsId` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `techInspection_id` int(11) NOT NULL,
   `telephoneNumber` varchar(20) NOT NULL,
-  PRIMARY KEY (`skillsId`),
-  UNIQUE KEY `id_UNIQUE` (`skillsId`),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id_UNIQUE` (`id`),
   KEY `fk_techTelephone_techInspection1_idx` (`techInspection_id`),
-  CONSTRAINT `fk_techTelephone_techInspection1` FOREIGN KEY (`techInspection_id`) REFERENCES `techinspection` (`skillsId`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `fk_techTelephone_techInspection1` FOREIGN KEY (`techInspection_id`) REFERENCES `techinspection` (`id`)   ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -431,14 +435,14 @@ DROP TABLE IF EXISTS `worktracking`;
 /*!40101 SET @saved_cs_client     = @@character_set_client */;
 /*!40101 SET character_set_client = utf8 */;
 CREATE TABLE `worktracking` (
-  `skillsId` int(11) NOT NULL AUTO_INCREMENT,
+  `id` int(11) NOT NULL AUTO_INCREMENT,
   `object_employees_id` int(11) NOT NULL,
   `date` date NOT NULL,
   `workingHours` int(11) NOT NULL,
-  PRIMARY KEY (`skillsId`),
-  UNIQUE KEY `id_UNIQUE` (`skillsId`),
+  PRIMARY KEY (`id`),
+  UNIQUE KEY `id_UNIQUE` (`id`),
   KEY `fk_attendance_object_employees1_idx` (`object_employees_id`),
-  CONSTRAINT `fk_attendance_object_employees1` FOREIGN KEY (`object_employees_id`) REFERENCES `object_employees` (`skillsId`) ON DELETE CASCADE ON UPDATE CASCADE
+  CONSTRAINT `fk_attendance_object_employees1` FOREIGN KEY (`object_employees_id`) REFERENCES `object_employees` (`id`)   ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=49 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -461,4 +465,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-05-28 20:23:35
+-- Dump completed on 2016-05-29 19:19:29

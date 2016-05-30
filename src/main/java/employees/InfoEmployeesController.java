@@ -2,7 +2,10 @@ package employees;
 
 import employees.dto.DTOEmployees;
 import employees.dto.DTOSkills;
+import employees.dto.DTOTelephones;
+import javafx.application.Platform;
 import javafx.collections.FXCollections;
+import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXMLLoader;
@@ -10,6 +13,7 @@ import javafx.geometry.Insets;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
@@ -51,6 +55,7 @@ public class InfoEmployeesController {
     public TextField middleNameTextField;
     public VBox workingHoursVBox;
     public Pane headerPanel;
+    public TableColumn colTelephone;
     private NumberSpinner workingHoursNumberSpinner = new NumberSpinner();
     public DatePicker birthDateDatePicker;
     public Button rejectBirthDateButton;
@@ -58,6 +63,8 @@ public class InfoEmployeesController {
     public Label lastDateLabel;
     public DatePicker lastDateDatePicker;
     public Button rejectLastDateButton;
+    public TableView<DTOTelephones> telephonesTableView;
+    public Button addTelephoneButton;
     public TextArea notesTextArea;
 
     public ListView<DTOSkills> skillsListView;
@@ -69,9 +76,11 @@ public class InfoEmployeesController {
     private DTOEmployees dtoEmployees;
     private WindowEmployeesController windowEmployeesController;
     private ObservableList<DTOSkills> skillsList = FXCollections.observableArrayList();
+    private ObservableList<DTOTelephones> telephonesList = FXCollections.observableArrayList();
 
     private List<DTOSkills> skillsListToAdding = new LinkedList<>();
     private List<DTOSkills> skillsListToRemoving = new LinkedList<>();
+    private List<DTOTelephones> telephonesListToRemoving = new LinkedList<>();
     private File photoFile;
     private String newPhotosPath;
 
@@ -80,6 +89,7 @@ public class InfoEmployeesController {
         initNumberSpinner();
         initRejectBirthDateButton();
         initRejectLastDateButton();
+        initTelephones();
         if (dtoEmployees.getImagesURL() != null) {
             loadPhoto(getPhotosPath()+"\\"+dtoEmployees.getImagesURL());
         } else {
@@ -360,6 +370,20 @@ public class InfoEmployeesController {
                 deleteFromSkillsEmployees(skillsListToRemoving);
             }
 
+            if (! telephonesListToRemoving.isEmpty()) {
+                deleteTelephones(telephonesListToRemoving);
+            }
+
+            telephonesList.forEach(item -> {
+                item.setNumber(item.getTextField().getText());
+                if (item.getRecordId() == null) {
+                    item.setSubscriberId(dtoEmployees.getId());
+                    insertTelephones(item);
+                } else {
+                    updateTelephones(item);
+                }
+            });
+
             windowEmployeesController.initListView(true);
         });
     }
@@ -474,6 +498,58 @@ public class InfoEmployeesController {
         headerPanel.getChildren().add(deleteButton);
         deleteButton.setLayoutX(29);
         deleteButton.setLayoutY(1);
+    }
+
+    private void initTelephones(){
+        telephonesTableView.widthProperty().addListener((ov, t, t1) -> {
+            Pane header = (Pane)telephonesTableView.lookup("TableHeaderRow");
+            if(header!=null && header.isVisible()) {
+                header.setMaxHeight(0);
+                header.setMinHeight(0);
+                header.setPrefHeight(0);
+                header.setVisible(false);
+                header.setManaged(false);
+            }
+        });
+        colTelephone.setCellValueFactory(new PropertyValueFactory<>("gridPane"));
+        telephonesTableView.setPlaceholder(new Label());
+        telephonesTableView.setItems(telephonesList);
+
+        telephonesList.addListener((ListChangeListener<DTOTelephones>) pChange -> {
+            addTelephoneButton.setDisable(telephonesList.size() > 2 ? true : false);
+        });
+
+        telephonesList.addAll(selectEmployeesTelephones(dtoEmployees.getId()));
+        telephonesList.forEach(item -> setTelephonesTextFieldListener(item));
+        initAddTelephoneButton();
+    }
+
+    private void initAddTelephoneButton(){
+        addTelephoneButton.setOnAction(event -> {
+            DTOTelephones dtoTelephones = new DTOTelephones("");
+            telephonesList.add(dtoTelephones);
+            setTelephonesTextFieldListener(dtoTelephones);
+        });
+    }
+
+    private void setTelephonesTextFieldListener(DTOTelephones dtoTelephones){
+        TextField textField = dtoTelephones.getTextField();
+        textField.focusedProperty().addListener((arg0, oldPropertyValue, newPropertyValue) -> {
+            if (! newPropertyValue) {
+                if (textField.getText() == null || textField.getText().isEmpty()) {
+                    telephonesList.remove(dtoTelephones);
+                }
+            }
+        });
+
+        textField.textProperty().addListener((observable, oldValue, newValue) -> {
+            if (newValue == null) {
+                telephonesList.remove(dtoTelephones);
+                if (dtoTelephones.getRecordId() != null) {
+                    telephonesListToRemoving.add(dtoTelephones);
+                }
+            }
+        });
     }
 
     private void alterAddingError(){

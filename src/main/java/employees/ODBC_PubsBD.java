@@ -2,6 +2,7 @@ package employees;
 
 import employees.dto.DTOEmployees;
 import employees.dto.DTOSkills;
+import employees.dto.DTOTelephones;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
@@ -148,4 +149,29 @@ public class ODBC_PubsBD {
                 new BeanPropertySqlParameterSource(dtoSkills));
     }
 
+    public static List<DTOTelephones> selectEmployeesTelephones(Integer employeesId){
+        return getJdbcTemplate().query("SELECT id AS recordId, employees_id AS subscriberId, telephoneNumber AS number " +
+                        "FROM empTelephone " +
+                        "WHERE employees_id = ?",
+                BeanPropertyRowMapper.newInstance(DTOTelephones.class), employeesId);
+    }
+
+    public static void insertTelephones(DTOTelephones dtoTelephones){
+        getNamedParameterJdbcTemplate().update("INSERT INTO empTelephone (id, employees_id, telephoneNumber) " +
+                        "VALUES (:recordId, :subscriberId, :number)",
+                new BeanPropertySqlParameterSource(dtoTelephones));
+    }
+
+    public static void updateTelephones(DTOTelephones dtoTelephones){
+        getNamedParameterJdbcTemplate().update("UPDATE empTelephone " +
+                        "SET telephoneNumber = :number " +
+                        "WHERE id = :recordId",
+                new BeanPropertySqlParameterSource(dtoTelephones));
+    }
+
+    public static void deleteTelephones(List<DTOTelephones> dtoTelephonesList){
+        getNamedParameterJdbcTemplate().batchUpdate("DELETE FROM empTelephone " +
+                        "WHERE id = :recordId",
+                SqlParameterSourceUtils.createBatch(dtoTelephonesList.toArray()));
+    }
 }
