@@ -23,19 +23,6 @@ public class DTOEmployees {
     }
 
     public DTOEmployees(Integer id, String name, String surname, String middleName, LocalDate birthDate,
-                        LocalDate firstDate, String notes, Integer workingHours, String imagesURL) {
-        this.id = id;
-        this.name = name;
-        this.surname = surname;
-        this.middleName = middleName;
-        this.birthDate = birthDate;
-        this.firstDate = firstDate;
-        this.notes = notes;
-        this.workingHours = workingHours;
-        this.imagesURL = imagesURL;
-    }
-
-    public DTOEmployees(Integer id, String name, String surname, String middleName, LocalDate birthDate,
                         LocalDate firstDate, LocalDate lastDate, String notes, Integer workingHours, String imagesURL) {
         this.id = id;
         this.name = name;

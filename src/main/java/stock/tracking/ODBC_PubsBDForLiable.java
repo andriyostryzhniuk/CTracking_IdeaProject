@@ -16,13 +16,15 @@ public class ODBC_PubsBDForLiable {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ODBC_PubsBDForLiable.class);
 
-    public static List<DtoEmployees> selectAllEmployees() {
+    public static List<DtoEmployees> selectAllEmployees(LocalDate dateView) {
         return getJdbcTemplate().query("select employees.id, " +
                 "concat( employees.surname, ' ', left (employees.name, 1), '. ', " +
                 "   left (employees.middleName, 1), '.' ) as fullName " +
                 "from employees " +
-                "where employees.lastDay is null " +
-                "order by employees.surname asc;", BeanPropertyRowMapper.newInstance(DtoEmployees.class));
+                "where employees.lastDay is null or " +
+                "employees.lastDay > ? " +
+                "order by employees.surname asc;",
+                BeanPropertyRowMapper.newInstance(DtoEmployees.class), dateView);
     }
 
     public static List<DtoEmployees> selectEmployeesOnObject(Integer objectId, LocalDate dateView) {

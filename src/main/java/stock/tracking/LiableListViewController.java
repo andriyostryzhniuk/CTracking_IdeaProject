@@ -72,7 +72,7 @@ public class LiableListViewController {
             liableListViewDataList.addAll(ODBC_PubsBDForLiable.selectObjects(dateView));
         } else if (liableType.equals("Працівники")) {
             levelUpButton.setDisable(true);
-            liableListViewDataList.addAll(ODBC_PubsBDForLiable.selectAllEmployees());
+            liableListViewDataList.addAll(ODBC_PubsBDForLiable.selectAllEmployees(dateView));
         } else {
             levelUpButton.setDisable(false);
             liableListViewDataList.addAll(ODBC_PubsBDForLiable.selectEmployeesOnObject(objectId, dateView));

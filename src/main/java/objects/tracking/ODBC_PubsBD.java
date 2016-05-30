@@ -29,18 +29,21 @@ public class ODBC_PubsBD {
                 "   where (startDate <= ? and finishDate is null) or " +
                 "   ? between startDate and finishDate) who_is_on_object " +
                 "   on employees.id = who_is_on_object.employees_id " +
-                "where who_is_on_object.employees_id is null and " +
-                "employees.lastDay is null " +
+                "where who_is_on_object.employees_id is null and ( " +
+                "employees.lastDay is null or " +
+                "employees.lastDay > ? ) " +
                 "order by employees.surname asc",
-                BeanPropertyRowMapper.newInstance(DTOEmployees.class), dateView, dateView);
+                BeanPropertyRowMapper.newInstance(DTOEmployees.class), dateView, dateView, dateView);
     }
 
-    public static List<DTOEmployees> selectAllEmployees() {
+    public static List<DTOEmployees> selectAllEmployees(LocalDate dateView) {
         return getJdbcTemplate().query("select id, " +
                 "concat(surname, ' ', left (name, 1), '. ', left (middleName, 1), '.' ) as fullName, notes " +
                 "from employees " +
-                "where lastDay is null " +
-                "order by surname asc", BeanPropertyRowMapper.newInstance(DTOEmployees.class));
+                "where lastDay is null or " +
+                "lastDay > ? " +
+                "order by surname asc",
+                BeanPropertyRowMapper.newInstance(DTOEmployees.class), dateView );
     }
 
     public static List<DTOEmployees> selectFreeEmployeesSkills(LocalDate dateView, String skill) {
@@ -53,24 +56,27 @@ public class ODBC_PubsBD {
                 "   where (startDate <= ? and finishDate is null) or " +
                 "   ? between startDate and finishDate) who_is_on_object " +
                 "   on employees.id = who_is_on_object.employees_id " +
-                "where who_is_on_object.employees_id is null and " +
-                "employees.lastDay is null and " +
+                "where who_is_on_object.employees_id is null and (" +
+                "employees.lastDay is null or " +
+                "employees.lastDay > ? ) and " +
                 "employees.id = skills_employees.employees_id and " +
                 "skills_employees.skills_id = skills.id and " +
                 "skills.skill = ? " +
                 "order by employees.surname asc",
-                BeanPropertyRowMapper.newInstance(DTOEmployees.class), dateView, dateView, skill);
+                BeanPropertyRowMapper.newInstance(DTOEmployees.class), dateView, dateView, dateView, skill);
     }
 
-    public static List<DTOEmployees> selectAllEmployeesSkills(String skill) {
+    public static List<DTOEmployees> selectAllEmployeesSkills(String skill, LocalDate dateView) {
         return getJdbcTemplate().query("select employees.id, " +
                 "concat(surname, ' ', left (name, 1), '. ', left (middleName, 1), '.' ) as fullName, notes " +
                 "from employees, skills_employees, skills " +
                 "where skills.skill = ? and " +
                 "skills.id = skills_employees.skills_id and " +
-                "skills_employees.employees_id = employees.id and " +
-                "employees.lastDay is null " +
-                "order by surname asc", BeanPropertyRowMapper.newInstance(DTOEmployees.class), skill);
+                "skills_employees.employees_id = employees.id and ( " +
+                "employees.lastDay is null or " +
+                "employees.lastDay > ? ) " +
+                "order by surname asc",
+                BeanPropertyRowMapper.newInstance(DTOEmployees.class), skill, dateView);
     }
 
     public static List<String> selectEmployeesSkills(Integer employeeId){

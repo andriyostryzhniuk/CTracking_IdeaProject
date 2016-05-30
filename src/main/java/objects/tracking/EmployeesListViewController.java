@@ -60,11 +60,11 @@ public class EmployeesListViewController {
         if (! isAllEmployees && employeesSkill == null) {
             employeesListViewDataList.addAll(selectFreeEmployees(dateView));
         } else if (isAllEmployees && employeesSkill == null) {
-            employeesListViewDataList.addAll(selectAllEmployees());
+            employeesListViewDataList.addAll(selectAllEmployees(dateView));
         } else if (! isAllEmployees && employeesSkill != null) {
             employeesListViewDataList.addAll(selectFreeEmployeesSkills(dateView, employeesSkill));
         }   else if (isAllEmployees && employeesSkill != null) {
-            employeesListViewDataList.addAll(selectAllEmployeesSkills(employeesSkill));
+            employeesListViewDataList.addAll(selectAllEmployeesSkills(employeesSkill, dateView));
         }
 
         employeesListViewDataList.forEach(item -> {

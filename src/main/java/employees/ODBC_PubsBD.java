@@ -6,6 +6,7 @@ import employees.dto.DTOTelephones;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
+import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSourceUtils;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
@@ -39,9 +40,10 @@ public class ODBC_PubsBD {
 
     public static List<DTOEmployees> selectEmployeesList() {
         return getJdbcTemplate().query("SELECT id, name, surname, middleName, birthDate, firstDay AS firstDate, " +
-                "notes, workingHours, imagesURL " +
+                "firstDay AS lastDate, notes, workingHours, imagesURL " +
                         "FROM employees " +
-                        "WHERE lastDay IS NULL " +
+                        "WHERE lastDay IS NULL OR " +
+                        "lastDay > curdate() " +
                         "order by surname asc",
                 BeanPropertyRowMapper.newInstance(DTOEmployees.class));
     }
@@ -89,13 +91,18 @@ public class ODBC_PubsBD {
     }
 
     public static String selectCountNotClosedWork(Integer employeesId) {
-        return getJdbcTemplate().queryForObject("SELECT object.address " +
+        List<String> objectsList = getJdbcTemplate().query("SELECT object.address " +
                         "FROM object_employees, object " +
                         "WHERE employees_id = ? AND ( " +
                         "object_employees.finishDate > curdate() OR " +
                         "object_employees.finishDate IS NULL ) AND " +
                         "object_employees.object_id = object.id",
-                new Object[]{employeesId}, String.class);
+                (RowMapper) (resultSet, i) -> resultSet.getString(1), employeesId);
+        if (objectsList.size() != 0) {
+            return objectsList.get(0);
+        } else {
+            return null;
+        }
     }
 
     public static void updateEmployees (DTOEmployees dtoEmployees) {
