@@ -1,6 +1,7 @@
 package employees.dto;
 
 import javafx.application.Platform;
+import javafx.beans.InvalidationListener;
 import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
@@ -76,14 +77,25 @@ public class DTOTelephones {
         textField.setMinWidth(170);
         textField.setMaxWidth(170);
         textField.setPromptText("Введіть номер телефону");
+        textField.setStyle("-fx-background-color: transparent;");
         textField.setText(number);
         gridPane.add(textField, 0 ,0);
         rejectButton = initRejectButton();
         gridPane.add(rejectButton, 0, 0);
         gridPane.setMargin(rejectButton, new Insets(0, 0, 0, 146));
 
-        gridPane.setOnMouseEntered(event -> rejectButton.setVisible(true));
-        gridPane.setOnMouseExited(event -> rejectButton.setVisible(false));
+        gridPane.setOnMouseEntered(event -> {
+            rejectButton.setVisible(true);
+            if (! textField.getStyleClass().contains("focused")) {
+                textField.setStyle("-fx-background-color: Gainsboro;");
+            }
+        });
+        gridPane.setOnMouseExited(event -> {
+            if (! textField.getStyleClass().contains("focused")) {
+                textField.setStyle("-fx-background-color: transparent;");
+            }
+            rejectButton.setVisible(false);
+        });
 
         rejectButton.setOnAction(event -> textField.setText(null));
     }
@@ -91,7 +103,7 @@ public class DTOTelephones {
     private Button initRejectButton(){
         Button button = new Button();
         Image image = new Image(getClass().getResourceAsStream("/icons/reject_icon.png"));
-        button.getStylesheets().add(getClass().getResource("/styles/RejectButtonStyle.css").toExternalForm());
+        button.getStylesheets().add(getClass().getResource("/employees/RejectButtonStyle.css").toExternalForm());
         button.setGraphic(new ImageView(image));
         button.setTooltip(new Tooltip("Видалити телефон"));
         button.setVisible(false);

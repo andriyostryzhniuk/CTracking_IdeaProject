@@ -88,6 +88,16 @@ public class ODBC_PubsBD {
                 new Object []{employeesId}, LocalDate.class);
     }
 
+    public static String selectCountNotClosedWork(Integer employeesId) {
+        return getJdbcTemplate().queryForObject("SELECT object.address " +
+                        "FROM object_employees, object " +
+                        "WHERE employees_id = ? AND ( " +
+                        "object_employees.finishDate > curdate() OR " +
+                        "object_employees.finishDate IS NULL ) AND " +
+                        "object_employees.object_id = object.id",
+                new Object[]{employeesId}, String.class);
+    }
+
     public static void updateEmployees (DTOEmployees dtoEmployees) {
         getNamedParameterJdbcTemplate().update("UPDATE employees " +
                 "SET name = :name, " +

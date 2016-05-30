@@ -62,6 +62,7 @@ public class InfoEmployeesController {
     public DatePicker firstDateDatePicker;
     public Label lastDateLabel;
     public DatePicker lastDateDatePicker;
+    public Button standOffButton;
     public Button rejectLastDateButton;
     public TableView<DTOTelephones> telephonesTableView;
     public Button addTelephoneButton;
@@ -167,6 +168,7 @@ public class InfoEmployeesController {
         firstDateDatePicker.setValue(dtoEmployees.getFirstDate());
         if (dtoEmployees.getLastDate() != null) {
             lastDateDatePicker.setValue(dtoEmployees.getLastDate());
+            setLastDateControlsState(true, false);
         }
         notesTextArea.setText(dtoEmployees.getNotes());
         skillsList.addAll(selectEmployeesSkills(dtoEmployees.getId()));
@@ -187,6 +189,7 @@ public class InfoEmployeesController {
         rejectLastDateButton.setTooltip(new Tooltip("Прийняти"));
         rejectLastDateButton.setOnAction(event -> {
             lastDateDatePicker.setValue(null);
+            setLastDateControlsState(false, true);
         });
     }
 
@@ -355,6 +358,7 @@ public class InfoEmployeesController {
 
             for (DTOTelephones item : telephonesList) {
                 if (! textFieldMatcherFind(item.getTextField(), Pattern.compile("[^\\d]"))) {
+                    telephonesExceptionLabel.setVisible(true);
                     return;
                 }
             }
@@ -552,11 +556,17 @@ public class InfoEmployeesController {
 
         textField.focusedProperty().addListener((arg0, oldPropertyValue, newPropertyValue) -> {
             textFieldMatcherFind(textField, pattern);
-            telephonesExceptionLabel.setVisible(false);
             if (! newPropertyValue) {
+                textField.getStyleClass().remove("focused");
+                textField.setStyle("-fx-background-color: transparent;");
                 if (textField.getText() == null || textField.getText().isEmpty()) {
                     telephonesList.remove(dtoTelephones);
                 }
+            } else {
+                if (! textField.getStyleClass().contains("focused")) {
+                    textField.getStyleClass().add("focused");
+                }
+                textField.setStyle("");
             }
         });
 
@@ -579,13 +589,24 @@ public class InfoEmployeesController {
                 }
             }
         });
+    }
 
-        textField.setOnMouseClicked((MouseEvent event) -> {
-            if (textField.getStyleClass().contains("warning")) {
-                textField.getStyleClass().remove("warning");
-                telephonesExceptionLabel.setVisible(true);
-            }
-        });
+    public void standOffAction(ActionEvent actionEvent) {
+        String notClosedWork;
+        if ((notClosedWork = selectCountNotClosedWork(dtoEmployees.getId())) != null) {
+            alterStandOffError(notClosedWork);
+            return;
+        }
+        lastDateDatePicker.setValue(LocalDate.now());
+        setLastDateControlsState(true, false);
+    }
+
+    private void setLastDateControlsState(boolean datePickerState, boolean buttonState) {
+        standOffButton.setDisable(datePickerState);
+        standOffButton.setVisible(buttonState);
+        lastDateLabel.setVisible(datePickerState);
+        lastDateDatePicker.setDisable(buttonState);
+        lastDateDatePicker.setVisible(datePickerState);
     }
 
     private void alterAddingPhotoError(){
@@ -596,6 +617,13 @@ public class InfoEmployeesController {
 
     private void alterLoadingPhotoError(){
         String contentText = "Не вдалось завантажити фото.\nМожливо фото було переміщено, або видалено.";
+        AlertWindow alertWindow = new AlertWindow(Alert.AlertType.ERROR, null, contentText);
+        alertWindow.showError();
+    }
+
+    private void alterStandOffError(String notClosedWork){
+        String contentText = "Не можливо звільнити працівника, оскільки у нього" +
+                "\nне закрита робота на об'єкті\n" + notClosedWork;
         AlertWindow alertWindow = new AlertWindow(Alert.AlertType.ERROR, null, contentText);
         alertWindow.showError();
     }
