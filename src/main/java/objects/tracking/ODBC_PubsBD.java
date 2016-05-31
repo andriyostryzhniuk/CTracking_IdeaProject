@@ -1,5 +1,6 @@
 package objects.tracking;
 
+import javafx.scene.control.Alert;
 import main.BeanPropertyRowMapperWithNullCheck;
 import objects.tracking.dto.DTOEmployees;
 import objects.tracking.dto.DTOObjectEmpAddress;
@@ -7,9 +8,12 @@ import objects.tracking.dto.DTOObjects;
 import objects.tracking.dto.DTOObjectEmployees;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import subsidiary.classes.AlertWindow;
+
 import java.time.LocalDate;
 import java.util.List;
 import static main.DB_Connector.getJdbcTemplate;
@@ -18,6 +22,7 @@ import static main.DB_Connector.getNamedParameterJdbcTemplate;
 public class ODBC_PubsBD {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ODBC_PubsBD.class);
+    private static AlertWindow alertWindow = new AlertWindow(Alert.AlertType.ERROR);
 
     public static List<DTOEmployees> selectFreeEmployees(LocalDate dateView) {
         return getJdbcTemplate().query("select employees.id, " +
@@ -150,8 +155,12 @@ public class ODBC_PubsBD {
     }
 
     public static void deleteFromObjectEmployees(Integer recordId) {
-        getJdbcTemplate().update("DELETE FROM object_employees " +
-                "WHERE id = ?", recordId);
+        try {
+            getJdbcTemplate().update("DELETE FROM object_employees " +
+                    "WHERE id = ?", recordId);
+        } catch (DataIntegrityViolationException e) {
+            alertWindow.showDeletingError();
+        }
     }
 
     public static String selectEmployeesFullName(Integer employeeId) {

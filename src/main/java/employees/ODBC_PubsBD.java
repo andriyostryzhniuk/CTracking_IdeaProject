@@ -3,13 +3,16 @@ package employees;
 import employees.dto.DTOEmployees;
 import employees.dto.DTOSkills;
 import employees.dto.DTOTelephones;
+import javafx.scene.control.Alert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
 import org.springframework.jdbc.core.namedparam.SqlParameterSourceUtils;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
+import subsidiary.classes.AlertWindow;
 
 import java.math.BigDecimal;
 import java.time.LocalDate;
@@ -25,6 +28,7 @@ import static main.DB_Connector.getNamedParameterJdbcTemplate;
 public class ODBC_PubsBD {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(ODBC_PubsBD.class);
+    private static AlertWindow alertWindow = new AlertWindow(Alert.AlertType.ERROR);
 
     private static SimpleJdbcInsert simpleJdbcInsertForEmployees;
 
@@ -171,9 +175,13 @@ public class ODBC_PubsBD {
     }
 
     public static void deleteFromSkills(DTOSkills dtoSkills){
-        getNamedParameterJdbcTemplate().update("DELETE FROM skills " +
-                        "WHERE id = :skillsId",
-                new BeanPropertySqlParameterSource(dtoSkills));
+        try {
+            getNamedParameterJdbcTemplate().update("DELETE FROM skills " +
+                            "WHERE id = :skillsId",
+                    new BeanPropertySqlParameterSource(dtoSkills));
+        } catch (DataIntegrityViolationException e) {
+            alertWindow.showDeletingError();
+        }
     }
 
     public static List<DTOTelephones> selectEmployeesTelephones(Integer employeesId){
