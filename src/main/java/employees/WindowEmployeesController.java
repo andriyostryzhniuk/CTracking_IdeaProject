@@ -48,7 +48,7 @@ public class WindowEmployeesController {
         initComboBoxSearch();
         setListContextMenu();
         initExemptEmployeesChoiceBox();
-        initEditButton();
+        initOpenButton();
         initAddButton();
 
         initListView(false);
@@ -215,7 +215,7 @@ public class WindowEmployeesController {
     private void initAddButton(){
         final EditPanel editPanel = new EditPanel();
         Button addButton = editPanel.getAddButton();
-        addButton.getStylesheets().add(getClass().getResource("/employees/AddButtonStyle.css").toExternalForm());
+        addButton.getStylesheets().add(getClass().getResource("/employees/ListsButtonStyle.css").toExternalForm());
         addButton.setTooltip(new Tooltip("Додати нового працівника"));
         addButton.setOnAction(event -> {
             initInfoEmployees(new DTOEmployees(null, null, null, null, null, LocalDate.now(), null, null, 8, null));
@@ -225,17 +225,17 @@ public class WindowEmployeesController {
         addButton.setLayoutY(1);
     }
 
-    private void initEditButton(){
+    private void initOpenButton(){
         final EditPanel editPanel = new EditPanel(listView);
-        Button infoButton = editPanel.getEditButton();
-        infoButton.getStylesheets().add(getClass().getResource("/employees/AddButtonStyle.css").toExternalForm());
-        infoButton.setTooltip(new Tooltip("Переглянути інформацію про працівника"));
-        infoButton.setOnAction(event -> {
+        Button openButton = editPanel.getOpenButton();
+        openButton.getStylesheets().add(getClass().getResource("/employees/ListsButtonStyle.css").toExternalForm());
+        openButton.setTooltip(new Tooltip("Переглянути інформацію про працівника"));
+        openButton.setOnAction(event -> {
             initInfoEmployees(listView.getSelectionModel().getSelectedItem());
         });
-        headerPanel.getChildren().add(infoButton);
-        infoButton.setLayoutX(5);
-        infoButton.setLayoutY(1);
+        headerPanel.getChildren().add(openButton);
+        openButton.setLayoutX(5);
+        openButton.setLayoutY(1);
     }
 
     public Button getSaveButton() {
