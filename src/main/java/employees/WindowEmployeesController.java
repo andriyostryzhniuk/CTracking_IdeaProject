@@ -1,8 +1,10 @@
 package employees;
 
 import employees.dto.DTOEmployees;
+import javafx.beans.value.ChangeListener;
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
+import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.scene.control.*;
@@ -18,7 +20,8 @@ import java.io.IOException;
 import java.io.UncheckedIOException;
 import java.time.LocalDate;
 
-import static employees.ODBC_PubsBD.selectEmployeesList;
+import static employees.ODBC_PubsBD.selectExemptEmployeesList;
+import static employees.ODBC_PubsBD.selectWorkingEmployeesList;
 
 public class WindowEmployeesController {
 
@@ -27,6 +30,7 @@ public class WindowEmployeesController {
     public ListView<DTOEmployees> listView;
     public GridPane listViewGridPane;
     public Pane headerPanel;
+    public ChoiceBox exemptEmployeesChoiceBox;
 
     private Button saveButton;
 
@@ -40,9 +44,10 @@ public class WindowEmployeesController {
 
     @FXML
     private void initialize(){
-        listView.setPlaceholder(new Label("Не додано жодного працівника"));
-        setListViewCellFactory();
+        listView.setPlaceholder(new Label("Тут покищо немає жодного працівника"));
         initComboBoxSearch();
+        setListContextMenu();
+        initExemptEmployeesChoiceBox();
         initEditButton();
         initAddButton();
 
@@ -51,27 +56,39 @@ public class WindowEmployeesController {
 
     public void initListView(boolean isNeedSelectItems){
         Integer selectedRowIndex = listView.getSelectionModel().getSelectedIndex();
-        DTOEmployees selectedItem = listView.getSelectionModel().getSelectedItem();
         employeesListViewDataList.clear();
         listView.getItems().clear();
         employeesNamesList.clear();
+        setListViewCellFactory();
 
-        employeesListViewDataList.addAll(selectEmployeesList());
+        if (exemptEmployeesChoiceBox.getValue().equals("Працюючі")) {
+            employeesListViewDataList.addAll(selectWorkingEmployeesList());
+        } else {
+            employeesListViewDataList.addAll(selectExemptEmployeesList());
+        }
 
-        employeesListViewDataList.forEach(item -> {
-            employeesNamesList.add(item.getFullName());
-        });
+        employeesListViewDataList.forEach(item -> employeesNamesList.add(item.getFullName()));
 
         listView.setItems(employeesListViewDataList);
 
-        if (isNeedSelectItems && selectedItem != null) {
+        if (isNeedSelectItems) {
             listView.getSelectionModel().select(selectedRowIndex);
             listView.getFocusModel().focus(selectedRowIndex);
             listView.scrollTo(selectedRowIndex);
-            initInfoEmployees(selectedItem);
+            initInfoEmployees(listView.getSelectionModel().getSelectedItem());
         }
 
         new AutoCompleteComboBoxListener<>(comboBoxSearch, comboBoxListener);
+    }
+
+    private void initExemptEmployeesChoiceBox(){
+        exemptEmployeesChoiceBox.getItems().addAll("Працюючі", "Звільнені");
+        exemptEmployeesChoiceBox.setTooltip(new Tooltip("Показувати: працюючі \\ звільнені працівники"));
+        exemptEmployeesChoiceBox.setValue(exemptEmployeesChoiceBox.getItems().get(0));
+
+        exemptEmployeesChoiceBox.valueProperty().addListener((ChangeListener<String>) (observableValue, oldValue, newValue) -> {
+            initListView(false);
+        });
     }
 
     private void setListViewCellFactory(){
@@ -94,6 +111,31 @@ public class WindowEmployeesController {
             };
             return cell;
         });
+    }
+
+    private void setListContextMenu(){
+        MenuItem infoItem = new MenuItem("Переглянути");
+        listView.getSelectionModel().selectedItemProperty().addListener(event -> {
+            if (listView.getSelectionModel().getSelectedItem() == null) {
+                infoItem.setDisable(true);
+            } else {
+                infoItem.setDisable(false);
+            }
+        });
+        infoItem.setOnAction((ActionEvent event) -> {
+            initInfoEmployees(listView.getSelectionModel().getSelectedItem());
+        });
+        infoItem.setDisable(true);
+
+        MenuItem addItem = new MenuItem("Додати нового працівника");
+        addItem.setOnAction((ActionEvent event) -> {
+            initInfoEmployees(new DTOEmployees(null, null, null, null, null, LocalDate.now(), null, null, 8, null));
+        });
+
+        final javafx.scene.control.ContextMenu cellMenu = new javafx.scene.control.ContextMenu();
+        cellMenu.getItems().addAll(infoItem, addItem);
+
+        listView.setContextMenu(cellMenu);
     }
 
     private void initComboBoxSearch() {

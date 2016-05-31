@@ -38,12 +38,22 @@ public class ODBC_PubsBD {
         return simpleJdbcInsertForEmployees;
     }
 
-    public static List<DTOEmployees> selectEmployeesList() {
+    public static List<DTOEmployees> selectWorkingEmployeesList() {
         return getJdbcTemplate().query("SELECT id, name, surname, middleName, birthDate, firstDay AS firstDate, " +
-                "firstDay AS lastDate, notes, workingHours, imagesURL " +
+                "lastDay AS lastDate, notes, workingHours, imagesURL " +
                         "FROM employees " +
                         "WHERE lastDay IS NULL OR " +
                         "lastDay > curdate() " +
+                        "order by surname asc",
+                BeanPropertyRowMapper.newInstance(DTOEmployees.class));
+    }
+
+    public static List<DTOEmployees> selectExemptEmployeesList() {
+        return getJdbcTemplate().query("SELECT id, name, surname, middleName, birthDate, firstDay AS firstDate, " +
+                "lastDay AS lastDate, notes, workingHours, imagesURL " +
+                        "FROM employees " +
+                        "WHERE lastDay IS NOT NULL AND " +
+                        "lastDay <= curdate() " +
                         "order by surname asc",
                 BeanPropertyRowMapper.newInstance(DTOEmployees.class));
     }

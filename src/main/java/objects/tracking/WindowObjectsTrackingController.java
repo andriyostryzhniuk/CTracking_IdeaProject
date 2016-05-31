@@ -134,7 +134,8 @@ public class WindowObjectsTrackingController<T extends DTOObjectEmployees> {
 
     private void initContentTypeChoiceBox(){
         contentTypeChoiceBox.getItems().addAll("Тільки вільні працівники", "Всі працівники");
-        contentTypeChoiceBox.setTooltip(new Tooltip("Якийсь текст"));
+        contentTypeChoiceBox.setTooltip(new Tooltip("Вибрати вивід працівників\n" +
+                "(тільки вільні на даний момент \\ всі працівники)"));
 
         contentTypeChoiceBox.valueProperty().addListener((ChangeListener<String>) (observableValue, oldValue, newValue) -> {
             if (newValue.equals(contentTypeChoiceBox.getItems().get(0))) {
