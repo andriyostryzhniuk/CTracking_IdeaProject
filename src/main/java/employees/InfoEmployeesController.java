@@ -319,7 +319,6 @@ public class InfoEmployeesController {
         workingHoursNumberSpinner.setMinValue(1);
         workingHoursNumberSpinner.setMaxValue(24);
         workingHoursVBox.getChildren().add(workingHoursNumberSpinner);
-
     }
 
     private void setControlsListeners(){

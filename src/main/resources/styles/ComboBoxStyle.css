@@ -1,3 +1,3 @@
- .combo-box.warning:focused {
+ .combo-box.warning {
      -fx-background-color: red ,-fx-box-border,-fx-control-inner-background;
  }

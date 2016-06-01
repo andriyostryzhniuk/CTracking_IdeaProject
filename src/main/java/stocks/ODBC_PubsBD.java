@@ -3,6 +3,7 @@ package stocks;
 import javafx.scene.control.Alert;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
@@ -22,8 +23,8 @@ public class ODBC_PubsBD {
 
     public static List<DTOStocks> selectStockList(String status) {
         return getJdbcTemplate().query("SELECT stock.id AS stockId, ifnull(stock.name, stockCategory.name) AS name, " +
-                "stock.stockCategory_id AS categoryId, stockcategory.name AS categoryName, stockcategory.type, " +
-                "price, notes, stock.repository_id AS repositoryId, repository.name AS repositoryName " +
+                        "stock.stockCategory_id AS categoryId, stockcategory.name AS categoryName, stockcategory.type, " +
+                        "price, notes, stock.repository_id AS repositoryId, repository.name AS repositoryName " +
                         "FROM stock, stockcategory, repository " +
                         "WHERE status = ? AND " +
                         "stock.stockCategory_id = stockcategory.id AND " +
@@ -66,9 +67,13 @@ public class ODBC_PubsBD {
     }
 
     public static void deleteFromStock(DTOStocks dtoStocks){
+        try {
         getNamedParameterJdbcTemplate().update("DELETE FROM stock " +
                         "WHERE id = :stockId",
                 new BeanPropertySqlParameterSource(dtoStocks));
+        } catch (DataIntegrityViolationException e) {
+            alertWindow.showDeletingError();
+        }
     }
 
     public static void updateStock (DTOStocks dtoStocks) {

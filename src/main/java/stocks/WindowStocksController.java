@@ -6,31 +6,43 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
 import javafx.util.Callback;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import overridden.elements.combo.box.AutoCompleteComboBoxListener;
+import overridden.elements.number.spinner.NumberSpinner;
 import overridden.elements.table.view.CustomTableColumn;
 import overridden.elements.table.view.TableViewHolder;
 import stocks.dto.DTORepository;
 import stocks.dto.DTOStocks;
 import java.math.BigDecimal;
 import java.util.Collection;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
+import java.util.stream.IntStream;
+
 import static stocks.ContextMenu.initContextMenu;
 import static stocks.ODBC_PubsBD.*;
 
 public class WindowStocksController<T extends DTOStocks> {
 
+    private static final Logger LOGGER = LoggerFactory.getLogger(WindowStocksController.class);
+
     public StackPane stackPane;
 
     public GridPane editingControlsGridPane;
     public TextField nameTextField;
+    public Label exceptionLabel;
     private ComboBox categoryComboBox;
     private ComboBox comboBoxListener;
     public TextField priceTextField;
+    public ComboBox<DTORepository> repositoryComboBox;
+    private NumberSpinner numberSpinner = new NumberSpinner();
     public Button saveButton;
     public Button escapeButton;
-    public ComboBox<DTORepository> repositoryComboBox;
 
     private TableViewHolder<T> tableView = new TableViewHolder<>();
     public CustomTableColumn<T, String> stockNameCol = new CustomTableColumn<>("Найменування");
@@ -48,7 +60,11 @@ public class WindowStocksController<T extends DTOStocks> {
         setTableViewParameters();
         initTableView();
         initCategoryComboBox();
-        repositoryComboBox.setItems(FXCollections.observableArrayList(selectRepositoryList()));
+        setNameTextFieldListener();
+        setPriceTextFieldListener();
+        setIntegerListener();
+        initNumberSpinner();
+        initRepositoryComboBox();
     }
 
     public void initTableView() {
@@ -102,6 +118,7 @@ public class WindowStocksController<T extends DTOStocks> {
 
         categoryComboBox.getStylesheets().add(getClass().getResource("/styles/ComboBoxStyle.css").toExternalForm());
         categoryComboBox.setTooltip(new Tooltip("Виберіть категорію інентаря"));
+        categoryComboBox.setPromptText("Виберіть категорію");
 
         categoryComboBox.setItems(FXCollections.observableArrayList(selectStockCategoryNameList()));
 
@@ -125,36 +142,185 @@ public class WindowStocksController<T extends DTOStocks> {
             }
         });
 
+        categoryComboBox.getEditor().setOnMouseClicked((MouseEvent event) -> {
+            if (categoryComboBox.getStyleClass().contains("warning")) {
+                categoryComboBox.getStyleClass().remove("warning");
+                exceptionLabel.setText("Виберіть категорію");
+            }
+        });
+
+        categoryComboBox.getEditor().focusedProperty().addListener((observable, oldValue, newValue) -> {
+            exceptionLabel.setText("");
+        });
+
+        categoryComboBox.setOnMouseClicked((MouseEvent event) -> {
+            if (categoryComboBox.getStyleClass().contains("warning")) {
+                categoryComboBox.getStyleClass().remove("warning");
+                exceptionLabel.setText("Виберіть категорію");
+            }
+        });
+
+        categoryComboBox.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            exceptionLabel.setText("");
+        });
+
+        categoryComboBox.getEditor().textProperty().addListener((observableValue, oldValue, newValue) -> {
+            exceptionLabel.setText("");
+        });
+
         editingControlsGridPane.add(categoryComboBox, 1, 0);
 
-//        comboBoxListener.valueProperty().addListener(new ChangeListener<String>() {
-//            @Override
-//            public void changed(ObservableValue observableValue, String oldValue, String newValue) {
-////                change detected
-//                if (newValue != null) {
-//                    comboBox.getStyleClass().remove("warning");
-//                    searchInListView();
-//                    comboBoxListener.setValue(null);
-//                }
-//            }
-//        });
+    }
+
+    private void initNumberSpinner(){
+        numberSpinner.setMinWidth(100);
+        numberSpinner.setPrefWidth(100);
+        numberSpinner.setMaxWidth(100);
+        numberSpinner.setMaxHeight(25);
+        numberSpinner.setMinValue(1);
+        numberSpinner.setPromptText("Кількість");
+        numberSpinner.setValue(1);
+        numberSpinner.setTooltip(new Tooltip("Кількість"));
+        editingControlsGridPane.add(numberSpinner, 4, 0);
     }
 
     public void saveButtonAction(ActionEvent actionEvent) {
-        if (dtoStocksToUpdate == null) {
-            insertIntoStock(
-                    new DTOStocks(null, nameTextField.getText(), selectCategoryId(comboBoxListener.getValue().toString()),
-                            new BigDecimal(priceTextField.getText()), "Доступно", null,
-                            repositoryComboBox.getValue().getId()));
+        String name;
+        if (nameTextField.getText() == null || nameTextField.getText().isEmpty()) {
+            name = null;
         } else {
-            updateStock(
-                    new DTOStocks(dtoStocksToUpdate.getStockId(), nameTextField.getText(),
-                            selectCategoryId(comboBoxListener.getValue().toString()),
-                            new BigDecimal(priceTextField.getText()), null, repositoryComboBox.getValue().getId()));
+            name = nameTextField.getText();
+        }
+
+        if (! checkCategoryTextFieldValidation()) {
+            return;
+        }
+
+        BigDecimal price;
+        if (priceTextField.getText() == null || priceTextField.getText().isEmpty()) {
+            price = null;
+        } else if (! checkPriceTextFieldValidation()) {
+            return;
+        } else {
+            price = new BigDecimal(priceTextField.getText());
+        }
+
+        if (repositoryComboBox.getValue() == null) {
+            exceptionLabel.setText("Виберіть склад");
+            return;
+        }
+
+        if (! checkNumberSpinnerValidation()) {
+            return;
+        }
+
+        if (dtoStocksToUpdate == null) {
+            DTOStocks dtoStocksToInsert = new DTOStocks(null, name,
+                    selectCategoryId(comboBoxListener.getValue().toString()), price, "Доступно", null,
+                    repositoryComboBox.getValue().getId());
+            IntStream.range(0, numberSpinner.getValue().intValue()).forEach(i -> insertIntoStock(dtoStocksToInsert));
+        } else {
+            updateStock(new DTOStocks(dtoStocksToUpdate.getStockId(), name,
+                            selectCategoryId(comboBoxListener.getValue().toString()), price, null,
+                    repositoryComboBox.getValue().getId()));
         }
 
         clearEditingControls();
         initTableView();
+    }
+
+    private void setNameTextFieldListener(){
+        nameTextField.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            nameTextField.setText(nameTextField.getText().trim());
+        });
+    }
+
+    private boolean checkCategoryTextFieldValidation() {
+        String editorValue = categoryComboBox.getEditor().getText().toLowerCase();
+        for (Object item : categoryComboBox.getItems()) {
+            if (editorValue.equals(item.toString().toLowerCase())) {
+                categoryComboBox.setValue(item);
+                comboBoxListener.setValue(item);
+                return true;
+            }
+        }
+        if (!categoryComboBox.getStyleClass().contains("warning")) {
+            categoryComboBox.getStyleClass().add("warning");
+        }
+        return false;
+    }
+
+    private void setPriceTextFieldListener() {
+        Pattern pattern = Pattern.compile("[^'\'.\\d]");
+        priceTextField.getStylesheets().add(getClass().getResource("/styles/TextFieldStyle.css").toExternalForm());
+        priceTextField.setTooltip(new Tooltip("Вартість"));
+        priceTextField.focusedProperty().addListener((observable, oldValue, newValue) -> {
+            priceTextField.setText(priceTextField.getText().trim());
+            exceptionLabel.setText("");
+            checkPriceTextFieldValidation();
+        });
+
+        priceTextField.textProperty().addListener((observable, oldValue, newValue) -> {
+            Matcher matcher = pattern.matcher(newValue);
+            if (matcher.find()) {
+                exceptionLabel.setText("Вартість повинна бути числовим значенням, та містити лише цифри");
+            } else {
+                exceptionLabel.setText("");
+            }
+        });
+
+        priceTextField.setOnMouseClicked((MouseEvent event) -> {
+            if (priceTextField.getStyleClass().contains("warning")) {
+                priceTextField.getStyleClass().remove("warning");
+                exceptionLabel.setText("Вартість повинна бути числовим значенням, та містити лише цифри");
+            }
+        });
+    }
+
+    private boolean checkPriceTextFieldValidation(){
+        boolean isRight = true;
+        priceTextField.getStyleClass().remove("warning");
+        try {
+            new BigDecimal(priceTextField.getText());
+        } catch (NumberFormatException e) {
+            LOGGER.debug("NumberFormatException");
+            if (! priceTextField.getText().isEmpty()) {
+                isRight = false;
+                if (! priceTextField.getStyleClass().contains("warning")) {
+                    priceTextField.getStyleClass().add("warning");
+                }
+            }
+        }
+        return isRight;
+    }
+
+    private void initRepositoryComboBox(){
+        repositoryComboBox.setItems(FXCollections.observableArrayList(selectRepositoryList()));
+
+        repositoryComboBox.valueProperty().addListener((observable, oldValue, newValue) -> {
+            exceptionLabel.setText("");
+        });
+    }
+
+    private void setIntegerListener(){
+        numberSpinner.textProperty().addListener((observable, oldValue, newValue) -> {
+            checkNumberSpinnerValidation();
+        });
+    }
+
+    private boolean checkNumberSpinnerValidation(){
+        if (numberSpinner.getText() == null || numberSpinner.getText().isEmpty()) {
+            exceptionLabel.setText("Кількість одиниць повинна визначатись цілим числом, не менше 1");
+            return false;
+        }
+        try {
+            Integer.parseInt(numberSpinner.getText());
+        } catch (NumberFormatException e) {
+            exceptionLabel.setText("Кількість одиниць повинна визначатись цілим числом, не менше 1");
+            return false;
+        }
+        exceptionLabel.setText("");
+        return true;
     }
 
     public void escapeButtonAction(ActionEvent actionEvent) {
@@ -162,6 +328,7 @@ public class WindowStocksController<T extends DTOStocks> {
     }
 
     public void editRecord(DTOStocks item) {
+        numberSpinner.setDisable(true);
         dtoStocksToUpdate = item;
         nameTextField.setText(item.getName());
         categoryComboBox.setValue(item.getCategoryName());
@@ -183,11 +350,16 @@ public class WindowStocksController<T extends DTOStocks> {
         dtoStocksToUpdate = null;
         nameTextField.clear();
         categoryComboBox.setValue(null);
+        categoryComboBox.getEditor().clear();
         comboBoxListener.setValue(null);
         categoryComboBox.setItems(FXCollections.observableArrayList(selectStockCategoryNameList()));
+        categoryComboBox.getStyleClass().remove("warning");
         new AutoCompleteComboBoxListener<>(categoryComboBox, comboBoxListener);
         priceTextField.clear();
+        priceTextField.getStyleClass().remove("warning");
         repositoryComboBox.setValue(null);
+        numberSpinner.setValue(1);
+        numberSpinner.setDisable(false);
     }
 
 }
