@@ -10,6 +10,7 @@ import javafx.scene.control.Button;
 import javafx.scene.layout.GridPane;
 import objects.tracking.WindowObjectsTrackingController;
 import stock.tracking.WindowStockTrackingController;
+import stocks.WindowStocksController;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -23,6 +24,7 @@ public class MainWindowController {
     private WindowStockTrackingController windowStockTrackingController;
     private WindowObjectsTrackingController windowObjectsTrackingController;
     private WindowEmployeesController windowEmployeesController;
+    private WindowStocksController windowStocksController;
 
     public void initEmployeesWorkTracking(ActionEvent actionEvent) throws IOException {
         if (windowAttendanceController == null) {
@@ -83,6 +85,23 @@ public class MainWindowController {
         }
     }
 
+    public void initStocksWindow(ActionEvent actionEvent) {
+        if (windowStocksController == null) {
+            removeMainGridPaneChildren();
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/stocks/WindowStocks.fxml"));
+            try {
+                mainGridPane.add(fxmlLoader.load(), 1, 1);
+                windowStocksController = fxmlLoader.getController();
+            } catch (IOException exception) {
+                throw new UncheckedIOException(exception);
+            }
+            Button saveButton = initButton("Зберегти");
+            saveButton.setVisible(false);
+//            windowEmployeesController.setSaveButton(saveButton);
+            mainGridPane.add(initButtonContainer(saveButton, initButtonClose()), 1, 2);
+        }
+    }
+
     public Button initButton(String text){
         Button button = new Button(text);
         button.setPrefHeight(25.0);
@@ -130,6 +149,7 @@ public class MainWindowController {
         windowStockTrackingController = null;
         windowObjectsTrackingController = null;
         windowEmployeesController = null;
+        windowStocksController = null;
     }
 
 }
