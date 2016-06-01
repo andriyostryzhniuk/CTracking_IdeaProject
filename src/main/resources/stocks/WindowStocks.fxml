@@ -27,7 +27,7 @@
               </rowConstraints>
                <children>
                   <StackPane fx:id="stackPane" prefHeight="150.0" prefWidth="200.0" GridPane.rowIndex="2" />
-                  <GridPane fx:id="controlsGridPane">
+                  <GridPane fx:id="editingControlsGridPane">
                     <columnConstraints>
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />
                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0" />

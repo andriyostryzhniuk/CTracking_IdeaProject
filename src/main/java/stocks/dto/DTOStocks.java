@@ -45,6 +45,27 @@ public class DTOStocks {
         this.repositoryName = repositoryName;
     }
 
+    public DTOStocks(Integer stockId, String name, Integer categoryId, BigDecimal price, String status,
+                     String notes, Integer repositoryId) {
+        this.stockId = stockId;
+        this.name = name;
+        this.categoryId = categoryId;
+        this.price = price;
+        this.status = status;
+        this.notes = notes;
+        this.repositoryId = repositoryId;
+    }
+
+    public DTOStocks(Integer stockId, String name, Integer categoryId, BigDecimal price,
+                     String notes, Integer repositoryId) {
+        this.stockId = stockId;
+        this.name = name;
+        this.categoryId = categoryId;
+        this.price = price;
+        this.notes = notes;
+        this.repositoryId = repositoryId;
+    }
+
     public Integer getStockId() {
         return stockId;
     }

@@ -8,6 +8,7 @@ import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
+import javafx.util.Callback;
 import overridden.elements.combo.box.AutoCompleteComboBoxListener;
 import overridden.elements.table.view.CustomTableColumn;
 import overridden.elements.table.view.TableViewHolder;
@@ -16,15 +17,13 @@ import stocks.dto.DTOStocks;
 import java.math.BigDecimal;
 import java.util.Collection;
 import static stocks.ContextMenu.initContextMenu;
-import static stocks.ODBC_PubsBD.selectRepositoryList;
-import static stocks.ODBC_PubsBD.selectStockCategoryNameList;
-import static stocks.ODBC_PubsBD.selectStockList;
+import static stocks.ODBC_PubsBD.*;
 
 public class WindowStocksController<T extends DTOStocks> {
 
     public StackPane stackPane;
 
-    public GridPane controlsGridPane;
+    public GridPane editingControlsGridPane;
     public TextField nameTextField;
     private ComboBox categoryComboBox;
     private ComboBox comboBoxListener;
@@ -41,6 +40,8 @@ public class WindowStocksController<T extends DTOStocks> {
     public CustomTableColumn<T, String> repositoryCol = new CustomTableColumn<>("Склад");
 
     ObservableList<T> tableViewDataList = FXCollections.observableArrayList();
+
+    private DTOStocks dtoStocksToUpdate;
 
     @FXML
     private void initialize(){
@@ -106,29 +107,26 @@ public class WindowStocksController<T extends DTOStocks> {
 
         new AutoCompleteComboBoxListener<>(categoryComboBox, comboBoxListener);
 
-        controlsGridPane.add(categoryComboBox, 1, 0);
+        categoryComboBox.setCellFactory(new Callback<ListView<String>, ListCell<String>>() {
+            @Override
+            public ListCell<String> call(ListView<String> param) {
+                final ListCell<String> cell = new ListCell<String>() {
+                    {
+                        super.setOnMousePressed(event -> comboBoxListener.setValue(categoryComboBox.getValue()));
+                    }
 
-//        comboBox.setCellFactory(new Callback<ListView<String>, ListCell<String>>() {
-//            @Override
-//            public ListCell<String> call(ListView<String> param) {
-//                final ListCell<String> cell = new ListCell<String>() {
-//                    {
-//                        super.setOnMousePressed(event -> {
-////                                mouse pressed
-//                            comboBoxListener.setValue(comboBox.getValue());
-//                        });
-//                    }
-//
-//                    @Override
-//                    public void updateItem(String item, boolean empty) {
-//                        super.updateItem(item, empty);
-//                        setText(item);
-//                    }
-//                };
-//                return cell;
-//            }
-//        });
-//
+                    @Override
+                    public void updateItem(String item, boolean empty) {
+                        super.updateItem(item, empty);
+                        setText(item);
+                    }
+                };
+                return cell;
+            }
+        });
+
+        editingControlsGridPane.add(categoryComboBox, 1, 0);
+
 //        comboBoxListener.valueProperty().addListener(new ChangeListener<String>() {
 //            @Override
 //            public void changed(ObservableValue observableValue, String oldValue, String newValue) {
@@ -143,18 +141,53 @@ public class WindowStocksController<T extends DTOStocks> {
     }
 
     public void saveButtonAction(ActionEvent actionEvent) {
+        if (dtoStocksToUpdate == null) {
+            insertIntoStock(
+                    new DTOStocks(null, nameTextField.getText(), selectCategoryId(comboBoxListener.getValue().toString()),
+                            new BigDecimal(priceTextField.getText()), "Доступно", null,
+                            repositoryComboBox.getValue().getId()));
+        } else {
+            updateStock(
+                    new DTOStocks(dtoStocksToUpdate.getStockId(), nameTextField.getText(),
+                            selectCategoryId(comboBoxListener.getValue().toString()),
+                            new BigDecimal(priceTextField.getText()), null, repositoryComboBox.getValue().getId()));
+        }
 
+        clearEditingControls();
+        initTableView();
     }
 
     public void escapeButtonAction(ActionEvent actionEvent) {
-
+        clearEditingControls();
     }
 
     public void editRecord(DTOStocks item) {
-
+        dtoStocksToUpdate = item;
+        nameTextField.setText(item.getName());
+        categoryComboBox.setValue(item.getCategoryName());
+        comboBoxListener.setValue(item.getCategoryName());
+        repositoryComboBox.getItems().forEach(repositoryItem -> {
+            if (repositoryItem.getId() == item.getRepositoryId()) {
+                repositoryComboBox.setValue(repositoryItem);
+            }
+        });
+        priceTextField.setText(item.getPrice().toString());
     }
 
     public void removeRecord(DTOStocks item) {
-
+        deleteFromStock(item);
+        initTableView();
     }
+
+    private void clearEditingControls(){
+        dtoStocksToUpdate = null;
+        nameTextField.clear();
+        categoryComboBox.setValue(null);
+        comboBoxListener.setValue(null);
+        categoryComboBox.setItems(FXCollections.observableArrayList(selectStockCategoryNameList()));
+        new AutoCompleteComboBoxListener<>(categoryComboBox, comboBoxListener);
+        priceTextField.clear();
+        repositoryComboBox.setValue(null);
+    }
+
 }

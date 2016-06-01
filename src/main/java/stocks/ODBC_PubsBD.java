@@ -1,24 +1,17 @@
 package stocks;
 
 import javafx.scene.control.Alert;
-import objects.tracking.dto.DTOEmployees;
-import objects.tracking.dto.DTOObjectEmpAddress;
-import objects.tracking.dto.DTOObjectEmployees;
-import objects.tracking.dto.DTOObjects;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
-import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.SqlParameterSourceUtils;
 import stocks.dto.DTORepository;
 import stocks.dto.DTOStockCategory;
 import stocks.dto.DTOStocks;
 import subsidiary.classes.AlertWindow;
-
-import java.time.LocalDate;
 import java.util.List;
-
 import static main.DB_Connector.getJdbcTemplate;
 import static main.DB_Connector.getNamedParameterJdbcTemplate;
 
@@ -47,7 +40,8 @@ public class ODBC_PubsBD {
 
     public static List<String> selectStockCategoryNameList() {
         return getJdbcTemplate().query("SELECT name " +
-                        "FROM stockcategory",
+                        "FROM stockcategory " +
+                        "GROUP BY name ASC",
                 (RowMapper) (resultSet, i) -> resultSet.getString(1));
     }
 
@@ -55,6 +49,37 @@ public class ODBC_PubsBD {
         return getJdbcTemplate().query("SELECT id, name " +
                         "FROM repository",
                 BeanPropertyRowMapper.newInstance(DTORepository.class));
+    }
+
+    public static void insertIntoStock(DTOStocks dtoStocks){
+        getNamedParameterJdbcTemplate().update("INSERT INTO stock " +
+                        "(id, name, stockCategory_id, price, status, notes, repository_id) " +
+                        "VALUES (:stockId, :name, :categoryId, :price, :status, :notes, :repositoryId)",
+                new BeanPropertySqlParameterSource(dtoStocks));
+    }
+
+    public static Integer selectCategoryId(String categoryName) {
+        return getJdbcTemplate().queryForObject("SELECT id " +
+                        "FROM stockcategory " +
+                        "WHERE name = ?",
+                new Object[]{categoryName}, Integer.class);
+    }
+
+    public static void deleteFromStock(DTOStocks dtoStocks){
+        getNamedParameterJdbcTemplate().update("DELETE FROM stock " +
+                        "WHERE id = :stockId",
+                new BeanPropertySqlParameterSource(dtoStocks));
+    }
+
+    public static void updateStock (DTOStocks dtoStocks) {
+        getNamedParameterJdbcTemplate().update("UPDATE stock " +
+                        "SET name = :name, " +
+                        "stockCategory_id = :categoryId, " +
+                        "price = :price, " +
+                        "notes = :notes, " +
+                        "repository_id = :repositoryId " +
+                        "WHERE id = :stockId",
+                new BeanPropertySqlParameterSource(dtoStocks));
     }
 
 }
