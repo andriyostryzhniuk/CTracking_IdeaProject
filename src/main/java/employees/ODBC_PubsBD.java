@@ -104,7 +104,7 @@ public class ODBC_PubsBD {
                 new Object []{employeesId}, LocalDate.class);
     }
 
-    public static String selectCountNotClosedWork(Integer employeesId) {
+    public static String selectNotClosedWork(Integer employeesId) {
         List<String> objectsList = getJdbcTemplate().query("SELECT object.address " +
                         "FROM object_employees, object " +
                         "WHERE employees_id = ? AND ( " +

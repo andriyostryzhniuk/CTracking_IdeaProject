@@ -33,6 +33,47 @@ public class ODBC_PubsBD {
                 BeanPropertyRowMapper.newInstance(DTOStocks.class), status);
     }
 
+    public static List<DTOStocks> selectStockOnRepositoryList(String status, Integer repositoryId) {
+        return getJdbcTemplate().query("SELECT stock.id AS stockId, ifnull(stock.name, stockCategory.name) AS name, " +
+                        "stock.stockCategory_id AS categoryId, stockcategory.name AS categoryName, stockcategory.type, " +
+                        "price, notes, stock.repository_id AS repositoryId, repository.name AS repositoryName " +
+                        "FROM stock, stockcategory, repository " +
+                        "WHERE status = ? AND " +
+                        "stock.stockCategory_id = stockcategory.id AND " +
+                        "stock.repository_id = ? AND " +
+                        "stock.repository_id = repository.id " +
+                        "ORDER BY stockcategory.name",
+                BeanPropertyRowMapper.newInstance(DTOStocks.class), status, repositoryId);
+    }
+
+    public static List<DTOStocks> selectStockWithCategoryList(String status, Integer categoryId) {
+        return getJdbcTemplate().query("SELECT stock.id AS stockId, ifnull(stock.name, stockCategory.name) AS name, " +
+                        "stock.stockCategory_id AS categoryId, stockcategory.name AS categoryName, stockcategory.type, " +
+                        "price, notes, stock.repository_id AS repositoryId, repository.name AS repositoryName " +
+                        "FROM stock, stockcategory, repository " +
+                        "WHERE status = ? AND " +
+                        "stock.stockCategory_id = ? AND " +
+                        "stock.stockCategory_id = stockcategory.id AND " +
+                        "stock.repository_id = repository.id " +
+                        "ORDER BY stockcategory.name",
+                BeanPropertyRowMapper.newInstance(DTOStocks.class), status, categoryId);
+    }
+
+    public static List<DTOStocks> selectStockWithCategoryOnRepositoryList(String status, Integer categoryId,
+                                                                          Integer repositoryId) {
+        return getJdbcTemplate().query("SELECT stock.id AS stockId, ifnull(stock.name, stockCategory.name) AS name, " +
+                        "stock.stockCategory_id AS categoryId, stockcategory.name AS categoryName, stockcategory.type, " +
+                        "price, notes, stock.repository_id AS repositoryId, repository.name AS repositoryName " +
+                        "FROM stock, stockcategory, repository " +
+                        "WHERE status = ? AND " +
+                        "stock.stockCategory_id = ? AND " +
+                        "stock.stockCategory_id = stockcategory.id AND " +
+                        "stock.repository_id = ? AND " +
+                        "stock.repository_id = repository.id " +
+                        "ORDER BY stockcategory.name",
+                BeanPropertyRowMapper.newInstance(DTOStocks.class), status, categoryId, repositoryId);
+    }
+
     public static List<DTOStockCategory> selectStockCategoryList() {
         return getJdbcTemplate().query("SELECT id, name, type " +
                         "FROM stockcategory",
@@ -85,6 +126,12 @@ public class ODBC_PubsBD {
                         "repository_id = :repositoryId " +
                         "WHERE id = :stockId",
                 new BeanPropertySqlParameterSource(dtoStocks));
+    }
+
+    public static void updateStatus (Integer stockId, String status) {
+        getJdbcTemplate().update("UPDATE stock " +
+                        "SET status = ? " +
+                        "WHERE id = ?", status, stockId);
     }
 
 }

@@ -592,7 +592,7 @@ public class InfoEmployeesController {
 
     public void standOffAction(ActionEvent actionEvent) {
         String notClosedWork;
-        if ((notClosedWork = selectCountNotClosedWork(dtoEmployees.getId())) != null) {
+        if ((notClosedWork = selectNotClosedWork(dtoEmployees.getId())) != null) {
             alterStandOffError(notClosedWork);
             return;
         }
