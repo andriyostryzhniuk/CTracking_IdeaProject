@@ -296,6 +296,8 @@ public class WindowStocksController<T extends DTOStocks> {
     }
 
     private void setNameTextFieldListener(){
+        nameTextField.setTooltip(new Tooltip("Введіть найменування інвентаря"));
+
         nameTextField.focusedProperty().addListener((observable, oldValue, newValue) -> {
             nameTextField.setText(nameTextField.getText().trim());
         });
@@ -368,6 +370,7 @@ public class WindowStocksController<T extends DTOStocks> {
     }
 
     private void initRepositoryComboBox(){
+        repositoryComboBox.setTooltip(new Tooltip("Виберіть склад"));
         repositoryComboBox.setItems(FXCollections.observableArrayList(selectRepositoryList()));
 
         repositoryComboBox.valueProperty().addListener((observable, oldValue, newValue) -> {

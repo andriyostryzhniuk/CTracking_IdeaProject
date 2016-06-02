@@ -21,6 +21,7 @@ import java.io.UncheckedIOException;
 import java.time.LocalDate;
 
 import static employees.ODBC_PubsBD.selectExemptEmployeesList;
+import static employees.ODBC_PubsBD.selectNotClosedWork;
 import static employees.ODBC_PubsBD.selectWorkingEmployeesList;
 
 public class WindowEmployeesController {
@@ -49,6 +50,7 @@ public class WindowEmployeesController {
         setListContextMenu();
         initExemptEmployeesChoiceBox();
         initOpenButton();
+        initSeeStateButton();
         initAddButton();
 
         initListView(false);
@@ -114,7 +116,7 @@ public class WindowEmployeesController {
     }
 
     private void setListContextMenu(){
-        MenuItem infoItem = new MenuItem("Переглянути");
+        MenuItem infoItem = new MenuItem("Особиста інформація");
         listView.getSelectionModel().selectedItemProperty().addListener(event -> {
             if (listView.getSelectionModel().getSelectedItem() == null) {
                 infoItem.setDisable(true);
@@ -127,13 +129,18 @@ public class WindowEmployeesController {
         });
         infoItem.setDisable(true);
 
+        MenuItem seeStateItem = new MenuItem("Об'єкт робіт");
+        seeStateItem.setOnAction((ActionEvent event) -> {
+            showStateInformation(listView.getSelectionModel().getSelectedItem());
+        });
+
         MenuItem addItem = new MenuItem("Додати нового працівника");
         addItem.setOnAction((ActionEvent event) -> {
             initInfoEmployees(new DTOEmployees(null, null, null, null, null, LocalDate.now(), null, null, 8, null));
         });
 
         final javafx.scene.control.ContextMenu cellMenu = new javafx.scene.control.ContextMenu();
-        cellMenu.getItems().addAll(infoItem, addItem);
+        cellMenu.getItems().addAll(infoItem, seeStateItem, addItem);
 
         listView.setContextMenu(cellMenu);
     }
@@ -212,19 +219,6 @@ public class WindowEmployeesController {
         infoEmployeesController = null;
     }
 
-    private void initAddButton(){
-        final EditPanel editPanel = new EditPanel();
-        Button addButton = editPanel.getAddButton();
-        addButton.getStylesheets().add(getClass().getResource("/employees/ListsButtonStyle.css").toExternalForm());
-        addButton.setTooltip(new Tooltip("Додати нового працівника"));
-        addButton.setOnAction(event -> {
-            initInfoEmployees(new DTOEmployees(null, null, null, null, null, LocalDate.now(), null, null, 8, null));
-        });
-        headerPanel.getChildren().add(addButton);
-        addButton.setLayoutX(29);
-        addButton.setLayoutY(1);
-    }
-
     private void initOpenButton(){
         final EditPanel editPanel = new EditPanel(listView);
         Button openButton = editPanel.getOpenButton();
@@ -234,8 +228,53 @@ public class WindowEmployeesController {
             initInfoEmployees(listView.getSelectionModel().getSelectedItem());
         });
         headerPanel.getChildren().add(openButton);
-        openButton.setLayoutX(5);
+        openButton.setLayoutX(2);
         openButton.setLayoutY(1);
+    }
+
+    private void initSeeStateButton(){
+        final EditPanel editPanel = new EditPanel(listView);
+        Button seeStateButton = editPanel.getEyeButton();
+        seeStateButton.getStylesheets().add(getClass().getResource("/employees/ListsButtonStyle.css").toExternalForm());
+        seeStateButton.setTooltip(new Tooltip("Переглянути об'єкт виконання робіт"));
+        seeStateButton.setOnAction(event -> {
+            DTOEmployees stockItem = listView.getSelectionModel().getSelectedItem();
+            showStateInformation(stockItem);
+        });
+
+        headerPanel.getChildren().add(seeStateButton);
+        seeStateButton.setLayoutX(26);
+        seeStateButton.setLayoutY(1);
+    }
+
+    private void initAddButton(){
+        final EditPanel editPanel = new EditPanel();
+        Button addButton = editPanel.getAddButton();
+        addButton.getStylesheets().add(getClass().getResource("/employees/ListsButtonStyle.css").toExternalForm());
+        addButton.setTooltip(new Tooltip("Додати нового працівника"));
+        addButton.setOnAction(event -> {
+            initInfoEmployees(new DTOEmployees(null, null, null, null, null, LocalDate.now(), null, null, 8, null));
+        });
+        headerPanel.getChildren().add(addButton);
+        addButton.setLayoutX(50);
+        addButton.setLayoutY(1);
+    }
+
+    public void showStateInformation(DTOEmployees item){
+        String objectsAddress;
+        Alert alert = new Alert(Alert.AlertType.INFORMATION);
+
+        if ((objectsAddress = selectNotClosedWork(item.getId())) != null) {
+            alert.setContentText("На даний момент, працівника " + item.getFullName() +
+                    ",\nзакріплено за об'єктом\n" + objectsAddress);
+        } else {
+            alert.setContentText("На даний момент, працівника " + item.getFullName() +
+                    ",\nне закріплено за жодним об'єктом");
+        }
+
+        alert.setTitle("Повідомлення");
+        alert.setHeaderText(null);
+        alert.showAndWait();
     }
 
     public Button getSaveButton() {
