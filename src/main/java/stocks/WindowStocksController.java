@@ -39,26 +39,29 @@ public class WindowStocksController<T extends DTOStocks> {
     private static final Logger LOGGER = LoggerFactory.getLogger(WindowStocksController.class);
 
     public StackPane stackPane;
+    public GridPane controlsGridPane;
 
     public GridPane editingControlsGridPane;
     public TextField nameTextField;
     public Label exceptionLabel;
+    public GridPane parentGridPane;
     private ComboBox categoryComboBox;
     private ComboBox comboBoxListener;
     public TextField priceTextField;
     public ComboBox<DTORepository> repositoryComboBox;
     private NumberSpinner numberSpinner = new NumberSpinner();
+    public TextArea editingNotesTextArea;
     public Button saveButton;
     public Button escapeButton;
 
     public GridPane filtersGridPane;
-
     private ComboBox comboBoxSearch = new ComboBox();
     private ComboBox comboBoxSearchListener = new ComboBox();
     private ComboBox comboBoxCategoryFilter = new ComboBox();
     private ComboBox comboBoxFilterListener = new ComboBox();
     public ChoiceBox<DTORepository> repositoryFilterChoiceBox;
     public ChoiceBox statusFilterChoiceBox;
+    public TextArea notesTextArea;
     private String category;
     private Integer repositoryId;
     private String status;
@@ -118,16 +121,14 @@ public class WindowStocksController<T extends DTOStocks> {
         tableView.getTableView().setPlaceholder(new Label("Покищо тут немає жодного інвентаря"));
         tableView.getTableView().setItems(tableViewDataList);
 
-//        tableView.getTableView().getSelectionModel().selectedItemProperty().addListener(event -> {
-//            T selectedItem;
-//            if ((selectedItem = tableView.getTableView().getSelectionModel().getSelectedItem()) != null) {
-//                Integer stockId = selectedItem.getStockId();
-//                clearStockAboutInfo();
-//                initStockAboutInfo(stockId);
-//            } else {
-//                clearStockAboutInfo();
-//            }
-//        });
+        tableView.getTableView().getSelectionModel().selectedItemProperty().addListener(event -> {
+            T selectedItem;
+            if ((selectedItem = tableView.getTableView().getSelectionModel().getSelectedItem()) != null) {
+                notesTextArea.setText(selectedItem.getNotes());
+            } else {
+                notesTextArea.clear();
+            }
+        });
     }
 
     private void fillCols() {
@@ -147,15 +148,18 @@ public class WindowStocksController<T extends DTOStocks> {
     }
 
     private void initEditingControls(){
+        parentGridPane.getChildren().remove(controlsGridPane);
         initCategoryComboBox();
         setNameTextFieldListener();
         setPriceTextFieldListener();
         setIntegerListener();
         initNumberSpinner();
         initRepositoryComboBox();
+        setNotesTextAreaListener();
     }
 
     private void initFiltersControls(){
+        initAddButton();
         initSeeStateButton();
         initEditButton();
         initDeleteButton();
@@ -241,7 +245,7 @@ public class WindowStocksController<T extends DTOStocks> {
 
     public void saveButtonAction(ActionEvent actionEvent) {
         String name;
-        if (nameTextField.getText() == null || nameTextField.getText().isEmpty()) {
+        if (nameTextField.getText().isEmpty()) {
             name = null;
         } else {
             name = nameTextField.getText();
@@ -269,14 +273,21 @@ public class WindowStocksController<T extends DTOStocks> {
             return;
         }
 
+        String notes;
+        if (editingNotesTextArea.getText().isEmpty()) {
+            notes = null;
+        } else {
+            notes = editingNotesTextArea.getText();
+        }
+
         if (dtoStocksToUpdate == null) {
             DTOStocks dtoStocksToInsert = new DTOStocks(null, name,
-                    selectCategoryId(comboBoxListener.getValue().toString()), price, "доступно", null,
+                    selectCategoryId(comboBoxListener.getValue().toString()), price, "доступно", notes,
                     repositoryComboBox.getValue().getId());
             IntStream.range(0, numberSpinner.getValue().intValue()).forEach(i -> insertIntoStock(dtoStocksToInsert));
         } else {
             updateStock(new DTOStocks(dtoStocksToUpdate.getStockId(), name,
-                            selectCategoryId(comboBoxListener.getValue().toString()), price, null,
+                            selectCategoryId(comboBoxListener.getValue().toString()), price, notes,
                     repositoryComboBox.getValue().getId()));
         }
 
@@ -287,6 +298,13 @@ public class WindowStocksController<T extends DTOStocks> {
     private void setNameTextFieldListener(){
         nameTextField.focusedProperty().addListener((observable, oldValue, newValue) -> {
             nameTextField.setText(nameTextField.getText().trim());
+        });
+
+        nameTextField.textProperty().addListener((ov, oldValue, newValue) -> {
+            if (nameTextField.getText().length() > 45) {
+                String text = nameTextField.getText().substring(0, 45);
+                nameTextField.setText(text);
+            }
         });
     }
 
@@ -410,7 +428,7 @@ public class WindowStocksController<T extends DTOStocks> {
             }
         });
 
-        filtersGridPane.add(comboBoxSearch, 3, 0);
+        filtersGridPane.add(comboBoxSearch, 5, 0);
     }
 
     private void searchInTableView() {
@@ -470,7 +488,7 @@ public class WindowStocksController<T extends DTOStocks> {
             }
         });
 
-        filtersGridPane.add(comboBoxCategoryFilter, 4, 0);
+        filtersGridPane.add(comboBoxCategoryFilter, 6, 0);
     }
 
     private void initRepositoryFilterChoiceBox(){
@@ -496,11 +514,24 @@ public class WindowStocksController<T extends DTOStocks> {
         });
     }
 
+    private void initAddButton(){
+        final EditPanel editPanel = new EditPanel();
+        Button addButton = editPanel.getAddButton();
+        addButton.setTooltip(new Tooltip("Додати інвентар"));
+        filtersGridPane.add(addButton, 0, 0);
+
+        addButton.setOnAction(event -> {
+            if (! parentGridPane.getChildren().contains(controlsGridPane)) {
+                parentGridPane.add(controlsGridPane, 0, 0);
+            }
+        });
+    }
+
     private void initSeeStateButton(){
         final EditPanel editPanel = new EditPanel(tableView.getTableView());
         Button seeStateButton = editPanel.getEyeButton();
         seeStateButton.setTooltip(new Tooltip("Переглянути місце знаходження"));
-        filtersGridPane.add(seeStateButton, 0, 0);
+        filtersGridPane.add(seeStateButton, 1, 0);
 
         seeStateButton.setOnAction(event -> {
             T stockItem = tableView.getTableView().getSelectionModel().getSelectedItem();
@@ -511,7 +542,7 @@ public class WindowStocksController<T extends DTOStocks> {
     private void initEditButton(){
         final EditPanel editPanel = new EditPanel(tableView.getTableView());
         Button editButton = editPanel.getEditButton();
-        filtersGridPane.add(editButton, 1, 0);
+        filtersGridPane.add(editButton, 2, 0);
 
         editButton.setOnAction(event -> {
             T stockItem = tableView.getTableView().getSelectionModel().getSelectedItem();
@@ -522,11 +553,22 @@ public class WindowStocksController<T extends DTOStocks> {
     private void initDeleteButton(){
         final EditPanel editPanel = new EditPanel(tableView.getTableView());
         Button deleteButton = editPanel.getDeleteButton();
-        filtersGridPane.add(deleteButton, 2, 0);
+        filtersGridPane.add(deleteButton, 3, 0);
 
         deleteButton.setOnAction(event -> {
             T stockItem = tableView.getTableView().getSelectionModel().getSelectedItem();
             removeRecord(stockItem);
+        });
+    }
+
+    private void setNotesTextAreaListener(){
+        editingNotesTextArea.textProperty().addListener((ov, oldValue, newValue) -> {
+            if (newValue != null) {
+                if (editingNotesTextArea.getText().length() > 400) {
+                    String text = editingNotesTextArea.getText().substring(0, 400);
+                    editingNotesTextArea.setText(text);
+                }
+            }
         });
     }
 
@@ -555,9 +597,14 @@ public class WindowStocksController<T extends DTOStocks> {
 
     public void escapeButtonAction(ActionEvent actionEvent) {
         clearEditingControls();
+        parentGridPane.getChildren().remove(controlsGridPane);
     }
 
     public void editRecord(DTOStocks item) {
+        clearEditingControls();
+        if (! parentGridPane.getChildren().contains(controlsGridPane)) {
+            parentGridPane.add(controlsGridPane, 0, 0);
+        }
         numberSpinner.setDisable(true);
         dtoStocksToUpdate = item;
         nameTextField.setText(item.getName());
@@ -569,9 +616,13 @@ public class WindowStocksController<T extends DTOStocks> {
             }
         });
         priceTextField.setText(item.getPrice().toString());
+        editingNotesTextArea.setText(item.getNotes());
     }
 
     public void removeRecord(DTOStocks item) {
+        if (dtoStocksToUpdate != null && dtoStocksToUpdate == item) {
+            clearEditingControls();
+        }
         deleteFromStock(item);
         initTableView();
     }
@@ -590,6 +641,7 @@ public class WindowStocksController<T extends DTOStocks> {
         repositoryComboBox.setValue(null);
         numberSpinner.setValue(1);
         numberSpinner.setDisable(false);
+        editingNotesTextArea.clear();
     }
 
 }
