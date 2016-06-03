@@ -13,6 +13,8 @@ import stocks.dto.DTOStockCategory;
 import stocks.dto.DTOStocks;
 import subsidiary.classes.AlertWindow;
 import java.util.List;
+
+import static main.DB_Connector.createDataSource;
 import static main.DB_Connector.getJdbcTemplate;
 import static main.DB_Connector.getNamedParameterJdbcTemplate;
 
@@ -132,6 +134,31 @@ public class ODBC_PubsBD {
         getJdbcTemplate().update("UPDATE stock " +
                         "SET status = ? " +
                         "WHERE id = ?", status, stockId);
+    }
+
+    public static void insertIntoStockCategory(DTOStockCategory dtoStockCategory){
+        getNamedParameterJdbcTemplate().update("INSERT INTO stockcategory " +
+                        "(id, name, type) " +
+                        "VALUES (:id, :name, :type)",
+                new BeanPropertySqlParameterSource(dtoStockCategory));
+    }
+
+    public static void updateStockCategory(DTOStockCategory dtoStockCategory) {
+        getNamedParameterJdbcTemplate().update("UPDATE stockcategory " +
+                        "SET name = :name, " +
+                        "type = :type " +
+                        "WHERE id = :id",
+                new BeanPropertySqlParameterSource(dtoStockCategory));
+    }
+
+    public static void deleteFromStockCategory(DTOStockCategory dtoStockCategory){
+        try {
+            getNamedParameterJdbcTemplate().update("DELETE FROM stockcategory " +
+                            "WHERE id = :id",
+                    new BeanPropertySqlParameterSource(dtoStockCategory));
+        } catch (DataIntegrityViolationException e) {
+            alertWindow.showDeletingError();
+        }
     }
 
 }

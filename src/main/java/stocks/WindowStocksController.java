@@ -4,12 +4,21 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.util.Callback;
+import javafx.util.converter.BigDecimalStringConverter;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import overridden.elements.combo.box.AutoCompleteComboBoxListener;
@@ -21,6 +30,7 @@ import stocks.dto.DTORepository;
 import stocks.dto.DTOStocks;
 import subsidiary.classes.EditPanel;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.Collection;
@@ -117,6 +127,7 @@ public class WindowStocksController<T extends DTOStocks> {
         tableView.getTableView().getColumns().addAll(stockNameCol, categoryCol, typeCol, priceCol, repositoryCol);
         stackPane.getChildren().add(tableView);
         tableView.getTableView().getStylesheets().add(getClass().getResource("/styles/TableViewStyle.css").toExternalForm());
+        tableView.getTableView().setEditable(true);
         initContextMenu(tableView.getTableView(), this, statusFilterChoiceBox);
         tableView.getTableView().setPlaceholder(new Label("Покищо тут немає жодного інвентаря"));
         tableView.getTableView().setItems(tableViewDataList);
@@ -137,6 +148,12 @@ public class WindowStocksController<T extends DTOStocks> {
         typeCol.setCellValueFactory(new PropertyValueFactory("type"));
         priceCol.setCellValueFactory(new PropertyValueFactory("price"));
         repositoryCol.setCellValueFactory(new PropertyValueFactory("repositoryName"));
+
+        stockNameCol.setCellFactory(TextFieldTableCell.forTableColumn());
+        categoryCol.setCellFactory(TextFieldTableCell.forTableColumn());
+        typeCol.setCellFactory(TextFieldTableCell.forTableColumn());
+        priceCol.setCellFactory(TextFieldTableCell.<T, BigDecimal>forTableColumn(new BigDecimalStringConverter()));
+        repositoryCol.setCellFactory(TextFieldTableCell.forTableColumn());
     }
 
     private void setColsDateProperties() {
@@ -150,9 +167,11 @@ public class WindowStocksController<T extends DTOStocks> {
     private void initEditingControls(){
         parentGridPane.getChildren().remove(controlsGridPane);
         initCategoryComboBox();
+        initSettingsCategoryButton();
         setNameTextFieldListener();
         setPriceTextFieldListener();
         setIntegerListener();
+        initSettingsRepositoryButton();
         initNumberSpinner();
         initRepositoryComboBox();
         setNotesTextAreaListener();
@@ -232,15 +251,15 @@ public class WindowStocksController<T extends DTOStocks> {
     }
 
     private void initNumberSpinner(){
-        numberSpinner.setMinWidth(100);
-        numberSpinner.setPrefWidth(100);
-        numberSpinner.setMaxWidth(100);
+        numberSpinner.setMinWidth(90);
+        numberSpinner.setPrefWidth(90);
+        numberSpinner.setMaxWidth(90);
         numberSpinner.setMaxHeight(25);
         numberSpinner.setMinValue(1);
         numberSpinner.setPromptText("Кількість");
         numberSpinner.setValue(1);
         numberSpinner.setTooltip(new Tooltip("Кількість"));
-        editingControlsGridPane.add(numberSpinner, 4, 0);
+        editingControlsGridPane.add(numberSpinner, 6, 0);
     }
 
     public void saveButtonAction(ActionEvent actionEvent) {
@@ -299,7 +318,11 @@ public class WindowStocksController<T extends DTOStocks> {
         nameTextField.setTooltip(new Tooltip("Введіть найменування інвентаря"));
 
         nameTextField.focusedProperty().addListener((observable, oldValue, newValue) -> {
-            nameTextField.setText(nameTextField.getText().trim());
+            if (nameTextField.getText() != null && ! nameTextField.getText().isEmpty()) {
+                nameTextField.setText(nameTextField.getText().trim());
+                nameTextField.setText(
+                        nameTextField.getText().substring(0, 1).toUpperCase() + nameTextField.getText().substring(1));
+            }
         });
 
         nameTextField.textProperty().addListener((ov, oldValue, newValue) -> {
@@ -495,6 +518,7 @@ public class WindowStocksController<T extends DTOStocks> {
     }
 
     private void initRepositoryFilterChoiceBox(){
+        repositoryFilterChoiceBox.setTooltip(new Tooltip("Виберіть склад для перегляду"));
         repositoryFilterChoiceBox.getItems().add(0, new DTORepository(null, "Всі склади"));
         repositoryFilterChoiceBox.getItems().addAll(selectRepositoryList());
         repositoryFilterChoiceBox.setValue(repositoryFilterChoiceBox.getItems().get(0));
@@ -507,6 +531,7 @@ public class WindowStocksController<T extends DTOStocks> {
     }
 
     private void initStatusFilterChoiceBox(){
+        statusFilterChoiceBox.setTooltip(new Tooltip("Виберіть статус інвентаря"));
         statusFilterChoiceBox.getItems().addAll("Доступно", "В ремонті", "Списано");
         statusFilterChoiceBox.setValue(statusFilterChoiceBox.getItems().get(0));
         status = statusFilterChoiceBox.getValue().toString().toLowerCase();
@@ -526,6 +551,8 @@ public class WindowStocksController<T extends DTOStocks> {
         addButton.setOnAction(event -> {
             if (! parentGridPane.getChildren().contains(controlsGridPane)) {
                 parentGridPane.add(controlsGridPane, 0, 0);
+            } else {
+                clearEditingControls();
             }
         });
     }
@@ -565,6 +592,7 @@ public class WindowStocksController<T extends DTOStocks> {
     }
 
     private void setNotesTextAreaListener(){
+        editingNotesTextArea.setTooltip(new Tooltip("Тут Ви можете написати будь-які нотатки"));
         editingNotesTextArea.textProperty().addListener((ov, oldValue, newValue) -> {
             if (newValue != null) {
                 if (editingNotesTextArea.getText().length() > 400) {
@@ -645,6 +673,58 @@ public class WindowStocksController<T extends DTOStocks> {
         numberSpinner.setValue(1);
         numberSpinner.setDisable(false);
         editingNotesTextArea.clear();
+    }
+
+    private void initSettingsCategoryButton(){
+        EditPanel editPanel = new EditPanel();
+        Button settingsCategoryButton = editPanel.getSettingsButton();
+        settingsCategoryButton.getStylesheets().add(getClass().getResource("/stocks/SettingsButtonStyle.css").toExternalForm());
+        settingsCategoryButton.setTooltip(new Tooltip("Налаштування категорій"));
+        editingControlsGridPane.add(settingsCategoryButton, 2, 0);
+
+        settingsCategoryButton.setOnAction(event -> showSettingsCategoryWindow());
+    }
+
+    private void showSettingsCategoryWindow() {
+        Stage primaryStage = new Stage();
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/stocks/SettingsStockCategory.fxml"));
+        Parent root = null;
+        try {
+            root = fxmlLoader.load();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        SettingsStockCategoryController settingsStockCategoryController = fxmlLoader.getController();
+        settingsStockCategoryController.setWindowStocksController(this);
+        settingsStockCategoryController.initTableView();
+
+        primaryStage.initStyle(StageStyle.TRANSPARENT);
+        primaryStage.setScene(new Scene(root, 460, 500, Color.rgb(0, 0, 0, 0)));
+        primaryStage.initModality(Modality.WINDOW_MODAL);
+        primaryStage.initOwner(tableView.getTableView().getScene().getWindow());
+        primaryStage.showAndWait();
+    }
+
+    private void initSettingsRepositoryButton(){
+        EditPanel editPanel = new EditPanel();
+        Button settingsRepositoryButton = editPanel.getSettingsButton();
+        settingsRepositoryButton.setTooltip(new Tooltip("Налаштування складів"));
+        settingsRepositoryButton.getStylesheets().add(getClass().getResource("/stocks/SettingsButtonStyle.css").toExternalForm());
+        editingControlsGridPane.add(settingsRepositoryButton, 5, 0);
+    }
+
+    public void refreshCategory(){
+        categoryComboBox.getItems().clear();
+        categoryComboBox.setItems(FXCollections.observableArrayList(selectStockCategoryNameList()));
+        new AutoCompleteComboBoxListener<>(categoryComboBox, comboBoxListener);
+
+        comboBoxCategoryFilter.getItems().clear();
+        comboBoxCategoryFilter.setItems(FXCollections.observableArrayList(selectStockCategoryNameList()));
+        comboBoxCategoryFilter.getItems().add(0, "Всі категорії");
+        comboBoxCategoryFilter.setValue(comboBoxCategoryFilter.getItems().get(0));
+        category = comboBoxCategoryFilter.getValue().toString();
+        new AutoCompleteComboBoxListener<>(comboBoxCategoryFilter, comboBoxFilterListener);
     }
 
 }

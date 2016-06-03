@@ -460,10 +460,11 @@ public class InfoEmployeesController {
     }
 
     private boolean textFieldMatcherFind(TextField textField, Pattern pattern){
-        if (textField.getText() == null) {
+        if (textField.getText() == null || textField.getText().isEmpty()) {
             return false;
         }
         textField.setText(textField.getText().trim());
+        textField.setText(textField.getText().substring(0, 1).toUpperCase() + textField.getText().substring(1));
         Matcher matcher = pattern.matcher(textField.getText());
         if (matcher.find()) {
             if (!textField.getStyleClass().contains("warning")) {

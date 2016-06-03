@@ -29,7 +29,7 @@ public class EditingSkillsController {
     }
 
     public void save(ActionEvent actionEvent) {
-        if (!textFieldIsEmpty() && textFieldMatcherFind()){
+        if (! textFieldIsEmpty() && textFieldMatcherFind()){
 
             if (dtoSkills != null) {
                 dtoSkills.setSkill(textField.getText());
@@ -85,10 +85,12 @@ public class EditingSkillsController {
     }
 
     private boolean textFieldMatcherFind(){
-        if (textField.getText() == null) {
+        if (textField.getText() == null || textField.getText().isEmpty()) {
             return false;
         }
         boolean right = true;
+        textField.setText(textField.getText().trim());
+        textField.setText(textField.getText().substring(0, 1).toUpperCase() + textField.getText().substring(1));
         Pattern pattern = Pattern.compile("[^а-яА-ЯіІїЇєЄ'\\s-]");
         textField.setText(textField.getText().trim());
         Matcher matcher = pattern.matcher(textField.getText());
