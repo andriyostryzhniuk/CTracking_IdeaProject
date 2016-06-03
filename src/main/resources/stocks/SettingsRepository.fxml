@@ -9,7 +9,7 @@
 <?import javafx.scene.layout.*?>
 
 <Group fx:id="rootGroup" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
-       fx:controller="stocks.SettingsStockCategoryController">
+       fx:controller="stocks.SettingsRepositoryController">
     <children>
         <Rectangle arcHeight="15.0" arcWidth="15.0" fill="#0000008c" height="500.0" stroke="#ffffffe5"
                    strokeType="INSIDE" strokeWidth="1.5" width="460.0"/>
@@ -56,15 +56,8 @@
                                 <Insets left="30.0"/>
                             </GridPane.margin>
                         </GridPane>
-                        <TableView fx:id="tableView" maxWidth="300.0" minWidth="300.0" prefWidth="300.0"
-                                   stylesheets="@../styles/TableViewStyle.css">
-                            <columns>
-                                <TableColumn fx:id="nameCol" maxWidth="228.0" minWidth="228.0" prefWidth="228.0"
-                                             resizable="false" text="Категорія"/>
-                                <TableColumn fx:id="typeCol" maxWidth="70.0" minWidth="70.0" prefWidth="70.0"
-                                             resizable="false" text="Тип"/>
-                            </columns>
-                        </TableView>
+                        <ListView fx:id="listView" fixedCellSize="25.0" prefHeight="200.0" prefWidth="200.0"
+                                  stylesheets="@../stocks/ListViewStyle.css"/>
                     </children>
                     <columnConstraints>
                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="300.0" minWidth="300.0" prefWidth="300.0"/>
@@ -81,7 +74,7 @@
         </GridPane>
         <Pane prefHeight="40.0" prefWidth="300.0">
             <children>
-                <Label fx:id="titleLabel" layoutX="14.0" layoutY="5.0" text="Налаштування категорій" textFill="WHITE">
+                <Label fx:id="titleLabel" layoutX="14.0" layoutY="5.0" text="Налаштування складів" textFill="WHITE">
                     <font>
                         <Font size="13.0"/>
                     </font>

@@ -9,38 +9,34 @@ import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.control.ContextMenu;
-import javafx.scene.control.cell.PropertyValueFactory;
-import javafx.scene.control.cell.TextFieldTableCell;
 import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
-import stocks.dto.DTOStockCategory;
+import stocks.dto.DTORepository;
 import subsidiary.classes.AlertWindow;
+
 import java.io.IOException;
 import java.util.Collection;
-import static stocks.ODBC_PubsBD.deleteFromStockCategory;
-import static stocks.ODBC_PubsBD.selectStockCategoryList;
 
-public class SettingsStockCategoryController<T extends DTOStockCategory> {
+import static stocks.ODBC_PubsBD.deleteFromRepository;
+import static stocks.ODBC_PubsBD.selectRepositoryList;
 
-    public TableView<T> tableView;
+public class SettingsRepositoryController<T extends DTORepository> {
 
     public Button editButton;
     public Button removeButton;
-    public TableColumn nameCol;
-    public TableColumn typeCol;
+    public ListView<T> listView;
 
     private ObservableList<T> categoryDataList = FXCollections.observableArrayList();
     private WindowStocksController windowStocksController;
 
     @FXML
     public void initialize(){
-        fillCols();
         initContextMenu();
-        tableView.setItems(categoryDataList);
-        tableView.getSelectionModel().selectedItemProperty().addListener(event -> {
-            if ((tableView.getSelectionModel().getSelectedItem()) != null) {
+        listView.setItems(categoryDataList);
+        listView.getSelectionModel().selectedItemProperty().addListener(event -> {
+            if ((listView.getSelectionModel().getSelectedItem()) != null) {
                 setButtonsDisable(false);
             } else {
                 setButtonsDisable(true);
@@ -50,17 +46,12 @@ public class SettingsStockCategoryController<T extends DTOStockCategory> {
 
     public void initTableView(){
         categoryDataList.clear();
-        tableView.getItems().clear();
-        categoryDataList.addAll((Collection<? extends T>) selectStockCategoryList());
-    }
-
-    private void fillCols() {
-        nameCol.setCellValueFactory(new PropertyValueFactory("name"));
-        typeCol.setCellValueFactory(new PropertyValueFactory("type"));
+        listView.getItems().clear();
+        categoryDataList.addAll((Collection<? extends T>) selectRepositoryList());
     }
 
     public void addButtonAction(ActionEvent actionEvent) {
-        showEditingCategoryWindow(null);
+        showEditingRepositoryWindow(null);
     }
 
     public void closeButtonAction(ActionEvent actionEvent) {
@@ -68,33 +59,33 @@ public class SettingsStockCategoryController<T extends DTOStockCategory> {
     }
 
     private void initContextMenu() {
-        MenuItem createItem = new MenuItem("Додати нову категорію");
-        createItem.setOnAction((ActionEvent event) -> showEditingCategoryWindow(null));
+        MenuItem createItem = new MenuItem("Додати новий склад");
+        createItem.setOnAction((ActionEvent event) -> showEditingRepositoryWindow(null));
 
-        MenuItem editItem = new MenuItem("Редагувати категорію");
+        MenuItem editItem = new MenuItem("Редагувати склад");
         editItem.setOnAction((ActionEvent event) -> {
-            showEditingCategoryWindow(tableView.getSelectionModel().getSelectedItem());
+            showEditingRepositoryWindow(listView.getSelectionModel().getSelectedItem());
         });
         editItem.setDisable(true);
 
-        MenuItem removeItem = new MenuItem("Видалити категорію");
+        MenuItem removeItem = new MenuItem("Видалити склад");
         removeItem.setOnAction((ActionEvent event) -> removeCategory());
 
         removeItem.setDisable(true);
         final ContextMenu cellMenu = new ContextMenu();
         cellMenu.getItems().addAll(createItem, editItem, removeItem);
 
-        tableView.setContextMenu(cellMenu);
+        listView.setContextMenu(cellMenu);
     }
 
     private void close(){
-        Stage stage = (Stage) tableView.getScene().getWindow();
+        Stage stage = (Stage) listView.getScene().getWindow();
         stage.close();
     }
 
-    private void showEditingCategoryWindow(DTOStockCategory dtoStockCategory){
+    private void showEditingRepositoryWindow(DTORepository dtoRepository){
         Stage primaryStage = new Stage();
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/stocks/EditingCategory.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/stocks/EditingRepository.fxml"));
         Parent root = null;
         try {
             root = fxmlLoader.load();
@@ -102,15 +93,15 @@ public class SettingsStockCategoryController<T extends DTOStockCategory> {
             e.printStackTrace();
         }
 
-        EditingCategoryController editingCategoryController = fxmlLoader.getController();
-        editingCategoryController.setSettingsStockCategoryController(this);
-        editingCategoryController.setWindowStocksController(windowStocksController);
-        editingCategoryController.setDtoStockCategory(dtoStockCategory);
+        EditingRepositoryController editingRepositoryController = fxmlLoader.getController();
+        editingRepositoryController.setSettingsRepositoryController(this);
+        editingRepositoryController.setWindowStocksController(windowStocksController);
+        editingRepositoryController.setDtoRepository(dtoRepository);
 
         primaryStage.initStyle(StageStyle.TRANSPARENT);
-        primaryStage.setScene(new Scene(root, 300, 175, Color.rgb(0, 0, 0, 0)));
+        primaryStage.setScene(new Scene(root, 300, 162, Color.rgb(0, 0, 0, 0)));
         primaryStage.initModality(Modality.WINDOW_MODAL);
-        primaryStage.initOwner(tableView.getScene().getWindow());
+        primaryStage.initOwner(listView.getScene().getWindow());
         primaryStage.showAndWait();
 
     }
@@ -120,13 +111,13 @@ public class SettingsStockCategoryController<T extends DTOStockCategory> {
         if (! alertWindow.showDeletingWarning()) {
             return;
         }
-        deleteFromStockCategory(tableView.getSelectionModel().getSelectedItem());
-        windowStocksController.refreshCategory();
+        deleteFromRepository(listView.getSelectionModel().getSelectedItem());
+        windowStocksController.refreshRepository();
         initTableView();
     }
 
     public void editButtonAction(ActionEvent actionEvent) {
-        showEditingCategoryWindow(tableView.getSelectionModel().getSelectedItem());
+        showEditingRepositoryWindow(listView.getSelectionModel().getSelectedItem());
     }
 
     public void removeButtonAction(ActionEvent actionEvent) {
@@ -136,8 +127,8 @@ public class SettingsStockCategoryController<T extends DTOStockCategory> {
     private void setButtonsDisable(boolean isDisable){
         editButton.setDisable(isDisable);
         removeButton.setDisable(isDisable);
-        tableView.getContextMenu().getItems().get(1).setDisable(isDisable);
-        tableView.getContextMenu().getItems().get(2).setDisable(isDisable);
+        listView.getContextMenu().getItems().get(1).setDisable(isDisable);
+        listView.getContextMenu().getItems().get(2).setDisable(isDisable);
     }
 
     public void setWindowStocksController(WindowStocksController windowStocksController) {

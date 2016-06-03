@@ -161,4 +161,28 @@ public class ODBC_PubsBD {
         }
     }
 
+    public static void insertIntoRepository(DTORepository dtoRepository){
+        getNamedParameterJdbcTemplate().update("INSERT INTO repository " +
+                        "(id, name) " +
+                        "VALUES (:id, :name)",
+                new BeanPropertySqlParameterSource(dtoRepository));
+    }
+
+    public static void updateRepository(DTORepository dtoRepository) {
+        getNamedParameterJdbcTemplate().update("UPDATE repository " +
+                        "SET name = :name " +
+                        "WHERE id = :id",
+                new BeanPropertySqlParameterSource(dtoRepository));
+    }
+
+    public static void deleteFromRepository(DTORepository dtoRepository){
+        try {
+            getNamedParameterJdbcTemplate().update("DELETE FROM repository " +
+                            "WHERE id = :id",
+                    new BeanPropertySqlParameterSource(dtoRepository));
+        } catch (DataIntegrityViolationException e) {
+            alertWindow.showDeletingError();
+        }
+    }
+
 }

@@ -525,8 +525,10 @@ public class WindowStocksController<T extends DTOStocks> {
         repositoryId = repositoryFilterChoiceBox.getValue().getId();
 
         repositoryFilterChoiceBox.setOnAction(event -> {
-            repositoryId = repositoryFilterChoiceBox.getValue().getId();
-            initTableView();
+            if (! repositoryFilterChoiceBox.getItems().isEmpty()) {
+                repositoryId = repositoryFilterChoiceBox.getValue().getId();
+                initTableView();
+            }
         });
     }
 
@@ -712,6 +714,29 @@ public class WindowStocksController<T extends DTOStocks> {
         settingsRepositoryButton.setTooltip(new Tooltip("Налаштування складів"));
         settingsRepositoryButton.getStylesheets().add(getClass().getResource("/stocks/SettingsButtonStyle.css").toExternalForm());
         editingControlsGridPane.add(settingsRepositoryButton, 5, 0);
+
+        settingsRepositoryButton.setOnAction(event -> showSettingsRepositoryWindow());
+    }
+
+    private void showSettingsRepositoryWindow() {
+        Stage primaryStage = new Stage();
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/stocks/SettingsRepository.fxml"));
+        Parent root = null;
+        try {
+            root = fxmlLoader.load();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        SettingsRepositoryController settingsRepositoryController = fxmlLoader.getController();
+        settingsRepositoryController.setWindowStocksController(this);
+        settingsRepositoryController.initTableView();
+
+        primaryStage.initStyle(StageStyle.TRANSPARENT);
+        primaryStage.setScene(new Scene(root, 460, 500, Color.rgb(0, 0, 0, 0)));
+        primaryStage.initModality(Modality.WINDOW_MODAL);
+        primaryStage.initOwner(tableView.getTableView().getScene().getWindow());
+        primaryStage.showAndWait();
     }
 
     public void refreshCategory(){
@@ -725,6 +750,16 @@ public class WindowStocksController<T extends DTOStocks> {
         comboBoxCategoryFilter.setValue(comboBoxCategoryFilter.getItems().get(0));
         category = comboBoxCategoryFilter.getValue().toString();
         new AutoCompleteComboBoxListener<>(comboBoxCategoryFilter, comboBoxFilterListener);
+    }
+
+    public void refreshRepository(){
+        repositoryComboBox.getItems().clear();
+        repositoryComboBox.setItems(FXCollections.observableArrayList(selectRepositoryList()));
+
+        repositoryFilterChoiceBox.getItems().clear();
+        repositoryFilterChoiceBox.getItems().add(0, new DTORepository(null, "Всі склади"));
+        repositoryFilterChoiceBox.getItems().addAll(selectRepositoryList());
+        repositoryFilterChoiceBox.setValue(repositoryFilterChoiceBox.getItems().get(0));
     }
 
 }
