@@ -245,7 +245,7 @@ public class InfoEmployeesController {
         addingEmployeesSkillController.initListView();
 
         primaryStage.initStyle(StageStyle.TRANSPARENT);
-        primaryStage.setScene(new Scene(root, 500, 500, Color.rgb(0, 0, 0, 0)));
+        primaryStage.setScene(new Scene(root, 460, 500, Color.rgb(0, 0, 0, 0)));
         primaryStage.initModality(Modality.WINDOW_MODAL);
         primaryStage.initOwner(skillsListView.getScene().getWindow());
         primaryStage.showAndWait();

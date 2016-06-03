@@ -25,6 +25,8 @@ public class AddingEmployeesSkillController<T extends DTOSkills> {
 
     public ListView<T> listView;
     public Button addButton;
+    public Button editButton;
+    public Button removeButton;
 
     private ObservableList<T> skillsDataList = FXCollections.observableArrayList();
     private InfoEmployeesController infoEmployeesController;
@@ -37,15 +39,9 @@ public class AddingEmployeesSkillController<T extends DTOSkills> {
 
         listView.getSelectionModel().selectedItemProperty().addListener(event -> {
             if ((listView.getSelectionModel().getSelectedItem()) != null) {
-                addButton.setDisable(false);
-                listView.getContextMenu().getItems().get(0).setDisable(false);
-                listView.getContextMenu().getItems().get(2).setDisable(false);
-                listView.getContextMenu().getItems().get(3).setDisable(false);
+                setButtonsDisable(false);
             } else {
-                addButton.setDisable(true);
-                listView.getContextMenu().getItems().get(0).setDisable(true);
-                listView.getContextMenu().getItems().get(2).setDisable(true);
-                listView.getContextMenu().getItems().get(3).setDisable(true);
+                setButtonsDisable(true);
             }
         });
     }
@@ -77,10 +73,6 @@ public class AddingEmployeesSkillController<T extends DTOSkills> {
         close();
     }
 
-    public void addButtonAction(ActionEvent actionEvent) {
-        addSkill();
-    }
-
     public void closeButtonAction(ActionEvent actionEvent) {
         close();
     }
@@ -107,6 +99,22 @@ public class AddingEmployeesSkillController<T extends DTOSkills> {
         cellMenu.getItems().addAll(addItem, createItem, editItem, removeItem);
 
         listView.setContextMenu(cellMenu);
+    }
+
+    public void addButtonAction(ActionEvent actionEvent) {
+        addSkill();
+    }
+
+    public void createButtonAction(ActionEvent actionEvent) {
+        showEditingSkillsWindow(null);
+    }
+
+    public void editButtonAction(ActionEvent actionEvent) {
+        showEditingSkillsWindow(listView.getSelectionModel().getSelectedItem());
+    }
+
+    public void removeButtonAction(ActionEvent actionEvent) {
+        removeSkill();
     }
 
     private void close(){
@@ -145,6 +153,15 @@ public class AddingEmployeesSkillController<T extends DTOSkills> {
         initListView();
     }
 
+    private void setButtonsDisable(boolean isDisable){
+        addButton.setDisable(isDisable);
+        editButton.setDisable(isDisable);
+        removeButton.setDisable(isDisable);
+        listView.getContextMenu().getItems().get(0).setDisable(isDisable);
+        listView.getContextMenu().getItems().get(2).setDisable(isDisable);
+        listView.getContextMenu().getItems().get(3).setDisable(isDisable);
+    }
+
     public void setHasAddedSkillsList(List<T> hasAddedSkillsList) {
         this.hasAddedSkillsList = hasAddedSkillsList;
     }
@@ -152,4 +169,5 @@ public class AddingEmployeesSkillController<T extends DTOSkills> {
     public void setInfoEmployeesController(InfoEmployeesController infoEmployeesController) {
         this.infoEmployeesController = infoEmployeesController;
     }
+
 }
