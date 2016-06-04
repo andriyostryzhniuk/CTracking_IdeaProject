@@ -36,7 +36,10 @@
                         </TableView>
                         <GridPane fx:id="controlsGridPane">
                             <columnConstraints>
-                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="350.0" minWidth="10.0" prefWidth="328.0" />
+                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="26.0" minWidth="26.0" />
+                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="28.0" minWidth="28.0" />
+                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="28.0" minWidth="28.0" />
+                                <ColumnConstraints hgrow="SOMETIMES" />
                                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" />
                             </columnConstraints>
                             <rowConstraints>
@@ -45,7 +48,7 @@
                         </GridPane>
                     </children>
                 </GridPane>
-            <StackPane fx:id="stackPane" prefHeight="150.0" prefWidth="200.0" GridPane.columnIndex="3" />
+                <StackPane fx:id="stackPane" prefHeight="150.0" prefWidth="200.0" GridPane.columnIndex="3" />
             </children>
         </GridPane>
     </center>

@@ -73,7 +73,7 @@ public class WindowEmployeesController {
 
         listView.setItems(employeesListViewDataList);
 
-        if (isNeedSelectItems) {
+        if (isNeedSelectItems && selectedRowIndex != -1) {
             listView.getSelectionModel().select(selectedRowIndex);
             listView.getFocusModel().focus(selectedRowIndex);
             listView.scrollTo(selectedRowIndex);
@@ -117,13 +117,6 @@ public class WindowEmployeesController {
 
     private void setListContextMenu(){
         MenuItem infoItem = new MenuItem("Особиста інформація");
-        listView.getSelectionModel().selectedItemProperty().addListener(event -> {
-            if (listView.getSelectionModel().getSelectedItem() == null) {
-                infoItem.setDisable(true);
-            } else {
-                infoItem.setDisable(false);
-            }
-        });
         infoItem.setOnAction((ActionEvent event) -> {
             initInfoEmployees(listView.getSelectionModel().getSelectedItem());
         });
@@ -133,6 +126,7 @@ public class WindowEmployeesController {
         seeStateItem.setOnAction((ActionEvent event) -> {
             showStateInformation(listView.getSelectionModel().getSelectedItem());
         });
+        seeStateItem.setDisable(true);
 
         MenuItem addItem = new MenuItem("Додати нового працівника");
         addItem.setOnAction((ActionEvent event) -> {
@@ -141,6 +135,16 @@ public class WindowEmployeesController {
 
         final javafx.scene.control.ContextMenu cellMenu = new javafx.scene.control.ContextMenu();
         cellMenu.getItems().addAll(infoItem, seeStateItem, addItem);
+
+        listView.getSelectionModel().selectedItemProperty().addListener(event -> {
+            if (listView.getSelectionModel().getSelectedItem() == null) {
+                infoItem.setDisable(true);
+                seeStateItem.setDisable(true);
+            } else {
+                infoItem.setDisable(false);
+                seeStateItem.setDisable(false);
+            }
+        });
 
         listView.setContextMenu(cellMenu);
     }
