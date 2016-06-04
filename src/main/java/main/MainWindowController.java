@@ -8,6 +8,7 @@ import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.layout.GridPane;
+import object.WindowObjectsController;
 import objects.tracking.WindowObjectsTrackingController;
 import stock.tracking.WindowStockTrackingController;
 import stocks.WindowStocksController;
@@ -25,6 +26,7 @@ public class MainWindowController {
     private WindowObjectsTrackingController windowObjectsTrackingController;
     private WindowEmployeesController windowEmployeesController;
     private WindowStocksController windowStocksController;
+    private WindowObjectsController windowObjectsController;
 
     public void initEmployeesWorkTracking(ActionEvent actionEvent) throws IOException {
         if (windowAttendanceController == null) {
@@ -95,9 +97,23 @@ public class MainWindowController {
             } catch (IOException exception) {
                 throw new UncheckedIOException(exception);
             }
+            mainGridPane.add(initButtonContainer(initButtonClose()), 1, 2);
+        }
+    }
+
+    public void initObjectsWindow(ActionEvent actionEvent) {
+        if (windowObjectsController == null) {
+            removeMainGridPaneChildren();
+            FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/object/WindowObjects.fxml"));
+            try {
+                mainGridPane.add(fxmlLoader.load(), 1, 1);
+                windowObjectsController = fxmlLoader.getController();
+            } catch (IOException exception) {
+                throw new UncheckedIOException(exception);
+            }
             Button saveButton = initButton("Зберегти");
             saveButton.setVisible(false);
-//            windowEmployeesController.setSaveButton(saveButton);
+            windowObjectsController.setSaveButton(saveButton);
             mainGridPane.add(initButtonContainer(saveButton, initButtonClose()), 1, 2);
         }
     }
@@ -130,7 +146,7 @@ public class MainWindowController {
         buttonContainer.setAlignment(Pos.TOP_RIGHT);
 
         IntStream.range(0, buttons.length).forEach(i -> {
-            if (i == 0) {
+            if (i == 0 && buttons.length > 1) {
                 buttonContainer.add(buttons[i], i, 0);
                 buttonContainer.setMargin(buttons[i], new Insets(20, 5, 0, 0));
             } else {
@@ -150,6 +166,7 @@ public class MainWindowController {
         windowObjectsTrackingController = null;
         windowEmployeesController = null;
         windowStocksController = null;
+        windowObjectsController = null;
     }
 
 }

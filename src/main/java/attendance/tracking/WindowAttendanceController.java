@@ -1,6 +1,7 @@
 package attendance.tracking;
 
 import attendance.tracking.dto.DtoObject;
+import javafx.geometry.HPos;
 import overridden.elements.combo.box.AutoCompleteComboBoxListener;
 import attendance.tracking.dto.DtoEmployeesFullName;
 import javafx.application.Platform;
@@ -50,6 +51,10 @@ public class WindowAttendanceController<T extends DtoEmployeesFullName> {
 
         datePicker = initDatePicker();
         topGridPane.add(datePicker, 0, 0);
+        Button calendarButton = datePicker.getCalendarButton();
+        topGridPane.add(calendarButton, 0, 0);
+        topGridPane.setMargin(calendarButton, new Insets(1, 1, 2, 2));
+        topGridPane.setHalignment(calendarButton, HPos.RIGHT);
 
         Label label = new Label("Вибрати об'єкт:");
         topGridPane.add(label, 1, 0);
@@ -67,7 +72,7 @@ public class WindowAttendanceController<T extends DtoEmployeesFullName> {
 
         rootBorderPane.setTop(topGridPane);
         rootBorderPane.setAlignment(topGridPane, Pos.TOP_LEFT);
-        rootBorderPane.setMargin(topGridPane, new Insets(0.0, 0.0, 20.0, 0.0));
+        rootBorderPane.setMargin(topGridPane, new Insets(0.0, 0.0, 10.0, 0.0));
 
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/attendance/tracking/TableView.fxml"));
         try {
@@ -373,8 +378,8 @@ public class WindowAttendanceController<T extends DtoEmployeesFullName> {
     }
 
     public void initComboBoxSearch() {
-        comboBoxSearch.setMinWidth(200);
-        comboBoxSearch.setMaxWidth(200);
+        comboBoxSearch.setMinWidth(250);
+        comboBoxSearch.setMaxWidth(250);
         comboBoxSearch.getStylesheets().add(getClass().getResource("/styles/ComboBoxSearchStyle.css").toExternalForm());
         comboBoxSearch.setTooltip(new Tooltip("Пошук"));
         comboBoxSearch.setPromptText("Пошук");

@@ -34,6 +34,7 @@ public class SettingsRepositoryController<T extends DTORepository> {
     @FXML
     public void initialize(){
         initContextMenu();
+        listView.setPlaceholder(new Label("Тут покищо немає жодного складу"));
         listView.setItems(categoryDataList);
         listView.getSelectionModel().selectedItemProperty().addListener(event -> {
             if ((listView.getSelectionModel().getSelectedItem()) != null) {

@@ -264,7 +264,7 @@ public class WindowStocksController<T extends DTOStocks> {
 
     public void saveButtonAction(ActionEvent actionEvent) {
         String name;
-        if (nameTextField.getText().isEmpty()) {
+        if (nameTextField.getText() == null || nameTextField.getText().isEmpty()) {
             name = null;
         } else {
             name = nameTextField.getText();
@@ -293,7 +293,7 @@ public class WindowStocksController<T extends DTOStocks> {
         }
 
         String notes;
-        if (editingNotesTextArea.getText().isEmpty()) {
+        if (editingNotesTextArea.getText() == null || editingNotesTextArea.getText().isEmpty()) {
             notes = null;
         } else {
             notes = editingNotesTextArea.getText();
@@ -648,7 +648,9 @@ public class WindowStocksController<T extends DTOStocks> {
                 repositoryComboBox.setValue(repositoryItem);
             }
         });
-        priceTextField.setText(item.getPrice().toString());
+        if (item.getPrice() != null) {
+            priceTextField.setText(item.getPrice().toString());
+        }
         editingNotesTextArea.setText(item.getNotes());
     }
 

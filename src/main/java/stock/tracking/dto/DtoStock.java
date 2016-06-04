@@ -81,6 +81,8 @@ public class DtoStock extends DtoStockListView {
         paneContainer.setId(Integer.toString(id));
         paneContainer.setStyle("-fx-background-color: rgba(105, 105, 105, .5);");
         Label label = new Label(name);
+        label.setMaxWidth(290);
+        label.setWrapText(true);
         paneContainer.getChildren().add(label);
         label.setLayoutX(5);
         label.setLayoutY(3);

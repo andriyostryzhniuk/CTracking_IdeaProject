@@ -38,6 +38,7 @@ public class SettingsStockCategoryController<T extends DTOStockCategory> {
     public void initialize(){
         fillCols();
         initContextMenu();
+        tableView.setPlaceholder(new Label("Покищо тут немає жодної категорії"));
         tableView.setItems(categoryDataList);
         tableView.getSelectionModel().selectedItemProperty().addListener(event -> {
             if ((tableView.getSelectionModel().getSelectedItem()) != null) {

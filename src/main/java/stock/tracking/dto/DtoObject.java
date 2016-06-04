@@ -51,13 +51,10 @@ public class DtoObject extends DtoLiableListView {
         paneContainer.setId(Integer.toString(id));
         paneContainer.setStyle("-fx-background-color: rgba(105, 105, 105, .5);");
         Label fullNameLabel = new Label(address);
+        fullNameLabel.setMaxWidth(290);
+        fullNameLabel.setWrapText(true);
         paneContainer.getChildren().add(fullNameLabel);
         fullNameLabel.setLayoutX(5);
         fullNameLabel.setLayoutY(3);
-
-        Label numberOfStockLabel = new Label();
-        paneContainer.getChildren().add(numberOfStockLabel);
-        numberOfStockLabel.setLayoutX(210);
-        numberOfStockLabel.setLayoutY(30);
     }
 }

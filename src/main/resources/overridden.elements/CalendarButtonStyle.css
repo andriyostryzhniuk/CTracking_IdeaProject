@@ -1,0 +1,12 @@
+.button {
+    -fx-padding: 0, 0, 0, 0;
+    -fx-background-color: transparent;
+}
+
+.button:hover ImageView {
+    -fx-effect: innershadow( gaussian , rgba(238, 238, 238, .5) , 7 , 1 , 1 , 1 );
+}
+
+.button:armed ImageView {
+    -fx-effect: innershadow( gaussian , rgba(238, 238, 238, .5) , 7 , 1 , 1 , 1 );
+}

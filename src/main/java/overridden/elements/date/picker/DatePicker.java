@@ -10,10 +10,14 @@ import javafx.beans.value.ObservableValue;
 import javafx.event.ActionEvent;
 import javafx.event.EventHandler;
 import javafx.geometry.Bounds;
+import javafx.geometry.HPos;
+import javafx.geometry.Insets;
 import javafx.scene.control.Button;
 import javafx.scene.control.TextField;
 import javafx.scene.control.Tooltip;
 import javafx.scene.effect.DropShadow;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.KeyCode;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.input.MouseEvent;
@@ -40,6 +44,7 @@ public class DatePicker extends HBox {
     }
 
     private Timer timer;
+    private Button calendarButton;
 
     /**
      * Initializes the date picker with the given locale.
@@ -379,8 +384,7 @@ public class DatePicker extends HBox {
     /**
      * Shows the pop up.
      */
-    private void showPopup() {
-
+    public void showPopup() {
         if (popup == null) {
             popup = new Popup();
             popup.setAutoHide(true);
@@ -417,4 +421,25 @@ public class DatePicker extends HBox {
     public void setTooltipText (String text) {
         Tooltip.install(textField, new Tooltip(text));
     }
+
+    public Button getCalendarButton() {
+        if (calendarButton == null) {
+            initCalendarButton();
+        }
+        return calendarButton;
+    }
+
+    private void initCalendarButton(){
+        calendarButton = new Button();
+        Image image = new Image(getClass().getResourceAsStream("/icons/calendar_icon.png"));
+        calendarButton.getStylesheets().add(
+                getClass().getResource("/overridden.elements/CalendarButtonStyle.css").toExternalForm());
+        calendarButton.setGraphic(new ImageView(image));
+        calendarButton.setTooltip(new Tooltip("Дата перегляду"));
+        calendarButton.setOnAction(event -> showPopup());
+//        controlsGridPane.add(calendarButton, 0, 0);
+//        controlsGridPane.setMargin(calendarButton, new Insets(2, 2, 2, 2));
+//        controlsGridPane.setHalignment(calendarButton, HPos.RIGHT);
+    }
+
 }
