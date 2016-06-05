@@ -50,7 +50,7 @@ public class EditingPromptWindowController {
         rejectDateButton.getStylesheets().add(getClass().getResource("/styles/RejectButtonStyle.css").toExternalForm());
         rejectDateButton.setGraphic(new ImageView(image));
         rejectDateButton.setTooltip(new Tooltip("Відмінити дату"));
-        rejectDateButton.setOnAction(event -> finishDatePicker.setValue(null));
+        rejectDateButton.setOnAction(event -> finishDatePicker.setValue(determineMaxFinishDate()));
     }
 
     public void setStartDatePickerValidation(){
@@ -90,7 +90,7 @@ public class EditingPromptWindowController {
                     {
                         super.updateItem(item, empty);
                         if (item.isBefore(minFinishDate) ||
-                                (maxFinishDate != null && item.compareTo(maxFinishDate) >= 0)) {
+                                (maxFinishDate != null && item.isAfter(maxFinishDate))) {
                             this.setDisable(true);
                         }
                     }
@@ -138,9 +138,16 @@ public class EditingPromptWindowController {
     }
 
     private LocalDate determineMaxFinishDate(){
+        LocalDate maxFinishDate = dtoObjects.getFinishDate();
         LocalDate nextObjEmpStartDate =
                 selectNextObjEmpStartDate(dtoObjectEmployees.getEmployeeId(), dtoObjectEmployees.getStartDate());
-        return nextObjEmpStartDate;
+        if (nextObjEmpStartDate != null) {
+            nextObjEmpStartDate = nextObjEmpStartDate.minusDays(1);
+            if (maxFinishDate == null || (maxFinishDate != null && nextObjEmpStartDate.isBefore(maxFinishDate))) {
+                maxFinishDate = nextObjEmpStartDate;
+            }
+        }
+        return maxFinishDate;
     }
 
     public void escape(ActionEvent actionEvent) {

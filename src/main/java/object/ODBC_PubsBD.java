@@ -82,4 +82,12 @@ public class ODBC_PubsBD {
         }
     }
 
+    public static LocalDate selectMinObjEmpDate(Integer objectId) {
+        return getJdbcTemplate().queryForObject("select min(object_employees.startDate) " +
+                        "from object_employees " +
+                        "where object_employees.object_id = ?",
+                new Object []{objectId}, LocalDate.class);
+    }
+
+
 }

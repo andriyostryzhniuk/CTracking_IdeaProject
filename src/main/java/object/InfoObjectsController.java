@@ -13,6 +13,7 @@ import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
 import static object.ODBC_PubsBD.insertIntoObject;
+import static object.ODBC_PubsBD.selectMinObjEmpDate;
 import static object.ODBC_PubsBD.updateObject;
 
 public class InfoObjectsController {
@@ -165,13 +166,20 @@ public class InfoObjectsController {
 
     private void setStartDateDatePickerValidation() {
         LocalDate maxStartDate = finishDateDatePicker.getValue();
+        if (dtoObject.getObjectsId() != null) {
+            LocalDate minObjEmpDate;
+            if ((minObjEmpDate = selectMinObjEmpDate(dtoObject.getObjectsId())) != null) {
+                maxStartDate = minObjEmpDate;
+            }
+        }
+        LocalDate finalMaxStartDate = maxStartDate;
         Callback<DatePicker, DateCell> dayCellFactory = new Callback<DatePicker, DateCell>() {
             public DateCell call(final DatePicker datePicker) {
                 return new DateCell() {
                     @Override
                     public void updateItem(LocalDate item, boolean empty) {
                         super.updateItem(item, empty);
-                        if ((maxStartDate != null && item.isAfter(maxStartDate))) {
+                        if ((finalMaxStartDate != null && item.isAfter(finalMaxStartDate))) {
                             this.setDisable(true);
                         }
                     }
