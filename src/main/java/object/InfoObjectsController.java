@@ -12,9 +12,7 @@ import java.time.LocalDate;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-import static object.ODBC_PubsBD.insertIntoObject;
-import static object.ODBC_PubsBD.selectMinObjEmpDate;
-import static object.ODBC_PubsBD.updateObject;
+import static object.ODBC_PubsBD.*;
 
 public class InfoObjectsController {
 
@@ -165,21 +163,14 @@ public class InfoObjectsController {
     }
 
     private void setStartDateDatePickerValidation() {
-        LocalDate maxStartDate = finishDateDatePicker.getValue();
-        if (dtoObject.getObjectsId() != null) {
-            LocalDate minObjEmpDate;
-            if ((minObjEmpDate = selectMinObjEmpDate(dtoObject.getObjectsId())) != null) {
-                maxStartDate = minObjEmpDate;
-            }
-        }
-        LocalDate finalMaxStartDate = maxStartDate;
+        LocalDate maxStartDate = determineMaxStartDate();
         Callback<DatePicker, DateCell> dayCellFactory = new Callback<DatePicker, DateCell>() {
             public DateCell call(final DatePicker datePicker) {
                 return new DateCell() {
                     @Override
                     public void updateItem(LocalDate item, boolean empty) {
                         super.updateItem(item, empty);
-                        if ((finalMaxStartDate != null && item.isAfter(finalMaxStartDate))) {
+                        if ((maxStartDate != null && item.isAfter(maxStartDate))) {
                             this.setDisable(true);
                         }
                     }
@@ -190,7 +181,7 @@ public class InfoObjectsController {
     }
 
     private void setFinishDateDatePickerValidation() {
-        LocalDate minFinishDate = startDateDatePicker.getValue();
+        LocalDate minFinishDate = determineMinFinishDate();
         Callback<DatePicker, DateCell> dayCellFactory = new Callback<DatePicker, DateCell>() {
             public DateCell call(final DatePicker datePicker) {
                 return new DateCell() {
@@ -205,6 +196,50 @@ public class InfoObjectsController {
             }
         };
         finishDateDatePicker.setDayCellFactory(dayCellFactory);
+    }
+
+    private LocalDate determineMaxStartDate(){
+        LocalDate maxStartDate = finishDateDatePicker.getValue();
+        if (dtoObject.getObjectsId() != null) {
+            LocalDate minObjEmpDate;
+            if ((minObjEmpDate = selectMinObjEmpDate(dtoObject.getObjectsId())) != null) {
+                maxStartDate = minObjEmpDate;
+            }
+            LocalDate minStockTrackingDate;
+            if ((minStockTrackingDate = selectMinStockTrackingDate(dtoObject.getObjectsId())) != null) {
+                if (maxStartDate == null || minStockTrackingDate.isBefore(maxStartDate)) {
+                    maxStartDate = minStockTrackingDate;
+                }
+            }
+        }
+        return maxStartDate;
+    }
+
+    private LocalDate determineMinFinishDate(){
+        LocalDate minFinishDate = startDateDatePicker.getValue();
+        if (dtoObject.getObjectsId() != null) {
+            minFinishDate = determineMaxDate(minFinishDate, selectMinObjEmpStartDate(dtoObject.getObjectsId()));
+            minFinishDate = determineMaxDate(minFinishDate, selectMinObjEmpFinishDate(dtoObject.getObjectsId()));
+            minFinishDate = determineMaxDate(minFinishDate, selectMaxWorckTrackingDate(dtoObject.getObjectsId()));
+            minFinishDate = determineMaxDate(minFinishDate, selectMaxStockTrackingGivingDate(dtoObject.getObjectsId()));
+            minFinishDate = determineMaxDate(minFinishDate, selectMaxStockTrackingReturnDate(dtoObject.getObjectsId()));
+        }
+        return minFinishDate;
+    }
+
+    private LocalDate determineMaxDate(LocalDate firstDate, LocalDate secondDate) {
+        if (firstDate == null && secondDate == null) {
+            return null;
+        } else if (firstDate == null && secondDate != null) {
+            return secondDate;
+        } else if (firstDate != null && secondDate == null) {
+            return firstDate;
+        } else if (firstDate.isAfter(secondDate)) {
+            return firstDate;
+        } else {
+            return secondDate;
+        }
+
     }
 
     private void setPriceTextFieldListener() {

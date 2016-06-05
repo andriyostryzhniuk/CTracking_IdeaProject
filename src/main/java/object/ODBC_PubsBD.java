@@ -89,5 +89,47 @@ public class ODBC_PubsBD {
                 new Object []{objectId}, LocalDate.class);
     }
 
+    public static LocalDate selectMinStockTrackingDate(Integer objectId) {
+        return getJdbcTemplate().queryForObject("select min(stocktracking.givingDate) " +
+                        "from stocktracking " +
+                        "where object_id = ?",
+                new Object []{objectId}, LocalDate.class);
+    }
+
+    public static LocalDate selectMinObjEmpStartDate(Integer objectId) {
+        return getJdbcTemplate().queryForObject("select max(object_employees.startDate) " +
+                        "from object_employees " +
+                        "where object_employees.object_id = ?",
+                new Object []{objectId}, LocalDate.class);
+    }
+
+    public static LocalDate selectMinObjEmpFinishDate(Integer objectId) {
+        return getJdbcTemplate().queryForObject("select max(object_employees.finishDate) " +
+                        "from object_employees " +
+                        "where object_employees.object_id = ?",
+                new Object []{objectId}, LocalDate.class);
+    }
+
+    public static LocalDate selectMaxWorckTrackingDate(Integer objectId) {
+        return getJdbcTemplate().queryForObject("select max(worktracking.date) " +
+                        "from object_employees, worktracking " +
+                        "where object_id = ? and " +
+                        "object_employees.id = worktracking.object_employees_id",
+                new Object []{objectId}, LocalDate.class);
+    }
+
+    public static LocalDate selectMaxStockTrackingGivingDate(Integer objectId) {
+        return getJdbcTemplate().queryForObject("select max(stocktracking.givingDate) " +
+                        "from stocktracking " +
+                        "where object_id = ?",
+                new Object []{objectId}, LocalDate.class);
+    }
+
+    public static LocalDate selectMaxStockTrackingReturnDate(Integer objectId) {
+        return getJdbcTemplate().queryForObject("select max(stocktracking.returnDate) " +
+                        "from stocktracking " +
+                        "where object_id = ?",
+                new Object []{objectId}, LocalDate.class);
+    }
 
 }
