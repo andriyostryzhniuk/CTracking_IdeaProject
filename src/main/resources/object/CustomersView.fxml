@@ -1,41 +1,67 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import java.net.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
 <?import java.lang.*?>
 <?import javafx.scene.layout.*?>
 
-<GridPane fx:id="rootGridPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
-          fx:controller="object.CustomersViewController">
+<GridPane fx:id="rootGridPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="object.CustomersViewController">
     <columnConstraints>
-        <ColumnConstraints hgrow="SOMETIMES" minWidth="300.0" prefWidth="300.0"/>
+        <ColumnConstraints halignment="LEFT" hgrow="SOMETIMES" minWidth="300.0" prefWidth="300.0" />
     </columnConstraints>
     <rowConstraints>
-        <RowConstraints minHeight="535.0" vgrow="SOMETIMES"/>
+        <RowConstraints minHeight="535.0" vgrow="SOMETIMES" />
     </rowConstraints>
     <children>
         <GridPane fx:id="controlsGridPane">
             <columnConstraints>
-                <ColumnConstraints hgrow="SOMETIMES"/>
+                <ColumnConstraints hgrow="SOMETIMES" />
             </columnConstraints>
             <rowConstraints>
-                <RowConstraints maxHeight="25.0" minHeight="25.0" prefHeight="25.0" vgrow="SOMETIMES"/>
-                <RowConstraints maxHeight="25.0" minHeight="25.0" prefHeight="25.0" valignment="TOP" vgrow="SOMETIMES"/>
-                <RowConstraints maxHeight="35.0" minHeight="35.0" prefHeight="35.0" valignment="TOP" vgrow="SOMETIMES"/>
-                <RowConstraints vgrow="SOMETIMES"/>
-                <RowConstraints maxHeight="25.0" minHeight="25.0" prefHeight="25.0" vgrow="SOMETIMES"/>
-                <RowConstraints maxHeight="200.0" minHeight="150.0" prefHeight="150.0" vgrow="SOMETIMES"/>
+                <RowConstraints maxHeight="25.0" minHeight="25.0" prefHeight="25.0" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="25.0" minHeight="25.0" prefHeight="25.0" valignment="TOP" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="42.5" minHeight="42.5" prefHeight="42.5" valignment="TOP" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="174.0" minHeight="174.0" prefHeight="174.0" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="40.0" minHeight="40.0" prefHeight="40.0" valignment="BOTTOM" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="20.0" minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="20.0" minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
+            <RowConstraints maxHeight="20.0" minHeight="20.0" prefHeight="20.0" vgrow="SOMETIMES" />
+                <RowConstraints valignment="BOTTOM" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="200.0" minHeight="100.0" prefHeight="100.0" vgrow="SOMETIMES" />
             </rowConstraints>
             <children>
-                <TextField fx:id="nameTextField" promptText="Введіть замовника" GridPane.rowIndex="1"/>
-                <Label text="Замовник:"/>
-                <TextArea fx:id="notesTextArea" prefHeight="200.0" prefWidth="200.0" promptText="Нотатки"
-                          wrapText="true" GridPane.rowIndex="5"/>
-                <Label text="Нотатки:" GridPane.rowIndex="4"/>
-                <Label fx:id="nameExceptionLabel"
-                       text="Назва не може містити інших символів крім латинських та кириличних, а також &amp; -"
-                       textFill="#c95858" visible="false" wrapText="true" GridPane.rowIndex="2"/>
+                <TextField fx:id="nameTextField" maxWidth="380.0" promptText="Введіть замовника" GridPane.rowIndex="1" />
+                <Label text="Замовник:" />
+                <TextArea fx:id="notesTextArea" promptText="Нотатки" wrapText="true" GridPane.rowIndex="9" />
+                <Label text="Нотатки:" GridPane.rowIndex="8">
+               <GridPane.margin>
+                  <Insets bottom="5.0" />
+               </GridPane.margin></Label>
+                <Label fx:id="nameExceptionLabel" text="Назва не може містити інших символів крім латинських та кириличних, а також &amp; -" textFill="#c95858" visible="false" wrapText="true" GridPane.rowIndex="2" />
+            <GridPane GridPane.rowIndex="3">
+              <columnConstraints>
+                <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" maxWidth="380.0" minWidth="300.0" prefWidth="300.0" />
+              </columnConstraints>
+              <rowConstraints>
+                <RowConstraints maxHeight="24.0" minHeight="24.0" prefHeight="24.0" vgrow="SOMETIMES" />
+                <RowConstraints maxHeight="150.0" minHeight="150.0" prefHeight="150.0" vgrow="SOMETIMES" />
+              </rowConstraints>
+               <children>
+                  <ListView fx:id="inspectionsListView" fixedCellSize="30.0" focusTraversable="false" GridPane.rowIndex="1" />
+                  <Pane fx:id="headerPanel" style="-fx-background-color: rgba(65, 105, 225, .5);" />
+                  <Label text="Технічний нагляд" />
+               </children>
+            </GridPane>
+            <Label fx:id="telephonesLabel" text="Контакний телефон:" visible="false" GridPane.rowIndex="4">
+               <padding>
+                  <Insets bottom="5.0" />
+               </padding>
+            </Label>
+            <TextField fx:id="numberTextField1" disable="true" editable="false" focusTraversable="false" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" style="-fx-background-color: transparent;" visible="false" GridPane.rowIndex="5" />
+            <TextField fx:id="numberTextField2" disable="true" editable="false" focusTraversable="false" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" style="-fx-background-color: transparent;" visible="false" GridPane.rowIndex="6" />
+            <TextField fx:id="numberTextField3" disable="true" editable="false" focusTraversable="false" maxWidth="150.0" minWidth="150.0" prefWidth="150.0" style="-fx-background-color: transparent;" visible="false" GridPane.rowIndex="7" />
             </children>
         </GridPane>
     </children>

@@ -1,7 +1,9 @@
 package object;
 
+import employees.dto.DTOTelephones;
 import javafx.scene.control.Alert;
 import object.dto.DTOCustomers;
+import object.dto.DTOInspection;
 import object.dto.DTOObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -182,6 +184,22 @@ public class ODBC_PubsBD {
         } catch (DataIntegrityViolationException e) {
             alertWindow.showDeletingError();
         }
+    }
+
+    public static List<DTOInspection> selectInspectionsList(Integer customersId) {
+        return getJdbcTemplate().query("SELECT id, customers_id AS customersId, name, surname, middleName " +
+                        "FROM techInspection " +
+                        "WHERE customers_id = ? " +
+                        "ORDER BY surname ASC",
+                BeanPropertyRowMapper.newInstance(DTOInspection.class), customersId);
+    }
+
+    public static List<DTOTelephones> selectInspectionsTelephones(Integer inspectionsId) {
+        return getJdbcTemplate().query("SELECT id AS recordId, techInspection_id AS subscriberId, " +
+                "telephoneNumber AS number " +
+                        "FROM techTelephone " +
+                        "WHERE techInspection_id = ?",
+                BeanPropertyRowMapper.newInstance(DTOTelephones.class), inspectionsId);
     }
 
 }
