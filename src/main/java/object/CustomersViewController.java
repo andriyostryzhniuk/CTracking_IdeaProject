@@ -1,12 +1,13 @@
 package object;
 
 import javafx.fxml.FXML;
-import javafx.scene.control.Label;
-import javafx.scene.control.TextArea;
-import javafx.scene.control.TextField;
-import javafx.scene.control.Tooltip;
+import javafx.geometry.HPos;
+import javafx.geometry.VPos;
+import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.GridPane;
 import object.dto.DTOCustomers;
+import subsidiary.classes.EditPanel;
 
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
@@ -15,17 +16,20 @@ import static object.ODBC_PubsBD.selectCustomer;
 
 public class CustomersViewController {
 
+    public GridPane controlsGridPane;
     public TextField nameTextField;
     public TextArea notesTextArea;
     public Label nameExceptionLabel;
     private DTOCustomers dtoCustomers = new DTOCustomers();
 
+    private InfoObjectsController infoObjectsController;
+
     @FXML
     private void initialize(){
         setListenerToNameTextField(nameTextField, nameExceptionLabel, Pattern.compile("[^a-zA-Zа-яА-ЯіІїЇєЄ&\\s-]"), 50);
         setNotesTextAreaListener();
+        initSettingsButton();
     }
-
 
     public void initData(Integer customersId){
         if (customersId != null) {
@@ -117,6 +121,18 @@ public class CustomersViewController {
         });
     }
 
+    private void initSettingsButton(){
+        EditPanel editPanel = new EditPanel();
+        Button settingsButton = editPanel.getSettingsButton();
+        settingsButton.getStylesheets().add(getClass().getResource("/object/SettingsButtonStyle.css").toExternalForm());
+        settingsButton.setTooltip(new Tooltip("Налаштування замовників"));
+        controlsGridPane.add(settingsButton, 0, 0);
+        controlsGridPane.setValignment(settingsButton, VPos.CENTER);
+        controlsGridPane.setHalignment(settingsButton, HPos.RIGHT);
+
+        settingsButton.setOnAction(event -> infoObjectsController.showSettingsCustomersWindow());
+    }
+
     public DTOCustomers getDtoCustomers() {
         initDtoCustomers();
         return dtoCustomers;
@@ -126,4 +142,7 @@ public class CustomersViewController {
         return nameTextField;
     }
 
+    public void setInfoObjectsController(InfoObjectsController infoObjectsController) {
+        this.infoObjectsController = infoObjectsController;
+    }
 }

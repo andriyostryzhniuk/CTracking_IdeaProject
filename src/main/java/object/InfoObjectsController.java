@@ -365,6 +365,7 @@ public class InfoObjectsController {
             e.printStackTrace();
         }
         customersViewController = fxmlLoader.getController();
+        customersViewController.setInfoObjectsController(this);
         customersViewController.initData(customersId);
     }
 
@@ -375,6 +376,27 @@ public class InfoObjectsController {
             addCustomerButton.setDisable(false);
             addCustomerButton.setVisible(true);
         }
+    }
+
+    public void showSettingsCustomersWindow() {
+        Stage primaryStage = new Stage();
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/object/SettingsCustomers.fxml"));
+        Parent root = null;
+        try {
+            root = fxmlLoader.load();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        SettingsCustomersController settingsCustomersController = fxmlLoader.getController();
+        settingsCustomersController.setInfoObjectsController(this);
+        settingsCustomersController.initListView();
+
+        primaryStage.initStyle(StageStyle.TRANSPARENT);
+        primaryStage.setScene(new Scene(root, 460, 500, Color.rgb(0, 0, 0, 0)));
+        primaryStage.initModality(Modality.WINDOW_MODAL);
+        primaryStage.initOwner(rootGridPane.getScene().getWindow());
+        primaryStage.showAndWait();
     }
 
     public void setWindowObjectsController(WindowObjectsController windowObjectsController) {
