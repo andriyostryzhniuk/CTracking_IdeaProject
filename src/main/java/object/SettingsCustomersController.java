@@ -8,6 +8,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseButton;
 import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -16,6 +17,8 @@ import object.dto.DTOCustomers;
 import subsidiary.classes.AlertWindow;
 import java.io.IOException;
 import java.util.Collection;
+
+import static object.ODBC_PubsBD.deleteFromCustomers;
 import static object.ODBC_PubsBD.selectCustomersList;
 
 public class SettingsCustomersController<T extends DTOCustomers> {
@@ -42,10 +45,11 @@ public class SettingsCustomersController<T extends DTOCustomers> {
         });
     }
 
-    public void initTableView(){
+    public void initListView(){
         categoryDataList.clear();
         listView.getItems().clear();
         categoryDataList.addAll((Collection<? extends T>) selectCustomersList());
+        setListViewCellFactory();
     }
 
     public void createButtonAction(ActionEvent actionEvent) {
@@ -71,7 +75,7 @@ public class SettingsCustomersController<T extends DTOCustomers> {
         editItem.setDisable(true);
 
         MenuItem removeItem = new MenuItem("Видалити замовника");
-//        removeItem.setOnAction((ActionEvent event) -> removeCategory());
+        removeItem.setOnAction((ActionEvent event) -> removeCustomer());
 
         removeItem.setDisable(true);
         final ContextMenu cellMenu = new ContextMenu();
@@ -97,6 +101,7 @@ public class SettingsCustomersController<T extends DTOCustomers> {
 
         EditingCustomersController editingCustomersController = fxmlLoader.getController();
         editingCustomersController.setSettingsCustomersController(this);
+        editingCustomersController.setCustomersViewController(infoObjectsController.getCustomersViewController());
         editingCustomersController.setDtoCustomers(dtoCustomers);
 
         primaryStage.initStyle(StageStyle.TRANSPARENT);
@@ -104,17 +109,15 @@ public class SettingsCustomersController<T extends DTOCustomers> {
         primaryStage.initModality(Modality.WINDOW_MODAL);
         primaryStage.initOwner(listView.getScene().getWindow());
         primaryStage.showAndWait();
-
     }
 
-    public void removeCategory(){
+    public void removeCustomer(){
         AlertWindow alertWindow = new AlertWindow(Alert.AlertType.WARNING);
         if (! alertWindow.showDeletingWarning()) {
             return;
         }
-//        deleteFromRepository(listView.getSelectionModel().getSelectedItem());
-//        infoObjectsController.refreshRepository();
-        initTableView();
+        deleteFromCustomers(listView.getSelectionModel().getSelectedItem());
+        initListView();
     }
 
     public void editButtonAction(ActionEvent actionEvent) {
@@ -122,7 +125,7 @@ public class SettingsCustomersController<T extends DTOCustomers> {
     }
 
     public void removeButtonAction(ActionEvent actionEvent) {
-        removeCategory();
+        removeCustomer();
     }
 
     private void setButtonsDisable(boolean isDisable){
@@ -145,5 +148,32 @@ public class SettingsCustomersController<T extends DTOCustomers> {
     private void addCustomer(){
         infoObjectsController.initCustomersView(listView.getSelectionModel().getSelectedItem().getId());
         close();
+    }
+
+    private void setListViewCellFactory(){
+        listView.setCellFactory(listCell -> {
+            final ListCell<T> cell = new ListCell<T>() {
+                @Override
+                protected void updateItem(T t, boolean b) {
+                    super.updateItem(t, b);
+                    if (t != null) {
+                        setText(t.getName());
+                    }
+
+                    setOnMouseClicked(mouseEvent -> {
+                        if (mouseEvent.getButton().equals(MouseButton.PRIMARY)) {
+                            if (mouseEvent.getClickCount() == 2) {
+                                addCustomer();
+                            }
+                        }
+                    });
+                }
+            };
+            return cell;
+        });
+    }
+
+    public InfoObjectsController getInfoObjectsController() {
+        return infoObjectsController;
     }
 }

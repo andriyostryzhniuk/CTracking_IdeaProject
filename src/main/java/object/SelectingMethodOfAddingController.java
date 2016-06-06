@@ -57,7 +57,7 @@ public class SelectingMethodOfAddingController {
 
         SettingsCustomersController settingsCustomersController = fxmlLoader.getController();
         settingsCustomersController.setInfoObjectsController(infoObjectsController);
-        settingsCustomersController.initTableView();
+        settingsCustomersController.initListView();
 
         primaryStage.initStyle(StageStyle.TRANSPARENT);
         primaryStage.setScene(new Scene(root, 460, 500, Color.rgb(0, 0, 0, 0)));

@@ -174,18 +174,11 @@ public class ODBC_PubsBD {
                 new BeanPropertySqlParameterSource(dtoCustomers));
     }
 
-    public static void updateCustomersInObject(DTOObject dtoObject) {
-        getNamedParameterJdbcTemplate().update("UPDATE object " +
-                        "SET customers_id = :customersId " +
-                        "WHERE id = :objectsId",
-                new BeanPropertySqlParameterSource(dtoObject));
-    }
-
-    public static void deleteFromCustomers(DTOObject dtoObject){
+    public static void deleteFromCustomers(DTOCustomers dtoCustomers){
         try {
             getNamedParameterJdbcTemplate().update("DELETE FROM customers " +
                             "WHERE id = :id",
-                    new BeanPropertySqlParameterSource(dtoObject));
+                    new BeanPropertySqlParameterSource(dtoCustomers));
         } catch (DataIntegrityViolationException e) {
             alertWindow.showDeletingError();
         }

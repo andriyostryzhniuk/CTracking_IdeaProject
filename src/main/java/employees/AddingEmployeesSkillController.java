@@ -9,6 +9,7 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseButton;
 import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
@@ -64,6 +65,7 @@ public class AddingEmployeesSkillController<T extends DTOSkills> {
         });
 
         listView.setItems(skillsDataList);
+        setListViewCellFactory();
     }
 
     private void addSkill(){
@@ -160,6 +162,29 @@ public class AddingEmployeesSkillController<T extends DTOSkills> {
         listView.getContextMenu().getItems().get(0).setDisable(isDisable);
         listView.getContextMenu().getItems().get(2).setDisable(isDisable);
         listView.getContextMenu().getItems().get(3).setDisable(isDisable);
+    }
+
+    private void setListViewCellFactory(){
+        listView.setCellFactory(listCell -> {
+            final ListCell<T> cell = new ListCell<T>() {
+                @Override
+                protected void updateItem(T t, boolean b) {
+                    super.updateItem(t, b);
+                    if (t != null) {
+                        setText(t.getSkill());
+                    }
+
+                    setOnMouseClicked(mouseEvent -> {
+                        if (mouseEvent.getButton().equals(MouseButton.PRIMARY)) {
+                            if (mouseEvent.getClickCount() == 2) {
+                                addSkill();
+                            }
+                        }
+                    });
+                }
+            };
+            return cell;
+        });
     }
 
     public void setHasAddedSkillsList(List<T> hasAddedSkillsList) {

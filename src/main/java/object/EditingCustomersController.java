@@ -19,6 +19,7 @@ public class EditingCustomersController {
     public Label titleLabel;
 
     private SettingsCustomersController settingsCustomersController;
+    private CustomersViewController customersViewController;
 
     private DTOCustomers dtoCustomers;
 
@@ -35,12 +36,16 @@ public class EditingCustomersController {
         if (dtoCustomers != null) {
             dtoCustomers.setName(textField.getText());
             updateCustomers(dtoCustomers);
+            if (customersViewController != null &&
+                    customersViewController.getDtoCustomers().getId() == dtoCustomers.getId()) {
+                settingsCustomersController.getInfoObjectsController().initCustomersView(dtoCustomers.getId());
+            }
         } else {
             dtoCustomers = new DTOCustomers(null, textField.getText(), null);
             insertIntoCustomers(dtoCustomers);
         }
 
-        settingsCustomersController.initTableView();
+        settingsCustomersController.initListView();
         closeStage();
     }
 
@@ -132,6 +137,10 @@ public class EditingCustomersController {
 
     private void setTextToTextField(String text){
         textField.setText(text);
+    }
+
+    public void setCustomersViewController(CustomersViewController customersViewController) {
+        this.customersViewController = customersViewController;
     }
 
 }

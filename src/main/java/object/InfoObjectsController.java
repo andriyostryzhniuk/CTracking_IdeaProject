@@ -393,4 +393,8 @@ public class InfoObjectsController {
     public GridPane getRootGridPane() {
         return rootGridPane;
     }
+
+    public CustomersViewController getCustomersViewController() {
+        return customersViewController;
+    }
 }
