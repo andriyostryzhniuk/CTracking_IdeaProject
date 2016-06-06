@@ -355,6 +355,7 @@ public class InfoObjectsController {
     }
 
     public void initCustomersView(Integer customersId){
+        clearCustomersView();
         addCustomerButton.setDisable(true);
         addCustomerButton.setVisible(false);
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/object/CustomersView.fxml"));
@@ -365,6 +366,15 @@ public class InfoObjectsController {
         }
         customersViewController = fxmlLoader.getController();
         customersViewController.initData(customersId);
+    }
+
+    private void clearCustomersView(){
+        if (customersViewController != null) {
+            customersStackPane.getChildren().remove(customersViewController);
+            customersViewController = null;
+            addCustomerButton.setDisable(false);
+            addCustomerButton.setVisible(true);
+        }
     }
 
     public void setWindowObjectsController(WindowObjectsController windowObjectsController) {

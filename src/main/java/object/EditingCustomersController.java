@@ -1,4 +1,4 @@
-package stocks;
+package object;
 
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
@@ -6,22 +6,21 @@ import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.input.MouseEvent;
 import javafx.stage.Stage;
-import stocks.dto.DTORepository;
+import object.dto.DTOCustomers;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
+import static object.ODBC_PubsBD.insertIntoCustomers;
+import static object.ODBC_PubsBD.updateCustomers;
 
-import static stocks.ODBC_PubsBD.*;
-
-public class EditingRepositoryController {
+public class EditingCustomersController {
 
     public TextField textField;
     public Label exceptionLabel;
     public Label titleLabel;
 
-    private SettingsRepositoryController settingsRepositoryController;
-    private WindowStocksController windowStocksController;
+    private SettingsCustomersController settingsCustomersController;
 
-    private DTORepository dtoRepository;
+    private DTOCustomers dtoCustomers;
 
     @FXML
     public void initialize(){
@@ -33,16 +32,15 @@ public class EditingRepositoryController {
             return;
         }
 
-        if (dtoRepository != null) {
-            dtoRepository.setName(textField.getText());
-            updateRepository(dtoRepository);
+        if (dtoCustomers != null) {
+            dtoCustomers.setName(textField.getText());
+            updateCustomers(dtoCustomers);
         } else {
-            dtoRepository = new DTORepository(null, textField.getText());
-            insertIntoRepository(dtoRepository);
+            dtoCustomers = new DTOCustomers(null, textField.getText(), null);
+            insertIntoCustomers(dtoCustomers);
         }
 
-        settingsRepositoryController.initTableView();
-        windowStocksController.refreshRepository();
+        settingsCustomersController.initTableView();
         closeStage();
     }
 
@@ -69,7 +67,7 @@ public class EditingRepositoryController {
             }
         });
 
-        Pattern pattern = Pattern.compile("[^a-zA-Zа-яА-ЯіІїЇєЄ'\'.'\','\'/()\\s\\d-]");
+        Pattern pattern = Pattern.compile("[^a-zA-Zа-яА-ЯіІїЇєЄ&\\s-]");
         textField.textProperty().addListener((observable, oldValue, newValue) -> {
             Matcher matcher = pattern.matcher(newValue);
             if (matcher.find()) {
@@ -77,8 +75,8 @@ public class EditingRepositoryController {
             } else {
                 exceptionLabel.setVisible(false);
             }
-            if (textField.getText().length() > 45) {
-                String text = textField.getText().substring(0, 45);
+            if (textField.getText().length() > 50) {
+                String text = textField.getText().substring(0, 50);
                 textField.setText(text);
             }
         });
@@ -91,7 +89,7 @@ public class EditingRepositoryController {
         textField.setText(textField.getText().trim());
         textField.setText(textField.getText().substring(0, 1).toUpperCase() + textField.getText().substring(1));
         boolean right = true;
-        Pattern pattern = Pattern.compile("[^a-zA-Zа-яА-ЯіІїЇєЄ'\'.'\','\'/()\\s\\d-]");
+        Pattern pattern = Pattern.compile("[^a-zA-Zа-яА-ЯіІїЇєЄ&\\s-]");
         textField.setText(textField.getText().trim());
         Matcher matcher = pattern.matcher(textField.getText());
         if (matcher.find()) {
@@ -114,21 +112,21 @@ public class EditingRepositoryController {
         return isEmpty;
     }
 
-    public void setSettingsRepositoryController(SettingsRepositoryController settingsRepositoryController) {
-        this.settingsRepositoryController = settingsRepositoryController;
+    public void setSettingsCustomersController(SettingsCustomersController settingsCustomersController) {
+        this.settingsCustomersController = settingsCustomersController;
     }
 
-    public void setDtoRepository(DTORepository dtoRepository) {
-        this.dtoRepository = dtoRepository;
+    public void setDtoCustomers(DTOCustomers dtoCustomers) {
+        this.dtoCustomers = dtoCustomers;
         initTitleLabelText();
     }
 
     private void initTitleLabelText(){
-        if (dtoRepository == null) {
-            titleLabel.setText("Створити категорію");
+        if (dtoCustomers == null) {
+            titleLabel.setText("Створити замовника");
         } else {
-            titleLabel.setText("Редагувати категорію");
-            setTextToTextField(dtoRepository.getName());
+            titleLabel.setText("Редагувати замовника");
+            setTextToTextField(dtoCustomers.getName());
         }
     }
 
@@ -136,7 +134,4 @@ public class EditingRepositoryController {
         textField.setText(text);
     }
 
-    public void setWindowStocksController(WindowStocksController windowStocksController) {
-        this.windowStocksController = windowStocksController;
-    }
 }

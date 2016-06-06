@@ -13,8 +13,6 @@ import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 import object.dto.DTOCustomers;
-import stocks.EditingRepositoryController;
-import stocks.dto.DTORepository;
 import subsidiary.classes.AlertWindow;
 import java.io.IOException;
 import java.util.Collection;
@@ -22,6 +20,7 @@ import static object.ODBC_PubsBD.selectCustomersList;
 
 public class SettingsCustomersController<T extends DTOCustomers> {
 
+    public Button addButton;
     public Button editButton;
     public Button removeButton;
     public ListView<T> listView;
@@ -32,7 +31,7 @@ public class SettingsCustomersController<T extends DTOCustomers> {
     @FXML
     public void initialize(){
         initContextMenu();
-        listView.setPlaceholder(new Label("Тут покищо немає жодного складу"));
+        listView.setPlaceholder(new Label("Тут покищо немає жодного замовника"));
         listView.setItems(categoryDataList);
         listView.getSelectionModel().selectedItemProperty().addListener(event -> {
             if ((listView.getSelectionModel().getSelectedItem()) != null) {
@@ -50,7 +49,7 @@ public class SettingsCustomersController<T extends DTOCustomers> {
     }
 
     public void createButtonAction(ActionEvent actionEvent) {
-        showEditingRepositoryWindow(null);
+        showEditingCustomersWindow(null);
     }
 
     public void closeButtonAction(ActionEvent actionEvent) {
@@ -58,21 +57,25 @@ public class SettingsCustomersController<T extends DTOCustomers> {
     }
 
     private void initContextMenu() {
-        MenuItem createItem = new MenuItem("Створити новий склад");
-        createItem.setOnAction((ActionEvent event) -> showEditingRepositoryWindow(null));
+        MenuItem addItem = new MenuItem("Додати");
+        addItem.setOnAction((ActionEvent event) -> addCustomer());
+        addItem.setDisable(true);
 
-        MenuItem editItem = new MenuItem("Редагувати склад");
+        MenuItem createItem = new MenuItem("Створити нового замовника");
+        createItem.setOnAction((ActionEvent event) -> showEditingCustomersWindow(null));
+
+        MenuItem editItem = new MenuItem("Редагувати замовника");
         editItem.setOnAction((ActionEvent event) -> {
-//            showEditingRepositoryWindow(listView.getSelectionModel().getSelectedItem());
+            showEditingCustomersWindow(listView.getSelectionModel().getSelectedItem());
         });
         editItem.setDisable(true);
 
-        MenuItem removeItem = new MenuItem("Видалити склад");
-        removeItem.setOnAction((ActionEvent event) -> removeCategory());
+        MenuItem removeItem = new MenuItem("Видалити замовника");
+//        removeItem.setOnAction((ActionEvent event) -> removeCategory());
 
         removeItem.setDisable(true);
         final ContextMenu cellMenu = new ContextMenu();
-        cellMenu.getItems().addAll(createItem, editItem, removeItem);
+        cellMenu.getItems().addAll(addItem, createItem, editItem, removeItem);
 
         listView.setContextMenu(cellMenu);
     }
@@ -82,9 +85,9 @@ public class SettingsCustomersController<T extends DTOCustomers> {
         stage.close();
     }
 
-    private void showEditingRepositoryWindow(DTORepository dtoRepository){
+    private void showEditingCustomersWindow(DTOCustomers dtoCustomers){
         Stage primaryStage = new Stage();
-        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/stocks/EditingRepository.fxml"));
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/object/EditingCustomers.fxml"));
         Parent root = null;
         try {
             root = fxmlLoader.load();
@@ -92,10 +95,9 @@ public class SettingsCustomersController<T extends DTOCustomers> {
             e.printStackTrace();
         }
 
-        EditingRepositoryController editingRepositoryController = fxmlLoader.getController();
-//        editingRepositoryController.setSettingsRepositoryController(this);
-//        editingRepositoryController.setWindowStocksController(infoObjectsController);
-        editingRepositoryController.setDtoRepository(dtoRepository);
+        EditingCustomersController editingCustomersController = fxmlLoader.getController();
+        editingCustomersController.setSettingsCustomersController(this);
+        editingCustomersController.setDtoCustomers(dtoCustomers);
 
         primaryStage.initStyle(StageStyle.TRANSPARENT);
         primaryStage.setScene(new Scene(root, 300, 162, Color.rgb(0, 0, 0, 0)));
@@ -116,7 +118,7 @@ public class SettingsCustomersController<T extends DTOCustomers> {
     }
 
     public void editButtonAction(ActionEvent actionEvent) {
-//        showEditingRepositoryWindow(listView.getSelectionModel().getSelectedItem());
+        showEditingCustomersWindow(listView.getSelectionModel().getSelectedItem());
     }
 
     public void removeButtonAction(ActionEvent actionEvent) {
@@ -124,10 +126,12 @@ public class SettingsCustomersController<T extends DTOCustomers> {
     }
 
     private void setButtonsDisable(boolean isDisable){
+        addButton.setDisable(isDisable);
         editButton.setDisable(isDisable);
         removeButton.setDisable(isDisable);
-        listView.getContextMenu().getItems().get(1).setDisable(isDisable);
+        listView.getContextMenu().getItems().get(0).setDisable(isDisable);
         listView.getContextMenu().getItems().get(2).setDisable(isDisable);
+        listView.getContextMenu().getItems().get(3).setDisable(isDisable);
     }
 
     public void setInfoObjectsController(InfoObjectsController infoObjectsController) {
@@ -135,6 +139,11 @@ public class SettingsCustomersController<T extends DTOCustomers> {
     }
 
     public void addButtonAction(ActionEvent actionEvent) {
+        addCustomer();
+    }
 
+    private void addCustomer(){
+        infoObjectsController.initCustomersView(listView.getSelectionModel().getSelectedItem().getId());
+        close();
     }
 }
