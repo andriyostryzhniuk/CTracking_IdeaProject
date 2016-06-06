@@ -30,7 +30,7 @@
                                         onAction="#closeButtonAction" prefWidth="90.0" text="Закрити"
                                         GridPane.rowIndex="3"/>
                                 <Button fx:id="addButton" maxWidth="90.0" minWidth="90.0" mnemonicParsing="false"
-                                        onAction="#addButtonAction" prefWidth="90.0" text="Додати"/>
+                                        onAction="#addButtonAction" prefWidth="90.0" text="Створити"/>
                                 <Button fx:id="editButton" disable="true" maxWidth="90.0" minWidth="90.0"
                                         mnemonicParsing="false" onAction="#editButtonAction" prefWidth="90.0"
                                         text="Редагувати" GridPane.rowIndex="1"/>

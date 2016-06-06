@@ -69,7 +69,7 @@ public class SettingsStockCategoryController<T extends DTOStockCategory> {
     }
 
     private void initContextMenu() {
-        MenuItem createItem = new MenuItem("Додати нову категорію");
+        MenuItem createItem = new MenuItem("Створити нову категорію");
         createItem.setOnAction((ActionEvent event) -> showEditingCategoryWindow(null));
 
         MenuItem editItem = new MenuItem("Редагувати категорію");

@@ -1,4 +1,4 @@
-package stocks;
+package object;
 
 import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
@@ -8,28 +8,26 @@ import javafx.fxml.FXMLLoader;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
-import javafx.scene.control.ContextMenu;
 import javafx.scene.paint.Color;
 import javafx.stage.Modality;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
+import object.dto.DTOCustomers;
+import stocks.EditingRepositoryController;
 import stocks.dto.DTORepository;
 import subsidiary.classes.AlertWindow;
-
 import java.io.IOException;
 import java.util.Collection;
+import static object.ODBC_PubsBD.selectCustomersList;
 
-import static stocks.ODBC_PubsBD.deleteFromRepository;
-import static stocks.ODBC_PubsBD.selectRepositoryList;
-
-public class SettingsRepositoryController<T extends DTORepository> {
+public class SettingsCustomersController<T extends DTOCustomers> {
 
     public Button editButton;
     public Button removeButton;
     public ListView<T> listView;
 
     private ObservableList<T> categoryDataList = FXCollections.observableArrayList();
-    private WindowStocksController windowStocksController;
+    private InfoObjectsController infoObjectsController;
 
     @FXML
     public void initialize(){
@@ -48,10 +46,10 @@ public class SettingsRepositoryController<T extends DTORepository> {
     public void initTableView(){
         categoryDataList.clear();
         listView.getItems().clear();
-        categoryDataList.addAll((Collection<? extends T>) selectRepositoryList());
+        categoryDataList.addAll((Collection<? extends T>) selectCustomersList());
     }
 
-    public void addButtonAction(ActionEvent actionEvent) {
+    public void createButtonAction(ActionEvent actionEvent) {
         showEditingRepositoryWindow(null);
     }
 
@@ -65,7 +63,7 @@ public class SettingsRepositoryController<T extends DTORepository> {
 
         MenuItem editItem = new MenuItem("Редагувати склад");
         editItem.setOnAction((ActionEvent event) -> {
-            showEditingRepositoryWindow(listView.getSelectionModel().getSelectedItem());
+//            showEditingRepositoryWindow(listView.getSelectionModel().getSelectedItem());
         });
         editItem.setDisable(true);
 
@@ -95,8 +93,8 @@ public class SettingsRepositoryController<T extends DTORepository> {
         }
 
         EditingRepositoryController editingRepositoryController = fxmlLoader.getController();
-        editingRepositoryController.setSettingsRepositoryController(this);
-        editingRepositoryController.setWindowStocksController(windowStocksController);
+//        editingRepositoryController.setSettingsRepositoryController(this);
+//        editingRepositoryController.setWindowStocksController(infoObjectsController);
         editingRepositoryController.setDtoRepository(dtoRepository);
 
         primaryStage.initStyle(StageStyle.TRANSPARENT);
@@ -112,13 +110,13 @@ public class SettingsRepositoryController<T extends DTORepository> {
         if (! alertWindow.showDeletingWarning()) {
             return;
         }
-        deleteFromRepository(listView.getSelectionModel().getSelectedItem());
-        windowStocksController.refreshRepository();
+//        deleteFromRepository(listView.getSelectionModel().getSelectedItem());
+//        infoObjectsController.refreshRepository();
         initTableView();
     }
 
     public void editButtonAction(ActionEvent actionEvent) {
-        showEditingRepositoryWindow(listView.getSelectionModel().getSelectedItem());
+//        showEditingRepositoryWindow(listView.getSelectionModel().getSelectedItem());
     }
 
     public void removeButtonAction(ActionEvent actionEvent) {
@@ -132,8 +130,11 @@ public class SettingsRepositoryController<T extends DTORepository> {
         listView.getContextMenu().getItems().get(2).setDisable(isDisable);
     }
 
-    public void setWindowStocksController(WindowStocksController windowStocksController) {
-        this.windowStocksController = windowStocksController;
+    public void setInfoObjectsController(InfoObjectsController infoObjectsController) {
+        this.infoObjectsController = infoObjectsController;
     }
 
+    public void addButtonAction(ActionEvent actionEvent) {
+
+    }
 }

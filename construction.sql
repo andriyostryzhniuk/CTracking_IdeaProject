@@ -4,6 +4,10 @@
 -- ------------------------------------------------------
 -- Server version	5.7.9-log
 
+drop database if exists construction;
+create database construction;
+use construction;
+
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
@@ -61,7 +65,7 @@ CREATE TABLE `employees` (
   `imagesURL` varchar(10) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=22 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -88,8 +92,8 @@ CREATE TABLE `emptelephone` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`),
   KEY `fk_E_Telephone_employees1_idx` (`employees_id`),
-  CONSTRAINT `fk_E_Telephone_employees1` FOREIGN KEY (`employees_id`) REFERENCES `employees` (`id`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=31 DEFAULT CHARSET=utf8;
+  CONSTRAINT `fk_E_Telephone_employees1` FOREIGN KEY (`employees_id`) REFERENCES `employees` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
+) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -121,7 +125,7 @@ CREATE TABLE `object` (
   UNIQUE KEY `id_UNIQUE` (`id`),
   KEY `fk_object_customers1_idx` (`customers_id`),
   CONSTRAINT `fk_object_customers1` FOREIGN KEY (`customers_id`) REFERENCES `customers` (`id`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -130,7 +134,7 @@ CREATE TABLE `object` (
 
 LOCK TABLES `object` WRITE;
 /*!40000 ALTER TABLE `object` DISABLE KEYS */;
-INSERT INTO `object` VALUES (1,'м. Івано-Франківськ, вул. Мельника, 24','2015-09-07','2015-10-21',1,70000.00,'теестовий текст нотататки про об\'єкт'),(2,'м. Івано-Франківськ, вул. Сахарова, 247','2015-12-19',NULL,2,100000.00,NULL),(3,'м. Івано-Франківськ, вул. Цалевича, 45','2016-01-18',NULL,1,35000.00,'нема що написати, але мушу щось написати, тому щось написав'),(4,'м. Івано-Франківськ','2015-04-21','2017-04-21',2,35000.00,NULL);
+INSERT INTO `object` VALUES (1,'м. Івано-Франківськ, вул. Мельника, 24','2015-09-07','2015-10-21',1,70000.00,'теестовий текст нотататки про об\'єкт'),(2,'м. Івано-Франкaвськ, вул. Сахарова, 247','2015-12-19',NULL,1,100000.00,NULL),(3,'м. Івано-Франківськ, вул. Цалевича, 45','2016-01-18',NULL,1,35000.00,'нема що написати, але мушу щось написати, тому щось написав'),(4,'м. Івано-Франківськ','2015-04-21','2017-04-21',2,35000.00,NULL);
 /*!40000 ALTER TABLE `object` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -153,7 +157,7 @@ CREATE TABLE `object_employees` (
   KEY `fk_object_employees_object1_idx` (`object_id`),
   CONSTRAINT `fk_object_employees_employees1` FOREIGN KEY (`employees_id`) REFERENCES `employees` (`id`) ON UPDATE CASCADE,
   CONSTRAINT `fk_object_employees_object1` FOREIGN KEY (`object_id`) REFERENCES `object` (`id`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=114 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=120 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -178,7 +182,7 @@ CREATE TABLE `repository` (
   `name` varchar(45) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `idrepository_UNIQUE` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -203,7 +207,7 @@ CREATE TABLE `skills` (
   `skill` varchar(45) NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -231,7 +235,7 @@ CREATE TABLE `skills_employees` (
   UNIQUE KEY `id_UNIQUE` (`id`),
   KEY `fk_skills_employees1_idx` (`employees_id`),
   KEY `fk_skills_skills1_idx` (`skills_id`),
-  CONSTRAINT `fk_skills_employees1` FOREIGN KEY (`employees_id`) REFERENCES `employees` (`id`) ON UPDATE CASCADE,
+  CONSTRAINT `fk_skills_employees1` FOREIGN KEY (`employees_id`) REFERENCES `employees` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_skills_skills1` FOREIGN KEY (`skills_id`) REFERENCES `skills` (`id`) ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
@@ -267,7 +271,7 @@ CREATE TABLE `stock` (
   KEY `fk_stock_repository1_idx` (`repository_id`),
   CONSTRAINT `fk_stock_repository1` FOREIGN KEY (`repository_id`) REFERENCES `repository` (`id`) ON UPDATE CASCADE,
   CONSTRAINT `fk_stock_stockType2` FOREIGN KEY (`stockCategory_id`) REFERENCES `stockcategory` (`id`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=50 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -276,7 +280,7 @@ CREATE TABLE `stock` (
 
 LOCK TABLES `stock` WRITE;
 /*!40000 ALTER TABLE `stock` DISABLE KEYS */;
-INSERT INTO `stock` VALUES (1,NULL,1,5.00,'доступно',NULL,2),(2,NULL,1,5.00,'доступно',NULL,2),(3,NULL,1,5.00,'доступно',NULL,2),(4,NULL,1,5.00,'доступно',NULL,2),(5,NULL,1,5.00,'доступно',NULL,2),(6,NULL,1,5.00,'доступно',NULL,2),(7,NULL,1,5.00,'доступно',NULL,2),(8,NULL,1,5.00,'доступно',NULL,2),(9,NULL,1,5.00,'доступно',NULL,2),(10,NULL,1,5.00,'доступно',NULL,2),(11,'Kende ММА-250',2,23400.00,'доступно',NULL,1),(12,'Патон ВДІ-200E DC MMA',2,4199.00,'в ремонті','щось зломано',1),(13,'Bosch Professional GBH 2-24DF',3,3999.00,'доступно','The setFocusTraversable(false) disables the focus traversing (by TAB and SHIFT+TAB) for that node. \n The setFocusTraversable(false) disables the focus traversing (by TAB and SHIFT+TAB) for that node. \n The setFocusTraversable(false) disables the focus traversing (by TAB and SHIFT+TAB) for that node. \n The setFocusTraversable(false)',1),(14,'Forte PLRH 3216 RV',3,2085.00,'доступно',NULL,1),(15,'Tylon 30м',4,35.50,'доступно',NULL,2),(16,'Tylon 30м',4,35.50,'списано',NULL,1),(17,'10м',4,24.00,'доступно',NULL,2),(18,'15м',4,31.00,'доступно',NULL,2),(19,'InterTool HT-0022',5,36.00,'доступно','Рамоподібний',1),(20,'FAVORIT 12-009',5,58.00,'доступно',NULL,1),(21,'Bosch GWS 850 CE',6,1758.00,'списано',NULL,1),(22,'Makita GA9020',6,3095.00,'доступно',NULL,1),(23,'500м',7,30.00,'списано',NULL,1),(24,'500м',7,30.00,'списано',NULL,2),(25,'500м',7,30.00,'списано',NULL,2),(26,'500м',7,30.00,'списано',NULL,2),(27,'500м',7,30.00,'доступно',NULL,2),(28,'INTERTOOL MT-1270',8,161.00,'доступно',NULL,1),(29,'INTERTOOL MT-1270',8,161.00,'доступно',NULL,1),(30,'Monolith РЦ 2,0 мм 1 кг',9,61.00,'списано',NULL,1),(31,'Monolith РЦ 2,0 мм 1 кг',9,61.00,'списано',NULL,1),(32,'Monolith РЦ 2,0 мм 1 кг',9,61.00,'доступно',NULL,2),(33,'pro 100',8,200.00,'доступно',NULL,2);
+INSERT INTO `stock` VALUES (1,NULL,1,5.00,'доступно',NULL,2),(2,NULL,1,5.00,'доступно',NULL,2),(3,NULL,1,5.00,'доступно',NULL,2),(4,NULL,1,5.00,'доступно',NULL,2),(5,NULL,1,5.00,'доступно',NULL,2),(6,NULL,1,5.00,'доступно',NULL,2),(7,NULL,1,5.00,'доступно',NULL,2),(8,NULL,1,5.00,'доступно',NULL,2),(9,NULL,1,5.00,'доступно',NULL,2),(10,NULL,1,5.00,'доступно',NULL,2),(11,'Kende ММА-250',2,23400.00,'доступно',NULL,1),(12,'Патон ВДІ-200E DC MMA',2,4199.00,'в ремонті','щось зломано',1),(13,'Bosch Professional GBH 2-24DF',3,3999.00,'доступно','The setFocusTraversable(false) disables the focus traversing (by TAB and SHIFT+TAB) for that node. \n The setFocusTraversable(false) disables the focus traversing (by TAB and SHIFT+TAB) for that node. \n The setFocusTraversable(false) disables the focus traversing (by TAB and SHIFT+TAB) for that node. \n The setFocusTraversable(false)',1),(14,'Forte PLRH 3216 RV',3,2085.00,'доступно',NULL,1),(15,'Tylon 30м',4,35.50,'доступно',NULL,2),(16,'Tylon 30м',4,35.50,'списано',NULL,1),(17,'10м',4,24.00,'доступно',NULL,2),(18,'15м',4,31.00,'доступно',NULL,2),(19,'InterTool HT-0022',5,36.00,'доступно','Рамоподібний',1),(20,'FAVORIT 12-009',5,58.00,'доступно',NULL,1),(21,'Bosch GWS 850 CE',6,1758.00,'списано',NULL,1),(22,'Makita GA9020',6,3095.00,'доступно',NULL,1),(23,'500м',7,30.00,'списано',NULL,1),(24,'500м',7,30.00,'списано',NULL,2),(25,'500м',7,30.00,'списано',NULL,2),(26,'500м',7,30.00,'списано',NULL,2),(27,'500м',7,30.00,'доступно',NULL,2),(28,'INTERTOOL MT-1270',8,161.00,'доступно',NULL,1),(29,'INTERTOOL MT-1270',8,161.00,'доступно','fdhtrhertherthethet',1),(30,'Monolith РЦ 2,0 мм 1 кг',9,61.00,'списано',NULL,1),(31,'Monolith РЦ 2,0 мм 1 кг',9,61.00,'списано',NULL,1),(36,'Monolith РЦ 2,0 мм 1 кг',9,61.00,'доступно',NULL,2);
 /*!40000 ALTER TABLE `stock` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -293,7 +297,7 @@ CREATE TABLE `stockcategory` (
   `type` enum('Вартісні','Розхідні') NOT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=11 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -328,7 +332,7 @@ CREATE TABLE `stocktracking` (
   CONSTRAINT `fk_stockAccountability_employees1` FOREIGN KEY (`employees_id`) REFERENCES `employees` (`id`) ON UPDATE CASCADE,
   CONSTRAINT `fk_stockAccountability_object1` FOREIGN KEY (`object_id`) REFERENCES `object` (`id`) ON UPDATE CASCADE,
   CONSTRAINT `fk_stockAccountability_stock1` FOREIGN KEY (`stock_id`) REFERENCES `stock` (`id`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=83 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=70 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -361,7 +365,7 @@ CREATE TABLE `table_days_of_month` (
 
 LOCK TABLES `table_days_of_month` WRITE;
 /*!40000 ALTER TABLE `table_days_of_month` DISABLE KEYS */;
-INSERT INTO `table_days_of_month` VALUES ('2016-06-01'),('2016-06-02'),('2016-06-03'),('2016-06-04'),('2016-06-05'),('2016-06-06'),('2016-06-07'),('2016-06-08'),('2016-06-09'),('2016-06-10'),('2016-06-11'),('2016-06-12'),('2016-06-13'),('2016-06-14'),('2016-06-15'),('2016-06-16'),('2016-06-17'),('2016-06-18'),('2016-06-19'),('2016-06-20'),('2016-06-21'),('2016-06-22'),('2016-06-23'),('2016-06-24'),('2016-06-25'),('2016-06-26'),('2016-06-27'),('2016-06-28'),('2016-06-29'),('2016-06-30'),('2016-07-01');
+INSERT INTO `table_days_of_month` VALUES ('2016-05-01'),('2016-05-02'),('2016-05-03'),('2016-05-04'),('2016-05-05'),('2016-05-06'),('2016-05-07'),('2016-05-08'),('2016-05-09'),('2016-05-10'),('2016-05-11'),('2016-05-12'),('2016-05-13'),('2016-05-14'),('2016-05-15'),('2016-05-16'),('2016-05-17'),('2016-05-18'),('2016-05-19'),('2016-05-20'),('2016-05-21'),('2016-05-22'),('2016-05-23'),('2016-05-24'),('2016-05-25'),('2016-05-26'),('2016-05-27'),('2016-05-28'),('2016-05-29'),('2016-05-30'),('2016-05-31');
 /*!40000 ALTER TABLE `table_days_of_month` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -381,7 +385,7 @@ CREATE TABLE `techinspection` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`),
   KEY `fk_techInspection_customers1_idx` (`customers_id`),
-  CONSTRAINT `fk_techInspection_customers1` FOREIGN KEY (`customers_id`) REFERENCES `customers` (`id`) ON UPDATE CASCADE
+  CONSTRAINT `fk_techInspection_customers1` FOREIGN KEY (`customers_id`) REFERENCES `customers` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -409,7 +413,7 @@ CREATE TABLE `techtelephone` (
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`),
   KEY `fk_techTelephone_techInspection1_idx` (`techInspection_id`),
-  CONSTRAINT `fk_techTelephone_techInspection1` FOREIGN KEY (`techInspection_id`) REFERENCES `techinspection` (`id`) ON UPDATE CASCADE
+  CONSTRAINT `fk_techTelephone_techInspection1` FOREIGN KEY (`techInspection_id`) REFERENCES `techinspection` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
@@ -439,7 +443,7 @@ CREATE TABLE `worktracking` (
   UNIQUE KEY `id_UNIQUE` (`id`),
   KEY `fk_attendance_object_employees1_idx` (`object_employees_id`),
   CONSTRAINT `fk_attendance_object_employees1` FOREIGN KEY (`object_employees_id`) REFERENCES `object_employees` (`id`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=50 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=51 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -461,4 +465,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-06-01 22:56:13
+-- Dump completed on 2016-06-05 21:13:11

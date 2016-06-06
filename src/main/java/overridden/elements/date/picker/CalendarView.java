@@ -210,7 +210,7 @@ public class CalendarView extends VBox {
 
     /**
      * Gets the list of disabled week days.
-     * E.g. if you addButtonAction <code>Calendar.WEDNESDAY</code>, Wednesday will be disabled.
+     * E.g. if you createButtonAction <code>Calendar.WEDNESDAY</code>, Wednesday will be disabled.
      *
      * @return The list.
      */
@@ -223,7 +223,7 @@ public class CalendarView extends VBox {
 
     /**
      * Gets the list of disabled dates.
-     * You can addButtonAction specific date, in order to disable them.
+     * You can createButtonAction specific date, in order to disable them.
      *
      * @return The list.
      */

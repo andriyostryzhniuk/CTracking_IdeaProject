@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import java.lang.*?>
+<?import javafx.scene.text.*?>
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.*?>
+<?import javafx.geometry.*?>
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<Group fx:id="rootGroup" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+       fx:controller="object.SelectingMethodOfAddingController">
+    <children>
+        <Rectangle arcHeight="15.0" arcWidth="15.0" fill="#0000008c" height="180.0" stroke="#ffffffe5"
+                   strokeType="INSIDE" strokeWidth="1.5" width="260.0"/>
+        <GridPane alignment="CENTER" prefHeight="180.0" prefWidth="260.0">
+            <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="100.0"/>
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints minHeight="10.0" prefHeight="30.0" valignment="CENTER" vgrow="SOMETIMES"/>
+            </rowConstraints>
+            <children>
+                <GridPane fx:id="controlsGridPane" maxHeight="-Infinity" maxWidth="-Infinity" minHeight="-Infinity"
+                          minWidth="-Infinity" GridPane.halignment="CENTER" GridPane.valignment="CENTER">
+                    <columnConstraints>
+                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="130.0" minWidth="130.0" prefWidth="130.0"/>
+                    </columnConstraints>
+                    <rowConstraints>
+                        <RowConstraints maxHeight="40.0" minHeight="40.0" prefHeight="40.0" vgrow="SOMETIMES"/>
+                        <RowConstraints maxHeight="40.0" minHeight="40.0" prefHeight="40.0" vgrow="SOMETIMES"/>
+                        <RowConstraints maxHeight="40.0" minHeight="40.0" prefHeight="40.0" vgrow="SOMETIMES"/>
+                    </rowConstraints>
+                    <GridPane.margin>
+                        <Insets top="10.0"/>
+                    </GridPane.margin>
+                    <children>
+                        <Button minWidth="130.0" mnemonicParsing="false" onAction="#chooseButtonAction"
+                                text="Вибрати існуючого"/>
+                        <Button minWidth="130.0" mnemonicParsing="false" onAction="#createButtonAction"
+                                text="Створити нового" GridPane.rowIndex="1"/>
+                        <Button minWidth="130.0" mnemonicParsing="false" onAction="#escapeButtonAction" text="Скасувати"
+                                GridPane.rowIndex="2"/>
+                    </children>
+                </GridPane>
+            </children>
+        </GridPane>
+        <Pane prefHeight="40.0" prefWidth="260.0">
+            <children>
+                <Label fx:id="titleLabel" layoutX="14.0" layoutY="5.0" text="Виберіть спосіб додавання замовника"
+                       textFill="WHITE">
+                    <font>
+                        <Font size="13.0"/>
+                    </font>
+                </Label>
+            </children>
+        </Pane>
+    </children>
+</Group>

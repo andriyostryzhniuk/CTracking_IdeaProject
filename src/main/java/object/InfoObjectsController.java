@@ -1,12 +1,23 @@
 package object;
 
+import javafx.fxml.FXMLLoader;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.StackPane;
+import javafx.scene.paint.Color;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import javafx.util.Callback;
+import object.dto.DTOCustomers;
 import object.dto.DTOObject;
 
+import java.io.IOException;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.util.regex.Matcher;
@@ -16,6 +27,8 @@ import static object.ODBC_PubsBD.*;
 
 public class InfoObjectsController {
 
+    public GridPane rootGridPane;
+    public GridPane controlsGridPane;
     public TextField addressTextField;
     public Label addressExceptionLabel;
     public DatePicker startDateDatePicker;
@@ -24,6 +37,12 @@ public class InfoObjectsController {
     public Label costExceptionLabel;
     public Button rejectFinishDateButton;
     public TextArea notesTextArea;
+
+    public StackPane customersStackPane;
+    public Button addCustomerButton;
+    public Label customersExceptionLabel;
+    private CustomersViewController customersViewController;
+
     private DTOObject dtoObject;
     private WindowObjectsController windowObjectsController;
 
@@ -34,6 +53,7 @@ public class InfoObjectsController {
         startDateDatePicker.setOnMouseEntered(event -> setStartDateDatePickerValidation());
         finishDateDatePicker.setOnMouseEntered(event -> setFinishDateDatePickerValidation());
         setPriceTextFieldListener();
+        initAddCustomerButton();
         initSaveButton();
     }
 
@@ -60,8 +80,27 @@ public class InfoObjectsController {
                 notes = notesTextArea.getText();
             }
 
+            if (customersViewController != null) {
+                if (customersViewController.addressIsEmpty(customersViewController.getNameTextField()) ||
+                        ! customersViewController.textFieldMatcherFind(customersViewController.getNameTextField(),
+                                Pattern.compile("[^a-zA-Zа-яА-ЯіІїЇєЄ&\\s-]"))){
+                    return;
+                }
+                DTOCustomers dtoCustomers = customersViewController.getDtoCustomers();
+                if (dtoCustomers.getId() != null) {
+                    updateCustomers(dtoCustomers);
+                } else {
+                    dtoCustomers.setId(insertIntoCustomers(dtoCustomers));
+                }
+                dtoObject.setCustomersId(dtoCustomers.getId());
+            } else {
+                customersExceptionLabel.setVisible(true);
+                return;
+            }
+
             dtoObject = new DTOObject(dtoObject.getObjectsId(), addressTextField.getText(),
-                    startDateDatePicker.getValue(), finishDateDatePicker.getValue(), 1, cost, notes);
+                    startDateDatePicker.getValue(), finishDateDatePicker.getValue(),
+                    dtoObject.getCustomersId(), cost, notes);
 
             if (dtoObject.getObjectsId() != null) {
                 updateObject(dtoObject);
@@ -82,6 +121,9 @@ public class InfoObjectsController {
             costTextField.setText(dtoObject.getEstimatedCost().toString());
         }
         notesTextArea.setText(dtoObject.getNotes());
+        if (dtoObject.getCustomersId() != null) {
+            initCustomersView(dtoObject.getCustomersId());
+        }
     }
 
     private void initRejectBirthDateButton(){
@@ -151,7 +193,7 @@ public class InfoObjectsController {
     }
 
     private void setNotesTextAreaListener(){
-        notesTextArea.setTooltip(new Tooltip("Тут Ви можете написати будь-які нотатки"));
+        notesTextArea.setTooltip(new Tooltip("Тут Ви можете написати будь-які нотатки\nпро об'єкт"));
         notesTextArea.textProperty().addListener((ov, oldValue, newValue) -> {
             if (newValue != null) {
                 if (notesTextArea.getText().length() > 500) {
@@ -220,7 +262,7 @@ public class InfoObjectsController {
         if (dtoObject.getObjectsId() != null) {
             minFinishDate = determineMaxDate(minFinishDate, selectMinObjEmpStartDate(dtoObject.getObjectsId()));
             minFinishDate = determineMaxDate(minFinishDate, selectMinObjEmpFinishDate(dtoObject.getObjectsId()));
-            minFinishDate = determineMaxDate(minFinishDate, selectMaxWorckTrackingDate(dtoObject.getObjectsId()));
+            minFinishDate = determineMaxDate(minFinishDate, selectMaxWorkTrackingDate(dtoObject.getObjectsId()));
             minFinishDate = determineMaxDate(minFinishDate, selectMaxStockTrackingGivingDate(dtoObject.getObjectsId()));
             minFinishDate = determineMaxDate(minFinishDate, selectMaxStockTrackingReturnDate(dtoObject.getObjectsId()));
         }
@@ -285,6 +327,46 @@ public class InfoObjectsController {
         return isRight;
     }
 
+    private void initAddCustomerButton(){
+        addCustomerButton.setOnAction(event -> {
+            customersExceptionLabel.setVisible(false);
+            showSelectingMethodOfAddingWindow();
+        });
+    }
+
+    private void showSelectingMethodOfAddingWindow() {
+        Stage primaryStage = new Stage();
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/object/SelectingMethodOfAdding.fxml"));
+        Parent root = null;
+        try {
+            root = fxmlLoader.load();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        SelectingMethodOfAddingController selectingMethodOfAddingController = fxmlLoader.getController();
+        selectingMethodOfAddingController.setInfoObjectsController(this);
+
+        primaryStage.initStyle(StageStyle.TRANSPARENT);
+        primaryStage.setScene(new Scene(root, 260, 180, Color.rgb(0, 0, 0, 0)));
+        primaryStage.initModality(Modality.WINDOW_MODAL);
+        primaryStage.initOwner(addressTextField.getScene().getWindow());
+        primaryStage.showAndWait();
+    }
+
+    public void initCustomersView(Integer customersId){
+        addCustomerButton.setDisable(true);
+        addCustomerButton.setVisible(false);
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/object/CustomersView.fxml"));
+        try {
+            customersStackPane.getChildren().add(fxmlLoader.load());
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+        customersViewController = fxmlLoader.getController();
+        customersViewController.initData(customersId);
+    }
+
     public void setWindowObjectsController(WindowObjectsController windowObjectsController) {
         this.windowObjectsController = windowObjectsController;
     }
@@ -296,5 +378,9 @@ public class InfoObjectsController {
 
     public DTOObject getDtoObject() {
         return dtoObject;
+    }
+
+    public GridPane getRootGridPane() {
+        return rootGridPane;
     }
 }

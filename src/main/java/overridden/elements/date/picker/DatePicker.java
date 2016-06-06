@@ -197,7 +197,7 @@ public class DatePicker extends HBox {
             }
         });
         getChildren().add(textField);
-        //getChildren().addButtonAction(button);
+        //getChildren().createButtonAction(button);
     }
 
     private void hidePopup() {

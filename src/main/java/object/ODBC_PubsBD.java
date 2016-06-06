@@ -1,6 +1,7 @@
 package object;
 
 import javafx.scene.control.Alert;
+import object.dto.DTOCustomers;
 import object.dto.DTOObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -25,6 +26,7 @@ public class ODBC_PubsBD {
     private static AlertWindow alertWindow = new AlertWindow(Alert.AlertType.ERROR);
 
     private static SimpleJdbcInsert simpleJdbcInsertForEmployees;
+    private static SimpleJdbcInsert simpleJdbcInsertForCustomers;
 
     private static SimpleJdbcInsert getSimpleJdbcInsertForObject() {
         if (simpleJdbcInsertForEmployees == null) {
@@ -34,6 +36,16 @@ public class ODBC_PubsBD {
                     .usingGeneratedKeyColumns("id");
         }
         return simpleJdbcInsertForEmployees;
+    }
+
+    private static SimpleJdbcInsert getSimpleJdbcInsertForCustomers() {
+        if (simpleJdbcInsertForCustomers == null) {
+            simpleJdbcInsertForCustomers = creteSimpleJdbcInsert();
+            simpleJdbcInsertForCustomers
+                    .withTableName("customers")
+                    .usingGeneratedKeyColumns("id");
+        }
+        return simpleJdbcInsertForCustomers;
     }
 
     public static List<DTOObject> selectObjectsList(LocalDate firstDayOfMonth, LocalDate lastDayOfMonth) {
@@ -110,7 +122,7 @@ public class ODBC_PubsBD {
                 new Object []{objectId}, LocalDate.class);
     }
 
-    public static LocalDate selectMaxWorckTrackingDate(Integer objectId) {
+    public static LocalDate selectMaxWorkTrackingDate(Integer objectId) {
         return getJdbcTemplate().queryForObject("select max(worktracking.date) " +
                         "from object_employees, worktracking " +
                         "where object_id = ? and " +
@@ -130,6 +142,53 @@ public class ODBC_PubsBD {
                         "from stocktracking " +
                         "where object_id = ?",
                 new Object []{objectId}, LocalDate.class);
+    }
+
+    public static List<DTOCustomers> selectCustomersList() {
+        return getJdbcTemplate().query("SELECT id, name, notes " +
+                        "from customers " +
+                        "ORDER BY name ASC",
+                BeanPropertyRowMapper.newInstance(DTOCustomers.class));
+    }
+
+    public static DTOCustomers selectCustomer(Integer customersId) {
+        List<DTOCustomers> dtoCustomersList = getJdbcTemplate().query("SELECT id, name, notes " +
+                "from customers " +
+                "WHERE id = ?",
+                BeanPropertyRowMapper.newInstance(DTOCustomers.class), customersId);
+        return dtoCustomersList.get(0);
+    }
+
+    public static Integer insertIntoCustomers(DTOCustomers dtoCustomers){
+        Map<String, Object> parameters = new HashMap<>(2);
+        parameters.put("name", dtoCustomers.getName());
+        parameters.put("notes", dtoCustomers.getNotes());
+        return getSimpleJdbcInsertForCustomers().executeAndReturnKey(parameters).intValue();
+    }
+
+    public static void updateCustomers(DTOCustomers dtoCustomers) {
+        getNamedParameterJdbcTemplate().update("UPDATE customers " +
+                        "SET name = :name, " +
+                        "notes = :notes " +
+                        "WHERE id = :id",
+                new BeanPropertySqlParameterSource(dtoCustomers));
+    }
+
+    public static void updateCustomersInObject(DTOObject dtoObject) {
+        getNamedParameterJdbcTemplate().update("UPDATE object " +
+                        "SET customers_id = :customersId " +
+                        "WHERE id = :objectsId",
+                new BeanPropertySqlParameterSource(dtoObject));
+    }
+
+    public static void deleteFromCustomers(DTOObject dtoObject){
+        try {
+            getNamedParameterJdbcTemplate().update("DELETE FROM customers " +
+                            "WHERE id = :id",
+                    new BeanPropertySqlParameterSource(dtoObject));
+        } catch (DataIntegrityViolationException e) {
+            alertWindow.showDeletingError();
+        }
     }
 
 }
