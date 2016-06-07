@@ -4,9 +4,9 @@
 }
 
 .button:hover {
-    -fx-background-color: rgb(90,93,95);
+    -fx-background-color: rgb(173,173,173);
 }
 
 .button:armed {
-    -fx-background-color: rgb(90,93,95);
+    -fx-background-color: rgb(173,173,173);
 }

@@ -6,7 +6,28 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
+
 <BorderPane fx:id="rootBorderPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
             fx:controller="attendance.tracking.WindowAttendanceController">
-
-    </BorderPane>
+    <top>
+        <GridPane fx:id="topGridPane" minWidth="1200.0" BorderPane.alignment="CENTER">
+            <columnConstraints>
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="150.0" minWidth="150.0" prefWidth="150.0"/>
+                <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="150.0" minWidth="150.0"
+                                   prefWidth="150.0"/>
+                <ColumnConstraints hgrow="SOMETIMES" maxWidth="320.0" minWidth="320.0" prefWidth="320.0"/>
+                <ColumnConstraints hgrow="SOMETIMES"/>
+                <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="70.0" minWidth="70.0"
+                                   prefWidth="70.0"/>
+                <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="250.0" minWidth="250.0"
+                                   prefWidth="250.0"/>
+            </columnConstraints>
+            <rowConstraints>
+                <RowConstraints maxHeight="40.0" minHeight="40.0" prefHeight="40.0" valignment="TOP" vgrow="SOMETIMES"/>
+            </rowConstraints>
+            <BorderPane.margin>
+                <Insets/>
+            </BorderPane.margin>
+        </GridPane>
+    </top>
+</BorderPane>

@@ -1,9 +1,36 @@
  .choice-box {
-    -fx-pref-width: 200;
+     -fx-pref-width: 200;
+     -fx-background-color:
+             #000000,
+             linear-gradient(#737373, #737373),
+             linear-gradient(#545658, #4b4e50),
+             linear-gradient(#545658, #4b4e50);
+     -fx-border-color: rgb(115,115,115);
+     -fx-border-radius: 4;
  }
 
  #choice-box-menu-item {
-    -fx-pref-width: 200;
+     -fx-pref-width: 200;
+     -fx-background-color: rgb(96, 96, 96);
+     -fx-mark-color: rgb(200,200,200);
  }
 
+ .choice-box .label {
+     -fx-text-fill: rgb(200,200,200);
+ }
 
+ .choice-box .context-menu {
+     -fx-background-color: rgb(96,96,96);
+ }
+
+ #choice-box-menu-item:hover {
+     -fx-background-color: rgb(75,110,175);
+ }
+
+ #choice-box-menu-item:pressed {
+     -fx-background-color: rgb(75,110,175);
+ }
+
+ #choice-box-menu-item:focused {
+     -fx-background-color: rgb(75,110,175);
+ }

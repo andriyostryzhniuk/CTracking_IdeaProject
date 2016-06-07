@@ -158,7 +158,7 @@ public class MainWindowController {
     }
 
     public void removeMainGridPaneChildren(){
-        for (int i = mainGridPane.getChildren().size(); i > 1; i--) {
+        for (int i = mainGridPane.getChildren().size(); i > 3; i--) {
             mainGridPane.getChildren().remove(i-1);
         }
         windowAttendanceController = null;

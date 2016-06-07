@@ -1,0 +1,35 @@
+.text {
+    -fx-fill: rgb(230,230,230);
+}
+
+.menu-bar {
+    -fx-background-color: rgb(96,96,96);
+}
+
+.menu:hover {
+    -fx-background-color: rgb(75,110,175);
+}
+
+.menu:pressed {
+    -fx-background-color: rgb(75,110,175);
+}
+
+.menu:showing {
+    -fx-background-color: rgb(75,110,175);
+}
+
+.menu-item:hover {
+    -fx-background-color: rgb(75,110,175);
+}
+
+.menu-item:pressed {
+    -fx-background-color: rgb(75,110,175);
+}
+
+.menu-item:focused {
+    -fx-background-color: rgb(75,110,175);
+}
+
+.context-menu {
+    -fx-background-color: rgb(96,96,96);
+}

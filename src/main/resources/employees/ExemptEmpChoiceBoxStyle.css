@@ -2,6 +2,7 @@
      -fx-min-width: 23;
      -fx-pref-width: 23;
      -fx-max-width: 23;
+     -fx-background-color: transparent ,-fx-box-border,-fx-control-inner-background;
  }
 
  #choice-box-menu-item {

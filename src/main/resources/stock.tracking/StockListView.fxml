@@ -4,30 +4,35 @@
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
-<GridPane fx:id="rootGridPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1" fx:controller="stock.tracking.StockListViewController">
+<GridPane fx:id="rootGridPane" xmlns="http://javafx.com/javafx/8" xmlns:fx="http://javafx.com/fxml/1"
+          fx:controller="stock.tracking.StockListViewController">
     <columnConstraints>
-        <ColumnConstraints hgrow="SOMETIMES" maxWidth="300.0" minWidth="300.0" />
+        <ColumnConstraints hgrow="SOMETIMES" maxWidth="300.0" minWidth="300.0"/>
     </columnConstraints>
     <rowConstraints>
-        <RowConstraints maxHeight="35.0" minHeight="35.0" prefHeight="35.0" valignment="TOP" vgrow="SOMETIMES" />
-        <RowConstraints maxHeight="24.0" minHeight="24.0" prefHeight="24.0" vgrow="SOMETIMES" />
-        <RowConstraints vgrow="SOMETIMES" />
+        <RowConstraints maxHeight="35.0" minHeight="35.0" prefHeight="35.0" valignment="TOP" vgrow="SOMETIMES"/>
+        <RowConstraints maxHeight="24.0" minHeight="24.0" prefHeight="24.0" vgrow="SOMETIMES"/>
+        <RowConstraints vgrow="SOMETIMES"/>
     </rowConstraints>
     <children>
-        <ListView fx:id="listView" fixedCellSize="50.0" maxWidth="300.0" minWidth="300.0" GridPane.rowIndex="2" />
-        <StackPane fx:id="headerStackPane" alignment="CENTER" style="-fx-background-color: rgba(65, 105, 225, .5);" GridPane.rowIndex="1">
+        <ListView fx:id="listView" fixedCellSize="50.0" maxWidth="300.0" minWidth="300.0" GridPane.rowIndex="2"/>
+        <StackPane fx:id="headerStackPane" alignment="CENTER" style="-fx-background-color: rgb(143,143,143);"
+                   GridPane.rowIndex="1">
             <children>
                 <GridPane fx:id="headerGridPane">
                     <children>
-                        <Label fx:id="headerLabel" style="-fx-translate-x: -30;" GridPane.columnIndex="1" />
-                        <Pane fx:id="headerPane" style="-fx-background-color: transparent;" GridPane.columnIndex="1" GridPane.hgrow="SOMETIMES" />
+                        <Label fx:id="headerLabel"
+                               style="-fx-translate-x: -30; -fx-text-fill: rgb(200,200,200); -fx-font-weight: bold;"
+                               GridPane.columnIndex="1"/>
+                        <Pane fx:id="headerPane" style="-fx-background-color: transparent;" GridPane.columnIndex="1"
+                              GridPane.hgrow="SOMETIMES"/>
                     </children>
                     <columnConstraints>
-                        <ColumnConstraints />
-                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES" />
+                        <ColumnConstraints/>
+                        <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES"/>
                     </columnConstraints>
                     <rowConstraints>
-                        <RowConstraints />
+                        <RowConstraints/>
                     </rowConstraints>
                 </GridPane>
             </children>

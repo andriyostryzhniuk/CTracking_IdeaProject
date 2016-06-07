@@ -2,6 +2,7 @@ package attendance.tracking;
 
 import attendance.tracking.dto.DtoObject;
 import javafx.geometry.HPos;
+import javafx.scene.layout.ColumnConstraints;
 import overridden.elements.combo.box.AutoCompleteComboBoxListener;
 import attendance.tracking.dto.DtoEmployeesFullName;
 import javafx.application.Platform;
@@ -38,7 +39,7 @@ public class WindowAttendanceController<T extends DtoEmployeesFullName> {
     private int previousYear;
     private Date previousDate;
     private TableViewController tableViewController;
-    private GridPane topGridPane = new GridPane();
+    public GridPane topGridPane;
     public ComboBox comboBoxListener = new ComboBox();
 
     private ComboBox comboBoxSearch = new ComboBox();
@@ -57,22 +58,22 @@ public class WindowAttendanceController<T extends DtoEmployeesFullName> {
         topGridPane.setHalignment(calendarButton, HPos.RIGHT);
 
         Label label = new Label("Вибрати об'єкт:");
+        label.setStyle("-fx-text-fill:  rgb(200,200,200)");
         topGridPane.add(label, 1, 0);
-        topGridPane.setMargin(label, new Insets(0, 10, 0, 80));
+        topGridPane.setMargin(label, new Insets(3, 10, 0, 0));
 
         comboBox = initComboBox();
         topGridPane.add(comboBox, 2, 0);
 
         Label searchingLabel = new Label("Пошук:");
-        topGridPane.add(searchingLabel, 3, 0);
-        topGridPane.setMargin(searchingLabel, new Insets(0, 10, 0, 150));
+        searchingLabel.setStyle("-fx-text-fill:  rgb(200,200,200)");
+        topGridPane.add(searchingLabel, 4, 0);
+        topGridPane.setMargin(searchingLabel, new Insets(3, 10, 0, 0));
+        topGridPane.setHalignment(searchingLabel, HPos.RIGHT);
 
         initComboBoxSearch();
-        topGridPane.add(comboBoxSearch, 4, 0);
-
-        rootBorderPane.setTop(topGridPane);
-        rootBorderPane.setAlignment(topGridPane, Pos.TOP_LEFT);
-        rootBorderPane.setMargin(topGridPane, new Insets(0.0, 0.0, 10.0, 0.0));
+        topGridPane.add(comboBoxSearch, 5, 0);
+        topGridPane.setHalignment(comboBoxSearch, HPos.RIGHT);
 
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/attendance/tracking/TableView.fxml"));
         try {
@@ -126,9 +127,10 @@ public class WindowAttendanceController<T extends DtoEmployeesFullName> {
                 Object comboBoxValue = comboBox.getValue();
                 if (comboBox.getItems().size() == 1) {
                     Label notificationLabel = new Label("Не знайдено жодного об'єкта за даний період");
+                    notificationLabel.setWrapText(true);
                     notificationLabel.setStyle("-fx-text-fill: red;");
-                    topGridPane.add(notificationLabel, 5, 0);
-                    topGridPane.setMargin(notificationLabel, new Insets(0, 0, 0, 30));
+                    topGridPane.add(notificationLabel, 3, 0);
+                    topGridPane.setMargin(notificationLabel, new Insets(0, 0, 0, 10));
                     Timer timer = new Timer();
                     timer.scheduleAtFixedRate(new TimerTask() {
                         @Override
@@ -148,9 +150,10 @@ public class WindowAttendanceController<T extends DtoEmployeesFullName> {
                         comboBoxListener.setValue(comboBox.getValue());
 
                         Label notificationLabel = new Label("На вибраному об'єкті не проводилось робіт за даний період");
+                        notificationLabel.setWrapText(true);
                         notificationLabel.setStyle("-fx-text-fill: red;");
-                        topGridPane.add(notificationLabel, 5, 0);
-                        topGridPane.setMargin(notificationLabel, new Insets(0, 0, 0, 30));
+                        topGridPane.add(notificationLabel, 3, 0);
+                        topGridPane.setMargin(notificationLabel, new Insets(0, 0, 0, 10));
                         Timer timer = new Timer();
                         timer.scheduleAtFixedRate(new TimerTask() {
                             @Override

@@ -1,21 +1,24 @@
 .text-area {
-    -fx-text-box-border: transparent;
-    -fx-focus-color: transparent;
-    -fx-faint-focus-color: transparent;
+    -fx-text-box-border: rgb(60,63,65);
+    -fx-focus-color: rgb(60,63,65);
+    -fx-faint-focus-color: rgb(60,63,65);
+    -fx-background-color: rgb(60,63,65);
+    -fx-text-fill:  rgb(200,200,200);
 }
 
 .text-field:focused{
-    -fx-focus-color: transparent;
-    -fx-faint-focus-color: transparent;
+    -fx-focus-color: rgb(60,63,65);;
+    -fx-faint-focus-color: rgb(60,63,65);
 }
 
 .text-area .content{
-    -fx-background-color: transparent;
+    -fx-background-color: rgb(60,63,65);
+    -fx-border-color: rgb(60,63,65);
 }
 
 TextArea *.scroll-bar *.increment-button,
 TextArea *.scroll-bar *.decrement-button{
-    -fx-background-color: null;
+    -fx-background-color: rgb(60,63,65);
     -fx-background-radius: 0;
     -fx-background-insets: 0;
     -fx-padding: 0;
@@ -23,7 +26,7 @@ TextArea *.scroll-bar *.decrement-button{
 }
 TextArea *.scroll-bar *.increment-arrow,
 TextArea *.scroll-bar *.decrement-arrow{
-    -fx-background-color: null;
+    -fx-background-color: rgb(60,63,65);
     -fx-background-radius: 0;
     -fx-background-insets: 0;
     -fx-padding: 0;

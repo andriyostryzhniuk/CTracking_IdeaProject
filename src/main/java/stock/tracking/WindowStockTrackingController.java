@@ -180,7 +180,9 @@ public class WindowStockTrackingController<T extends DTOStockTracking> {
         stackPane.getChildren().add(tableView);
         tableView.getTableView().getStylesheets().add(getClass().getResource("/styles/TableViewStyle.css").toExternalForm());
         initContextMenu(tableView.getTableView(), this);
-        tableView.getTableView().setPlaceholder(new Label("Не закріплено жодного інвентаря"));
+        Label placeholderLabel = new Label("Не закріплено жодного інвентаря");
+        placeholderLabel.setStyle("-fx-text-fill: rgb(200, 200, 200)");
+        tableView.getTableView().setPlaceholder(placeholderLabel);
 
         tableView.getTableView().getSelectionModel().selectedItemProperty().addListener(event -> {
             T selectedItem;

@@ -18,18 +18,16 @@ public class Main extends Application {
         Locale.setDefault(new Locale("uk"));
         ClassLoader classLoader = getClass().getClassLoader();
         Parent root = FXMLLoader.load(classLoader.getResource("main/MainWindow.fxml"));
-        primaryStage.setTitle("Hello World! I'm little CTracking, but I'll be big smart program!");
+        primaryStage.setTitle("CTracking");
         Scene scene = new Scene(root);
         scene.getStylesheets().add("/overridden.elements/DatePickerStyle.css");
+        scene.getStylesheets().add("/styles/Stylesheet.css");
         primaryStage.setScene(scene);
         primaryStage.setMaximized(true);
         DB_Connector.getDataSource();
-        primaryStage.setOnCloseRequest(new EventHandler<WindowEvent>() {
-            @Override
-            public void handle(final WindowEvent event) {
-                Platform.exit();
-                System.exit(0);
-            }
+        primaryStage.setOnCloseRequest(event -> {
+            Platform.exit();
+            System.exit(0);
         });
         primaryStage.show();
     }

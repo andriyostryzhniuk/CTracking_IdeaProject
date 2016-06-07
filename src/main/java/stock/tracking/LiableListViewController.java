@@ -363,7 +363,7 @@ public class LiableListViewController {
     public Button initLevelUpButton() {
         Button button = new Button();
         Image image = new Image(getClass().getResourceAsStream("/icons/level_up_icon.png"));
-        button.getStylesheets().add(getClass().getResource("/stock.tracking/LevelUpButtonStyle.css").toExternalForm());
+        button.getStylesheets().add(getClass().getResource("/styles/ListsButtonStyle.css").toExternalForm());
         button.setGraphic(new ImageView(image));
         button.setPrefWidth(10);
         button.setMaxWidth(10);
@@ -380,12 +380,13 @@ public class LiableListViewController {
         headerLabel.setVisible(false);
         headerLabel.setText(text);
         if (headerLabel.prefWidth(-1) <= headerPane.getWidth() - 40 || headerLabel.prefWidth(-1) == 0) {
-            headerLabel.setStyle("-fx-translate-x: -21;");
+            headerLabel.setStyle("-fx-translate-x: -21; -fx-text-fill: rgb(200,200,200); -fx-font-weight: bold;");
         } else if (headerLabel.prefWidth(-1) > headerPane.getWidth() - 40 && headerLabel.prefWidth(-1) < headerPane.getWidth() - 5) {
             Double translateValue = (headerPane.getWidth() - headerLabel.prefWidth(-1))*0.457142857*-1;
-            headerLabel.setStyle("-fx-translate-x: "+ translateValue.toString() +";");
+            headerLabel.setStyle("-fx-translate-x: "+ translateValue.toString() +"; " +
+                    "-fx-text-fill: rgb(200,200,200); -fx-font-weight: bold;");
         } else {
-            headerLabel.setStyle("-fx-translate-x: 0;");
+            headerLabel.setStyle("-fx-translate-x: 0; -fx-text-fill: rgb(200,200,200); -fx-font-weight: bold;");
         }
 
         headerLabel.setVisible(true);

@@ -47,7 +47,7 @@
                                 <ChoiceBox fx:id="contentChoiceBox" prefWidth="150.0"
                                            stylesheets="@../styles/ChoiceBoxStyle.css" GridPane.rowIndex="1">
                                     <GridPane.margin>
-                                        <Insets bottom="8.0"/>
+                                        <Insets bottom="8.0" top="3.0"/>
                                     </GridPane.margin>
                                 </ChoiceBox>
                                 <ChoiceBox fx:id="stockTypeChoiceBox" prefWidth="150.0"
@@ -63,7 +63,8 @@
                                     </GridPane.margin>
                                 </ChoiceBox>
                                 <CheckBox fx:id="onlyAvailableStockCheckBox" mnemonicParsing="false"
-                                          text="Тільки доступний інвентар" GridPane.rowIndex="4">
+                                          style="-fx-text-fill: rgb(200,200,200);" text="Тільки доступний інвентар"
+                                          GridPane.rowIndex="4">
                                     <GridPane.margin>
                                         <Insets bottom="8.0" top="8.0"/>
                                     </GridPane.margin>
@@ -71,7 +72,7 @@
                                 <ChoiceBox fx:id="liableTypeChoiceBox" prefWidth="150.0"
                                            stylesheets="@../styles/ChoiceBoxStyle.css" GridPane.rowIndex="5">
                                     <GridPane.margin>
-                                        <Insets bottom="8.0" top="20.0"/>
+                                        <Insets bottom="8.0" top="15.0"/>
                                     </GridPane.margin>
                                 </ChoiceBox>
                                 <DatePicker fx:id="datePicker" editable="false" maxWidth="200.0" minWidth="200.0"
@@ -108,7 +109,8 @@
                                         <Insets bottom="10.0"/>
                                     </GridPane.margin>
                                 </TextArea>
-                                <Label fx:id="repositoryNameLabel" text="Склад:" visible="false" GridPane.rowIndex="3">
+                                <Label fx:id="repositoryNameLabel" style="-fx-text-fill: rgb(200,200,200);"
+                                       text="Склад:" visible="false" GridPane.rowIndex="3">
                                     <GridPane.margin>
                                         <Insets left="8.0"/>
                                     </GridPane.margin>
@@ -120,12 +122,14 @@
                                         <Insets bottom="10.0"/>
                                     </GridPane.margin>
                                 </TextArea>
-                                <Label fx:id="priceLabel" text="Вартість:" visible="false" GridPane.rowIndex="5">
+                                <Label fx:id="priceLabel" style="-fx-text-fill: rgb(200,200,200);" text="Вартість:"
+                                       visible="false" GridPane.rowIndex="5">
                                     <GridPane.margin>
                                         <Insets bottom="10.0" left="8.0"/>
                                     </GridPane.margin>
                                 </Label>
-                                <Label fx:id="notesLabel" text="Нотатки:" visible="false" GridPane.rowIndex="6">
+                                <Label fx:id="notesLabel" style="-fx-text-fill: rgb(200,200,200);" text="Нотатки:"
+                                       visible="false" GridPane.rowIndex="6">
                                     <GridPane.margin>
                                         <Insets left="8.0"/>
                                     </GridPane.margin>
@@ -137,13 +141,14 @@
                                         <Insets/>
                                     </GridPane.margin>
                                 </TextArea>
-                                <Label fx:id="priceValueLabel" GridPane.rowIndex="5">
+                                <Label fx:id="priceValueLabel" style="-fx-text-fill: rgb(200,200,200);"
+                                       GridPane.rowIndex="5">
                                     <GridPane.margin>
                                         <Insets bottom="10.0" left="60.0"/>
                                     </GridPane.margin>
                                 </Label>
-                                <Label fx:id="stockCategoryLabel" text="Категорія:" visible="false"
-                                       GridPane.rowIndex="1">
+                                <Label fx:id="stockCategoryLabel" style="-fx-text-fill: rgb(200,200,200);"
+                                       text="Категорія:" visible="false" GridPane.rowIndex="1">
                                     <GridPane.margin>
                                         <Insets left="8.0"/>
                                     </GridPane.margin>
@@ -183,8 +188,9 @@
                                 <RowConstraints vgrow="SOMETIMES"/>
                             </rowConstraints>
                             <children>
-                                <Label fx:id="objectNameLabel"/>
-                                <Label fx:id="employeesNameLabel" GridPane.rowIndex="1">
+                                <Label fx:id="objectNameLabel" style="-fx-text-fill: rgb(200,200,200);"/>
+                                <Label fx:id="employeesNameLabel" style="-fx-text-fill: rgb(200,200,200);"
+                                       GridPane.rowIndex="1">
                                     <GridPane.margin>
                                         <Insets top="3.0"/>
                                     </GridPane.margin>
