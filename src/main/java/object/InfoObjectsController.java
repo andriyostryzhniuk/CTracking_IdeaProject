@@ -91,7 +91,16 @@ public class InfoObjectsController {
                     updateCustomers(dtoCustomers);
                 } else {
                     dtoCustomers.setId(insertIntoCustomers(dtoCustomers));
+                    customersViewController.getInspectionsList().forEach(item -> item.setCustomersId(dtoCustomers.getId()));
                 }
+                customersViewController.getInspectionsList().forEach(item -> {
+                    if (item.getId() == null) {
+                        item.setId(insertIntoTechInspection(item));
+                    } else {
+                        updateTechInspection(item);
+                    }
+                });
+                customersViewController.getInspectionsToRemovingList().forEach(item -> deleteFromTechInspection(item));
                 dtoObject.setCustomersId(dtoCustomers.getId());
             } else {
                 customersExceptionLabel.setVisible(true);

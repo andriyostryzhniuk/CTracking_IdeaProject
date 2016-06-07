@@ -498,7 +498,7 @@ public class InfoEmployeesController {
     private void initAddSkillsButton(){
         final EditPanel editPanel = new EditPanel();
         Button addButton = editPanel.getAddButton();
-        addButton.getStylesheets().add(getClass().getResource("/employees/ListsButtonStyle.css").toExternalForm());
+        addButton.getStylesheets().add(getClass().getResource("/styles/ListsButtonStyle.css").toExternalForm());
         addButton.setTooltip(new Tooltip("Додати спеціальність"));
         addButton.setOnAction(event -> showAddingSkillsWindow());
         headerPanel.getChildren().add(addButton);
@@ -509,7 +509,7 @@ public class InfoEmployeesController {
     private void initRemoveSkillsButton(){
         final EditPanel editPanel = new EditPanel(skillsListView);
         Button deleteButton = editPanel.getDeleteButton();
-        deleteButton.getStylesheets().add(getClass().getResource("/employees/ListsButtonStyle.css").toExternalForm());
+        deleteButton.getStylesheets().add(getClass().getResource("/styles/ListsButtonStyle.css").toExternalForm());
         deleteButton.setTooltip(new Tooltip("Видалити спеціальність"));
         deleteButton.setOnAction(event -> removeSkills());
         headerPanel.getChildren().add(deleteButton);

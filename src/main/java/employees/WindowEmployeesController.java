@@ -226,7 +226,7 @@ public class WindowEmployeesController {
     private void initOpenButton(){
         final EditPanel editPanel = new EditPanel(listView);
         Button openButton = editPanel.getOpenButton();
-        openButton.getStylesheets().add(getClass().getResource("/employees/ListsButtonStyle.css").toExternalForm());
+        openButton.getStylesheets().add(getClass().getResource("/styles/ListsButtonStyle.css").toExternalForm());
         openButton.setTooltip(new Tooltip("Переглянути інформацію про працівника"));
         openButton.setOnAction(event -> {
             initInfoEmployees(listView.getSelectionModel().getSelectedItem());
@@ -239,7 +239,7 @@ public class WindowEmployeesController {
     private void initSeeStateButton(){
         final EditPanel editPanel = new EditPanel(listView);
         Button seeStateButton = editPanel.getEyeButton();
-        seeStateButton.getStylesheets().add(getClass().getResource("/employees/ListsButtonStyle.css").toExternalForm());
+        seeStateButton.getStylesheets().add(getClass().getResource("/styles/ListsButtonStyle.css").toExternalForm());
         seeStateButton.setTooltip(new Tooltip("Переглянути об'єкт виконання робіт"));
         seeStateButton.setOnAction(event -> {
             DTOEmployees stockItem = listView.getSelectionModel().getSelectedItem();
@@ -254,7 +254,7 @@ public class WindowEmployeesController {
     private void initAddButton(){
         final EditPanel editPanel = new EditPanel();
         Button addButton = editPanel.getAddButton();
-        addButton.getStylesheets().add(getClass().getResource("/employees/ListsButtonStyle.css").toExternalForm());
+        addButton.getStylesheets().add(getClass().getResource("/styles/ListsButtonStyle.css").toExternalForm());
         addButton.setTooltip(new Tooltip("Додати нового працівника"));
         addButton.setOnAction(event -> {
             initInfoEmployees(new DTOEmployees(null, null, null, null, null, LocalDate.now(), null, null, 8, null));

@@ -76,7 +76,7 @@ public class DTOInspection {
         this.fullName = fullName;
     }
 
-    private String initFullName(){
+    public String initFullName(){
         return surname + " " + name + " " + middleName;
     }
 

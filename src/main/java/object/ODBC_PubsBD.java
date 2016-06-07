@@ -29,6 +29,7 @@ public class ODBC_PubsBD {
 
     private static SimpleJdbcInsert simpleJdbcInsertForEmployees;
     private static SimpleJdbcInsert simpleJdbcInsertForCustomers;
+    private static SimpleJdbcInsert simpleJdbcInsertForTechInspection;
 
     private static SimpleJdbcInsert getSimpleJdbcInsertForObject() {
         if (simpleJdbcInsertForEmployees == null) {
@@ -48,6 +49,16 @@ public class ODBC_PubsBD {
                     .usingGeneratedKeyColumns("id");
         }
         return simpleJdbcInsertForCustomers;
+    }
+
+    private static SimpleJdbcInsert getSimpleJdbcInsertForTechInspection() {
+        if (simpleJdbcInsertForTechInspection == null) {
+            simpleJdbcInsertForTechInspection = creteSimpleJdbcInsert();
+            simpleJdbcInsertForTechInspection
+                    .withTableName("techInspection")
+                    .usingGeneratedKeyColumns("id");
+        }
+        return simpleJdbcInsertForTechInspection;
     }
 
     public static List<DTOObject> selectObjectsList(LocalDate firstDayOfMonth, LocalDate lastDayOfMonth) {
@@ -200,6 +211,34 @@ public class ODBC_PubsBD {
                         "FROM techTelephone " +
                         "WHERE techInspection_id = ?",
                 BeanPropertyRowMapper.newInstance(DTOTelephones.class), inspectionsId);
+    }
+
+    public static Integer insertIntoTechInspection(DTOInspection dtoInspection){
+        Map<String, Object> parameters = new HashMap<>(4);
+        parameters.put("customers_id", dtoInspection.getCustomersId());
+        parameters.put("name", dtoInspection.getName());
+        parameters.put("surname", dtoInspection.getSurname());
+        parameters.put("middleName", dtoInspection.getMiddleName());
+        return getSimpleJdbcInsertForTechInspection().executeAndReturnKey(parameters).intValue();
+    }
+
+    public static void updateTechInspection(DTOInspection dtoInspection) {
+        getNamedParameterJdbcTemplate().update("UPDATE techInspection " +
+                        "SET name = :name, " +
+                        "surname = :surname, " +
+                        "middleName = :middleName " +
+                        "WHERE id = :id",
+                new BeanPropertySqlParameterSource(dtoInspection));
+    }
+
+    public static void deleteFromTechInspection(DTOInspection dtoInspection){
+        try {
+            getNamedParameterJdbcTemplate().update("DELETE FROM techInspection " +
+                            "WHERE id = :id",
+                    new BeanPropertySqlParameterSource(dtoInspection));
+        } catch (DataIntegrityViolationException e) {
+            alertWindow.showDeletingError();
+        }
     }
 
 }

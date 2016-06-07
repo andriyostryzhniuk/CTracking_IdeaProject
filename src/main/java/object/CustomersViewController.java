@@ -5,16 +5,24 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
+import javafx.fxml.FXMLLoader;
 import javafx.geometry.HPos;
 import javafx.geometry.VPos;
+import javafx.scene.Parent;
+import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
+import javafx.scene.paint.Color;
+import javafx.stage.Modality;
+import javafx.stage.Stage;
+import javafx.stage.StageStyle;
 import object.dto.DTOCustomers;
 import object.dto.DTOInspection;
 import subsidiary.classes.EditPanel;
 
+import java.io.IOException;
 import java.util.LinkedList;
 import java.util.List;
 import java.util.regex.Matcher;
@@ -37,6 +45,7 @@ public class CustomersViewController {
     public TextField numberTextField2;
     public TextField numberTextField3;
     private ObservableList<DTOInspection> inspectionsList = FXCollections.observableArrayList();
+    private List<DTOInspection> inspectionsToRemovingList = new LinkedList<>();
     private List<TextField> techTelephonesTextFieldsList = new LinkedList<>();
 
     private DTOCustomers dtoCustomers = new DTOCustomers();
@@ -162,25 +171,26 @@ public class CustomersViewController {
         inspectionsListView.setPlaceholder(new Label("Додайте технічний нагляд"));
         inspectionsListView.setItems(inspectionsList);
         initInspectionsListContextMenu();
-
-
+        initAddInspectionButton();
+        initEditInspectionButton();
+        initRemoveInspectionButton();
     }
 
     private void initInspectionsListContextMenu(){
         MenuItem addItem = new MenuItem("Додати");
         addItem.setOnAction((ActionEvent event) -> {
-
+            showEditingTechInspectionWindow(new DTOInspection(null, dtoCustomers.getId(), null, null, null));
         });
 
         MenuItem editItem = new MenuItem("Редагувати");
         editItem.setOnAction((ActionEvent event) -> {
-
+            showEditingTechInspectionWindow(inspectionsListView.getSelectionModel().getSelectedItem());
         });
         editItem.setDisable(true);
 
         MenuItem removeItem = new MenuItem("Видалити");
         removeItem.setOnAction((ActionEvent event) -> {
-
+            removeInspection(inspectionsListView.getSelectionModel().getSelectedItem());
         });
         removeItem.setDisable(true);
 
@@ -227,9 +237,74 @@ public class CustomersViewController {
         techTelephonesTextFieldsList.add(numberTextField3);
     }
 
+    public void showEditingTechInspectionWindow(DTOInspection dtoInspection) {
+        Stage primaryStage = new Stage();
+        FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/object/EditingTechInspection.fxml"));
+        Parent root = null;
+        try {
+            root = fxmlLoader.load();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
+
+        EditingTechInspectionController editingTechInspectionController = fxmlLoader.getController();
+        editingTechInspectionController.setCustomersViewController(this);
+        editingTechInspectionController.setDtoInspection(dtoInspection);
+
+        primaryStage.initStyle(StageStyle.TRANSPARENT);
+        primaryStage.setScene(new Scene(root, 460, 500, Color.rgb(0, 0, 0, 0)));
+        primaryStage.initModality(Modality.WINDOW_MODAL);
+        primaryStage.initOwner(controlsGridPane.getScene().getWindow());
+        primaryStage.showAndWait();
+    }
+
+    private void removeInspection(DTOInspection dtoInspection){
+        if (dtoInspection.getId() != null) {
+            inspectionsToRemovingList.add(dtoInspection);
+        }
+        inspectionsList.remove(dtoInspection);
+    }
+
     public DTOCustomers getDtoCustomers() {
         initDtoCustomers();
         return dtoCustomers;
+    }
+
+    private void initAddInspectionButton(){
+        final EditPanel editPanel = new EditPanel();
+        Button addButton = editPanel.getAddButton();
+        addButton.getStylesheets().add(getClass().getResource("/styles/ListsButtonStyle.css").toExternalForm());
+        addButton.setTooltip(new Tooltip("Додати технічний нагляд"));
+        addButton.setOnAction(event -> {
+            showEditingTechInspectionWindow(new DTOInspection(null, dtoCustomers.getId(), null, null, null));
+        });
+        headerPanel.getChildren().add(addButton);
+        addButton.setLayoutX(5);
+        addButton.setLayoutY(1);
+    }
+
+    private void initEditInspectionButton(){
+        final EditPanel editPanel = new EditPanel(inspectionsListView);
+        Button editButton = editPanel.getEditButton();
+        editButton.getStylesheets().add(getClass().getResource("/styles/ListsButtonStyle.css").toExternalForm());
+        editButton.setTooltip(new Tooltip("Редагувати технічний нагляд"));
+        editButton.setOnAction(event -> {
+            showEditingTechInspectionWindow(inspectionsListView.getSelectionModel().getSelectedItem());
+        });
+        headerPanel.getChildren().add(editButton);
+        editButton.setLayoutX(29);
+        editButton.setLayoutY(1);
+    }
+
+    private void initRemoveInspectionButton(){
+        final EditPanel editPanel = new EditPanel(inspectionsListView);
+        Button deleteButton = editPanel.getDeleteButton();
+        deleteButton.getStylesheets().add(getClass().getResource("/styles/ListsButtonStyle.css").toExternalForm());
+        deleteButton.setTooltip(new Tooltip("Видалити технічний нагляд"));
+        deleteButton.setOnAction(event -> removeInspection(inspectionsListView.getSelectionModel().getSelectedItem()));
+        headerPanel.getChildren().add(deleteButton);
+        deleteButton.setLayoutX(53);
+        deleteButton.setLayoutY(1);
     }
 
     public TextField getNameTextField() {
@@ -238,5 +313,17 @@ public class CustomersViewController {
 
     public void setInfoObjectsController(InfoObjectsController infoObjectsController) {
         this.infoObjectsController = infoObjectsController;
+    }
+
+    public ObservableList<DTOInspection> getInspectionsList() {
+        return inspectionsList;
+    }
+
+    public ListView<DTOInspection> getInspectionsListView() {
+        return inspectionsListView;
+    }
+
+    public List<DTOInspection> getInspectionsToRemovingList() {
+        return inspectionsToRemovingList;
     }
 }

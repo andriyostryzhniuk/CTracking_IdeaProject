@@ -112,18 +112,18 @@
                         <GridPane>
                             <children>
                                 <Label fx:id="surnameExceptionLabel"
-                                       text="Ім'я не може містити інших символів крім кириличних та символа - "
-                                       textFill="#c95858" visible="false" wrapText="true">
-                                    <padding>
-                                        <Insets left="20.0"/>
-                                    </padding>
-                                </Label>
-                                <Label fx:id="nameExceptionLabel"
                                        text="Прізвище не може містити інших символів крім кириличних та символа - "
-                                       textFill="#c95858" visible="false" wrapText="true" GridPane.rowIndex="1">
+                                       textFill="#c95858" visible="false" wrapText="true">
                                     <GridPane.margin>
                                         <Insets left="20.0"/>
                                     </GridPane.margin>
+                                </Label>
+                                <Label fx:id="nameExceptionLabel"
+                                       text="Ім'я не може містити інших символів крім кириличних та символа - "
+                                       textFill="#c95858" visible="false" wrapText="true" GridPane.rowIndex="1">
+                                    <padding>
+                                        <Insets left="20.0"/>
+                                    </padding>
                                 </Label>
                                 <Label fx:id="middleNameExceptionLabel"
                                        text="Ім'я по батькові не може містити інших символів крім кириличних та символа - "
