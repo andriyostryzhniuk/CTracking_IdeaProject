@@ -2,6 +2,7 @@ package object.dto;
 
 import employees.dto.DTOTelephones;
 
+import java.util.LinkedList;
 import java.util.List;
 
 public class DTOInspection {
@@ -12,7 +13,8 @@ public class DTOInspection {
     private String surname;
     private String middleName;
     private String fullName;
-    private List<DTOTelephones> dtoTelephonesList;
+    private List<DTOTelephones> dtoTelephonesList = new LinkedList<>();
+    private List<DTOTelephones> dtoTelephonesToRemovingList = new LinkedList<>();
 
     public DTOInspection() {
     }
@@ -86,6 +88,14 @@ public class DTOInspection {
 
     public void setDtoTelephonesList(List<DTOTelephones> dtoTelephonesList) {
         this.dtoTelephonesList = dtoTelephonesList;
+    }
+
+    public List<DTOTelephones> getDtoTelephonesToRemovingList() {
+        return dtoTelephonesToRemovingList;
+    }
+
+    public void setDtoTelephonesToRemovingList(List<DTOTelephones> dtoTelephonesToRemovingList) {
+        this.dtoTelephonesToRemovingList = dtoTelephonesToRemovingList;
     }
 
     @Override

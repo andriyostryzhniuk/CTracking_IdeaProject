@@ -163,7 +163,9 @@ public class SettingsCustomersController<T extends DTOCustomers> {
                     setOnMouseClicked(mouseEvent -> {
                         if (mouseEvent.getButton().equals(MouseButton.PRIMARY)) {
                             if (mouseEvent.getClickCount() == 2) {
-                                addCustomer();
+                                if (listView.getSelectionModel().getSelectedItem() != null) {
+                                    addCustomer();
+                                }
                             }
                         }
                     });
@@ -176,4 +178,5 @@ public class SettingsCustomersController<T extends DTOCustomers> {
     public InfoObjectsController getInfoObjectsController() {
         return infoObjectsController;
     }
+
 }

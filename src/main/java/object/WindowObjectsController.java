@@ -181,7 +181,9 @@ public class WindowObjectsController<T extends DTOObject> {
                     setOnMouseClicked(mouseEvent -> {
                         if (mouseEvent.getButton().equals(MouseButton.PRIMARY)) {
                             if (mouseEvent.getClickCount() == 2) {
-                                initInfoObjects(getItem());
+                                if (tableView.getSelectionModel().getSelectedItem() != null) {
+                                    initInfoObjects(getItem());
+                                }
                             }
                         }
                     });

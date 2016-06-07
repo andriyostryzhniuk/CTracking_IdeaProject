@@ -10,6 +10,7 @@ import org.slf4j.LoggerFactory;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.jdbc.core.BeanPropertyRowMapper;
 import org.springframework.jdbc.core.namedparam.BeanPropertySqlParameterSource;
+import org.springframework.jdbc.core.namedparam.SqlParameterSourceUtils;
 import org.springframework.jdbc.core.simple.SimpleJdbcInsert;
 import subsidiary.classes.AlertWindow;
 
@@ -205,14 +206,6 @@ public class ODBC_PubsBD {
                 BeanPropertyRowMapper.newInstance(DTOInspection.class), customersId);
     }
 
-    public static List<DTOTelephones> selectInspectionsTelephones(Integer inspectionsId) {
-        return getJdbcTemplate().query("SELECT id AS recordId, techInspection_id AS subscriberId, " +
-                "telephoneNumber AS number " +
-                        "FROM techTelephone " +
-                        "WHERE techInspection_id = ?",
-                BeanPropertyRowMapper.newInstance(DTOTelephones.class), inspectionsId);
-    }
-
     public static Integer insertIntoTechInspection(DTOInspection dtoInspection){
         Map<String, Object> parameters = new HashMap<>(4);
         parameters.put("customers_id", dtoInspection.getCustomersId());
@@ -239,6 +232,33 @@ public class ODBC_PubsBD {
         } catch (DataIntegrityViolationException e) {
             alertWindow.showDeletingError();
         }
+    }
+
+    public static List<DTOTelephones> selectInspectionsTelephones(Integer inspectionsId) {
+        return getJdbcTemplate().query("SELECT id AS recordId, techInspection_id AS subscriberId, " +
+                        "telephoneNumber AS number " +
+                        "FROM techTelephone " +
+                        "WHERE techInspection_id = ?",
+                BeanPropertyRowMapper.newInstance(DTOTelephones.class), inspectionsId);
+    }
+
+    public static void insertIntoTechTelephone(DTOTelephones dtoTelephones){
+        getNamedParameterJdbcTemplate().update("INSERT INTO techTelephone (id, techInspection_id, telephoneNumber) " +
+                        "VALUES (:recordId, :subscriberId, :number)",
+                new BeanPropertySqlParameterSource(dtoTelephones));
+    }
+
+    public static void updateTechTelephone(DTOTelephones dtoTelephones){
+        getNamedParameterJdbcTemplate().update("UPDATE techTelephone " +
+                        "SET telephoneNumber = :number " +
+                        "WHERE id = :recordId",
+                new BeanPropertySqlParameterSource(dtoTelephones));
+    }
+
+    public static void deleteFromTechTelephone(List<DTOTelephones> dtoTelephonesList){
+        getNamedParameterJdbcTemplate().batchUpdate("DELETE FROM techTelephone " +
+                        "WHERE id = :recordId",
+                SqlParameterSourceUtils.createBatch(dtoTelephonesList.toArray()));
     }
 
 }

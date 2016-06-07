@@ -105,7 +105,9 @@ public class WindowEmployeesController {
                     setOnMouseClicked(mouseEvent -> {
                         if (mouseEvent.getButton().equals(MouseButton.PRIMARY)) {
                             if (mouseEvent.getClickCount() == 2) {
-                                initInfoEmployees(getItem());
+                                if (listView.getSelectionModel().getSelectedItem() != null) {
+                                    initInfoEmployees(getItem());
+                                }
                             }
                         }
                     });

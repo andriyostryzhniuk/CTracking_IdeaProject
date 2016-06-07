@@ -96,8 +96,29 @@ public class InfoObjectsController {
                 customersViewController.getInspectionsList().forEach(item -> {
                     if (item.getId() == null) {
                         item.setId(insertIntoTechInspection(item));
+
+                        if (item.getDtoTelephonesList() != null && ! item.getDtoTelephonesList().isEmpty()) {
+                            item.getDtoTelephonesList().forEach(dtoTelephones -> {
+                                dtoTelephones.setSubscriberId(item.getId());
+                                insertIntoTechTelephone(dtoTelephones);
+                            });
+                        }
                     } else {
                         updateTechInspection(item);
+
+                        if (item.getDtoTelephonesList() != null && ! item.getDtoTelephonesList().isEmpty()) {
+                            item.getDtoTelephonesList().forEach(dtoTelephones -> {
+                                if (dtoTelephones.getRecordId() != null) {
+                                    updateTechTelephone(dtoTelephones);
+                                } else {
+                                    insertIntoTechTelephone(dtoTelephones);
+                                }
+                            });
+                        }
+                        if (item.getDtoTelephonesToRemovingList() != null &&
+                                ! item.getDtoTelephonesToRemovingList().isEmpty()) {
+                            deleteFromTechTelephone(item.getDtoTelephonesToRemovingList());
+                        }
                     }
                 });
                 customersViewController.getInspectionsToRemovingList().forEach(item -> deleteFromTechInspection(item));

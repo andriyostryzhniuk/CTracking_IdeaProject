@@ -262,8 +262,8 @@
                                                    stylesheets="@TelephonesTableViewStyle.css" GridPane.columnIndex="1"
                                                    GridPane.rowIndex="1">
                                             <columns>
-                                                <TableColumn fx:id="colTelephone" maxWidth="175.0" minWidth="175.0"
-                                                             prefWidth="175.0" resizable="false" sortable="false"/>
+                                                <TableColumn fx:id="colTelephone" maxWidth="177.0" minWidth="177.0"
+                                                             prefWidth="177.0" resizable="false" sortable="false"/>
                                             </columns>
                                         </TableView>
                                         <Label fx:id="telephonesExceptionLabel" maxWidth="200.0"

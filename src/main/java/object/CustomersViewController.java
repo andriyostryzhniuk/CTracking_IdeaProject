@@ -11,6 +11,7 @@ import javafx.geometry.VPos;
 import javafx.scene.Parent;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
+import javafx.scene.input.MouseButton;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
@@ -70,6 +71,7 @@ public class CustomersViewController {
             inspectionsList.clear();
             inspectionsList.addAll(selectInspectionsList(dtoCustomers.getId()));
             inspectionsList.forEach(item -> item.setDtoTelephonesList(selectInspectionsTelephones(item.getId())));
+            setListViewCellFactory();
         }
     }
 
@@ -176,6 +178,32 @@ public class CustomersViewController {
         initRemoveInspectionButton();
     }
 
+    public void setListViewCellFactory(){
+        inspectionsListView.setCellFactory(listCell -> {
+            final ListCell<DTOInspection> cell = new ListCell<DTOInspection>() {
+                @Override
+                protected void updateItem(DTOInspection t, boolean b) {
+                    super.updateItem(t, b);
+                    if (t != null) {
+                        setText(t.getFullName());
+                    }
+
+                    setOnMouseClicked(mouseEvent -> {
+                        if (mouseEvent.getButton().equals(MouseButton.PRIMARY)) {
+                            if (mouseEvent.getClickCount() == 2) {
+                                if (inspectionsListView.getSelectionModel().getSelectedItem() != null) {
+                                    showEditingTechInspectionWindow(
+                                            inspectionsListView.getSelectionModel().getSelectedItem());
+                                }
+                            }
+                        }
+                    });
+                }
+            };
+            return cell;
+        });
+    }
+
     private void initInspectionsListContextMenu(){
         MenuItem addItem = new MenuItem("Додати");
         addItem.setOnAction((ActionEvent event) -> {
@@ -203,24 +231,26 @@ public class CustomersViewController {
                 setDisableInspections(true);
             } else {
                 setDisableInspections(false);
-                if (dtoInspection.getDtoTelephonesList() != null) {
-                    int i = 0;
-                    for (DTOTelephones item: dtoInspection.getDtoTelephonesList()) {
-                        techTelephonesTextFieldsList.get(i).setText(item.getNumber());
-                        techTelephonesTextFieldsList.get(i).setDisable(false);
-                        techTelephonesTextFieldsList.get(i).setVisible(true);
-                        i++;
-                    }
-                }
+                initTelephonesLabels(dtoInspection);
             }
         });
 
         inspectionsListView.setContextMenu(cellMenu);
     }
 
-    private void setDisableInspections(boolean isDisable){
-//        editButton.setDisable(isDisable);
-//        removeButton.setDisable(isDisable);
+    public void initTelephonesLabels(DTOInspection dtoInspection){
+        if (dtoInspection.getDtoTelephonesList() != null && ! dtoInspection.getDtoTelephonesList().isEmpty()) {
+            int i = 0;
+            for (DTOTelephones item: dtoInspection.getDtoTelephonesList()) {
+                techTelephonesTextFieldsList.get(i).setText(item.getNumber());
+                techTelephonesTextFieldsList.get(i).setDisable(false);
+                techTelephonesTextFieldsList.get(i).setVisible(true);
+                i++;
+            }
+        }
+    }
+
+    public void setDisableInspections(boolean isDisable){
         telephonesLabel.setVisible(!isDisable);
         inspectionsListView.getContextMenu().getItems().get(1).setDisable(isDisable);
         inspectionsListView.getContextMenu().getItems().get(2).setDisable(isDisable);
@@ -252,7 +282,7 @@ public class CustomersViewController {
         editingTechInspectionController.setDtoInspection(dtoInspection);
 
         primaryStage.initStyle(StageStyle.TRANSPARENT);
-        primaryStage.setScene(new Scene(root, 460, 500, Color.rgb(0, 0, 0, 0)));
+        primaryStage.setScene(new Scene(root, 360, 390, Color.rgb(0, 0, 0, 0)));
         primaryStage.initModality(Modality.WINDOW_MODAL);
         primaryStage.initOwner(controlsGridPane.getScene().getWindow());
         primaryStage.showAndWait();
@@ -263,6 +293,7 @@ public class CustomersViewController {
             inspectionsToRemovingList.add(dtoInspection);
         }
         inspectionsList.remove(dtoInspection);
+        setListViewCellFactory();
     }
 
     public DTOCustomers getDtoCustomers() {
