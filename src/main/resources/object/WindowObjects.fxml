@@ -32,9 +32,11 @@
                                    prefWidth="480.0" stylesheets="@../styles/TableViewStyle.css" GridPane.rowIndex="1">
                             <columns>
                                 <TableColumn fx:id="objectCol" maxWidth="318.0" minWidth="318.0" prefWidth="318.0"
-                                             text="Об'єкт"/>
-                                <TableColumn fx:id="startDateCol" maxWidth="80.0" minWidth="80.0" text="Початок"/>
-                                <TableColumn fx:id="finishDateCol" maxWidth="80.0" minWidth="80.0" text="Закінчення"/>
+                                             sortable="false" text="Об'єкт"/>
+                                <TableColumn fx:id="startDateCol" maxWidth="80.0" minWidth="80.0" sortable="false"
+                                             text="Початок"/>
+                                <TableColumn fx:id="finishDateCol" maxWidth="80.0" minWidth="80.0" sortable="false"
+                                             text="Закінчення"/>
                             </columns>
                         </TableView>
                         <GridPane fx:id="controlsGridPane">

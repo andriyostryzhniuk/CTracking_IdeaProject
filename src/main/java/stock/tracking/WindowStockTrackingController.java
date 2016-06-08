@@ -203,9 +203,9 @@ public class WindowStockTrackingController<T extends DTOStockTracking> {
     }
 
     private void setColsDateProperties() {
-        stockNameCol.setPercentWidth(118); stockNameCol.setMinWidth(118);
-        givingDateCol.setPercentWidth(65); givingDateCol.setMinWidth(65);
-        returnDateCol.setPercentWidth(65); returnDateCol.setMinWidth(65);
+        stockNameCol.setPercentWidth(118); stockNameCol.setMinWidth(118); stockNameCol.setSortable(false);
+        givingDateCol.setPercentWidth(65); givingDateCol.setMinWidth(65); givingDateCol.setSortable(false);
+        returnDateCol.setPercentWidth(65); returnDateCol.setMinWidth(65); returnDateCol.setSortable(false);
     }
 
     public void initTableView(Integer objectId, Integer employeeId){

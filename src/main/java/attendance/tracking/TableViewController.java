@@ -92,6 +92,7 @@ public class TableViewController<T extends DtoEmployeesFullName> {
         colName.setPercentWidth(150.0);
         colName.setMinWidth(150.0);
         colName.setCellValueFactory(new PropertyValueFactory<>("gridPaneFullName"));
+        colName.setSortable(false);
 
         setColsDateProperties();
 
@@ -213,7 +214,7 @@ public class TableViewController<T extends DtoEmployeesFullName> {
                         checkBox.setDisable(true);
 
                         Pane pane = new Pane();
-                        pane.setStyle("-fx-background-color: Silver");
+                        pane.setStyle("-fx-background-color: rgba(133,99,99, 0.5);");
                         gridPane.add(pane, 0, 0);
                     } else if (initialAttendanceDataMap.get(employeesId).get(date) != -1) {
                         CheckBox checkBox = (CheckBox) gridPane.getChildren().get(0);
@@ -229,7 +230,7 @@ public class TableViewController<T extends DtoEmployeesFullName> {
                         checkBox.setDisable(true);
 
                         Pane pane = new Pane();
-                        pane.setStyle("-fx-background-color: Silver");
+                        pane.setStyle("-fx-background-color: rgba(133,99,99, 0.5);");
                         gridPane.add(pane, 0, 0);
                     } else if (initialAttendanceDataMap.get(employeesId).get(date) != -1) {
                         CheckBox checkBox = (CheckBox) gridPane.getChildren().get(0);

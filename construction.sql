@@ -4,10 +4,6 @@
 -- ------------------------------------------------------
 -- Server version	5.7.9-log
 
-drop database if exists construction;
-create database construction;
-use construction;
-
 /*!40101 SET @OLD_CHARACTER_SET_CLIENT=@@CHARACTER_SET_CLIENT */;
 /*!40101 SET @OLD_CHARACTER_SET_RESULTS=@@CHARACTER_SET_RESULTS */;
 /*!40101 SET @OLD_COLLATION_CONNECTION=@@COLLATION_CONNECTION */;
@@ -29,10 +25,10 @@ DROP TABLE IF EXISTS `customers`;
 CREATE TABLE `customers` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `name` varchar(50) NOT NULL,
-  `notes` varchar(100) DEFAULT NULL,
+  `notes` varchar(400) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`)
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=9 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -41,7 +37,7 @@ CREATE TABLE `customers` (
 
 LOCK TABLES `customers` WRITE;
 /*!40000 ALTER TABLE `customers` DISABLE KEYS */;
-INSERT INTO `customers` VALUES (1,'пп Клепаєм місто ІФ',NULL),(2,'Файнобуд','Троха якихось нотаток');
+INSERT INTO `customers` VALUES (1,'ПП Клепаєм місто ІФ',NULL),(2,'Файнобуд','Троха якихось нотаток');
 /*!40000 ALTER TABLE `customers` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -93,7 +89,7 @@ CREATE TABLE `emptelephone` (
   UNIQUE KEY `id_UNIQUE` (`id`),
   KEY `fk_E_Telephone_employees1_idx` (`employees_id`),
   CONSTRAINT `fk_E_Telephone_employees1` FOREIGN KEY (`employees_id`) REFERENCES `employees` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=26 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=30 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -102,7 +98,7 @@ CREATE TABLE `emptelephone` (
 
 LOCK TABLES `emptelephone` WRITE;
 /*!40000 ALTER TABLE `emptelephone` DISABLE KEYS */;
-INSERT INTO `emptelephone` VALUES (1,1,'0998934176'),(2,2,'0502307643'),(3,3,'0571928476'),(4,4,'0939342134'),(5,5,'0501010452'),(6,6,'0679428521'),(7,7,'0963257673'),(8,8,'0573494524'),(9,9,'0653510019'),(10,10,'0635484253'),(11,11,'0660345673'),(12,12,'0557842652'),(13,13,'0934574533'),(14,14,'0672012390'),(15,15,'0684354678'),(16,16,'0562312012'),(17,17,'0953126393'),(18,18,'0952312805'),(19,19,'0635456567'),(20,4,'0665640960'),(21,16,'0703053054'),(22,7,'0935675870'),(23,9,'0985467567'),(24,2,'0674675832'),(25,9,'0993675213');
+INSERT INTO `emptelephone` VALUES (1,1,'0998934176'),(2,2,'0502307643'),(3,3,'0571928476'),(4,4,'0939342134'),(5,5,'0501010452'),(6,6,'0679428521'),(7,7,'0963257673'),(8,8,'0573494524'),(9,9,'0653510019'),(10,10,'0635484253'),(11,11,'0660345673'),(12,12,'0557842652'),(13,13,'0934574533'),(14,14,'0672012390'),(15,15,'0684354678'),(16,16,'0562312012'),(17,17,'0953126393'),(18,18,'0952312805'),(19,19,'0635456567'),(20,4,'0665640960'),(21,16,'0703053054'),(22,7,'0935675870'),(23,9,'0985467567'),(24,2,'0674675832'),(25,9,'0993675213'),(27,19,'5464563563563563');
 /*!40000 ALTER TABLE `emptelephone` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -120,12 +116,12 @@ CREATE TABLE `object` (
   `finishDate` date DEFAULT NULL,
   `customers_id` int(11) NOT NULL,
   `estimatedCost` decimal(10,2) DEFAULT NULL,
-  `notes` varchar(100) DEFAULT NULL,
+  `notes` varchar(500) DEFAULT NULL,
   PRIMARY KEY (`id`),
   UNIQUE KEY `id_UNIQUE` (`id`),
   KEY `fk_object_customers1_idx` (`customers_id`),
   CONSTRAINT `fk_object_customers1` FOREIGN KEY (`customers_id`) REFERENCES `customers` (`id`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=17 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=28 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -237,7 +233,7 @@ CREATE TABLE `skills_employees` (
   KEY `fk_skills_skills1_idx` (`skills_id`),
   CONSTRAINT `fk_skills_employees1` FOREIGN KEY (`employees_id`) REFERENCES `employees` (`id`) ON DELETE CASCADE ON UPDATE CASCADE,
   CONSTRAINT `fk_skills_skills1` FOREIGN KEY (`skills_id`) REFERENCES `skills` (`id`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=40 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -246,7 +242,7 @@ CREATE TABLE `skills_employees` (
 
 LOCK TABLES `skills_employees` WRITE;
 /*!40000 ALTER TABLE `skills_employees` DISABLE KEYS */;
-INSERT INTO `skills_employees` VALUES (1,1,3),(2,1,2),(3,2,8),(4,3,1),(5,4,2),(6,5,7),(7,6,6),(8,7,1),(9,7,2),(10,8,3),(11,9,5),(12,10,1),(13,11,6),(14,12,7),(15,13,5),(16,14,8),(17,15,1),(18,16,2),(19,17,8),(20,18,3),(21,19,4),(22,5,1),(23,8,2),(24,11,3),(25,2,2),(26,18,5),(27,7,8),(28,14,2),(29,14,5),(38,14,6);
+INSERT INTO `skills_employees` VALUES (1,1,3),(2,1,2),(3,2,8),(4,3,1),(5,4,2),(6,5,7),(7,6,6),(8,7,1),(9,7,2),(10,8,3),(11,9,5),(12,10,1),(13,11,6),(14,12,7),(15,13,5),(16,14,8),(17,15,1),(18,16,2),(19,17,8),(20,18,3),(21,19,4),(22,5,1),(23,8,2),(24,11,3),(25,2,2),(26,18,5),(27,7,8),(28,14,2),(29,14,5),(38,14,6),(40,19,5);
 /*!40000 ALTER TABLE `skills_employees` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -271,7 +267,7 @@ CREATE TABLE `stock` (
   KEY `fk_stock_repository1_idx` (`repository_id`),
   CONSTRAINT `fk_stock_repository1` FOREIGN KEY (`repository_id`) REFERENCES `repository` (`id`) ON UPDATE CASCADE,
   CONSTRAINT `fk_stock_stockType2` FOREIGN KEY (`stockCategory_id`) REFERENCES `stockcategory` (`id`) ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=41 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=42 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -365,7 +361,7 @@ CREATE TABLE `table_days_of_month` (
 
 LOCK TABLES `table_days_of_month` WRITE;
 /*!40000 ALTER TABLE `table_days_of_month` DISABLE KEYS */;
-INSERT INTO `table_days_of_month` VALUES ('2016-05-01'),('2016-05-02'),('2016-05-03'),('2016-05-04'),('2016-05-05'),('2016-05-06'),('2016-05-07'),('2016-05-08'),('2016-05-09'),('2016-05-10'),('2016-05-11'),('2016-05-12'),('2016-05-13'),('2016-05-14'),('2016-05-15'),('2016-05-16'),('2016-05-17'),('2016-05-18'),('2016-05-19'),('2016-05-20'),('2016-05-21'),('2016-05-22'),('2016-05-23'),('2016-05-24'),('2016-05-25'),('2016-05-26'),('2016-05-27'),('2016-05-28'),('2016-05-29'),('2016-05-30'),('2016-05-31');
+INSERT INTO `table_days_of_month` VALUES ('2016-06-01'),('2016-06-02'),('2016-06-03'),('2016-06-04'),('2016-06-05'),('2016-06-06'),('2016-06-07'),('2016-06-08'),('2016-06-09'),('2016-06-10'),('2016-06-11'),('2016-06-12'),('2016-06-13'),('2016-06-14'),('2016-06-15'),('2016-06-16'),('2016-06-17'),('2016-06-18'),('2016-06-19'),('2016-06-20'),('2016-06-21'),('2016-06-22'),('2016-06-23'),('2016-06-24'),('2016-06-25'),('2016-06-26'),('2016-06-27'),('2016-06-28'),('2016-06-29'),('2016-06-30'),('2016-07-01');
 /*!40000 ALTER TABLE `table_days_of_month` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -386,7 +382,7 @@ CREATE TABLE `techinspection` (
   UNIQUE KEY `id_UNIQUE` (`id`),
   KEY `fk_techInspection_customers1_idx` (`customers_id`),
   CONSTRAINT `fk_techInspection_customers1` FOREIGN KEY (`customers_id`) REFERENCES `customers` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=7 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -414,7 +410,7 @@ CREATE TABLE `techtelephone` (
   UNIQUE KEY `id_UNIQUE` (`id`),
   KEY `fk_techTelephone_techInspection1_idx` (`techInspection_id`),
   CONSTRAINT `fk_techTelephone_techInspection1` FOREIGN KEY (`techInspection_id`) REFERENCES `techinspection` (`id`) ON DELETE CASCADE ON UPDATE CASCADE
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=16 DEFAULT CHARSET=utf8;
 /*!40101 SET character_set_client = @saved_cs_client */;
 
 --
@@ -423,7 +419,7 @@ CREATE TABLE `techtelephone` (
 
 LOCK TABLES `techtelephone` WRITE;
 /*!40000 ALTER TABLE `techtelephone` DISABLE KEYS */;
-INSERT INTO `techtelephone` VALUES (1,1,'0993565371'),(2,2,'0683456908'),(3,2,'0932478931'),(4,3,'0502869329'),(5,3,'0672425354');
+INSERT INTO `techtelephone` VALUES (1,1,'0993565371'),(2,2,'0683456900'),(4,3,'050200000'),(12,2,'0994646465'),(13,3,'078534563');
 /*!40000 ALTER TABLE `techtelephone` ENABLE KEYS */;
 UNLOCK TABLES;
 
@@ -465,4 +461,4 @@ UNLOCK TABLES;
 /*!40101 SET COLLATION_CONNECTION=@OLD_COLLATION_CONNECTION */;
 /*!40111 SET SQL_NOTES=@OLD_SQL_NOTES */;
 
--- Dump completed on 2016-06-05 21:13:11
+-- Dump completed on 2016-06-08 17:01:43

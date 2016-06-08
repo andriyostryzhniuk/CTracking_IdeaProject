@@ -157,9 +157,9 @@ public class WindowObjectsTrackingController<T extends DTOObjectEmployees> {
     }
 
     private void setColsDateProperties() {
-        employeeNameCol.setPercentWidth(118); employeeNameCol.setMinWidth(118);
-        startDateCol.setPercentWidth(65); startDateCol.setMinWidth(65);
-        finishDateCol.setPercentWidth(65); finishDateCol.setMinWidth(65);
+        employeeNameCol.setPercentWidth(118); employeeNameCol.setMinWidth(118); employeeNameCol.setSortable(false);
+        startDateCol.setPercentWidth(65); startDateCol.setMinWidth(65); startDateCol.setSortable(false);
+        finishDateCol.setPercentWidth(65); finishDateCol.setMinWidth(65); finishDateCol.setSortable(false);
     }
 
     public void initTableView(Integer objectId){

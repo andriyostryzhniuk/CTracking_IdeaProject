@@ -157,11 +157,11 @@ public class WindowStocksController<T extends DTOStocks> {
     }
 
     private void setColsDateProperties() {
-        stockNameCol.setPercentWidth(200); stockNameCol.setMinWidth(200);
-        categoryCol.setPercentWidth(200); categoryCol.setMinWidth(200);
-        typeCol.setPercentWidth(100); typeCol.setMinWidth(100);
-        priceCol.setPercentWidth(100); priceCol.setMinWidth(100);
-        repositoryCol.setPercentWidth(150); repositoryCol.setMinWidth(150);
+        stockNameCol.setPercentWidth(200); stockNameCol.setMinWidth(200); stockNameCol.setSortable(false);
+        categoryCol.setPercentWidth(200); categoryCol.setMinWidth(200); categoryCol.setSortable(false);
+        typeCol.setPercentWidth(100); typeCol.setMinWidth(100); typeCol.setSortable(false);
+        priceCol.setPercentWidth(100); priceCol.setMinWidth(100); priceCol.setSortable(false);
+        repositoryCol.setPercentWidth(150); repositoryCol.setMinWidth(150); repositoryCol.setSortable(false);
     }
 
     private void initEditingControls(){

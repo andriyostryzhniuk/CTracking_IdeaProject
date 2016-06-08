@@ -60,9 +60,9 @@
                                    stylesheets="@../styles/TableViewStyle.css">
                             <columns>
                                 <TableColumn fx:id="nameCol" maxWidth="228.0" minWidth="228.0" prefWidth="228.0"
-                                             resizable="false" text="Категорія"/>
+                                             resizable="false" sortable="false" text="Категорія"/>
                                 <TableColumn fx:id="typeCol" maxWidth="70.0" minWidth="70.0" prefWidth="70.0"
-                                             resizable="false" text="Тип"/>
+                                             resizable="false" sortable="false" text="Тип"/>
                             </columns>
                         </TableView>
                     </children>

@@ -1,5 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.shape.*?>
+<?import javafx.scene.*?>
 <?import java.lang.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
@@ -52,58 +54,85 @@
                                         <ColumnConstraints halignment="CENTER" hgrow="SOMETIMES"/>
                                     </columnConstraints>
                                     <rowConstraints>
-                                        <RowConstraints maxHeight="70.0" minHeight="70.0" prefHeight="70.0"
+                                        <RowConstraints maxHeight="50.0" minHeight="50.0" prefHeight="50.0"
                                                         vgrow="SOMETIMES"/>
-                                        <RowConstraints maxHeight="70.0" minHeight="70.0" prefHeight="70.0"
+                                        <RowConstraints maxHeight="50.0" minHeight="50.0" prefHeight="50.0"
                                                         vgrow="SOMETIMES"/>
-                                        <RowConstraints maxHeight="70.0" minHeight="70.0" prefHeight="70.0"
+                                        <RowConstraints maxHeight="50.0" minHeight="50.0" prefHeight="50.0"
                                                         vgrow="SOMETIMES"/>
-                                        <RowConstraints maxHeight="70.0" minHeight="70.0" prefHeight="70.0"
+                                        <RowConstraints maxHeight="50.0" minHeight="50.0" prefHeight="50.0"
                                                         vgrow="SOMETIMES"/>
-                                        <RowConstraints maxHeight="70.0" minHeight="70.0" prefHeight="70.0"
+                                        <RowConstraints maxHeight="50.0" minHeight="50.0" prefHeight="50.0"
                                                         vgrow="SOMETIMES"/>
-                                        <RowConstraints maxHeight="70.0" minHeight="50.0" prefHeight="70.0"
+                                        <RowConstraints maxHeight="50.0" minHeight="50.0" prefHeight="50.0"
                                                         vgrow="SOMETIMES"/>
                                         <RowConstraints vgrow="SOMETIMES"/>
                                     </rowConstraints>
                                     <children>
-                                        <Button mnemonicParsing="false" onAction="#initEmployeesWorkTracking"
-                                                prefHeight="25.0" prefWidth="130.0" text="Явка">
+                                        <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false"
+                                                onAction="#initEmployeesWorkTracking"
+                                                stylesheets="@../styles/MenuButtonStyle.css" text="Явка">
                                             <GridPane.margin>
                                                 <Insets/>
                                             </GridPane.margin>
+                                            <cursor>
+                                                <Cursor fx:constant="HAND"/>
+                                            </cursor>
                                         </Button>
-                                        <Button mnemonicParsing="false" onAction="#initStockTracking" prefHeight="25.0"
-                                                prefWidth="130.0" text="Мат база" GridPane.rowIndex="1">
+                                        <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false"
+                                                onAction="#initStockTracking"
+                                                stylesheets="@../styles/MenuButtonStyle.css" text="Мат база"
+                                                GridPane.rowIndex="1">
                                             <GridPane.margin>
                                                 <Insets/>
                                             </GridPane.margin>
+                                            <cursor>
+                                                <Cursor fx:constant="HAND"/>
+                                            </cursor>
                                         </Button>
-                                        <Button mnemonicParsing="false" onAction="#initObjectsTracking"
-                                                prefHeight="25.0" prefWidth="130.0" text="Об'єкти"
+                                        <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false"
+                                                onAction="#initObjectsTracking"
+                                                stylesheets="@../styles/MenuButtonStyle.css" text="Об'єкти"
                                                 GridPane.rowIndex="2">
                                             <GridPane.margin>
                                                 <Insets/>
                                             </GridPane.margin>
+                                            <cursor>
+                                                <Cursor fx:constant="HAND"/>
+                                            </cursor>
                                         </Button>
-                                        <Button mnemonicParsing="false" onAction="#initEmployeesWindow"
-                                                prefHeight="25.0" prefWidth="130.0" text="Працівники"
+                                        <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false"
+                                                onAction="#initEmployeesWindow"
+                                                stylesheets="@../styles/MenuButtonStyle.css" text="Працівники"
                                                 GridPane.rowIndex="3">
                                             <GridPane.margin>
                                                 <Insets/>
                                             </GridPane.margin>
+                                            <cursor>
+                                                <Cursor fx:constant="HAND"/>
+                                            </cursor>
                                         </Button>
-                                        <Button mnemonicParsing="false" onAction="#initStocksWindow" prefHeight="25.0"
-                                                prefWidth="130.0" text="Інвентар" GridPane.rowIndex="4">
+                                        <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false"
+                                                onAction="#initStocksWindow"
+                                                stylesheets="@../styles/MenuButtonStyle.css" text="Інвентар"
+                                                GridPane.rowIndex="4">
                                             <GridPane.margin>
                                                 <Insets/>
                                             </GridPane.margin>
+                                            <cursor>
+                                                <Cursor fx:constant="HAND"/>
+                                            </cursor>
                                         </Button>
-                                        <Button mnemonicParsing="false" onAction="#initObjectsWindow" prefHeight="25.0"
-                                                prefWidth="130.0" text="Об'єкти" GridPane.rowIndex="5">
+                                        <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false"
+                                                onAction="#initObjectsWindow"
+                                                stylesheets="@../styles/MenuButtonStyle.css" text="Об'єкти"
+                                                GridPane.rowIndex="5">
                                             <GridPane.margin>
                                                 <Insets/>
                                             </GridPane.margin>
+                                            <cursor>
+                                                <Cursor fx:constant="HAND"/>
+                                            </cursor>
                                         </Button>
                                     </children>
                                 </GridPane>
