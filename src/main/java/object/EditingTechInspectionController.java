@@ -210,6 +210,7 @@ public class EditingTechInspectionController {
                 textField.setStyle("-fx-background-color: transparent; -fx-text-fill: rgb(230, 230, 230);");
                 if (textField.getText() == null || textField.getText().isEmpty()) {
                     telephonesList.remove(dtoTelephones);
+                    textField.setText(null);
                 }
             } else {
                 if (! textField.getStyleClass().contains("focused")) {
