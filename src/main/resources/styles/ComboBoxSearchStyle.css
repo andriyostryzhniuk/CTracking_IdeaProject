@@ -2,6 +2,10 @@
      -fx-background-color: red ,-fx-box-border,-fx-control-inner-background;
  }
 
+ .combo-box-popup > .list-view {
+     -fx-background-color: rgb(96,96,96);
+ }
+
  .combo-box .arrow-button {
      -fx-padding: 0 0 0 -7;
  }

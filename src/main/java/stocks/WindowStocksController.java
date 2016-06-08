@@ -246,7 +246,7 @@ public class WindowStocksController<T extends DTOStocks> {
             exceptionLabel.setText("");
         });
 
-        editingControlsGridPane.add(categoryComboBox, 1, 0);
+        editingControlsGridPane.add(categoryComboBox, 2, 0);
 
     }
 
@@ -684,7 +684,7 @@ public class WindowStocksController<T extends DTOStocks> {
         Button settingsCategoryButton = editPanel.getSettingsButton();
         settingsCategoryButton.getStylesheets().add(getClass().getResource("/stocks/SettingsButtonStyle.css").toExternalForm());
         settingsCategoryButton.setTooltip(new Tooltip("Налаштування категорій"));
-        editingControlsGridPane.add(settingsCategoryButton, 2, 0);
+        editingControlsGridPane.add(settingsCategoryButton, 3, 0);
 
         settingsCategoryButton.setOnAction(event -> showSettingsCategoryWindow());
     }

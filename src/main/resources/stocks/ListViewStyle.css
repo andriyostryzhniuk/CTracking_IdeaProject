@@ -1,10 +1,25 @@
-.list-view:focused {
-    -fx-background-color: transparent ,-fx-box-border,-fx-control-inner-background;
+.list-view .list-cell {
+    -fx-background-color: rgb(217,217,217);
+}
+
+.list-view .list-cell:selected {
+    -fx-background-color: #005797;
+    -fx-background-insets: 0;
+    -fx-background-radius: 1;
+}
+
+.list-view .list-cell:odd {
+    -fx-background-color: rgb(201,201,201);
+}
+
+.list-view .list-cell:odd:selected {
+    -fx-background-color: #005797;
+    -fx-background-insets: 0;
+    -fx-background-radius: 1;
 }
 
 .list-view {
-    -fx-accent: derive(-fx-control-inner-background, -20%); -fx-control-inner-background, -80%;
+    -fx-background-color: rgb(99,99,99);
 }
-
 
 

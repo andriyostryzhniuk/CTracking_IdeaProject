@@ -107,7 +107,7 @@ public class WindowObjectsTrackingController<T extends DTOObjectEmployees> {
     private void initSkillsControls(){
         skillsComboBox = initSkillsComboBox();
         skillsGridPane.add(skillsComboBox, 0, 1);
-        Button rejectDateButton = initRejectDateButton();
+        Button rejectDateButton = initRejectSkillsFilterButton();
         skillsGridPane.add(rejectDateButton, 0, 1);
         skillsGridPane.setMargin(rejectDateButton, new Insets(0, 2, 1, 149));
     }
@@ -250,10 +250,10 @@ public class WindowObjectsTrackingController<T extends DTOObjectEmployees> {
         return comboBox;
     }
 
-    private Button initRejectDateButton(){
+    private Button initRejectSkillsFilterButton(){
         Button button = new Button();
-        Image image = new Image(getClass().getResourceAsStream("/icons/reject_icon.png"));
-        button.getStylesheets().add(getClass().getResource("/styles/RejectButtonStyle.css").toExternalForm());
+        Image image = new Image(getClass().getResourceAsStream("/icons/reject_icon_light.png"));
+        button.getStylesheets().add(getClass().getResource("/object/SettingsButtonStyle.css").toExternalForm());
         button.setGraphic(new ImageView(image));
         button.setTooltip(new Tooltip("Відмінити пошук"));
         button.setOnAction(event -> {

@@ -262,8 +262,11 @@ public class CustomersViewController {
     }
 
     private void initTechTelephonesList(){
+        numberTextField1.setStyle("-fx-background-color: transparent; -fx-text-fill: rgb(230,230,230);");
         techTelephonesTextFieldsList.add(numberTextField1);
+        numberTextField2.setStyle("-fx-background-color: transparent; -fx-text-fill: rgb(230,230,230);");
         techTelephonesTextFieldsList.add(numberTextField2);
+        numberTextField3.setStyle("-fx-background-color: transparent; -fx-text-fill: rgb(230,230,230);");
         techTelephonesTextFieldsList.add(numberTextField3);
     }
 

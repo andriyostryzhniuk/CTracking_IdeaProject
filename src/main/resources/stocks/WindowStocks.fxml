@@ -55,13 +55,15 @@
                                 <Insets bottom="10.0"/>
                             </GridPane.margin>
                             <children>
-                                <ChoiceBox fx:id="statusFilterChoiceBox" prefWidth="150.0" GridPane.columnIndex="8"/>
+                                <ChoiceBox fx:id="statusFilterChoiceBox" maxWidth="150.0" minWidth="150.0"
+                                           prefWidth="150.0" stylesheets="@../styles/ChoiceBoxStyle.css"
+                                           GridPane.columnIndex="8"/>
                                 <ChoiceBox fx:id="repositoryFilterChoiceBox" stylesheets="@../styles/ChoiceBoxStyle.css"
                                            GridPane.columnIndex="7"/>
                             </children>
                         </GridPane>
-                        <TextArea fx:id="notesTextArea" editable="false" promptText="Нотатки:" wrapText="true"
-                                  stylesheets="@../styles/NotesTextAreaStyle.css" GridPane.rowIndex="3">
+                        <TextArea fx:id="notesTextArea" editable="false" promptText="Нотатки:"
+                                  stylesheets="@../styles/NotesTextAreaStyle.css" wrapText="true" GridPane.rowIndex="3">
                             <GridPane.margin>
                                 <Insets top="10.0"/>
                             </GridPane.margin>
@@ -82,12 +84,12 @@
                                     <columnConstraints>
                                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="270.0" minWidth="240.0"
                                                            prefWidth="250.0"/>
+                                        <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="170.0"
+                                                           minWidth="140.0" prefWidth="140.0"/>
                                         <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="220.0"
                                                            minWidth="220.0" prefWidth="220.0"/>
                                         <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="30.0"
                                                            minWidth="30.0" prefWidth="30.0"/>
-                                        <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="170.0"
-                                                           minWidth="140.0" prefWidth="140.0"/>
                                         <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="220.0"
                                                            minWidth="220.0" prefWidth="220.0"/>
                                         <ColumnConstraints halignment="RIGHT" hgrow="SOMETIMES" maxWidth="30.0"
@@ -107,7 +109,7 @@
                                         <TextField fx:id="nameTextField" maxWidth="270.0" minWidth="240.0"
                                                    promptText="Найменування"/>
                                         <TextField fx:id="priceTextField" maxWidth="150.0" minWidth="120.0"
-                                                   promptText="Вартість" GridPane.columnIndex="3">
+                                                   promptText="Вартість" GridPane.columnIndex="1">
                                             <GridPane.margin>
                                                 <Insets left="20.0"/>
                                             </GridPane.margin>
@@ -119,7 +121,9 @@
                                                 onAction="#escapeButtonAction" text="Скасувати"
                                                 GridPane.columnIndex="9"/>
                                         <ComboBox fx:id="repositoryComboBox" maxWidth="200.0" minWidth="200.0"
-                                                  promptText="Виберіть склад" GridPane.columnIndex="4"/>
+                                                  promptText="Виберіть склад"
+                                                  stylesheets="@../styles/SimpleComboBoxStyle.css"
+                                                  GridPane.columnIndex="4"/>
                                     </children>
                                 </GridPane>
                                 <GridPane GridPane.rowIndex="2">
@@ -137,10 +141,10 @@
                                     </rowConstraints>
                                     <children>
                                         <TextArea fx:id="editingNotesTextArea" prefHeight="200.0" prefWidth="200.0"
-                                                  promptText="Введіть текст" wrapText="true"
-                                                  stylesheets="@../styles/NotesTextAreaStyle.css"
+                                                  promptText="Введіть текст"
+                                                  stylesheets="@../styles/NotesTextAreaStyle.css" wrapText="true"
                                                   GridPane.rowIndex="1"/>
-                                        <Label text="Нотатки:">
+                                        <Label style="-fx-text-fill: rgb(200, 200, 200);" text="Нотатки:">
                                             <GridPane.margin>
                                                 <Insets bottom="3.0"/>
                                             </GridPane.margin>

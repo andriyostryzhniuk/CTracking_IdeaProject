@@ -35,10 +35,10 @@
             </rowConstraints>
             <children>
                 <TextField fx:id="nameTextField" maxWidth="380.0" promptText="Введіть замовника" GridPane.rowIndex="1"/>
-                <Label text="Замовник:"/>
-                <TextArea fx:id="notesTextArea" promptText="Нотатки" wrapText="true"
-                          stylesheets="@../styles/NotesTextAreaStyle.css" GridPane.rowIndex="9"/>
-                <Label text="Нотатки:" GridPane.rowIndex="8">
+                <Label style="-fx-text-fill: rgb(200, 200, 200);" text="Замовник:"/>
+                <TextArea fx:id="notesTextArea" promptText="Нотатки" stylesheets="@../styles/NotesTextAreaStyle.css"
+                          wrapText="true" GridPane.rowIndex="9"/>
+                <Label style="-fx-text-fill: rgb(200, 200, 200);" text="Нотатки:" GridPane.rowIndex="8">
                     <GridPane.margin>
                         <Insets bottom="5.0"/>
                     </GridPane.margin>
@@ -56,26 +56,24 @@
                         <RowConstraints maxHeight="150.0" minHeight="150.0" prefHeight="150.0" vgrow="SOMETIMES"/>
                     </rowConstraints>
                     <children>
-                        <ListView fx:id="inspectionsListView" fixedCellSize="30.0" focusTraversable="false"
-                                  GridPane.rowIndex="1"/>
-                        <Pane fx:id="headerPanel" style="-fx-background-color: rgba(65, 105, 225, .5);"/>
-                        <Label text="Технічний нагляд"/>
+                        <ListView fx:id="inspectionsListView" fixedCellSize="30.0"
+                                  stylesheets="@../employees/ListViewStyle.css" GridPane.rowIndex="1"/>
+                        <Pane fx:id="headerPanel" style="-fx-background-color: rgb(143, 143, 143);"/>
+                        <Label style="-fx-text-fill: rgb(230,230,230); -fx-font-weight: bold;" text="Технічний нагляд"/>
                     </children>
                 </GridPane>
-                <Label fx:id="telephonesLabel" text="Контакний телефон:" visible="false" GridPane.rowIndex="4">
+                <Label fx:id="telephonesLabel" style="-fx-text-fill: rgb(200, 200, 200);" text="Контакний телефон:"
+                       visible="false" GridPane.rowIndex="4">
                     <padding>
                         <Insets bottom="5.0"/>
                     </padding>
                 </Label>
                 <TextField fx:id="numberTextField1" disable="true" editable="false" focusTraversable="false"
-                           maxWidth="150.0" minWidth="150.0" prefWidth="150.0"
-                           style="-fx-background-color: transparent;" visible="false" GridPane.rowIndex="5"/>
+                           maxWidth="150.0" minWidth="150.0" prefWidth="150.0" visible="false" GridPane.rowIndex="5"/>
                 <TextField fx:id="numberTextField2" disable="true" editable="false" focusTraversable="false"
-                           maxWidth="150.0" minWidth="150.0" prefWidth="150.0"
-                           style="-fx-background-color: transparent;" visible="false" GridPane.rowIndex="6"/>
+                           maxWidth="150.0" minWidth="150.0" prefWidth="150.0" visible="false" GridPane.rowIndex="6"/>
                 <TextField fx:id="numberTextField3" disable="true" editable="false" focusTraversable="false"
-                           maxWidth="150.0" minWidth="150.0" prefWidth="150.0"
-                           style="-fx-background-color: transparent;" visible="false" GridPane.rowIndex="7"/>
+                           maxWidth="150.0" minWidth="150.0" prefWidth="150.0" visible="false" GridPane.rowIndex="7"/>
             </children>
         </GridPane>
     </children>
