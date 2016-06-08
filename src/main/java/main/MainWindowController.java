@@ -2,11 +2,17 @@ package main;
 
 import attendance.tracking.WindowAttendanceController;
 import employees.WindowEmployeesController;
+import javafx.application.Platform;
 import javafx.event.ActionEvent;
+import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
+import javafx.scene.control.MenuItem;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyCodeCombination;
+import javafx.scene.input.KeyCombination;
 import javafx.scene.layout.GridPane;
 import object.WindowObjectsController;
 import objects.tracking.WindowObjectsTrackingController;
@@ -21,12 +27,33 @@ public class MainWindowController {
 
     public GridPane mainGridPane;
 
+    public MenuItem closeMenuItem;
+    public MenuItem workTracking;
+    public MenuItem stockTracking;
+    public MenuItem objectsTracking;
+    public MenuItem employeesWindow;
+    public MenuItem stocksWindow;
+    public MenuItem objectsWindow;
+    public MenuItem aboutMenuItem;
+
     private WindowAttendanceController windowAttendanceController;
     private WindowStockTrackingController windowStockTrackingController;
     private WindowObjectsTrackingController windowObjectsTrackingController;
     private WindowEmployeesController windowEmployeesController;
     private WindowStocksController windowStocksController;
     private WindowObjectsController windowObjectsController;
+
+    @FXML
+    public void initialize(){
+        closeMenuItem.setAccelerator(new KeyCodeCombination(KeyCode.F4, KeyCombination.ALT_DOWN));
+        workTracking.setAccelerator(new KeyCodeCombination(KeyCode.DIGIT1, KeyCombination.CONTROL_DOWN));
+        stockTracking.setAccelerator(new KeyCodeCombination(KeyCode.DIGIT2, KeyCombination.CONTROL_DOWN));
+        objectsTracking.setAccelerator(new KeyCodeCombination(KeyCode.DIGIT3, KeyCombination.CONTROL_DOWN));
+        employeesWindow.setAccelerator(new KeyCodeCombination(KeyCode.DIGIT4, KeyCombination.CONTROL_DOWN));
+        stocksWindow.setAccelerator(new KeyCodeCombination(KeyCode.DIGIT5, KeyCombination.CONTROL_DOWN));
+        objectsWindow.setAccelerator(new KeyCodeCombination(KeyCode.DIGIT6, KeyCombination.CONTROL_DOWN));
+        aboutMenuItem.setAccelerator(new KeyCodeCombination(KeyCode.F2));
+    }
 
     public void initEmployeesWorkTracking(ActionEvent actionEvent) throws IOException {
         if (windowAttendanceController == null) {
@@ -169,4 +196,12 @@ public class MainWindowController {
         windowObjectsController = null;
     }
 
+    public void close(ActionEvent actionEvent) {
+        Platform.exit();
+        System.exit(0);
+    }
+
+    public void aboutProgram(ActionEvent actionEvent) {
+
+    }
 }

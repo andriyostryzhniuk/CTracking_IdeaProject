@@ -14,19 +14,42 @@
             <top>
                 <MenuBar fx:id="menuBar" stylesheets="@../styles/MenuBarStyle.css" BorderPane.alignment="TOP_LEFT">
                     <menus>
-                        <Menu mnemonicParsing="false" text="File">
+                        <Menu mnemonicParsing="false" text="Файл">
                             <items>
-                                <MenuItem mnemonicParsing="false" text="Close"/>
+                                <MenuItem fx:id="closeMenuItem" mnemonicParsing="false" onAction="#close"
+                                          text="Закрити"/>
                             </items>
                         </Menu>
-                        <Menu mnemonicParsing="false" text="Edit">
+                        <Menu mnemonicParsing="false" text="Меню">
                             <items>
-                                <MenuItem mnemonicParsing="false" text="Delete"/>
+                                <MenuItem fx:id="workTracking" onAction="#initEmployeesWorkTracking"
+                                          mnemonicParsing="false" text="Явка"/>
+                            </items>
+                            <items>
+                                <MenuItem fx:id="stockTracking" onAction="#initStockTracking" mnemonicParsing="false"
+                                          text="Мат база"/>
+                            </items>
+                            <items>
+                                <MenuItem fx:id="objectsTracking" onAction="#initObjectsTracking"
+                                          mnemonicParsing="false" text="Об'єкти"/>
+                            </items>
+                            <items>
+                                <MenuItem fx:id="employeesWindow" onAction="#initEmployeesWindow"
+                                          mnemonicParsing="false" text="Працівники"/>
+                            </items>
+                            <items>
+                                <MenuItem fx:id="stocksWindow" onAction="#initStocksWindow" mnemonicParsing="false"
+                                          text="Інвентар"/>
+                            </items>
+                            <items>
+                                <MenuItem fx:id="objectsWindow" onAction="#initObjectsWindow" mnemonicParsing="false"
+                                          text="Об'єкти"/>
                             </items>
                         </Menu>
-                        <Menu mnemonicParsing="false" text="Help">
+                        <Menu mnemonicParsing="false" text="Інфо">
                             <items>
-                                <MenuItem mnemonicParsing="false" text="About"/>
+                                <MenuItem fx:id="aboutMenuItem" onAction="#aboutProgram" mnemonicParsing="false"
+                                          text="Про програму"/>
                             </items>
                         </Menu>
                     </menus>

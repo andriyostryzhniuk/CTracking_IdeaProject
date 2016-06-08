@@ -83,7 +83,7 @@
 
 /*for context menu*/
 .context-menu {
-    -fx-min-width: 200;
+    -fx-pref-width: 200;
     -fx-background-color: rgb(96,96,96);
 }
 
