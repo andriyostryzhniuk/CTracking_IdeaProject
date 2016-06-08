@@ -34,6 +34,7 @@ public class WindowAttendanceController<T extends DtoEmployeesFullName> {
     public BorderPane rootBorderPane;
     public DatePicker datePicker;
     public ComboBox comboBox;
+    public GridPane tableViewsGridPane;
 
     private int previousMonth;
     private int previousYear;
@@ -51,33 +52,33 @@ public class WindowAttendanceController<T extends DtoEmployeesFullName> {
     private void initialize() {
 
         datePicker = initDatePicker();
-        topGridPane.add(datePicker, 0, 0);
+        topGridPane.add(datePicker, 1, 0);
         Button calendarButton = datePicker.getCalendarButton();
-        topGridPane.add(calendarButton, 0, 0);
+        topGridPane.add(calendarButton, 1, 0);
         topGridPane.setMargin(calendarButton, new Insets(1, 1, 2, 2));
         topGridPane.setHalignment(calendarButton, HPos.RIGHT);
 
         Label label = new Label("Вибрати об'єкт:");
         label.setStyle("-fx-text-fill:  rgb(200,200,200)");
-        topGridPane.add(label, 1, 0);
+        topGridPane.add(label, 2, 0);
         topGridPane.setMargin(label, new Insets(3, 10, 0, 0));
 
         comboBox = initComboBox();
-        topGridPane.add(comboBox, 2, 0);
+        topGridPane.add(comboBox, 3, 0);
 
         Label searchingLabel = new Label("Пошук:");
         searchingLabel.setStyle("-fx-text-fill:  rgb(200,200,200)");
-        topGridPane.add(searchingLabel, 4, 0);
+        topGridPane.add(searchingLabel, 5, 0);
         topGridPane.setMargin(searchingLabel, new Insets(3, 10, 0, 0));
         topGridPane.setHalignment(searchingLabel, HPos.RIGHT);
 
         initComboBoxSearch();
-        topGridPane.add(comboBoxSearch, 5, 0);
+        topGridPane.add(comboBoxSearch, 6, 0);
         topGridPane.setHalignment(comboBoxSearch, HPos.RIGHT);
 
         FXMLLoader fxmlLoader = new FXMLLoader(getClass().getResource("/attendance/tracking/TableView.fxml"));
         try {
-            rootBorderPane.setCenter(fxmlLoader.load());
+            tableViewsGridPane.add(fxmlLoader.load(), 1, 0);
             tableViewController = fxmlLoader.getController();
         } catch (IOException exception) {
             throw new RuntimeException(exception);
@@ -129,7 +130,7 @@ public class WindowAttendanceController<T extends DtoEmployeesFullName> {
                     Label notificationLabel = new Label("Не знайдено жодного об'єкта за даний період");
                     notificationLabel.setWrapText(true);
                     notificationLabel.setStyle("-fx-text-fill: red;");
-                    topGridPane.add(notificationLabel, 3, 0);
+                    topGridPane.add(notificationLabel, 4, 0);
                     topGridPane.setMargin(notificationLabel, new Insets(0, 0, 0, 10));
                     Timer timer = new Timer();
                     timer.scheduleAtFixedRate(new TimerTask() {
@@ -152,7 +153,7 @@ public class WindowAttendanceController<T extends DtoEmployeesFullName> {
                         Label notificationLabel = new Label("На вибраному об'єкті не проводилось робіт за даний період");
                         notificationLabel.setWrapText(true);
                         notificationLabel.setStyle("-fx-text-fill: red;");
-                        topGridPane.add(notificationLabel, 3, 0);
+                        topGridPane.add(notificationLabel, 4, 0);
                         topGridPane.setMargin(notificationLabel, new Insets(0, 0, 0, 10));
                         Timer timer = new Timer();
                         timer.scheduleAtFixedRate(new TimerTask() {

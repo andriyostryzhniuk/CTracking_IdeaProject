@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
+<?import javafx.scene.paint.*?>
 <?import javafx.scene.image.*?>
 <?import javafx.geometry.*?>
 <?import javafx.scene.control.*?>
@@ -38,15 +39,15 @@
                         <RowConstraints vgrow="SOMETIMES"/>
                     </rowConstraints>
                     <children>
-                        <Label text="Прізвище:"/>
-                        <Label text="Ім'я:" GridPane.rowIndex="1"/>
-                        <Label text="По батькові:" GridPane.rowIndex="2"/>
+                        <Label style="-fx-text-fill: rgb(200, 200, 200);" text="Прізвище:"/>
+                        <Label style="-fx-text-fill: rgb(200, 200, 200);" text="Ім'я:" GridPane.rowIndex="1"/>
+                        <Label style="-fx-text-fill: rgb(200, 200, 200);" text="По батькові:" GridPane.rowIndex="2"/>
                         <TextField fx:id="surnameTextField" promptText="Прізвище" GridPane.columnIndex="1"/>
                         <TextField fx:id="nameTextField" promptText="Ім'я" GridPane.columnIndex="1"
                                    GridPane.rowIndex="1"/>
                         <TextField fx:id="middleNameTextField" promptText="По батькові" GridPane.columnIndex="1"
                                    GridPane.rowIndex="2"/>
-                        <Label text="Робочий день:" GridPane.rowIndex="3"/>
+                        <Label style="-fx-text-fill: rgb(200, 200, 200);" text="Робочий день:" GridPane.rowIndex="3"/>
                         <GridPane GridPane.columnIndex="1" GridPane.rowIndex="3">
                             <columnConstraints>
                                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="80.0" minWidth="80.0" percentWidth="0.0"
@@ -57,7 +58,8 @@
                                 <RowConstraints valignment="CENTER" vgrow="SOMETIMES"/>
                             </rowConstraints>
                             <children>
-                                <Label text="год/день" GridPane.columnIndex="1">
+                                <Label style="-fx-text-fill: rgb(200, 200, 200);" text="год/день"
+                                       GridPane.columnIndex="1">
                                     <GridPane.margin>
                                         <Insets left="10.0"/>
                                     </GridPane.margin>
@@ -113,28 +115,28 @@
                             <children>
                                 <Label fx:id="surnameExceptionLabel"
                                        text="Прізвище не може містити інших символів крім кириличних та символа - "
-                                       textFill="#c95858" visible="false" wrapText="true">
+                                       textFill="RED" visible="false" wrapText="true">
                                     <GridPane.margin>
                                         <Insets left="20.0"/>
                                     </GridPane.margin>
                                 </Label>
                                 <Label fx:id="nameExceptionLabel"
                                        text="Ім'я не може містити інших символів крім кириличних та символа - "
-                                       textFill="#c95858" visible="false" wrapText="true" GridPane.rowIndex="1">
+                                       textFill="RED" visible="false" wrapText="true" GridPane.rowIndex="1">
                                     <padding>
                                         <Insets left="20.0"/>
                                     </padding>
                                 </Label>
                                 <Label fx:id="middleNameExceptionLabel"
                                        text="Ім'я по батькові не може містити інших символів крім кириличних та символа - "
-                                       textFill="#c95858" visible="false" wrapText="true" GridPane.rowIndex="2">
+                                       textFill="RED" visible="false" wrapText="true" GridPane.rowIndex="2">
                                     <GridPane.margin>
                                         <Insets left="20.0"/>
                                     </GridPane.margin>
                                 </Label>
                                 <Label fx:id="workingHoursExceptionLabel"
                                        text="Кількість робочих годин в день повинно визначатись цілим числом і не перевищувати 24"
-                                       textFill="#c95858" visible="false" wrapText="true" GridPane.rowIndex="3">
+                                       textFill="RED" visible="false" wrapText="true" GridPane.rowIndex="3">
                                     <GridPane.margin>
                                         <Insets left="20.0"/>
                                     </GridPane.margin>
@@ -174,9 +176,10 @@
                                 <RowConstraints vgrow="SOMETIMES"/>
                             </rowConstraints>
                             <children>
-                                <Pane fx:id="headerPanel" style="-fx-background-color: rgba(65, 105, 225, .5);">
+                                <Pane fx:id="headerPanel" style="-fx-background-color: rgb(143, 143, 143);">
                                     <children>
-                                        <Label layoutX="112.0" layoutY="4.0" text="Спеціальність"/>
+                                        <Label layoutX="112.0" layoutY="4.0" style="-fx-text-fill: rgb(230, 230, 230);"
+                                               text="Спеціальність"/>
                                     </children>
                                 </Pane>
                                 <ListView fx:id="skillsListView" fixedCellSize="25.0"
@@ -201,7 +204,8 @@
                             <children>
                                 <GridPane>
                                     <children>
-                                        <Label text="Дата народження:" GridPane.columnIndex="1"/>
+                                        <Label style="-fx-text-fill: rgb(200, 200, 200);" text="Дата народження:"
+                                               GridPane.columnIndex="1"/>
                                         <DatePicker fx:id="birthDateDatePicker" editable="false" promptText="Народження"
                                                     GridPane.columnIndex="2"/>
                                         <DatePicker fx:id="firstDateDatePicker" editable="false"
@@ -210,9 +214,11 @@
                                         <DatePicker fx:id="lastDateDatePicker" disable="true" editable="false"
                                                     promptText="Дата звільнення" visible="false"
                                                     GridPane.columnIndex="2" GridPane.rowIndex="2"/>
-                                        <Label text="Дата прийняття:" GridPane.columnIndex="1" GridPane.rowIndex="1"/>
-                                        <Label fx:id="lastDateLabel" text="Дата звільнення:" visible="false"
-                                               GridPane.columnIndex="1" GridPane.rowIndex="2"/>
+                                        <Label style="-fx-text-fill: rgb(200, 200, 200);" text="Дата прийняття:"
+                                               GridPane.columnIndex="1" GridPane.rowIndex="1"/>
+                                        <Label fx:id="lastDateLabel" style="-fx-text-fill: rgb(200, 200, 200);"
+                                               text="Дата звільнення:" visible="false" GridPane.columnIndex="1"
+                                               GridPane.rowIndex="2"/>
                                         <Button fx:id="rejectBirthDateButton" mnemonicParsing="false"
                                                 GridPane.columnIndex="2">
                                             <GridPane.margin>
@@ -246,15 +252,21 @@
                                     <children>
                                         <GridPane GridPane.columnIndex="1">
                                             <columnConstraints>
-                                                <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="37.0"/>
+                                                <ColumnConstraints hgrow="SOMETIMES" maxWidth="30.0" minWidth="30.0"
+                                                                   prefWidth="30.0"/>
                                                 <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="133.0"/>
                                             </columnConstraints>
                                             <rowConstraints>
                                                 <RowConstraints minHeight="10.0" prefHeight="30.0" vgrow="SOMETIMES"/>
                                             </rowConstraints>
                                             <children>
-                                                <Label text="Контактний телефон:" GridPane.columnIndex="1"/>
-                                                <Button fx:id="addTelephoneButton" mnemonicParsing="false" text="+"/>
+                                                <Label style="-fx-text-fill: rgb(200, 200, 200);"
+                                                       text="Контактний телефон:" GridPane.columnIndex="1"/>
+                                                <Button fx:id="addTelephoneButton" mnemonicParsing="false">
+                                                    <GridPane.margin>
+                                                        <Insets left="8.0"/>
+                                                    </GridPane.margin>
+                                                </Button>
                                             </children>
                                         </GridPane>
                                         <TableView fx:id="telephonesTableView" fixedCellSize="30.0" maxWidth="177.0"
@@ -267,7 +279,7 @@
                                             </columns>
                                         </TableView>
                                         <Label fx:id="telephonesExceptionLabel" maxWidth="200.0"
-                                               text="Номер телефону може містити лише цифри" textFill="#c95858"
+                                               text="Номер телефону може містити лише цифри" textFill="RED"
                                                visible="false" wrapText="true" GridPane.rowIndex="1">
                                             <padding>
                                                 <Insets right="20.0" top="5.0"/>
@@ -309,9 +321,11 @@
                                 <RowConstraints vgrow="SOMETIMES"/>
                             </rowConstraints>
                             <children>
-                                <Label text="Нотатки:" GridPane.columnIndex="1"/>
-                                <TextArea fx:id="notesTextArea" wrapText="true" GridPane.columnIndex="1"
-                                          GridPane.rowIndex="1"/>
+                                <Label style="-fx-text-fill: rgb(200, 200, 200);" text="Нотатки:"
+                                       GridPane.columnIndex="1"/>
+                                <TextArea fx:id="notesTextArea" promptText="Нотатки"
+                                          stylesheets="@../styles/NotesTextAreaStyle.css" wrapText="true"
+                                          GridPane.columnIndex="1" GridPane.rowIndex="1"/>
                             </children>
                         </GridPane>
                     </children>

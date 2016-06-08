@@ -2,14 +2,25 @@
      -fx-min-width: 23;
      -fx-pref-width: 23;
      -fx-max-width: 23;
-     -fx-background-color: transparent ,-fx-box-border,-fx-control-inner-background;
+     -fx-background-color:
+             transparent,
+             linear-gradient(#545658, #4b4e50),
+             linear-gradient(#545658, #4b4e50),
+             linear-gradient(#545658, #4b4e50);
+     -fx-border-color: transparent,
+         linear-gradient(#545658, #4b4e50),
+         linear-gradient(#545658, #4b4e50),
+         linear-gradient(#545658, #4b4e50);
  }
 
  #choice-box-menu-item {
-    -fx-pref-width: 140;
+     -fx-pref-width: 200;
+     -fx-mark-color: rgb(230,230,230);
  }
 
+
  .choice-box .label {
+     -fx-text-fill: rgb(230,230,230);
      -fx-padding: 0 0 0 16;
  }
 

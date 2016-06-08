@@ -8,6 +8,8 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.scene.control.*;
 import javafx.scene.control.cell.PropertyValueFactory;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseEvent;
 import javafx.scene.layout.Pane;
 import javafx.stage.Stage;
@@ -185,6 +187,10 @@ public class EditingTechInspectionController {
     }
 
     private void initAddTelephoneButton(){
+        Image image = new Image(getClass().getResourceAsStream("/icons/plus_icon.png"));
+        addTelephoneButton.getStylesheets().add(getClass().getResource("/styles/PlusButtonStyle.css").toExternalForm());
+        addTelephoneButton.setGraphic(new ImageView(image));
+        addTelephoneButton.setTooltip(new Tooltip("Додати телефон"));
         addTelephoneButton.setOnAction(event -> {
             DTOTelephones dtoTelephones = new DTOTelephones(null, dtoInspection.getId(), "");
             telephonesList.add(dtoTelephones);
@@ -201,7 +207,7 @@ public class EditingTechInspectionController {
             textFieldMatcherFind(textField, pattern);
             if (! newPropertyValue) {
                 textField.getStyleClass().remove("focused");
-                textField.setStyle("-fx-background-color: transparent;");
+                textField.setStyle("-fx-background-color: transparent; -fx-text-fill: rgb(230, 230, 230);");
                 if (textField.getText() == null || textField.getText().isEmpty()) {
                     telephonesList.remove(dtoTelephones);
                 }

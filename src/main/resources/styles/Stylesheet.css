@@ -6,8 +6,6 @@
     -fx-background-color: transparent ,-fx-box-border,-fx-control-inner-background;
 }
 
-
-
 .scroll-bar{
     -fx-background-color: rgb(96,96,96);
     /*-fx-background-radius: 1em;*/
@@ -83,6 +81,29 @@
     -fx-background-color: rgb(99,99,99);
 }
 
+/*for context menu*/
+.context-menu {
+    -fx-min-width: 200;
+    -fx-background-color: rgb(96,96,96);
+}
+
+.context-menu .label {
+    -fx-text-fill: rgb(230,230,230);
+}
+
+.context-menu-item:hover {
+    -fx-background-color: rgb(75,110,175);
+}
+
+.context-menu-item:pressed {
+    -fx-background-color: rgb(75,110,175);
+}
+
+.context-menu-item:focused {
+    -fx-background-color: rgb(75,110,175);
+}
+/*for context menu*/
+
 /*.button {*/
     /*-fx-background-color:*/
             /*#000000,*/
@@ -95,4 +116,12 @@
 /*.date-picker .text-field {*/
     /*-fx-background-color: rgb(69,73,74);*/
     /*-fx-text-fill: rgb(200,200,200);*/
+/*}*/
+
+/*.date-picker .arrow-button {*/
+    /*-fx-background-color:*/
+            /*#000000,*/
+            /*linear-gradient(#737373, #737373),*/
+            /*linear-gradient(#545658, #4b4e50),*/
+            /*linear-gradient(#545658, #4b4e50);*/
 /*}*/

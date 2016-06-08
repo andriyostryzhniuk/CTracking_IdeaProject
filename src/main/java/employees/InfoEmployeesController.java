@@ -327,6 +327,7 @@ public class InfoEmployeesController {
         setTextFieldsListener(middleNameTextField, middleNameExceptionLabel);
         setIntegerListener(workingHoursNumberSpinner, workingHoursExceptionLabel);
         addTextAreaLimiter(notesTextArea, 200);
+        notesTextArea.setTooltip(new Tooltip("Тут Ви можете написати будь-які нотатки\nпро працівника"));
         birthDateDatePicker.setOnMouseEntered(event -> setBirthDateDatePickerValidation());
         firstDateDatePicker.setOnMouseEntered(event -> setFirstDateDatePickerValidation());
         lastDateDatePicker.setOnMouseEntered(event -> setLastDateDatePickerValidation());
@@ -542,6 +543,10 @@ public class InfoEmployeesController {
     }
 
     private void initAddTelephoneButton(){
+        Image image = new Image(getClass().getResourceAsStream("/icons/plus_icon.png"));
+        addTelephoneButton.getStylesheets().add(getClass().getResource("/styles/PlusButtonStyle.css").toExternalForm());
+        addTelephoneButton.setGraphic(new ImageView(image));
+        addTelephoneButton.setTooltip(new Tooltip("Додати телефон"));
         addTelephoneButton.setOnAction(event -> {
             DTOTelephones dtoTelephones = new DTOTelephones("");
             telephonesList.add(dtoTelephones);
@@ -558,7 +563,7 @@ public class InfoEmployeesController {
             textFieldMatcherFind(textField, pattern);
             if (! newPropertyValue) {
                 textField.getStyleClass().remove("focused");
-                textField.setStyle("-fx-background-color: transparent;");
+                textField.setStyle("-fx-background-color: transparent; -fx-text-fill: rgb(230, 230, 230);");
                 if (textField.getText() == null || textField.getText().isEmpty()) {
                     telephonesList.remove(dtoTelephones);
                 }

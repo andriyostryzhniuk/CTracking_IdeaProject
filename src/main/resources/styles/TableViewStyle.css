@@ -9,7 +9,7 @@
 
 .table-view .column-header-background .label{
     -fx-background-color: rgb(143,143,143);
-    -fx-text-fill: rgb(222,222,222);
+    -fx-text-fill: rgb(230,230,230);
 }
 
 .table-view .column-header {

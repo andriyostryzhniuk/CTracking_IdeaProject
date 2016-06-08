@@ -97,10 +97,15 @@
                                 <GridPane>
                                     <children>
                                         <Label text="Контактний телефон:" textFill="WHITE" GridPane.columnIndex="1"/>
-                                        <Button fx:id="addTelephoneButton" mnemonicParsing="false" text="+"/>
+                                        <Button fx:id="addTelephoneButton" mnemonicParsing="false">
+                                            <GridPane.margin>
+                                                <Insets left="8.0"/>
+                                            </GridPane.margin>
+                                        </Button>
                                     </children>
                                     <columnConstraints>
-                                        <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="37.0"/>
+                                        <ColumnConstraints hgrow="SOMETIMES" maxWidth="30.0" minWidth="30.0"
+                                                           prefWidth="30.0"/>
                                         <ColumnConstraints hgrow="SOMETIMES" minWidth="10.0" prefWidth="133.0"/>
                                     </columnConstraints>
                                     <rowConstraints>

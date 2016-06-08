@@ -61,7 +61,7 @@
                                 <DatePicker fx:id="datePicker" editable="false" maxWidth="200.0" minWidth="200.0"
                                             prefWidth="200.0" promptText="Дата перегляду">
                                     <GridPane.margin>
-                                        <Insets bottom="16.0"/>
+                                        <Insets bottom="11.0"/>
                                     </GridPane.margin>
                                 </DatePicker>
                                 <Button fx:id="todayButton" mnemonicParsing="false">
@@ -69,8 +69,9 @@
                                         <Insets left="120.0" top="2.0"/>
                                     </GridPane.margin>
                                 </Button>
-                                <CheckBox fx:id="viewOnlyActualCheckBox" text="Тільки працюючі сьогодні"
-                                          GridPane.halignment="LEFT" GridPane.rowIndex="3">
+                                <CheckBox fx:id="viewOnlyActualCheckBox" style="-fx-text-fill: rgb(200, 200, 200);"
+                                          text="Тільки працюючі сьогодні" GridPane.halignment="LEFT"
+                                          GridPane.rowIndex="3">
                                     <GridPane.margin>
                                         <Insets bottom="8.0" top="8.0"/>
                                     </GridPane.margin>
@@ -99,7 +100,8 @@
                                         <Insets/>
                                     </GridPane.margin>
                                 </TextArea>
-                                <Label fx:id="skillsLabel" text="Спеціальність:" visible="false" GridPane.rowIndex="1">
+                                <Label fx:id="skillsLabel" style="-fx-text-fill: rgb(200, 200, 200);"
+                                       text="Спеціальність:" visible="false" GridPane.rowIndex="1">
                                     <GridPane.margin>
                                         <Insets left="8.0"/>
                                     </GridPane.margin>
@@ -117,7 +119,8 @@
                                         <Insets bottom="10.0"/>
                                     </GridPane.margin>
                                 </TextArea>
-                                <Label fx:id="notesLabel" text="Нотатки:" visible="false" GridPane.rowIndex="3">
+                                <Label fx:id="notesLabel" style="-fx-text-fill: rgb(200, 200, 200);" text="Нотатки:"
+                                       visible="false" GridPane.rowIndex="3">
                                     <padding>
                                         <Insets left="8.0"/>
                                     </padding>
@@ -139,7 +142,7 @@
                     </rowConstraints>
                     <children>
                         <StackPane fx:id="stackPane" GridPane.rowIndex="1"/>
-                        <Label fx:id="objectLabel" GridPane.valignment="TOP">
+                        <Label fx:id="objectLabel" style="-fx-text-fill: rgb(200, 200, 200);" GridPane.valignment="TOP">
                             <GridPane.margin>
                                 <Insets top="5.0"/>
                             </GridPane.margin>

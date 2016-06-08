@@ -43,7 +43,7 @@
                     </rowConstraints>
                     <children>
                         <TextField fx:id="addressTextField" maxWidth="380.0" promptText="Адреса" GridPane.rowIndex="1"/>
-                        <Label text="Об'єкт:"/>
+                        <Label style="-fx-text-fill: rgb(200, 200, 200);" text="Об'єкт:"/>
                         <GridPane GridPane.rowIndex="3">
                             <columnConstraints>
                                 <ColumnConstraints hgrow="SOMETIMES" maxWidth="230.0" minWidth="170.0"
@@ -62,9 +62,11 @@
                                             GridPane.columnIndex="1"/>
                                 <DatePicker fx:id="finishDateDatePicker" editable="false" promptText="Дата закінчення"
                                             GridPane.columnIndex="1" GridPane.rowIndex="1"/>
-                                <Label text="Дата початку:"/>
-                                <Label text="Дата закінчення:" GridPane.rowIndex="1"/>
-                                <Label text="Закладений кошторис:" GridPane.rowIndex="2">
+                                <Label style="-fx-text-fill: rgb(200, 200, 200);" text="Дата початку:"/>
+                                <Label style="-fx-text-fill: rgb(200, 200, 200);" text="Дата закінчення:"
+                                       GridPane.rowIndex="1"/>
+                                <Label style="-fx-text-fill: rgb(200, 200, 200);" text="Закладений кошторис:"
+                                       GridPane.rowIndex="2">
                                     <GridPane.margin>
                                         <Insets top="7.5"/>
                                     </GridPane.margin>
@@ -85,7 +87,8 @@
                                                 <Insets top="7.5"/>
                                             </GridPane.margin>
                                         </TextField>
-                                        <Label text="грн" GridPane.columnIndex="1">
+                                        <Label style="-fx-text-fill: rgb(200, 200, 200);" text="грн"
+                                               GridPane.columnIndex="1">
                                             <GridPane.margin>
                                                 <Insets top="7.5"/>
                                             </GridPane.margin>
@@ -100,8 +103,9 @@
                                 </Button>
                             </children>
                         </GridPane>
-                        <TextArea fx:id="notesTextArea" promptText="Нотатки" wrapText="true" GridPane.rowIndex="6"/>
-                        <Label text="Нотатки:" GridPane.rowIndex="5">
+                        <TextArea fx:id="notesTextArea" promptText="Нотатки" wrapText="true"
+                                  stylesheets="@../styles/NotesTextAreaStyle.css" GridPane.rowIndex="6"/>
+                        <Label style="-fx-text-fill: rgb(200, 200, 200);" text="Нотатки:" GridPane.rowIndex="5">
                             <GridPane.margin>
                                 <Insets bottom="5.0"/>
                             </GridPane.margin>

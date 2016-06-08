@@ -24,12 +24,14 @@
                     <children>
                         <ListView fx:id="listView" fixedCellSize="40.0" maxWidth="300.0" minWidth="300.0"
                                   stylesheets="@../employees/ListViewStyle.css" GridPane.rowIndex="2"/>
-                        <Pane fx:id="headerPanel" style="-fx-background-color: rgba(65, 105, 225, .5);"
+                        <Pane fx:id="headerPanel" style="-fx-background-color: rgb(143, 143, 143);"
                               GridPane.rowIndex="1">
                             <children>
-                                <Label layoutX="117.0" layoutY="4.0" text="Працівники"/>
+                                <Label layoutX="117.0" layoutY="4.0"
+                                       style="-fx-text-fill: rgb(230,230,230); -fx-font-weight: bold;"
+                                       text="Працівники"/>
                                 <ChoiceBox fx:id="exemptEmployeesChoiceBox" focusTraversable="false" layoutX="277.0"
-                                           prefHeight="23.5" prefWidth="5.0"
+                                           prefHeight="24.0" prefWidth="5.0"
                                            stylesheets="@ExemptEmpChoiceBoxStyle.css"/>
                             </children>
                         </Pane>

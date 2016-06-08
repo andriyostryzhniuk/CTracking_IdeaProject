@@ -77,7 +77,7 @@ public class DTOTelephones {
         textField.setMinWidth(170);
         textField.setMaxWidth(170);
         textField.setPromptText("Введіть номер телефону");
-        textField.setStyle("-fx-background-color: transparent;");
+        textField.setStyle("-fx-background-color: transparent; -fx-text-fill: rgb(230, 230, 230);");
         textField.setText(number);
         gridPane.add(textField, 0 ,0);
         rejectButton = initRejectButton();
@@ -87,12 +87,12 @@ public class DTOTelephones {
         gridPane.setOnMouseEntered(event -> {
             rejectButton.setVisible(true);
             if (! textField.getStyleClass().contains("focused")) {
-                textField.setStyle("-fx-background-color: Gainsboro;");
+                textField.setStyle("-fx-background-color: rgb(90, 93, 95); -fx-text-fill: rgb(230, 230, 230);");
             }
         });
         gridPane.setOnMouseExited(event -> {
             if (! textField.getStyleClass().contains("focused")) {
-                textField.setStyle("-fx-background-color: transparent;");
+                textField.setStyle("-fx-background-color: transparent; -fx-text-fill: rgb(230, 230, 230);");
             }
             rejectButton.setVisible(false);
         });
@@ -102,7 +102,7 @@ public class DTOTelephones {
 
     private Button initRejectButton(){
         Button button = new Button();
-        Image image = new Image(getClass().getResourceAsStream("/icons/reject_icon.png"));
+        Image image = new Image(getClass().getResourceAsStream("/icons/reject_icon_light.png"));
         button.getStylesheets().add(getClass().getResource("/employees/RejectButtonStyle.css").toExternalForm());
         button.setGraphic(new ImageView(image));
         button.setTooltip(new Tooltip("Видалити телефон"));

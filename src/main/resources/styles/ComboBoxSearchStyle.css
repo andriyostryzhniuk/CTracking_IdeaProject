@@ -8,5 +8,22 @@
 
  .combo-box .text-field {
      -fx-background-color: rgb(69,73,74);
-     -fx-text-fill: rgb(200,200,200);
+     -fx-text-fill: rgb(230,230,230);
+ }
+
+ .combo-box-popup .list-view .list-cell {
+     -fx-background-color: rgb(96, 96, 96);
+     -fx-text-fill: rgb(230, 230, 230);
+ }
+
+ .combo-box-popup .list-view .list-cell:hover {
+     -fx-background-color: rgb(75,110,175);
+ }
+
+ .combo-box-popup .list-view .list-cell:focused {
+     -fx-background-color: rgb(75,110,175);
+ }
+
+ .combo-box-popup .list-view .list-cell:selected {
+     -fx-background-color: -fx-accent;
  }
