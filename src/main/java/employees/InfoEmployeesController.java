@@ -629,7 +629,8 @@ public class InfoEmployeesController {
 
     private void alterStandOffError(String notClosedWork){
         String contentText = "Не можливо звільнити працівника, оскільки у нього" +
-                "\nне закрита робота на об'єкті\n" + notClosedWork;
+                "\nне закрита робота на об'єкті\n" + notClosedWork +
+                ".\nЗавершіть воконання роботи на цьому об'єкті та спробуйте ще раз.";
         AlertWindow alertWindow = new AlertWindow(Alert.AlertType.ERROR, null, contentText);
         alertWindow.showError();
     }

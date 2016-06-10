@@ -8,6 +8,7 @@ import javafx.fxml.FXML;
 import javafx.fxml.FXMLLoader;
 import javafx.geometry.Insets;
 import javafx.geometry.Pos;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.MenuItem;
 import javafx.scene.input.KeyCode;
@@ -18,6 +19,7 @@ import object.WindowObjectsController;
 import objects.tracking.WindowObjectsTrackingController;
 import stock.tracking.WindowStockTrackingController;
 import stocks.WindowStocksController;
+import subsidiary.classes.AlertWindow;
 
 import java.io.IOException;
 import java.io.UncheckedIOException;
@@ -202,6 +204,7 @@ public class MainWindowController {
     }
 
     public void aboutProgram(ActionEvent actionEvent) {
-
+        AlertWindow alertWindow = new AlertWindow(Alert.AlertType.INFORMATION);
+        alertWindow.showInformation();
     }
 }
