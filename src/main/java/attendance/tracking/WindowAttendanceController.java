@@ -283,6 +283,7 @@ public class WindowAttendanceController<T extends DtoEmployeesFullName> {
         }
 
         setItemsToComboBoxSearch();
+        fillComboBoxItems(comboBox);
     }
 
     public void updateDateInTableHeader (Calendar calendar) {

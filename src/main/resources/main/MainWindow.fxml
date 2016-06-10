@@ -22,33 +22,33 @@
                         </Menu>
                         <Menu mnemonicParsing="false" text="Меню">
                             <items>
-                                <MenuItem fx:id="workTracking" onAction="#initEmployeesWorkTracking"
-                                          mnemonicParsing="false" text="Явка"/>
+                                <MenuItem fx:id="workTracking" mnemonicParsing="false"
+                                          onAction="#initEmployeesWorkTracking" text="Явка працівників"/>
                             </items>
                             <items>
-                                <MenuItem fx:id="stockTracking" onAction="#initStockTracking" mnemonicParsing="false"
-                                          text="Мат база"/>
+                                <MenuItem fx:id="stockTracking" mnemonicParsing="false" onAction="#initStockTracking"
+                                          text="Облік матеріальної бази"/>
                             </items>
                             <items>
-                                <MenuItem fx:id="objectsTracking" onAction="#initObjectsTracking"
-                                          mnemonicParsing="false" text="Об'єкти"/>
+                                <MenuItem fx:id="objectsTracking" mnemonicParsing="false"
+                                          onAction="#initObjectsTracking" text="Облік персоналу"/>
                             </items>
                             <items>
-                                <MenuItem fx:id="employeesWindow" onAction="#initEmployeesWindow"
-                                          mnemonicParsing="false" text="Працівники"/>
+                                <MenuItem fx:id="employeesWindow" mnemonicParsing="false"
+                                          onAction="#initEmployeesWindow" text="Персонал"/>
                             </items>
                             <items>
-                                <MenuItem fx:id="stocksWindow" onAction="#initStocksWindow" mnemonicParsing="false"
-                                          text="Інвентар"/>
+                                <MenuItem fx:id="stocksWindow" mnemonicParsing="false" onAction="#initStocksWindow"
+                                          text="Матеріальна база"/>
                             </items>
                             <items>
-                                <MenuItem fx:id="objectsWindow" onAction="#initObjectsWindow" mnemonicParsing="false"
+                                <MenuItem fx:id="objectsWindow" mnemonicParsing="false" onAction="#initObjectsWindow"
                                           text="Об'єкти"/>
                             </items>
                         </Menu>
                         <Menu mnemonicParsing="false" text="Інфо">
                             <items>
-                                <MenuItem fx:id="aboutMenuItem" onAction="#aboutProgram" mnemonicParsing="false"
+                                <MenuItem fx:id="aboutMenuItem" mnemonicParsing="false" onAction="#aboutProgram"
                                           text="Про програму"/>
                             </items>
                         </Menu>
@@ -58,8 +58,8 @@
             <center>
                 <GridPane fx:id="mainGridPane" prefHeight="573.0" prefWidth="1298.0" BorderPane.alignment="CENTER">
                     <columnConstraints>
-                        <ColumnConstraints hgrow="SOMETIMES" minWidth="150.0"/>
-                        <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="1200.0"/>
+                        <ColumnConstraints hgrow="SOMETIMES" minWidth="155.0"/>
+                        <ColumnConstraints hgrow="ALWAYS" maxWidth="1.7976931348623157E308" minWidth="1195.0"/>
                         <ColumnConstraints hgrow="ALWAYS" maxWidth="30.0" minWidth="10.0"/>
                         <ColumnConstraints hgrow="SOMETIMES" maxWidth="190.0" minWidth="0.0" prefWidth="9.0"/>
                     </columnConstraints>
@@ -94,7 +94,7 @@
                                     <children>
                                         <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false"
                                                 onAction="#initEmployeesWorkTracking"
-                                                stylesheets="@../styles/MenuButtonStyle.css" text="Явка">
+                                                stylesheets="@../styles/MenuButtonStyle.css" text="Явка працівників">
                                             <GridPane.margin>
                                                 <Insets/>
                                             </GridPane.margin>
@@ -104,8 +104,8 @@
                                         </Button>
                                         <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false"
                                                 onAction="#initStockTracking"
-                                                stylesheets="@../styles/MenuButtonStyle.css" text="Мат база"
-                                                GridPane.rowIndex="1">
+                                                stylesheets="@../styles/MenuButtonStyle.css"
+                                                text="Облік матеріальної бази" GridPane.rowIndex="1">
                                             <GridPane.margin>
                                                 <Insets/>
                                             </GridPane.margin>
@@ -115,7 +115,7 @@
                                         </Button>
                                         <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false"
                                                 onAction="#initObjectsTracking"
-                                                stylesheets="@../styles/MenuButtonStyle.css" text="Об'єкти"
+                                                stylesheets="@../styles/MenuButtonStyle.css" text="Облік персоналу"
                                                 GridPane.rowIndex="2">
                                             <GridPane.margin>
                                                 <Insets/>
@@ -126,7 +126,7 @@
                                         </Button>
                                         <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false"
                                                 onAction="#initEmployeesWindow"
-                                                stylesheets="@../styles/MenuButtonStyle.css" text="Працівники"
+                                                stylesheets="@../styles/MenuButtonStyle.css" text="Персонал"
                                                 GridPane.rowIndex="3">
                                             <GridPane.margin>
                                                 <Insets/>
@@ -137,7 +137,7 @@
                                         </Button>
                                         <Button maxWidth="1.7976931348623157E308" mnemonicParsing="false"
                                                 onAction="#initStocksWindow"
-                                                stylesheets="@../styles/MenuButtonStyle.css" text="Інвентар"
+                                                stylesheets="@../styles/MenuButtonStyle.css" text="Матеріальна база"
                                                 GridPane.rowIndex="4">
                                             <GridPane.margin>
                                                 <Insets/>
